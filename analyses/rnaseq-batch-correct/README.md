@@ -94,8 +94,8 @@ Output files in .rds format are generated under `output` folder:
 
 ```
 output
-├── gtex-target-nbl-gene-expression-rsem-tpm-collapsed.polya_corrected.rds		# batch corrected matrix
-├── gtex-target-nbl-gene-expression-rsem-tpm-collapsed.polya_metadata.rds		# combined metadata with sample identifier, batch info and specified columns
+├── gtex-target-nbl-gene-expression-rsem-tpm-collapsed.polya_corrected.rds	# batch corrected matrix
+├── gtex-target-nbl-gene-expression-rsem-tpm-collapsed.polya_metadata.rds	# combined metadata with sample identifier, batch info and specified columns
 └── gtex-target-nbl-gene-expression-rsem-tpm-collapsed.polya_uncorrected.rds	# uncorrected matrix
 ```
 
