@@ -30,14 +30,14 @@ There are some strict requirements for the input files for the module to functio
 │   ├── *_metadata.rds		# combined metadata with sample identifier, batch info and specified columns
 ├── plots
 │   ├── *_density.pdf		# density plots of housekeeping genes before and after batch correction
-│   ├── *_tsne.pdf			# t-SNE plots before and after batch correction with most variable and housekeeping genes
-│   └── *_umap.pdf			# umap plots before and after batch correction with most variable and housekeeping genes
-├── run_analysis.sh			# script to run full analysis
+│   ├── *_tsne.pdf		# t-SNE plots before and after batch correction with most variable and housekeeping genes
+│   └── *_umap.pdf		# umap plots before and after batch correction with most variable and housekeeping genes
+├── run_analysis.sh		# script to run full analysis
 └── util
     ├── combine_mat.R		# function to combined input matrices for batch correction
     ├── combine_meta.R		# function to combined input metadata for batch correction
     ├── density_plots.R		# function to create density plots
-    ├── pubTheme.R			# function for publication quality ggplot2 theme
+    ├── pubTheme.R		# function for publication quality ggplot2 theme
     └── clustering_plots.R	# function to create UMAP/t-SNE plots
 ```
 
