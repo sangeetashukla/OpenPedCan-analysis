@@ -8,6 +8,14 @@ The goal of this analysis is to combine and batch-correct expression matrices fr
 The module generates combined uncorrected and batch-corrected matrices as well as combined metadata files that has the sample identifier, batch information and other specified columns only.
 For QC, the module also generates UMAP/t-SNE clustering of most variable genes and housekeeping genes before and after correction as well as density plots with housekeeping genes.
 
+There are some strict requirements for the input files for the module to function as expected:
+
+1. `Expression matrix`: Input expression matrices must be collapsed to unique gene symbols.
+2. `Metadata file`: The user should supply a histology/metadata file for each corresponding matrix to be merged.
+3. `Sample identifier`: Each metadata file should have the same column name for the sample identifier that matches the columns in the corresponding expression matrix. For e.g. one histology cannot have `Kids_First_Biospecimen_ID` and the second cannot have `sample_id` for mapping sample names. If you have these differences, you can create temporary histology files for the purpose of running this module.
+4. `Batch variables`: Each metadata file must have the same column name for the columns that are to be combined and used as a batch variable. For e.g. one histology cannot have `RNA_library` and the second cannot have `library_type` for mapping library names.
+5. `Normal Tissue/Disease Groups`: Each metadata file must have the same column name for the columns that are to be used for to color the points in the clustering plots. For e.g. all GTEx tissues and TARGET diseases were mapped to a `group` column for the purpose of this module.
+
 ### Module Structure
 
 ```sh
@@ -38,6 +46,7 @@ For QC, the module also generates UMAP/t-SNE clustering of most variable genes a
 #### code/01-batch-correct.R
 
 This script combines various input matrices using their rownames. The input matrices MUST be collapsed to unique gene symbols. Batch correction is done on the combined matrices using `sva::ComBat` when input type is TPM/FPKM and `sva::ComBat_seq` when input type is expected counts. Normalized expression inputs for e.g. TPM/FPKM are log-transformed before batch-correction and so is the corresponding matrix resulting from `sva::ComBat`. These are back-transformed within the script for downstream analyses.
+
 
 ```sh
 Rscript code/01-batch-correct.R --help
