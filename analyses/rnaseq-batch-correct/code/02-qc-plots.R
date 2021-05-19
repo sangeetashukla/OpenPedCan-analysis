@@ -30,7 +30,7 @@ option_list <- list(
   make_option(c("--sample_id"), type = "character",
               help = "sample identifier column in metadata file matching column names in expression datasets"),
   make_option(c("--hk_genes"), type = "character",
-              help = "comma separated list of house keeping genes"),
+              help = "path to housekeeping genes from Housekeeping Transcript Atlas (.csv)"),
   make_option(c("--clustering_type"), type = "character",
               help = "type of clustering to use: umap or tsne"),
   make_option(c("--plots_prefix"), type = "character",
@@ -45,7 +45,6 @@ var_prop <- opt$var_prop
 var_prop <- as.numeric(var_prop)
 sample_id <- opt$sample_id
 hk_genes <- opt$hk_genes
-hk_genes <- trimws(strsplit(hk_genes,",")[[1]])
 clustering_type <- opt$clustering_type
 plots_prefix <- opt$plots_prefix
 
@@ -57,6 +56,10 @@ density_plots <- file.path(plots_dir, paste0(plots_prefix, '_density.pdf'))
 uncorrected_mat <- readRDS(uncorrected_mat)
 corrected_mat <- readRDS(corrected_mat)
 combined_metadata <- read.delim(combined_metadata, stringsAsFactors = F, check.names = F)
+
+# housekeeping genes (from Housekeeping Transcript Atlas)
+hk_genes <- read.csv(hk_genes, sep = ";")
+hk_genes <- unique(hk_genes$Gene.name)
 
 # check if everything is lined-up between expression matrices and metadata
 if(identical(rownames(combined_metadata), colnames(uncorrected_mat)) & 

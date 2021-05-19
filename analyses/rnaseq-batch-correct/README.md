@@ -6,7 +6,7 @@
 
 The goal of this analysis is to combine and batch-correct expression matrices from various RNA-seq datasets. 
 The module generates combined uncorrected and batch-corrected matrices as well as combined metadata files that has the sample identifier, batch information and other specified columns only.
-For QC, the module also generates UMAP/t-SNE clustering of most variable genes and housekeeping genes before and after correction as well as density plots with housekeeping genes.
+For QC, the module also generates UMAP/t-SNE clustering of most variable genes and housekeeping genes before and after correction as well as density plots with housekeeping genes. The housekeeping genes were obtained from the Housekeeping Transcript Atlas: https://housekeeping.unicamp.br/Housekeeping_GenesHuman.csv. 
 
 There are some strict requirements for the input files for the module to function as expected:
 
