@@ -37,20 +37,20 @@ INPUT_FILE="${DATA_DIR}/gene-expression-rsem-tpm-collapsed.rds"
 OUTPUT_FILE="${RESULTS_DIR}/gsva_scores.tsv"
 HIST_FILE="${DATA_DIR}/histologies.tsv"
 
-# Rscript --vanilla 01-conduct-gsea-analysis.R --input ${INPUT_FILE} --output ${OUTPUT_FILE} --histology ${HIST_FILE}
+Rscript --vanilla 01-conduct-gsea-analysis.R --input ${INPUT_FILE} --output ${OUTPUT_FILE} --histology ${HIST_FILE}
 
 # ######## Model GSVA scores ############
 # # Only run when pbta-histologies.tsv is generated which has harmonized_diagnosis
 Rscript -e "rmarkdown::render('02-model-gsea.Rmd', clean = TRUE, params=list(is_ci = ${IS_CI}))"
 
 else
-DATA_DIR="../collapse-rnaseq/results"
+DATA_DIR="../../data"
 RESULTS_DIR="results"
 
 ######## Calculate scores from expression data ############
 INPUT_FILE="${DATA_DIR}/gene-expression-rsem-tpm-collapsed.rds"
 OUTPUT_FILE="${RESULTS_DIR}/gsva_scores.tsv"
-HIST_FILE="${DATA_DIR}/histologies.tsv"
+HIST_FILE="${DATA_DIR}/histologies-base.tsv"
 
 Rscript --vanilla 01-conduct-gsea-analysis.R --input ${INPUT_FILE} --output ${OUTPUT_FILE} --histology ${HIST_FILE}
 

@@ -100,7 +100,7 @@ human_hallmark_list    <- base::split(human_hallmark_twocols$human_gene_symbol, 
 # filter to RNA and exclude TCGA and GTEx
 histology_rna_df <- histology_df %>% 
   dplyr::filter(experimental_strategy == "RNA-Seq") %>% 
-  dplyr::filter(!cohort %in% c("GTEx", "TCGA")) %>%
+  dplyr::filter(cohort =="PBTA") %>%
   dplyr::filter(!is.na(RNA_library))
 
 # First filter expression data to exclude GTEx and TCGA
@@ -137,7 +137,7 @@ gsea_scores_df_tidy_list <- lapply(rna_library_list, function(x){
                                    human_hallmark_list,
                                    method = "gsva",
                                    min.sz=1, max.sz=1500,## Arguments from K. Rathi
-                                   parallel.sz = 4, # For the bigger dataset, this ensures this won't crash due to memory problems
+                                   parallel.sz = 8, # For the bigger dataset, this ensures this won't crash due to memory problems
                                    mx.diff = TRUE)        ## Setting this argument to TRUE computes Gaussian-distributed scores (bimodal score distribution if FALSE)
     
     ### Clean scoring into tidy format
