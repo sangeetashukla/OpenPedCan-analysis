@@ -72,7 +72,7 @@ results_dir <- "results"
 
 ######### Define input files
 ## Metadata file (histologies/clinical data)
-metadata_file <- file.path(data_dir, "histologies.tsv")
+metadata_file <- file.path(data_dir, "histologies-testing.tsv")
 
 ## GSEA scores
 scores_file <- file.path(results_dir, "gsva_scores.tsv")
@@ -89,18 +89,26 @@ rna_library_list <- metadata %>% pull(RNA_library) %>% unique()
 
 ######## Define output files for each unique rna library
 cancer_group_anova_outpaths <- lapply(rna_library_list, function(x){
+  x<-gsub(" ", "_", x)
+  x<-stringr::str_to_lower(gsub("-", "", x))
   file.path(results_dir, paste0("gsva_anova_", x, "_cancer_group.tsv"))
 })
 
 cancer_group_tukey_outpaths <- lapply(rna_library_list, function(x){
+  x<-gsub(" ", "_", x)
+  x<-stringr::str_to_lower(gsub("-", "", x))
   file.path(results_dir, paste0("gsva_tukey_", x, "_cancer_group.tsv"))
 })
 
 harmonized_diagnosis_anova_outpaths <- lapply(rna_library_list, function(x){
+  x<-gsub(" ", "_", x)
+  x<-stringr::str_to_lower(gsub("-", "", x))
   file.path(results_dir, paste0("gsva_anova_", x, "_harmonized_diagnosis.tsv"))
 })
 
 harmonized_diagnosis_tukey_outpaths <- lapply(rna_library_list, function(x){
+  x<-gsub(" ", "_", x)
+  x<-stringr::str_to_lower(gsub("-", "", x))
   file.path(results_dir, paste0("gsva_tukey_", x, "_harmonized_diagnosis.tsv"))
 })
 
@@ -129,15 +137,17 @@ Now, model:
 for(i in 1:length(rna_library_list)){
   
   rna_library = rna_library_list[i]
+  rna_library<-gsub(" ", "_", rna_library)
+  rna_library<-stringr::str_to_lower(gsub("-", "", rna_library))
   
   cancer_group_model_results <- gsva_anova_tukey(metadata_with_gsva, cancer_group, rna_library, SIGNIFICANCE_THRESHOLD)
   harmonized_diagnosis_model_results <- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, rna_library, SIGNIFICANCE_THRESHOLD)
   
   ## Save stranded library results
-  write_tsv(cancer_group_model_results[["anova"]], cancer_group_anova_outpaths[i])
-  write_tsv(harmonized_diagnosis_model_results[["anova"]], harmonized_diagnosis_anova_outpaths[i])
-  write_tsv(cancer_group_model_results[["tukey"]],  cancer_group_tukey_outpaths[i])
-  write_tsv(harmonized_diagnosis_model_results[["tukey"]], harmonized_diagnosis_anova_outpaths[i])
+  readr::write_tsv(cancer_group_model_results[["anova"]], cancer_group_anova_outpaths[[i]])
+  readr::write_tsv(harmonized_diagnosis_model_results[["anova"]], harmonized_diagnosis_anova_outpaths[[i]])
+  readr::write_tsv(cancer_group_model_results[["tukey"]],  cancer_group_tukey_outpaths[[i]])
+  readr::write_tsv(harmonized_diagnosis_model_results[["tukey"]], harmonized_diagnosis_anova_outpaths[[i]])
   
   print(rna_library)
   print(head(cancer_group_model_results))
@@ -167,6 +177,9 @@ for(i in 1:length(rna_library_list)){
 for(i in 1:length(rna_library_list)){
   
   rna_library = rna_library_list[i]
+  rna_library<-gsub(" ", "_", rna_library)
+  rna_library<-stringr::str_to_lower(gsub("-", "", rna_library))
+  
   cancer_group_model_results <- gsva_anova_tukey(metadata_with_gsva, cancer_group, rna_library, SIGNIFICANCE_THRESHOLD)
   num_sig <- cancer_group_model_results[["anova"]] %>% 
     count(significant_anova) 
@@ -189,6 +202,9 @@ for(i in 1:length(rna_library_list)){
 for(i in 1:length(rna_library_list)){
   # model for each library type
   rna_library = rna_library_list[i]
+  rna_library<-gsub(" ", "_", rna_library)
+  rna_library<-stringr::str_to_lower(gsub("-", "", rna_library))
+  
   harmonized_diagnosis_model_results <- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, rna_library, SIGNIFICANCE_THRESHOLD)
   # count the number of significant 
   num_sig <- harmonized_diagnosis_model_results[["anova"]] %>% 

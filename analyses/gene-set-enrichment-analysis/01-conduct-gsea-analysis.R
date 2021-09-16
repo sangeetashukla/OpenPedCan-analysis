@@ -151,7 +151,7 @@ gsea_scores_df_tidy_list <- lapply(rna_library_list, function(x){
     gsea_scores_each_df_tidy <- gsea_scores_each_df %>%
       tidyr::gather(Kids_First_Biospecimen_ID, gsea_score, !!first_bs : !!last_bs) %>%
       dplyr::select(Kids_First_Biospecimen_ID, hallmark_name, gsea_score) %>%
-      dplyr::mutate(data_type = str_to_lower(gsub("-", "", x)))
+      dplyr::mutate(data_type = stringr::str_to_lower(gsub("-", "", x)))
     
     return(gsea_scores_each_df_tidy)
   }
