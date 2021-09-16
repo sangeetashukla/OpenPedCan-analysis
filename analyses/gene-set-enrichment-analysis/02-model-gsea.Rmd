@@ -172,7 +172,7 @@ for(i in 1:length(rna_library_list)){
     count(significant_anova) 
   
   # print out information
-  print(paste0("Number of cancer groups having significant ANOVAs across hallmark pathways for RNA library ", rna_library))
+  print(paste0("Number of cancer groups having significant ANOVAs across hallmark pathways for RNA library ", rna_library, " ", num_sig))
 }
 
 # CI part is commented out since we want to run in CAVATICA later
@@ -195,7 +195,7 @@ for(i in 1:length(rna_library_list)){
     count(significant_anova) 
   
   # print out information
-  print(paste0("Number of harmonized diagnosis having significant ANOVAs across hallmark pathways for RNA library ", rna_library))
+  print(paste0("Number of harmonized diagnosis having significant ANOVAs across hallmark pathways for RNA library ", rna_library, " ", num_sig))
   
 }
 
