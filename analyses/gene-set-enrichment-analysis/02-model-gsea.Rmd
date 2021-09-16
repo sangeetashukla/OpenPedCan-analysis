@@ -133,15 +133,15 @@ for(i in 1:length(rna_library_list)){
   cancer_group_model_results <- gsva_anova_tukey(metadata_with_gsva, cancer_group, rna_library, SIGNIFICANCE_THRESHOLD)
   harmonized_diagnosis_model_results <- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, rna_library, SIGNIFICANCE_THRESHOLD)
   
-  print(rna_library)
-  print(head(cancer_group_model_results))
-  print(head(harmonized_diagnosis_model_results))
-  
   ## Save stranded library results
   write_tsv(cancer_group_model_results[["anova"]], cancer_group_anova_outpaths[i])
   write_tsv(harmonized_diagnosis_model_results[["anova"]], harmonized_diagnosis_anova_outpaths[i])
   write_tsv(cancer_group_model_results[["tukey"]],  cancer_group_tukey_outpaths[i])
   write_tsv(harmonized_diagnosis_model_results[["tukey"]], harmonized_diagnosis_anova_outpaths[i])
+  
+  print(rna_library)
+  print(head(cancer_group_model_results))
+  print(head(harmonized_diagnosis_model_results))
 }
 
 # CI part is commented out since we want to run in CAVATICA later
