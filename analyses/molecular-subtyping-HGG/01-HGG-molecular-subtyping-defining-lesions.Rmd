@@ -53,8 +53,8 @@ if (!dir.exists(results_dir)) {
 
 # Read in metadata
 metadata <-
-  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies-base.tsv"), 
-                  guess_max = 10000) %>%
+  readr::read_tsv(file.path(root_dir, "data", "histologies-base.tsv"), 
+                  guess_max = 100000) %>%
   dplyr::filter(sample_type == "Tumor") 
 
 # File from 00-LGAT-select-pathology-dx that is used for inclusion/exclusion
@@ -82,8 +82,8 @@ lgat_specimens <- metadata %>%
 ```
 
 # Read in snv consensus and hotspots mutation data, filtering out LGAT
- - We will use the `pbta-snv-consensus-mutation.maf.tsv.gz` from `snv-callers` module which gathers calls that are present in all 3 callers (strelka2, mutect2, and lancet)
- - In addition, we will also use `pbta-snv-scavenged-hotspots.maf.tsv.gz` from `hotspot-detection` module to gather calls that overlap MSKCC hotspots found in any caller (except if only vardict calls the site as variant, we remove these calls since we have a lot of calls unique to vardict which we consider as false positive as discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#snv-caller-comparison-analysis))
+ - We will use the `snv-consensus-plus-hotspots.maf.tsv.gz` which contains consensus SNV calls that are present in all 3 callers (strelka2, mutect2, and lancet) and with hotspot rescued. 
+ - Calls that overlap MSKCC hotspots found in any caller are included (except if only vardict calls the site as variant, we remove these calls since we have a lot of calls unique to vardict which we consider as false positive as discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#snv-caller-comparison-analysis))
 
 ```{r}
 
@@ -99,21 +99,11 @@ keep_cols <- c("Chromosome",
              "HGVSp_Short",
              "Exon_Number")
 
-snv_consensus_maf <- data.table::fread(
-  file.path(root_dir, "data" , "pbta-snv-consensus-mutation.maf.tsv.gz"),
-                                   select = keep_cols,
-                                   data.table = FALSE) 
-## Read in snv hotspot mutation data
-snv_hotspot_maf <- data.table::fread(
-  file.path(root_dir, "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz"),
+snv_consensus_hotspot_maf <- data.table::fread(
+  file.path(root_dir, "data" , "snv-consensus-plus-hotspots.maf.tsv.gz"),
                                    select = keep_cols,
                                    data.table = FALSE) %>%
-  select(colnames(snv_consensus_maf))
-
-snv_consensus_hotspot_maf <- snv_consensus_maf %>%
-  bind_rows(snv_hotspot_maf) %>%
-  unique() %>%
-  filter(!Tumor_Sample_Barcode %in% lgat_specimens) 
+  dplyr::filter(!Tumor_Sample_Barcode %in% lgat_specimens) 
 
 ```
 

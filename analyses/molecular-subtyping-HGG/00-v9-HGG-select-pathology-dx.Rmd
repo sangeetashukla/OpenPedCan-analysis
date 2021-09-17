@@ -19,9 +19,9 @@ In an upcoming release, `integrated_diagnosis`, which can be updated as the resu
 Thus, molecular subtyping modules need to be upstream of `short_histology` and use the `pathology_diagnosis` and `pathology_free_text_diagnosis` fields.
 This change for this module is tracked in [#754](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/754).
 
-Filtering on the basis of `short_histology == HGAT` is more straightforward than using the pathology diagnosis fields, so we include this notebook to put together the terms in `pathology_diagnosis` and `pathology_free_text_diagnosis`.
+For OpenPedCan, `short_histology == HGAT` is no longer available, so here we use `cancer_group` to explore.
 
-We will use the 2016 WHO Classification as our guide ([Louis et al. _Acta Neuropathol._ doi: 10.1007/s00401-016-1545-1](10.1007/s00401-016-1545-1)) and take a look at the current version of the histology file (`release-v17-20200908`).
+We will use the 2016 WHO Classification as our guide ([Louis et al. _Acta Neuropathol._ doi: 10.1007/s00401-016-1545-1](10.1007/s00401-016-1545-1)) and take a look at the current version of the histology file (`v9/histologies.tsv`).
 
 ## Set up
 
@@ -34,27 +34,27 @@ library(tidyverse)
 We're going to tie this to a specific release.
 
 ```{r}
-data_dir <- file.path("..", "..", "data", "release-v17-20200908")
-histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
+data_dir <- file.path("..", "..", "data", "v9")
+histologies_file <- file.path(data_dir, "histologies.tsv")
 ```
 
 ## Read in data
 
 ```{r}
-histologies_df <- read_tsv(histologies_file)
+histologies_df <- read_tsv(histologies_file, guess_max =100000)
 ```
 
 ## Explore the pathology diagnoses
 
-### `short_histology == HGAT`
+### `cancer_group %in% c("High-grade glioma/astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma")`
 
-In the current histologies file, if we filter based on `short_histology` as we did originally, what is in the pathology diagnosis fields?
-Note that some of the `short_histology` values will have been altered based on earlier subtyping efforts.
-(That's why we're doing this!)
+In the current histologies file, if we filter based on `cancer_group`, what is in the pathology diagnosis fields?
 
 ```{r}
 histologies_df %>% 
-  filter(short_histology == "HGAT") %>%
+  filter(cancer_group %in% c("High-grade glioma/astrocytoma",
+                             "Diffuse midline glioma", 
+                             "Diffuse intrinsic pontine glioma")) %>%
   count(pathology_diagnosis) %>%
   arrange(desc(n))
 ```
@@ -66,12 +66,12 @@ Instead, these samples that were reclassified earlier shouldbe included downstre
 
 Although some of these terms appear to be part of a defined vocabulary, there are others like `High Grade Glial Neoplasma` that were not subject to the same harmonization.
 These are likely from the completed PNOC trial (see [#754 (comment)] (https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/754#issuecomment-697004412)).
-Let's take a look if we filter by `cohort == "PNOC003"`.
+Let's take a look if we filter by `cohort == "PBTA"`.
 
 
 ```{r}
 histologies_df %>%
-  filter(cohort == "PNOC003",
+  filter(cohort == "PBTA",
          # Filter out normal WGS rows
          sample_type != "Normal") %>%
   count(pathology_diagnosis) %>%
@@ -80,11 +80,13 @@ histologies_df %>%
 
 As anticipated, these are all indicative samples that should be included for subtyping but they are not harmonized.
 
-Let's take a look at the free text field when filtering with `short_histology == HGAT`.
+Let's take a look at the free text field when filtering with HGAT related cancer group.
 
 ```{r}
 histologies_df %>% 
-  filter(short_histology == "HGAT") %>%
+  filter(cancer_group %in% c("High-grade glioma/astrocytoma",
+                             "Diffuse midline glioma", 
+                             "Diffuse intrinsic pontine glioma")) %>%
   group_by(pathology_free_text_diagnosis) %>%
   tally() %>%
   arrange(desc(n))
@@ -94,7 +96,7 @@ As we might expect from a free text field, this is even less uniform.
 
 ## Pathology diagnosis strings for inclusion
 
-For the CBTTC samples, the `pathology_diagnosis` fields are harmonized, so we can use the terms below to look for exact matches.
+For the CBTN samples in PBTA cohort, the `pathology_diagnosis` fields are harmonized, so we can use the terms below to look for exact matches.
 
 ```{r}
 exact_path_dx<- c(
@@ -111,7 +113,7 @@ Let's take a look at a first attempt using these terms as described above.
 ```{r}
 filtered_on_dx_df <- histologies_df %>%
   filter(pathology_diagnosis %in% exact_path_dx | 
-            cohort == "PNOC003",
+            cohort == "PBTA",
          # Exclude normal samples when filtering on cohort
          sample_type != "Normal") %>%
   select(Kids_First_Biospecimen_ID, 
@@ -120,7 +122,7 @@ filtered_on_dx_df <- histologies_df %>%
          pathology_diagnosis,
          pathology_free_text_diagnosis,
          integrated_diagnosis, 
-         short_histology)
+         cancer_group)
 
 filtered_on_dx_df
 ```

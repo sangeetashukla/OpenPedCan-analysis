@@ -48,7 +48,7 @@ We will need the clinical/histologies file for included samples to distinguish b
 ```{r message=FALSE}
 hgg_metadata_df <- read_tsv(file.path(input_dir,
                                      "hgg_metadata.tsv"), 
-                           guess_max = 10000)
+                           guess_max = 100000)
 ```
 
 #### Inclusion Criteria
@@ -66,10 +66,8 @@ Are all the WGS samples that pass the inclusion criteria in the consensus SEG fi
 
 ```{r}
 consensus_seg_ids <- read_tsv(file.path(root_dir, 
-                                        "analyses", 
-                                        "copy_number_consensus_call",
-                                        "results",
-                                        "pbta-cnv-consensus.seg.gz")) %>%
+                                        "data", 
+                                        "cnv-consensus.seg.gz")) %>%
   pull(ID)
 consensus_seg_ids <- unique(consensus_seg_ids)
 ```
