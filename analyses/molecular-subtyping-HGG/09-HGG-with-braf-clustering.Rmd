@@ -104,7 +104,8 @@ lgat_subset_dir <- file.path("..",
 metadata <-
   readr::read_tsv(file.path("..","..","data", "histologies-base.tsv"), 
                   guess_max = 100000) %>%
-  dplyr::filter(sample_type == "Tumor") 
+  dplyr::filter(sample_type == "Tumor") %>% 
+  dplyr::filter(cohort == "PBTA")
 
 # File from 00-LGAT-select-pathology-dx that is used for inclusion/exclusion
 path_dx_list_lgat <- jsonlite::fromJSON(

@@ -48,7 +48,8 @@ We will need the clinical/histologies file for included samples to distinguish b
 ```{r message=FALSE}
 hgg_metadata_df <- read_tsv(file.path(input_dir,
                                      "hgg_metadata.tsv"), 
-                           guess_max = 100000)
+                           guess_max = 100000) %>% 
+  dplyr::filter(cohort == "PBTA")
 ```
 
 #### Inclusion Criteria

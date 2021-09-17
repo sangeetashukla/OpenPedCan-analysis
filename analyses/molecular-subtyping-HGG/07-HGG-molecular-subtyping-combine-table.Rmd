@@ -56,7 +56,8 @@ data_dir <- file.path(root_dir, "data")
 ```{r message=FALSE}
 cn_gistic_df <- read_tsv(file.path(results_dir, "HGG_cleaned_cnv.tsv"))
 mutation_df <- read_tsv(file.path(results_dir, "HGG_cleaned_mutation.tsv"))
-histologies_df <- read_tsv(file.path(data_dir, "histologies-base.tsv"), guess_max = 100000)
+histologies_df <- read_tsv(file.path(data_dir, "histologies-base.tsv"), guess_max = 100000) %>% 
+  dplyr::filter(cohort == "PBTA")
 fusion_df <- read_tsv(file.path(results_dir, "HGG_cleaned_fusion.tsv"))
 exp_df <- read_tsv(file.path(results_dir,
                                 "HGG_cleaned_expression.tsv"))

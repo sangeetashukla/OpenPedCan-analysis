@@ -35,7 +35,8 @@ if (!dir.exists(subset_dir)) {
 # Read in metadata
 metadata <-
   read_tsv(file.path(root_dir, "data", "histologies-base.tsv"),
-           guess_max = 100000)
+           guess_max = 100000) %>% 
+  dplyr::filter(cohort == "PBTA")
 
 # Select wanted columns in metadata for merging and assign to a new object
 select_metadata <- metadata %>%
