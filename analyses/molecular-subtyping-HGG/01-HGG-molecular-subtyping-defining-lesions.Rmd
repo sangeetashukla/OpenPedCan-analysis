@@ -147,7 +147,7 @@ snv_lesions_df <- snv_consensus_hotspot_maf  %>%
 snv_lesions_df <- snv_lesions_df %>%
   dplyr::bind_rows(
     data.frame(
-      Tumor_Sample_Barcode = setdiff(unique(snv_consensus_hotspot_maf $Tumor_Sample_Barcode),
+      Tumor_Sample_Barcode = setdiff(unique(snv_consensus_hotspot_maf$Tumor_Sample_Barcode),
                                      snv_lesions_df$Tumor_Sample_Barcode)
     )
   ) %>%
