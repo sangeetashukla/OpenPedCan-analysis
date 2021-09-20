@@ -17,7 +17,7 @@ The purpose of this notebook is to aggregate molecular subtyping results from th
 * [`molecular-subtyping-LGAT`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-LGAT)
 * [`molecular-subtyping-embryonal`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-embryonal)
 * [`molecular-subtyping-CRANIO`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-CRANIO)
-* [`molecular-subtyping-EPN`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-EPN\)
+* [`molecular-subtyping-EPN`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-EPN)
 * [`molecular-subtyping-MB`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-MB)
 * [`molecular-subtyping-neurocytoma`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-neurocytoma)
 * [`molecular-subtyping-chordoma`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-chordoma)
@@ -104,10 +104,10 @@ When we run this locally, we want to tie it to a specific version of the histolo
 
 ```{r}
 if (running_in_ci) {
-  histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
+  histologies_file <- file.path(data_dir, "histologies-base.tsv")
 } else {
-  histologies_file <- file.path(data_dir, "release-v18-20201123",
-                                "pbta-histologies-base.tsv")
+  histologies_file <- file.path(data_dir, "v9",
+                                "histologies-base.tsv")
 }
 
 join_cols <- c("Kids_First_Biospecimen_ID",
@@ -144,7 +144,7 @@ output_file <- file.path(results_dir, "compiled_molecular_subtypes.tsv")
 
 ```{r message=FALSE}
 # split 
-histologies_df <- read_tsv(histologies_file, guess_max = 10000,col_types = cols(.default = "c"))
+histologies_df <- read_tsv(histologies_file, guess_max = 100000,col_types = cols(.default = "c"))
 cranio_results_df <- read_tsv(cranio_results_file)
 ews_results_df <- read_tsv(ews_results_file)
 epn_results_df <- read_tsv(epn_results_file)
@@ -160,7 +160,7 @@ chordoma_results_df <- read_tsv(chordoma_results_file)
 
 ### Handling non-ATRT/non-MB embryonal tumors
 
-The molecular subtyping information from these tumors will go into the v18 release, and we will update `integrated_diagnosis`, `short_histology`, `broad_histology`, and `Notes` columns now, until SQL rules PR [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748) goes in later.
+The molecular subtyping information from these tumors will go into the v10 release, and we will update `integrated_diagnosis`, `short_histology`, `broad_histology`, and `Notes` columns now, until SQL rules PR [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748) goes in later.
 
 ```{r}
 embryonal_results_df <- bind_exp_strategies(embryonal_results_df) %>%
@@ -182,7 +182,7 @@ embryonal_results_df <- bind_exp_strategies(embryonal_results_df) %>%
 
 ### Handling EWS
 
-The EWS results were updated in V18. Adding integrated dx, broad hist, short hist here for now.
+The EWS results were updated in V18 of OpenPBTA. Adding integrated dx, broad hist, short hist here for now.
 
 ```{r}
 # Add EWS integrated diagnosis, broad histology, short histology
@@ -197,7 +197,7 @@ ews_results_df <- bind_exp_strategies(ews_results_df) %>%
 
 ### Handling HGG
 
-HGG subtyping was updated with V18.
+HGG subtyping was updated with V18 of OpenPBTA.
 
 ```{r}
 hgg_results_df <- bind_exp_strategies(hgg_results_df) %>%

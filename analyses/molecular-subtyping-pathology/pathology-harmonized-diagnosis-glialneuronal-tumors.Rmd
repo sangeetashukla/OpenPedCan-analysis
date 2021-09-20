@@ -25,7 +25,7 @@ library(tidyverse)
 
 ```{r}
 data_dir <- file.path("..", "..", "data")
-histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
+histologies_file <- file.path(data_dir, "histologies-base.tsv")
 
 # The inclusion criteria for this notebook are the same as the exclusion
 # criteria for the LGAT subtyping -- these tumors were original included in that
@@ -49,7 +49,7 @@ output_file <- file.path(results_dir, "glialneuronal_tumor_subtypes.tsv")
 ## Read in data
 
 ```{r}
-histologies_df <- readr::read_tsv(histologies_file, guess_max = 10000)
+histologies_df <- readr::read_tsv(histologies_file, guess_max = 100000)
 lgat_path_dx_list <- jsonlite::fromJSON(lgat_terms_file)
 ```
 
@@ -96,7 +96,7 @@ dia_df <- subtype_df %>%
   # Filter to samples with "desmoplastic infantile astrocytoma" in pathology
   # free text
   filter(str_detect(pathology_free_text_dx_lower,
-                    lgat_path_dx_list$exclude_path_free_text[1])) %>%
+                    lgat_path_dx_list$recode_path_free_text[3])) %>%
   # Set harmonized diagnosis
   mutate(harmonized_diagnosis = "Desmoplastic infantile astrocytoma")
 ```
@@ -107,7 +107,7 @@ dia_df <- subtype_df %>%
 glioneuronal_df <- subtype_df %>%
   # Filter to samples with "glioneuronal" in pathology free text
   filter(str_detect(pathology_free_text_dx_lower,
-                    lgat_path_dx_list$exclude_path_free_text[2])) %>%
+                    lgat_path_dx_list$recode_path_free_text[4])) %>%
   mutate(
     harmonized_diagnosis = case_when(
       str_detect(pathology_free_text_dx_lower, 

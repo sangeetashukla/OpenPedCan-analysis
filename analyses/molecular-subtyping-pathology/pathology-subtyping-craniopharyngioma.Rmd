@@ -30,7 +30,7 @@ library(tidyverse)
 ```{r}
 data_dir <- file.path("..", "..", "data")
 results_dir <- "results"
-histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
+histologies_file <- file.path(data_dir, "histologies-base.tsv")
 compiled_subtypes_file <- file.path(results_dir, "compiled_molecular_subtypes.tsv")
 ```
 
@@ -48,7 +48,7 @@ histologies_df <- read_tsv(histologies_file)
 
 ```{r}
 subtypes_df <- read_tsv(compiled_subtypes_file,
-                        guess_max = 10000)
+                        guess_max = 100000)
 ```
 
 ### Samples to be reclassified
