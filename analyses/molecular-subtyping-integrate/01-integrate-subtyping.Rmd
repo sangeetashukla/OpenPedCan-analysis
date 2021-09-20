@@ -40,6 +40,7 @@ data_dir <- "../../data/"
 
 
 base_histology <- read_tsv(file.path(data_dir,"histologies-base.tsv"),
+                           guess_max=100000,
                            col_types = readr::cols(molecular_subtype = readr::col_character(),
                                                    short_histology = readr::col_character(),
                            broad_histology = readr::col_character(),
@@ -53,7 +54,7 @@ Reading molecular_subtype, integrated_diagnosis, short_histology, broad_histolog
 
 ```{r}
 
-compiled_subtyping<-read_tsv(file.path("..", "molecular-subtyping-pathology", "results", "compiled_molecular_subtypes_with_clinical_pathology_feedback_and_report_info.tsv"))
+compiled_subtyping<-read_tsv(file.path("..", "molecular-subtyping-pathology", "results", "compiled_molecular_subtypes_with_clinical_pathology_feedback_and_report_info.tsv"), guess_max=100000)
 
 ```
 
