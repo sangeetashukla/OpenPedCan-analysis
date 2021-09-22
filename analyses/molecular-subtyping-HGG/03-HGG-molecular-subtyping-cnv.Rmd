@@ -59,7 +59,7 @@ Only WGS biospecimens have CNV and SV data, so we'll filter based on `experiment
 
 ```{r}
 included_wgs_specimens <- hgg_metadata_df %>%
-  dplyr::filter(experimental_strategy == "WGS") %>%
+  dplyr::filter(experimental_strategy == c("WGS", "WXS")) %>%
   dplyr::pull(Kids_First_Biospecimen_ID)
 ```
 
