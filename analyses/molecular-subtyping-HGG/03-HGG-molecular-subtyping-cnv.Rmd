@@ -55,33 +55,32 @@ hgg_metadata_df <- read_tsv(file.path(input_dir,
 #### Inclusion Criteria
 
 Here, we'll use the metadata output from  `02-HGG-molecular-subtyping-subset-files.R` to identify the samples we will include.
-Only WGS biospecimens have CNV and SV data, so we'll filter based on `experimental_strategy`.
 
 ```{r}
-included_wgs_specimens <- hgg_metadata_df %>%
-  dplyr::filter(experimental_strategy == c("WGS", "WXS")) %>%
+included_dna_specimens <- hgg_metadata_df %>%
+  dplyr::filter(experimental_strategy %in% c("WGS", "WXS")) %>%
   dplyr::pull(Kids_First_Biospecimen_ID)
 ```
 
 Are all the WGS samples that pass the inclusion criteria in the consensus SEG file committed to the repository?
 
 ```{r}
-consensus_seg_ids <- read_tsv(file.path(root_dir, 
+consensus_cnv_ids <- read_tsv(file.path(root_dir, 
                                         "data", 
-                                        "cnv-consensus.seg.gz")) %>%
-  pull(ID)
-consensus_seg_ids <- unique(consensus_seg_ids)
+                                        "consensus_wgs_plus_cnvkit_wxs.tsv.gz")) %>%
+  pull(Kids_First_biospeicmen_ID) %>% 
+  unique()
 ```
 
 ```{r}
-all(included_wgs_specimens %in% consensus_seg_ids)
+all(included_dna_specimens %in% consensus_cnv_ids)
 ```
 
 No, they're not.
 How many are missing?
 
 ```{r}
-sum(!(included_wgs_specimens %in% consensus_seg_ids))
+sum(!(included_dna_specimens %in% consensus_cnv_ids))
 ```
 
 We'd then expect `r sum(included_wgs_specimens %in% consensus_seg_ids)` samples to have non-NA values in the cleaned CNV files.
@@ -184,7 +183,7 @@ final_hgg_cn_df <- full_join(cn_df_genes_status,
 nrow(final_hgg_cn_df)
 ```
 
-`final_hgg_cn_df` includes all the samples that are in the consensus SEG file.
+`final_hgg_cn_df` includes all the samples that are in the consensus CNV file.
 So any missing CNA values at this stage come from the fact that neutral values are _not_ included in the annotated copy number files.
 We can fill any "missing values" with neutral calls as a result.
 
