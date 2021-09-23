@@ -891,7 +891,9 @@ var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
          targetFromSourceId = Gene_Ensembl_ID,
          diseaseFromSourceMappedId = EFO) %>%
   mutate(datatypeId = "somatic_mutation",
-         datasourceId = "chop_variant_level_snv")
+         datasourceId = "chop_variant_level_snv") %>%
+  mutate(Dataset = replace(Dataset,
+         Dataset == "all_cohorts", "All Cohorts"))
 
 # generate UUID for each row of the table
 uuid_string <- uuid(nrow(var_level_mut_freq_tbl))
@@ -917,7 +919,9 @@ gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
   rename(targetFromSourceId = Gene_Ensembl_ID,
          diseaseFromSourceMappedId = EFO) %>%
   mutate(datatypeId = "somatic_mutation",
-         datasourceId = "chop_gene_level_snv")
+         datasourceId = "chop_gene_level_snv") %>%
+  mutate(Dataset = replace(Dataset,
+         Dataset == "all_cohorts", "All Cohorts"))
 
 # generate UUID for each row of the table
 uuid_string_2 <- uuid(nrow(gene_level_mut_freq_tbl))
