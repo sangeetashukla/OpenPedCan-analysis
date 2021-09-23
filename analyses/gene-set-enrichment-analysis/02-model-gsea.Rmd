@@ -136,27 +136,41 @@ Now, model:
 for(i in 1:length(rna_library_list)){
   
   rna_library = rna_library_list[i]
+  # find out the number of cancer group with this RNA library
   cancer_group_n <- metadata_with_gsva %>%
     filter(data_type == rna_library) %>%
     pull(cancer_group) %>% 
     unique() %>% length()
+  
+  # find out the number of harmonized diagnosis with this RNA library
   harmonized_diagnosis_n <- metadata_with_gsva %>%
     filter(data_type == rna_library) %>%
     pull(harmonized_diagnosis) %>% 
     unique() %>% length()
   
-  if(cancer_group_n>=2 && harmonized_diagnosis_n>=2){
+  # anova can only be run on factors with >=2 levels, so to avoid error, we give a if statement 
+  if(cancer_group_n>=2){
     cancer_group_model_results <- gsva_anova_tukey(metadata_with_gsva, cancer_group, rna_library, SIGNIFICANCE_THRESHOLD)
+    
+    # write out results
+    readr::write_tsv(cancer_group_model_results[["anova"]], cancer_group_anova_outpaths[[i]])
+    readr::write_tsv(cancer_group_model_results[["tukey"]],  cancer_group_tukey_outpaths[[i]])
+    
+    # print results for viewing 
+    print(rna_library)
+    print(head(cancer_group_model_results))
+  }
+  
+  # anova can only be run on factors with >=2 levels, so to avoid error, we give a if statement
+  if(harmonized_diagnosis_n>=2){
   harmonized_diagnosis_model_results <- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, rna_library, SIGNIFICANCE_THRESHOLD)
   
-  ## Save stranded library results
-  readr::write_tsv(cancer_group_model_results[["anova"]], cancer_group_anova_outpaths[[i]])
+  # write out results
   readr::write_tsv(harmonized_diagnosis_model_results[["anova"]], harmonized_diagnosis_anova_outpaths[[i]])
-  readr::write_tsv(cancer_group_model_results[["tukey"]],  cancer_group_tukey_outpaths[[i]])
   readr::write_tsv(harmonized_diagnosis_model_results[["tukey"]], harmonized_diagnosis_anova_outpaths[[i]])
   
+  # print results for viewing
   print(rna_library)
-  print(head(cancer_group_model_results))
   print(head(harmonized_diagnosis_model_results))
   }
 }

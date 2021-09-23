@@ -1759,31 +1759,79 @@ metadata_with_gsva &lt;- metadata %&gt;%
 <pre class="r"><code>for(i in 1:length(rna_library_list)){
   
   rna_library = rna_library_list[i]
+  # find out the number of cancer group with this RNA library
   cancer_group_n &lt;- metadata_with_gsva %&gt;%
     filter(data_type == rna_library) %&gt;%
     pull(cancer_group) %&gt;% 
     unique() %&gt;% length()
+  
+  # find out the number of harmonized diagnosis with this RNA library
   harmonized_diagnosis_n &lt;- metadata_with_gsva %&gt;%
     filter(data_type == rna_library) %&gt;%
     pull(harmonized_diagnosis) %&gt;% 
     unique() %&gt;% length()
   
-  if(cancer_group_n&gt;=2 &amp;&amp; harmonized_diagnosis_n&gt;=2){
+  # anova can only be run on factors with &gt;=2 levels, so to avoid error, we give a if statement 
+  if(cancer_group_n&gt;=2){
     cancer_group_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, cancer_group, rna_library, SIGNIFICANCE_THRESHOLD)
+    
+    # write out results
+    readr::write_tsv(cancer_group_model_results[[&quot;anova&quot;]], cancer_group_anova_outpaths[[i]])
+    readr::write_tsv(cancer_group_model_results[[&quot;tukey&quot;]],  cancer_group_tukey_outpaths[[i]])
+    
+    # print results for viewing 
+    print(rna_library)
+    print(head(cancer_group_model_results))
+  }
+  
+  # anova can only be run on factors with &gt;=2 levels, so to avoid error, we give a if statement
+  if(harmonized_diagnosis_n&gt;=2){
   harmonized_diagnosis_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, rna_library, SIGNIFICANCE_THRESHOLD)
   
-  ## Save stranded library results
-  readr::write_tsv(cancer_group_model_results[[&quot;anova&quot;]], cancer_group_anova_outpaths[[i]])
+  # write out results
   readr::write_tsv(harmonized_diagnosis_model_results[[&quot;anova&quot;]], harmonized_diagnosis_anova_outpaths[[i]])
-  readr::write_tsv(cancer_group_model_results[[&quot;tukey&quot;]],  cancer_group_tukey_outpaths[[i]])
   readr::write_tsv(harmonized_diagnosis_model_results[[&quot;tukey&quot;]], harmonized_diagnosis_anova_outpaths[[i]])
   
+  # print results for viewing
   print(rna_library)
-  print(head(cancer_group_model_results))
   print(head(harmonized_diagnosis_model_results))
   }
 }</code></pre>
 <pre><code>## [1] 50
+## [1] &quot;polya_stranded&quot;
+## $anova
+## # A tibble: 50 x 5
+##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
+##    &lt;chr&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
+##  1 HALLMARK_ADI…            334.      4.03e-164        2.02e-162
+##  2 HALLMARK_ALL…            493.      3.40e-207        1.70e-205
+##  3 HALLMARK_AND…             68.2     3.70e- 49        1.85e- 47
+##  4 HALLMARK_ANG…            514.      3.33e-212        1.67e-210
+##  5 HALLMARK_API…            519.      2.83e-213        1.42e-211
+##  6 HALLMARK_API…            150.      9.60e- 94        4.80e- 92
+##  7 HALLMARK_APO…            185.      4.20e-110        2.10e-108
+##  8 HALLMARK_BIL…            264.      5.04e-141        2.52e-139
+##  9 HALLMARK_CHO…            218.      8.92e-124        4.46e-122
+## 10 HALLMARK_COA…            346.      4.91e-168        2.46e-166
+## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
+## 
+## $tukey
+## # A tibble: 500 x 7
+##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
+##    &lt;chr&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
+##  1 HALLMARK_ADI… Acute Mye…           0.255      0                  0      
+##  2 HALLMARK_ADI… Osteosarc…           0.576      0                  0      
+##  3 HALLMARK_ADI… Rhabdoid …           0.458      0                  0      
+##  4 HALLMARK_ADI… Wilms tum…           0.428      0                  0      
+##  5 HALLMARK_ADI… Osteosarc…           0.321      0                  0      
+##  6 HALLMARK_ADI… Rhabdoid …           0.202      0                  0      
+##  7 HALLMARK_ADI… Wilms tum…           0.172      0                  0      
+##  8 HALLMARK_ADI… Rhabdoid …          -0.118      0.0000364          0.00182
+##  9 HALLMARK_ADI… Wilms tum…          -0.148      0                  0      
+## 10 HALLMARK_ADI… Wilms tum…          -0.0300     0.707              1      
+## # … with 490 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
+## #   significant_tukey_bonf &lt;lgl&gt;
+## 
 ## [1] 50
 ## [1] &quot;stranded&quot;
 ## $anova
@@ -1819,6 +1867,8 @@ metadata_with_gsva &lt;- metadata %&gt;%
 ## # … with 74,240 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
 ## #   significant_tukey_bonf &lt;lgl&gt;
 ## 
+## [1] 50
+## [1] &quot;stranded&quot;
 ## $anova
 ## # A tibble: 50 x 5
 ##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
@@ -1852,7 +1902,6 @@ metadata_with_gsva &lt;- metadata %&gt;%
 ## # … with 272,990 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
 ## #   significant_tukey_bonf &lt;lgl&gt;
 ## 
-## [1] 50
 ## [1] 50
 ## [1] &quot;polya&quot;
 ## $anova
@@ -1888,6 +1937,8 @@ metadata_with_gsva &lt;- metadata %&gt;%
 ## # … with 1,040 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
 ## #   significant_tukey_bonf &lt;lgl&gt;
 ## 
+## [1] 50
+## [1] &quot;polya&quot;
 ## $anova
 ## # A tibble: 50 x 5
 ##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
