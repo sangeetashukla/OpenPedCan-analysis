@@ -164,7 +164,7 @@ def compute_variant_frequencies(all_tumors_df, all_cohorts_primary_tumors_file, 
      merging_list.append(all_tumors_frequecy_df)
      # frequencies in independent primary tumors
      primary_tumors_frequecy_df = pd.concat(primary_tumors_frequecy_dfs, sort=False, ignore_index=True)
-     primary_tumors_frequecy_df.rename(columns={"Total_alterations_over_Patients_in_dataset": "Total_primary_tumors_altered_over_Primary_tumors_in_dataset", "Frequency_in_overall_dataset": "Frequency_in_primary_tumors"}, inplace=True)
+     hprimary_tumors_frequecy_df.rename(columns={"Total_alterations_over_Patients_in_dataset": "Total_primary_tumors_altered_over_Primary_tumors_in_dataset", "Frequency_in_overall_dataset": "Frequency_in_primary_tumors"}, inplace=True)
      merging_list.append(primary_tumors_frequecy_df)
      # frequencies in independent relapse tumors
      relapse_tumors_frequecy_df = pd.concat(relapse_tumors_frequecy_dfs, sort=False, ignore_index=True)
@@ -201,7 +201,7 @@ def get_annotations(cnv_frequency_df, CNV_FILE):
 
      # columns changes proposed by the FNL:
      cnv_annot_freq_df = pd.read_csv(cnv_annot_freq_tsv, sep="\t", na_filter=False, dtype=str)
-     #1 rename "Gene_Ensembl_Id" to "targetFromSourceId" and "EFO" to "diseaseFromSourceMappedId"
+     #1 rename "Gene_Ensembl_Id" to "targetFromSourceId", "EFO" to "diseaseFromSourceMappedId"
      cnv_annot_freq_df.rename(columns={"Gene_Ensembl_ID": "targetFromSourceId", "EFO": "diseaseFromSourceMappedId"}, inplace=True)
      #2 add "datatypeId" column  with value for every row set to "somatic_mutation"
      cnv_annot_freq_df["datatypeId"] = "somatic_mutation"
@@ -209,6 +209,8 @@ def get_annotations(cnv_frequency_df, CNV_FILE):
      cnv_annot_freq_df["chop_uuid"] = [uuid.uuid4() for x in range(len(cnv_annot_freq_df))]
      #4 add "datasourceId" column with value for each row set to "chop_gene_level_cnv"
      cnv_annot_freq_df["datasourceId"] = "chop_gene_level_cnv"
+     # rename "all_cohorts" entry for "Dataset" column to "All Cohorts" to improve the view in the final PedOT table to the end user
+     latest_pbta_histology_df["Dataset"].replace({"all_cohorts": "All Cohorts"}, inplace=True)
      cnv_annot_freq_df.to_csv(cnv_annot_freq_tsv, sep="\t", index=False, encoding="utf-8")
 
      # transform annotated CNV frequencies results from TSV to JSONL file
