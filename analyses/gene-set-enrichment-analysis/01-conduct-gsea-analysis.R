@@ -36,6 +36,8 @@ library(optparse)
 
 library(msigdbr) ## Contains the hallmark data sets
 library(GSVA)    ## Performs GSEA analysis
+BiocManager::install("BiocParallel")
+library("BiocParallel")
 
 
 #### Set Up optparse --------------------------------------------------------------------
@@ -105,60 +107,56 @@ histology_rna_df <- histology_df %>%
 
 # First filter expression data to exclude GTEx and TCGA
 expression_data <- expression_data %>% 
-  select(histology_rna_df$Kids_First_Biospecimen_ID)
+  dplyr::select(histology_rna_df$Kids_First_Biospecimen_ID)
 
 # for each type of the RNA library, we subset the expression matrix accordingly and run gsea scores for each RNA library 
 rna_library_list <- histology_rna_df %>% pull(RNA_library) %>% unique()
+# Further subset to each cohort to deal with size issues
+cohort_list <- histology_rna_df %>% pull(cohort) %>% unique()
 
-gsea_scores_df_tidy_list <- lapply(rna_library_list, function(x){
+gsea_scores_df_tidy <- data.frame()
+
+# iterate through each cohort and RNA library type 
+for(i in 1:length(rna_library_list)){
+  rna_library = rna_library_list[i]
+  # get bs id for one particular rna library type
+  rna_library_type_bs_id <- histology_rna_df %>% 
+    dplyr::filter(RNA_library == rna_library) %>% 
+    pull(Kids_First_Biospecimen_ID) %>%
+    unique()
   
-  # Further subset to each cohort to deal with size issues
-  cohort_list <- histology_rna_df %>% pull(cohort) %>% unique()
-  for(i in 1:length(cohort_list)){
-    
-    cohort_name = cohort_list[i]
-    # get bs id for one particular rna library type
-    rna_library_type_bs_id <- histology_rna_df %>% 
-      dplyr::filter(RNA_library == x) %>% 
-      dplyr::filter(cohort == cohort_name) %>% 
-      pull(Kids_First_Biospecimen_ID) %>%
-      unique()
-    
-    # Filter the expression data to this RNA library type
-    # Subset to the remaining samples 
-    expression_data_each <- expression_data %>% 
-      dplyr::select(rna_library_type_bs_id)
-    
-    ### Rownames are genes and column names are samples
-    expression_data_each_log2_matrix <- as.matrix( log2(expression_data_each + 1) )
-    
-    #We then calculate the Gaussian-distributed scores
-    gsea_scores_each <- GSVA::gsva(expression_data_each_log2_matrix,
-                                   human_hallmark_list,
-                                   method = "gsva",
-                                   min.sz=1, max.sz=1500,## Arguments from K. Rathi
-                                   parallel.sz = 8, # For the bigger dataset, this ensures this won't crash due to memory problems
-                                   mx.diff = TRUE)        ## Setting this argument to TRUE computes Gaussian-distributed scores (bimodal score distribution if FALSE)
-    
-    ### Clean scoring into tidy format
-    gsea_scores_each_df <- as.data.frame(gsea_scores_each) %>%
-      rownames_to_column(var = "hallmark_name")
-    
-    #first/last_bs needed for use in gather (we are not on tidyr1.0)
-    first_bs <- head(colnames(gsea_scores_each), n=1)
-    last_bs  <- tail(colnames(gsea_scores_each), n=1)
-    
-    gsea_scores_each_df_tidy <- gsea_scores_each_df %>%
-      tidyr::gather(Kids_First_Biospecimen_ID, gsea_score, !!first_bs : !!last_bs) %>%
-      dplyr::select(Kids_First_Biospecimen_ID, hallmark_name, gsea_score) %>%
-      dplyr::mutate(data_type = stringr::str_to_lower(gsub("-", "", x)))
-    
-    return(gsea_scores_each_df_tidy)
-  }
-})
-
-# combine all the dfs into one dataframe 
-gsea_scores_df_tidy <- do.call(bind_rows, gsea_scores_df_tidy_list) 
+  # Filter the expression data to this RNA library type
+  # Subset to the remaining samples 
+  expression_data_each <- expression_data %>% 
+    dplyr::select(rna_library_type_bs_id)
+  
+  ### Rownames are genes and column names are samples
+  expression_data_each_log2_matrix <- as.matrix( log2(expression_data_each + 1) )
+  
+  #We then calculate the Gaussian-distributed scores
+  gsea_scores_each <- GSVA::gsva(expression_data_each_log2_matrix,
+                                 human_hallmark_list,
+                                 method = "gsva",
+                                 min.sz=1, max.sz=1500,## Arguments from K. Rathi
+                                 parallel.sz = 8, # For the bigger dataset, this ensures this won't crash due to memory problems
+                                 mx.diff = TRUE,
+                                 BPPARAM=SerialParam(progressbar=T))        ## Setting this argument to TRUE computes Gaussian-distributed scores (bimodal score distribution if FALSE)
+  
+  ### Clean scoring into tidy format
+  gsea_scores_each_df <- as.data.frame(gsea_scores_each) %>%
+    rownames_to_column(var = "hallmark_name")
+  
+  #first/last_bs needed for use in gather (we are not on tidyr1.0)
+  first_bs <- head(colnames(gsea_scores_each), n=1)
+  last_bs  <- tail(colnames(gsea_scores_each), n=1)
+  
+  gsea_scores_each_df_tidy <- gsea_scores_each_df %>%
+    tidyr::gather(Kids_First_Biospecimen_ID, gsea_score, !!first_bs : !!last_bs) %>%
+    dplyr::select(Kids_First_Biospecimen_ID, hallmark_name, gsea_score) %>%
+    dplyr::mutate(data_type = stringr::str_to_lower(gsub("-", "", rna_library)))
+  
+  gsea_scores_df_tidy <-  bind_rows(gsea_scores_df_tidy , gsea_scores_each_df_tidy)
+}
 
 
 #### Export GSEA scores to TSV --------------------------------------------------------------------
