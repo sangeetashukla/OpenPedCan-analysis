@@ -61,7 +61,6 @@ if (!(is.logical(running_in_ci)))
 ```
 
 
-<br>
 Next, define directories and load data files:
 ```{r, data-load, message=FALSE, warning=FALSE}
 ### Define directories
@@ -72,7 +71,7 @@ results_dir <- "results"
 
 ######### Define input files
 ## Metadata file (histologies/clinical data)
-metadata_file <- file.path(data_dir, "histologies-testing.tsv")
+metadata_file <- file.path(data_dir, "histologies.tsv")
 
 ## GSEA scores
 scores_file <- file.path(results_dir, "gsva_scores.tsv")
@@ -85,7 +84,7 @@ metadata    <- readr::read_tsv(metadata_file, guess_max = 100000) %>%
 scores_file <- readr::read_tsv(scores_file) 
 
 ######## Find out unique RNA library types
-rna_library_list <- metadata %>% pull(RNA_library) %>% unique()
+rna_library_list <- scores_file %>% pull(data_type) %>% unique()
 
 ######## Define output files for each unique rna library
 cancer_group_anova_outpaths <- lapply(rna_library_list, function(x){
@@ -137,10 +136,17 @@ Now, model:
 for(i in 1:length(rna_library_list)){
   
   rna_library = rna_library_list[i]
-  rna_library<-gsub(" ", "_", rna_library)
-  rna_library<-stringr::str_to_lower(gsub("-", "", rna_library))
+  cancer_group_n <- metadata_with_gsva %>%
+    filter(data_type == rna_library) %>%
+    pull(cancer_group) %>% 
+    unique() %>% length()
+  harmonized_diagnosis_n <- metadata_with_gsva %>%
+    filter(data_type == rna_library) %>%
+    pull(harmonized_diagnosis) %>% 
+    unique() %>% length()
   
-  cancer_group_model_results <- gsva_anova_tukey(metadata_with_gsva, cancer_group, rna_library, SIGNIFICANCE_THRESHOLD)
+  if(cancer_group_n>=2 && harmonized_diagnosis_n>=2){
+    cancer_group_model_results <- gsva_anova_tukey(metadata_with_gsva, cancer_group, rna_library, SIGNIFICANCE_THRESHOLD)
   harmonized_diagnosis_model_results <- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, rna_library, SIGNIFICANCE_THRESHOLD)
   
   ## Save stranded library results
@@ -152,6 +158,7 @@ for(i in 1:length(rna_library_list)){
   print(rna_library)
   print(head(cancer_group_model_results))
   print(head(harmonized_diagnosis_model_results))
+  }
 }
 
 # CI part is commented out since we want to run in CAVATICA later
@@ -177,15 +184,19 @@ for(i in 1:length(rna_library_list)){
 for(i in 1:length(rna_library_list)){
   
   rna_library = rna_library_list[i]
-  rna_library<-gsub(" ", "_", rna_library)
-  rna_library<-stringr::str_to_lower(gsub("-", "", rna_library))
+   cancer_group_n <- metadata_with_gsva %>%
+    filter(data_type == rna_library) %>%
+    pull(cancer_group) %>% 
+    unique() %>% length()
   
-  cancer_group_model_results <- gsva_anova_tukey(metadata_with_gsva, cancer_group, rna_library, SIGNIFICANCE_THRESHOLD)
-  num_sig <- cancer_group_model_results[["anova"]] %>% 
-    count(significant_anova) 
-  
-  # print out information
-  print(paste0("Number of cancer groups having significant ANOVAs across hallmark pathways for RNA library ", rna_library, " ", num_sig))
+  if(cancer_group_n>=2 ){
+    cancer_group_model_results <- gsva_anova_tukey(metadata_with_gsva, cancer_group, rna_library, SIGNIFICANCE_THRESHOLD)
+    num_sig <- cancer_group_model_results[["anova"]] %>% 
+      count(significant_anova) 
+    
+    # print out information
+   num_sig
+  }
 }
 
 # CI part is commented out since we want to run in CAVATICA later
@@ -202,17 +213,20 @@ for(i in 1:length(rna_library_list)){
 for(i in 1:length(rna_library_list)){
   # model for each library type
   rna_library = rna_library_list[i]
-  rna_library<-gsub(" ", "_", rna_library)
-  rna_library<-stringr::str_to_lower(gsub("-", "", rna_library))
   
-  harmonized_diagnosis_model_results <- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, rna_library, SIGNIFICANCE_THRESHOLD)
-  # count the number of significant 
-  num_sig <- harmonized_diagnosis_model_results[["anova"]] %>% 
-    count(significant_anova) 
+  harmonized_diagnosis_n <- metadata_with_gsva %>%
+    filter(data_type == rna_library) %>%
+    pull(harmonized_diagnosis) %>% 
+    unique() %>% length()
   
+  if(harmonized_diagnosis_n>=2){
+    harmonized_diagnosis_model_results <- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, rna_library, SIGNIFICANCE_THRESHOLD)
+    # count the number of significant 
+    num_sig <- harmonized_diagnosis_model_results[["anova"]] %>% 
+      count(significant_anova) 
   # print out information
-  print(paste0("Number of harmonized diagnosis having significant ANOVAs across hallmark pathways for RNA library ", rna_library, " ", num_sig))
-  
+  num_sig
+  }
 }
 
 # CI part is commented out since we want to run in CAVATICA later
@@ -223,3 +237,5 @@ for(i in 1:length(rna_library_list)){
 ```
 
 > Again, all are significantly different for stranded, none for polya. Likely due to data/power limitations.
+
+

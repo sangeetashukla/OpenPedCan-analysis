@@ -1698,7 +1698,7 @@ if (!(is.logical(running_in_ci)))
 {
   stop(&quot;\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).&quot;)
 }</code></pre>
-<p><br> Next, define directories and load data files:</p>
+<p>Next, define directories and load data files:</p>
 <pre class="r"><code>### Define directories
 # Establish base dir
 root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
@@ -1708,27 +1708,44 @@ results_dir &lt;- &quot;results&quot;
 ######### Define input files
 ## Metadata file (histologies/clinical data)
 metadata_file &lt;- file.path(data_dir, &quot;histologies.tsv&quot;)
-# histology_color_file &lt;- file.path(root_dir, &quot;figures&quot;, &quot;palettes&quot;, &quot;histology_label_color_table.tsv&quot;)
 
 ## GSEA scores
 scores_file &lt;- file.path(results_dir, &quot;gsva_scores.tsv&quot;)
 
-######## Define output files
-file_anova_stranded_cancer_group  &lt;- file.path(results_dir, &quot;gsva_anova_stranded_cancer_group.tsv&quot;)
-file_anova_polya_cancer_group     &lt;- file.path(results_dir, &quot;gsva_anova_polya_cancer_group.tsv&quot;)
-file_anova_stranded_harmonized_diagnosis &lt;- file.path(results_dir, &quot;gsva_anova_stranded_harmonized_diagnosis.tsv&quot;)
-file_anova_polya_harmonized_diagnosis    &lt;- file.path(results_dir, &quot;gsva_anova_polya_harmonized_diagnosis.tsv&quot;)
-
-file_tukey_stranded_cancer_group  &lt;- file.path(results_dir, &quot;gsva_tukey_stranded_cancer_group.tsv&quot;)
-file_tukey_polya_cancer_group     &lt;- file.path(results_dir, &quot;gsva_tukey_polya_cancer_group.tsv&quot;)
-file_tukey_stranded_harmonized_diagnosis &lt;- file.path(results_dir, &quot;gsva_tukey_stranded_harmonized_diagnosis.tsv&quot;)
-file_tukey_polya_harmonized_diagnosis    &lt;- file.path(results_dir, &quot;gsva_tukey_polya_harmonized_diagnosis.tsv&quot;)
-
-
 ######## Load input files
-metadata    &lt;- readr::read_tsv(metadata_file, guess_max = 100000)
-scores_file &lt;- readr::read_tsv(scores_file) %&gt;% 
-  dplyr::filter(data_type %in% c(&quot;polya&quot;, &quot;stranded&quot;))</code></pre>
+metadata    &lt;- readr::read_tsv(metadata_file, guess_max = 100000) %&gt;% 
+  filter(experimental_strategy == &quot;RNA-Seq&quot;) %&gt;% 
+  filter(!is.na(RNA_library))
+
+scores_file &lt;- readr::read_tsv(scores_file) 
+
+######## Find out unique RNA library types
+rna_library_list &lt;- scores_file %&gt;% pull(data_type) %&gt;% unique()
+
+######## Define output files for each unique rna library
+cancer_group_anova_outpaths &lt;- lapply(rna_library_list, function(x){
+  x&lt;-gsub(&quot; &quot;, &quot;_&quot;, x)
+  x&lt;-stringr::str_to_lower(gsub(&quot;-&quot;, &quot;&quot;, x))
+  file.path(results_dir, paste0(&quot;gsva_anova_&quot;, x, &quot;_cancer_group.tsv&quot;))
+})
+
+cancer_group_tukey_outpaths &lt;- lapply(rna_library_list, function(x){
+  x&lt;-gsub(&quot; &quot;, &quot;_&quot;, x)
+  x&lt;-stringr::str_to_lower(gsub(&quot;-&quot;, &quot;&quot;, x))
+  file.path(results_dir, paste0(&quot;gsva_tukey_&quot;, x, &quot;_cancer_group.tsv&quot;))
+})
+
+harmonized_diagnosis_anova_outpaths &lt;- lapply(rna_library_list, function(x){
+  x&lt;-gsub(&quot; &quot;, &quot;_&quot;, x)
+  x&lt;-stringr::str_to_lower(gsub(&quot;-&quot;, &quot;&quot;, x))
+  file.path(results_dir, paste0(&quot;gsva_anova_&quot;, x, &quot;_harmonized_diagnosis.tsv&quot;))
+})
+
+harmonized_diagnosis_tukey_outpaths &lt;- lapply(rna_library_list, function(x){
+  x&lt;-gsub(&quot; &quot;, &quot;_&quot;, x)
+  x&lt;-stringr::str_to_lower(gsub(&quot;-&quot;, &quot;&quot;, x))
+  file.path(results_dir, paste0(&quot;gsva_tukey_&quot;, x, &quot;_harmonized_diagnosis.tsv&quot;))
+})</code></pre>
 </div>
 <div id="anova-and-tukey-analysis-of-gsva-scores" class="section level3">
 <h3>ANOVA and Tukey analysis of GSVA scores</h3>
@@ -1736,71 +1753,242 @@ scores_file &lt;- readr::read_tsv(scores_file) %&gt;%
 <p>First, prepare the data for modeling:</p>
 <pre class="r"><code>### Merge histology metadata with each set of gsea scores
 
-# # Import standard groupings from the color palette
-# histology_label_mapping &lt;- readr::read_tsv(histology_color_file) %&gt;% 
-#   # Select just the columns we will need for plotting
-#   dplyr::select(Kids_First_Biospecimen_ID, cancer_group, cancer_order, hex_codes) %&gt;% 
-#   # Reorder cancer_group based on cancer_order
-#   dplyr::mutate(cancer_group = forcats::fct_reorder(cancer_group, cancer_order))
-
 metadata_with_gsva &lt;- metadata %&gt;%
-  filter(experimental_strategy == &quot;RNA-Seq&quot;) %&gt;%
   inner_join(scores_file, by = &quot;Kids_First_Biospecimen_ID&quot;) </code></pre>
 <p>Now, model:</p>
-<pre class="r"><code># cancer_group_stranded_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, cancer_group, &quot;stranded&quot;, SIGNIFICANCE_THRESHOLD)
-# harmonized_diagnosis_stranded_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, &quot;stranded&quot;, SIGNIFICANCE_THRESHOLD)
-# 
-# head(cancer_group_stranded_model_results)
-# head(harmonized_diagnosis_stranded_model_results)
-# 
-# ## Save stranded library results
-# write_tsv(cancer_group_stranded_model_results[[&quot;anova&quot;]],  file_anova_stranded_cancer_group)
-# write_tsv(harmonized_diagnosis_stranded_model_results[[&quot;anova&quot;]], file_anova_stranded_harmonized_diagnosis)
-# write_tsv(cancer_group_stranded_model_results[[&quot;tukey&quot;]],  file_tukey_stranded_cancer_group)
-# write_tsv(harmonized_diagnosis_stranded_model_results[[&quot;tukey&quot;]], file_tukey_stranded_harmonized_diagnosis)
-
-
-### Don't run polyA samples in CI due to data limitations, won't be enough levels for ANOVA
-if (!(running_in_ci)){
-  cancer_group_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, cancer_group, 'polya', SIGNIFICANCE_THRESHOLD)
-  harmonized_diagnosis_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, 'polya', SIGNIFICANCE_THRESHOLD)
-  head(cancer_group_polya_model_results)
-  head(harmonized_diagnosis_polya_model_results)
-
-  ### Save polya library results
-  write_tsv(cancer_group_polya_model_results[[&quot;anova&quot;]],     file_anova_polya_cancer_group)
-  write_tsv(harmonized_diagnosis_polya_model_results[[&quot;anova&quot;]],    file_anova_polya_harmonized_diagnosis)
-  write_tsv(cancer_group_polya_model_results[[&quot;tukey&quot;]],     file_tukey_polya_cancer_group)
-  write_tsv(harmonized_diagnosis_polya_model_results[[&quot;tukey&quot;]],    file_tukey_polya_harmonized_diagnosis)
-
+<pre class="r"><code>for(i in 1:length(rna_library_list)){
+  
+  rna_library = rna_library_list[i]
+  cancer_group_n &lt;- metadata_with_gsva %&gt;%
+    filter(data_type == rna_library) %&gt;%
+    pull(cancer_group) %&gt;% 
+    unique() %&gt;% length()
+  harmonized_diagnosis_n &lt;- metadata_with_gsva %&gt;%
+    filter(data_type == rna_library) %&gt;%
+    pull(harmonized_diagnosis) %&gt;% 
+    unique() %&gt;% length()
+  
+  if(cancer_group_n&gt;=2 &amp;&amp; harmonized_diagnosis_n&gt;=2){
+    cancer_group_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, cancer_group, rna_library, SIGNIFICANCE_THRESHOLD)
+  harmonized_diagnosis_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, rna_library, SIGNIFICANCE_THRESHOLD)
+  
+  ## Save stranded library results
+  readr::write_tsv(cancer_group_model_results[[&quot;anova&quot;]], cancer_group_anova_outpaths[[i]])
+  readr::write_tsv(harmonized_diagnosis_model_results[[&quot;anova&quot;]], harmonized_diagnosis_anova_outpaths[[i]])
+  readr::write_tsv(cancer_group_model_results[[&quot;tukey&quot;]],  cancer_group_tukey_outpaths[[i]])
+  readr::write_tsv(harmonized_diagnosis_model_results[[&quot;tukey&quot;]], harmonized_diagnosis_anova_outpaths[[i]])
+  
+  print(rna_library)
+  print(head(cancer_group_model_results))
+  print(head(harmonized_diagnosis_model_results))
+  }
 }</code></pre>
 <pre><code>## [1] 50
-## [1] 50</code></pre>
+## [1] 50
+## [1] &quot;stranded&quot;
+## $anova
+## # A tibble: 50 x 5
+##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
+##    &lt;chr&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
+##  1 HALLMARK_ADI…             24.6     4.92e-197        2.46e-195
+##  2 HALLMARK_ALL…             35.8     1.64e-279        8.18e-278
+##  3 HALLMARK_AND…             27.3     8.41e-218        4.20e-216
+##  4 HALLMARK_ANG…             34.3     3.94e-269        1.97e-267
+##  5 HALLMARK_API…             43.7     0.               0.       
+##  6 HALLMARK_API…             46.7     0.               0.       
+##  7 HALLMARK_APO…             31.1     6.70e-246        3.35e-244
+##  8 HALLMARK_BIL…             51.6     0.               0.       
+##  9 HALLMARK_CHO…             32.2     1.09e-253        5.47e-252
+## 10 HALLMARK_COA…             46.0     0.               0.       
+## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
+## 
+## $tukey
+## # A tibble: 74,250 x 7
+##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
+##    &lt;chr&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
+##  1 HALLMARK_ADI… Adamantin…           0.228     0.00000456         0.000228
+##  2 HALLMARK_ADI… Adenoma-A…           0.0638    1                  1       
+##  3 HALLMARK_ADI… Arteriove…          -0.0850    1                  1       
+##  4 HALLMARK_ADI… Atypical …           0.0538    1.000              1       
+##  5 HALLMARK_ADI… Cavernoma…           0.332     1.000              1       
+##  6 HALLMARK_ADI… Central N…           0.295     0.963              1       
+##  7 HALLMARK_ADI… Chordoma-…           0.0910    1.000              1       
+##  8 HALLMARK_ADI… Choroid p…           0.216     0.942              1       
+##  9 HALLMARK_ADI… Choroid p…           0.0532    1                  1       
+## 10 HALLMARK_ADI… Choroid p…           0.0877    0.999              1       
+## # … with 74,240 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
+## #   significant_tukey_bonf &lt;lgl&gt;
+## 
+## $anova
+## # A tibble: 50 x 5
+##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
+##    &lt;chr&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
+##  1 HALLMARK_ADI…             14.6     1.62e-173        8.09e-172
+##  2 HALLMARK_ALL…             20.2     2.79e-233        1.39e-231
+##  3 HALLMARK_AND…             19.4     5.95e-226        2.98e-224
+##  4 HALLMARK_ANG…             13.4     1.35e-159        6.77e-158
+##  5 HALLMARK_API…             20.3     5.26e-235        2.63e-233
+##  6 HALLMARK_API…             28.1     1.65e-306        8.26e-305
+##  7 HALLMARK_APO…             22.3     2.27e-254        1.14e-252
+##  8 HALLMARK_BIL…             25.3     3.14e-282        1.57e-280
+##  9 HALLMARK_CHO…             19.9     2.33e-230        1.16e-228
+## 10 HALLMARK_COA…             24.2     7.24e-272        3.62e-270
+## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
+## 
+## $tukey
+## # A tibble: 273,000 x 7
+##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
+##    &lt;chr&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
+##  1 HALLMARK_ADI… Adenoma-A…          -0.164          1.000                1
+##  2 HALLMARK_ADI… Anaplasti…           0.143          1                    1
+##  3 HALLMARK_ADI… Arteriove…          -0.313          1.000                1
+##  4 HALLMARK_ADI… Atypical …           0.152          1.000                1
+##  5 HALLMARK_ADI… Atypical …          -0.174          0.141                1
+##  6 HALLMARK_ADI… Benign tu…          -0.0177         1                    1
+##  7 HALLMARK_ADI… Benign tu…          -0.195          1                    1
+##  8 HALLMARK_ADI… Benign tu…           0.285          0.998                1
+##  9 HALLMARK_ADI… Benign tu…           0.178          1                    1
+## 10 HALLMARK_ADI… Benign tu…           0.0165         1                    1
+## # … with 272,990 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
+## #   significant_tukey_bonf &lt;lgl&gt;
+## 
+## [1] 50
+## [1] 50
+## [1] &quot;polya&quot;
+## $anova
+## # A tibble: 50 x 5
+##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
+##    &lt;chr&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
+##  1 HALLMARK_ADI…            30.5       1.55e-28         7.76e-27
+##  2 HALLMARK_ALL…             4.87      9.09e- 5         4.55e- 3
+##  3 HALLMARK_AND…            12.7       7.98e-13         3.99e-11
+##  4 HALLMARK_ANG…            14.5       1.39e-14         6.96e-13
+##  5 HALLMARK_API…            28.0       1.45e-26         7.27e-25
+##  6 HALLMARK_API…            12.4       1.91e-12         9.56e-11
+##  7 HALLMARK_APO…             5.65      1.40e- 5         7.00e- 4
+##  8 HALLMARK_BIL…            30.3       1.96e-28         9.82e-27
+##  9 HALLMARK_CHO…            26.1       5.65e-25         2.82e-23
+## 10 HALLMARK_COA…            13.6       1.26e-13         6.29e-12
+## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
+## 
+## $tukey
+## # A tibble: 1,050 x 7
+##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
+##    &lt;chr&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
+##  1 HALLMARK_ADI… CNS Embry…          0.363        3.81e- 4  0.0190         
+##  2 HALLMARK_ADI… Diffuse m…          0.529        1.03e-12  0.0000000000514
+##  3 HALLMARK_ADI… Embryonal…          0.353        2.63e- 1  1              
+##  4 HALLMARK_ADI… High-grad…          0.599        1.03e-12  0.0000000000515
+##  5 HALLMARK_ADI… Medullobl…          0.357        2.50e- 1  1              
+##  6 HALLMARK_ADI… Neuroblas…          0.427        1.08e-12  0.0000000000538
+##  7 HALLMARK_ADI… Diffuse m…          0.166        3.70e- 1  1              
+##  8 HALLMARK_ADI… Embryonal…         -0.0106      10.00e- 1  1              
+##  9 HALLMARK_ADI… High-grad…          0.236        7.42e- 2  1              
+## 10 HALLMARK_ADI… Medullobl…         -0.00653     10.00e- 1  1              
+## # … with 1,040 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
+## #   significant_tukey_bonf &lt;lgl&gt;
+## 
+## $anova
+## # A tibble: 50 x 5
+##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
+##    &lt;chr&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
+##  1 HALLMARK_ADI…             2.11     0.0580             1      
+##  2 HALLMARK_ALL…             3.66     0.00240            0.120  
+##  3 HALLMARK_AND…             2.58     0.0224             1      
+##  4 HALLMARK_ANG…             3.41     0.00400            0.200  
+##  5 HALLMARK_API…             3.35     0.00459            0.230  
+##  6 HALLMARK_API…             3.31     0.00493            0.247  
+##  7 HALLMARK_APO…             4.59     0.000342           0.0171 
+##  8 HALLMARK_BIL…             5.40     0.0000641          0.00321
+##  9 HALLMARK_CHO…             3.64     0.00248            0.124  
+## 10 HALLMARK_COA…             5.29     0.0000810          0.00405
+## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
+## 
+## $tukey
+## # A tibble: 1,050 x 7
+##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
+##    &lt;chr&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
+##  1 HALLMARK_ADI… Diffuse m…          0.166          0.524                 1
+##  2 HALLMARK_ADI… Embryonal…         -0.0106         1.000                 1
+##  3 HALLMARK_ADI… High-grad…          0.212          0.357                 1
+##  4 HALLMARK_ADI… High-grad…          0.307          0.0705                1
+##  5 HALLMARK_ADI… High-grad…         -0.0254         1.000                 1
+##  6 HALLMARK_ADI… Medullobl…         -0.00653        1.000                 1
+##  7 HALLMARK_ADI… Embryonal…         -0.177          0.948                 1
+##  8 HALLMARK_ADI… High-grad…          0.0465         0.988                 1
+##  9 HALLMARK_ADI… High-grad…          0.141          0.424                 1
+## 10 HALLMARK_ADI… High-grad…         -0.191          0.925                 1
+## # … with 1,040 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
+## #   significant_tukey_bonf &lt;lgl&gt;</code></pre>
+<pre class="r"><code># CI part is commented out since we want to run in CAVATICA later
+### Don't run polyA samples in CI due to data limitations, won't be enough levels for ANOVA
+# if (!(running_in_ci)){
+#   cancer_group_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, cancer_group, 'polya', SIGNIFICANCE_THRESHOLD)
+#   harmonized_diagnosis_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, 'polya', SIGNIFICANCE_THRESHOLD)
+#   head(cancer_group_polya_model_results)
+#   head(harmonized_diagnosis_polya_model_results)
+# 
+#   ### Save polya library results
+#   write_tsv(cancer_group_polya_model_results[[&quot;anova&quot;]],     file_anova_polya_cancer_group)
+#   write_tsv(harmonized_diagnosis_polya_model_results[[&quot;anova&quot;]],    file_anova_polya_harmonized_diagnosis)
+#   write_tsv(cancer_group_polya_model_results[[&quot;tukey&quot;]],     file_tukey_polya_cancer_group)
+#   write_tsv(harmonized_diagnosis_polya_model_results[[&quot;tukey&quot;]],    file_tukey_polya_harmonized_diagnosis)
+#   }</code></pre>
 <p><strong>How many <code>cancer_group</code> have significant ANOVAs across hallmark pathways, for each library?</strong></p>
-<pre class="r"><code># cancer_group_stranded_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
-if (!(running_in_ci))
-{
-  cancer_group_polya_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
+<pre class="r"><code>for(i in 1:length(rna_library_list)){
+  
+  rna_library = rna_library_list[i]
+   cancer_group_n &lt;- metadata_with_gsva %&gt;%
+    filter(data_type == rna_library) %&gt;%
+    pull(cancer_group) %&gt;% 
+    unique() %&gt;% length()
+  
+  if(cancer_group_n&gt;=2 ){
+    cancer_group_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, cancer_group, rna_library, SIGNIFICANCE_THRESHOLD)
+    num_sig &lt;- cancer_group_model_results[[&quot;anova&quot;]] %&gt;% 
+      count(significant_anova) 
+    
+    # print out information
+   num_sig
+  }
 }</code></pre>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["significant_anova"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"FALSE","2":"9"},{"1":"TRUE","2":"41"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
+<pre><code>## [1] 50
+## [1] 50
+## [1] 50</code></pre>
+<pre class="r"><code># CI part is commented out since we want to run in CAVATICA later
+# if (!(running_in_ci))
+# {
+#   cancer_group_polya_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
+# }</code></pre>
 <blockquote>
 <p>All are significantly different for stranded, none for polya. Likely due to data/power limitations.</p>
 </blockquote>
 <p><strong>How many <code>harmonized_diagnosis</code> have significant ANOVAs across hallmark pathways, for each library?</strong></p>
-<pre class="r"><code># harmonized_diagnosis_stranded_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
-if (!(running_in_ci))
-{
-  harmonized_diagnosis_polya_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
+<pre class="r"><code>for(i in 1:length(rna_library_list)){
+  # model for each library type
+  rna_library = rna_library_list[i]
+  
+  harmonized_diagnosis_n &lt;- metadata_with_gsva %&gt;%
+    filter(data_type == rna_library) %&gt;%
+    pull(harmonized_diagnosis) %&gt;% 
+    unique() %&gt;% length()
+  
+  if(harmonized_diagnosis_n&gt;=2){
+    harmonized_diagnosis_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, rna_library, SIGNIFICANCE_THRESHOLD)
+    # count the number of significant 
+    num_sig &lt;- harmonized_diagnosis_model_results[[&quot;anova&quot;]] %&gt;% 
+      count(significant_anova) 
+  # print out information
+  num_sig
+  }
 }</code></pre>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["significant_anova"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"FALSE","2":"49"},{"1":"TRUE","2":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
+<pre><code>## [1] 50
+## [1] 50</code></pre>
+<pre class="r"><code># CI part is commented out since we want to run in CAVATICA later
+# if (!(running_in_ci))
+# {
+#   harmonized_diagnosis_polya_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
+# }</code></pre>
 <blockquote>
 <p>Again, all are significantly different for stranded, none for polya. Likely due to data/power limitations.</p>
 </blockquote>

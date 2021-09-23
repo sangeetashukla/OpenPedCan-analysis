@@ -150,10 +150,13 @@ for(i in 1:length(rna_library_list)){
   first_bs <- head(colnames(gsea_scores_each), n=1)
   last_bs  <- tail(colnames(gsea_scores_each), n=1)
   
+  rna_library<-gsub(" ", "_", rna_library)
+  rna_library<-stringr::str_to_lower(gsub("-", "", rna_library))
+  
   gsea_scores_each_df_tidy <- gsea_scores_each_df %>%
     tidyr::gather(Kids_First_Biospecimen_ID, gsea_score, !!first_bs : !!last_bs) %>%
     dplyr::select(Kids_First_Biospecimen_ID, hallmark_name, gsea_score) %>%
-    dplyr::mutate(data_type = stringr::str_to_lower(gsub("-", "", rna_library)))
+    dplyr::mutate(data_type = rna_library)
   
   gsea_scores_df_tidy <-  bind_rows(gsea_scores_df_tidy , gsea_scores_each_df_tidy)
 }
