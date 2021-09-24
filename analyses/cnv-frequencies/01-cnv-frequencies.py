@@ -164,7 +164,7 @@ def compute_variant_frequencies(all_tumors_df, all_cohorts_primary_tumors_file, 
      merging_list.append(all_tumors_frequecy_df)
      # frequencies in independent primary tumors
      primary_tumors_frequecy_df = pd.concat(primary_tumors_frequecy_dfs, sort=False, ignore_index=True)
-     hprimary_tumors_frequecy_df.rename(columns={"Total_alterations_over_Patients_in_dataset": "Total_primary_tumors_altered_over_Primary_tumors_in_dataset", "Frequency_in_overall_dataset": "Frequency_in_primary_tumors"}, inplace=True)
+     primary_tumors_frequecy_df.rename(columns={"Total_alterations_over_Patients_in_dataset": "Total_primary_tumors_altered_over_Primary_tumors_in_dataset", "Frequency_in_overall_dataset": "Frequency_in_primary_tumors"}, inplace=True)
      merging_list.append(primary_tumors_frequecy_df)
      # frequencies in independent relapse tumors
      relapse_tumors_frequecy_df = pd.concat(relapse_tumors_frequecy_dfs, sort=False, ignore_index=True)
@@ -210,7 +210,7 @@ def get_annotations(cnv_frequency_df, CNV_FILE):
      #4 add "datasourceId" column with value for each row set to "chop_gene_level_cnv"
      cnv_annot_freq_df["datasourceId"] = "chop_gene_level_cnv"
      # rename "all_cohorts" entry for "Dataset" column to "All Cohorts" to improve the view in the final PedOT table to the end user
-     latest_pbta_histology_df["Dataset"].replace({"all_cohorts": "All Cohorts"}, inplace=True)
+     cnv_annot_freq_df["Dataset"].replace({"all_cohorts": "All Cohorts"}, inplace=True)
      cnv_annot_freq_df.to_csv(cnv_annot_freq_tsv, sep="\t", index=False, encoding="utf-8")
 
      # transform annotated CNV frequencies results from TSV to JSONL file
