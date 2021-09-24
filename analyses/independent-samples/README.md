@@ -87,7 +87,16 @@ These lists contain only WGS samples:
 
 For WGS-preferred lists, when a `Kids_First_Participant_ID` is associated with multiple `experimental_strategy` values i.e. `WGS`, `WXS` or `Targeted Sequencing`, priority is given to a single randomly chosen `WGS` biospecimen first, followed by either a single randomly chosen `WXS` or `Targeted Sequencing` sample.
 
-Here, we first subset the tumor samples to `WGS` samples only and generate `WGS-specific` lists. These lists only contain a single occurence of `Kids_First_Participant_ID` associated to the `experimental_strategy = WGS`. Next, we subset the tumor samples to `WXS and Targeted Sequencing` to generate `WXS/Panel specific` lists. These lists only contain a single occurence of `Kids_First_Participant_ID` associated to either `experimental_strategy = WXS` or `experimental_strategy = Targeted Sequencing`. Then we merge the two lists (keeping `WGS` list first and `WXS/Panel` as second) and take a `dplyr::distinct` to only get the first occurence of `Kids_First_Participant_ID`. Because we keep the `WGS` specific list first when calling `dplyr::distinct`, the `WGS` associated biospecimens will be preferred over other biospecimens for multiple occurrences of `Kids_First_Participant_ID`.
+After randomizing the histology file subset to tumor samples:
+
+```
+tumor_samples <- histology_df %>%
+  dplyr::filter(sample_type == "Tumor", 
+                composition == "Solid Tissue" | composition == "Bone Marrow", 
+                experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing"))
+```
+
+For WGS-preferred lists, we first subset the tumor samples to `WGS` samples only and generate a `WGS-specific` list. This list only contains a single occurence of `Kids_First_Participant_ID` associated to the `experimental_strategy = WGS`. Next, we subset the tumor samples to `WXS and Targeted Sequencing` to generate a `WXS/Panel specific` list. This list only contains a single occurence of `Kids_First_Participant_ID` associated to either `experimental_strategy = WXS` or `experimental_strategy = Targeted Sequencing`. Then we merge the two lists (keeping `WGS` list first and `WXS/Panel` as second) and take a `dplyr::distinct` to only get the first occurence of `Kids_First_Participant_ID`. Because we keep the `WGS` specific list first when calling `dplyr::distinct`, the `WGS` associated biospecimens will be preferred over other biospecimens for multiple occurrences of `Kids_First_Participant_ID`.
 
 1. **All-cohorts specific lists**
 
@@ -113,7 +122,16 @@ Additionally, similar independent lists that consist of all DNA `experimental_st
 
 For WXS-preferred lists, when a `Kids_First_Participant_ID` is associated with multiple `experimental_strategy` values i.e. `WGS`, `WXS` or `Targeted Sequencing`, priority is given to a single randomly chosen `WXS` biospecimen first, followed by either a single randomly chosen `WGS` or `Targeted Sequencing` sample.
 
-Here, we first subset the tumor samples to `WXS` samples only and generate `WXS-specific` lists. These lists only contain a single occurence of `Kids_First_Participant_ID` associated to the `experimental_strategy = WXS`. Next, we subset the tumor samples to `WGS and Targeted Sequencing` to generate `WGS/Panel specific` lists. These lists only contain a single occurence of `Kids_First_Participant_ID` associated to either `experimental_strategy = WGS` or `experimental_strategy = Targeted Sequencing`. Then we merge the two lists (keeping `WXS` list first and `WGS/Panel` as second) and take a `dplyr::distinct` to only get the first occurence of `Kids_First_Participant_ID`. Because we keep the `WXS` specific list first when calling `dplyr::distinct`, the `WXS` associated biospecimens will be preferred over other biospecimens for multiple occurrences of `Kids_First_Participant_ID`.
+After randomizing the histology file subset to tumor samples:
+
+```
+tumor_samples <- histology_df %>%
+  dplyr::filter(sample_type == "Tumor", 
+                composition == "Solid Tissue" | composition == "Bone Marrow", 
+                experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing"))
+```
+
+For WXS-preferred lists, we first subset the tumor samples to `WXS` samples only and generate a `WXS-specific` list. This list only contains a single occurence of `Kids_First_Participant_ID` associated to the `experimental_strategy = WXS`. Next, we subset the tumor samples to `WGS and Targeted Sequencing` to generate a `WGS/Panel specific` list. This list only contains a single occurence of `Kids_First_Participant_ID` associated to either `experimental_strategy = WGS` or `experimental_strategy = Targeted Sequencing`. Then we merge the two lists (keeping `WXS` list first and `WGS/Panel` as second) and take a `dplyr::distinct` to only get the first occurence of `Kids_First_Participant_ID`. Because we keep the `WXS` specific list first when calling `dplyr::distinct`, the `WXS` associated biospecimens will be preferred over other biospecimens for multiple occurrences of `Kids_First_Participant_ID`.
 
 1. **All-cohorts specific lists**
 
