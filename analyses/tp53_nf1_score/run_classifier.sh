@@ -35,7 +35,7 @@ cnvconsensus_file="${data_dir}/consensus_wgs_plus_cnvkit_wxs.tsv.gz"
 
 if [[ RUN_FOR_SUBTYPING == "0" ]]
 then
-   histology_file="../../data/histologies.tsv" 
+   histology_file="../../data/histologies-base.tsv" 
 else 
    histology_file="../../data/histologies-base.tsv"  
 fi
@@ -63,7 +63,7 @@ then
    collapsed_rna="${data_dir}/gene-expression-rsem-tpm-collapsed.rds"
 else
    # expression files for prediction
-   collapsed_rna="../collapse-rnaseq/results/gene-expression-rsem-tpm-collapsed.rds"
+   collapsed_rna="${data_dir}/gene-expression-rsem-tpm-collapsed.rds"
 fi
 
 
