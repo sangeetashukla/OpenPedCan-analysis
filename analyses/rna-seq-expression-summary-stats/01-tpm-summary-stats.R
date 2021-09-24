@@ -611,7 +611,9 @@ m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
          Disease, EFO, MONDO, n_samples, cohort,
          tpm_mean, tpm_sd,
          tpm_mean_cancer_group_wise_zscore, tpm_mean_gene_wise_zscore,
-         tpm_mean_cancer_group_wise_quantiles)
+         tpm_mean_cancer_group_wise_quantiles) %>%
+  mutate(cohort = replace(cohort,
+         cohort == "all_cohorts", "All Cohorts"))
 
 stopifnot(identical(sum(is.na(m_tpm_ss_long_tbl)), as.integer(0)))
 
