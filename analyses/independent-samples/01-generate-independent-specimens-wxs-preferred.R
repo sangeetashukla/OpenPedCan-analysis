@@ -55,6 +55,7 @@ wgs_panel_relapse_all <- independent_samples(wgs_panel_samples, tumor_types = "r
 wgs_panel_primary_plus_all <- independent_samples(wgs_panel_samples, tumor_types = "prefer_primary", independent_level = "all-cohorts", seed = 2020)
 
 # save output for each cohort
+# for each cohort we take distinct Kids_First_Participant_ID + cohort combination
 wgswxspanel_primary_each_file_prefer_wxs <- file.path(out_dir, "independent-specimens.wgswxspanel.primary.eachcohort.prefer.wxs.tsv")
 output <- rbind(wxs_primary_each, wgs_panel_primary_each) %>%
   distinct(Kids_First_Participant_ID, cohort, .keep_all = TRUE) 
@@ -80,6 +81,7 @@ output %>%
   readr::write_tsv(wgswxspanel_primplus_each_file_prefer_wxs)
 
 # save output for all cohorts
+# for all cohorts we take distinct Kids_First_Participant_ID only
 wgswxspanel_primary_all_file_prefer_wxs <- file.path(out_dir, "independent-specimens.wgswxspanel.primary.prefer.wxs.tsv")
 output <- rbind(wxs_primary_all, wgs_panel_primary_all) %>%
   distinct(Kids_First_Participant_ID, .keep_all = TRUE) 

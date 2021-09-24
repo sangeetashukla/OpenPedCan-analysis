@@ -81,7 +81,7 @@ output %>%
   readr::write_tsv(wgswxspanel_primplus_each_file)
 
 # save output for all cohorts
-# for each cohort we take distinct Kids_First_Participant_ID only
+# for all cohorts we take distinct Kids_First_Participant_ID only
 wgswxspanel_primary_all_file <- file.path(out_dir, "independent-specimens.wgswxspanel.primary.tsv")
 output <- rbind(wgs_primary_all, wxs_panel_primary_all) %>%
   distinct(Kids_First_Participant_ID, .keep_all = TRUE)
