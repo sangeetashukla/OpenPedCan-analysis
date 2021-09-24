@@ -10,7 +10,7 @@ This is in service of documenting interdependent analyses.
 Note that _nearly all_ modules use the harmonized clinical data file (`histologies.tsv`) even when it is not explicitly included in the table below.
 
 | Module | Input Files | Brief Description | Output Files Consumed by Other Analyses | OT compatibility | In Use | Run Platform | Action Plan |
-|-----|-----|-------------------|------------|-----------|------|---------|---------|
+|-----|-----|-----|-----|-----|------|------|-----|
 | [`chromosomal-instability`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/chromosomal-instability) | `histologies.tsv` <br> `sv-manta.tsv.gz` <br> `cnv-cnvkit.seg.gz` | Evaluates chromosomal instability by calculating chromosomal breakpoint densities and by creating circular plot visuals | N/A | No | No | N/A | Will Adapt for OT
 | [`chromothripsis`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/chromothripsis) | `sv-manta.tsv.gz` <br> `cnv-consensus.seg.gz` <br> `independent-specimens.wgs.primary-plus.tsv` | chromothripsis analysis per [#1007](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1007)| N/A | No | No | N/A | N/A
 | [`cnv-chrom-plot`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/cnv-chrom) | `cnv-consensus-gistic.zip` <br> `analyses/copy_number_consensus_call/results/cnv-consensus.seg` | Plots genome wide visualizations relating to copy number results | N/A | No | No | N/A | N/A
