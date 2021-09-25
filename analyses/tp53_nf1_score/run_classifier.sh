@@ -35,7 +35,7 @@ cnvconsensus_file="${data_dir}/consensus_wgs_plus_cnvkit_wxs.tsv.gz"
 
 if [[ RUN_FOR_SUBTYPING == "0" ]]
 then
-   histology_file="../../data/histologies-base.tsv" 
+   histology_file="../../data/histologies.tsv" 
 else 
    histology_file="../../data/histologies-base.tsv"  
 fi
