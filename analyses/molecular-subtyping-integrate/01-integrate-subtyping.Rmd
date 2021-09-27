@@ -250,5 +250,5 @@ histology %>%
          - short_histology.base,
          -short_histology.subtyped) %>%
   arrange(Kids_First_Biospecimen_ID) %>%
-  write_tsv("results/pbta-histologies.tsv")
+  write_tsv("results/histologies.tsv")
 ```
