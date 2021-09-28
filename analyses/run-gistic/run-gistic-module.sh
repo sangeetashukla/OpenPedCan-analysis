@@ -37,7 +37,7 @@ else
   
   # Generate files that are compatible for GISTIC 
   Rscript scripts/prepare_seg_for_gistic.R \
-    --in_consensus $DATADIR/v10/cnv-consensus.seg.gz \
+    --in_consensus $DATADIR/cnv-consensus.seg.gz \
     --out_consensus $RESULTSDIR/cnv-consensus-gistic-only.seg.gz \
     --histology $DATADIR/histologies-base.tsv
   
