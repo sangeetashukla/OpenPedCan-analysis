@@ -55,8 +55,21 @@ if (!dir.exists(results_dir)) {
 metadata <-
   readr::read_tsv(file.path(root_dir, "data", "histologies-base.tsv"), 
                   guess_max = 100000) %>%
-  dplyr::filter(sample_type == "Tumor") %>% 
-  dplyr::filter(cohort == "PBTA")
+  dplyr::filter(sample_type == "Tumor") 
+
+tp53_status <- read_tsv(file.path(
+  root_dir,
+  "analyses",
+  "tp53_nf1_score",
+  "results",
+  "tp53_altered_status.tsv"), guess_max = 100000)
+
+# Filter metadata to contain only samples that have TP53 scores
+tp53_sample_id <- tp53_status %>% 
+  pull(sample_id) %>% unique()
+
+metadata <- metadata %>% 
+  filter(sample_id %in% tp53_sample_id)
 
 # File from 00-LGAT-select-pathology-dx that is used for inclusion/exclusion
 path_dx_list_lgat <- jsonlite::fromJSON(
