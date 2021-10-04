@@ -190,6 +190,8 @@ get_output_ss_df <- function(ss_df, gsb_gid_df) {
   stopifnot(identical(rownames(gsb_gids_conv_df),
                       gsb_gids_conv_df$gene_symbol))
 
+  print(rownames(ss_df)[!rownames(ss_df) %in% rownames(gsb_gids_conv_df)])
+  ss_df <- ss_df[rownames(ss_df) %in% rownames(gsb_gids_conv_df), ]
   stopifnot(all(rownames(ss_df) %in% rownames(gsb_gids_conv_df)))
   ss_gsb_gid_df <- gsb_gids_conv_df[rownames(ss_df), ]
 
@@ -417,7 +419,7 @@ stopifnot(all(rna_ec_htl_df$Kids_First_Biospecimen_ID %in% colnames(tpm_df)))
 
 
 # gene symbol to ENSG id table
-gid_gsb_tbl <- read_tsv('../../data/ensg-hugo-rmtl-mapping.tsv',
+gid_gsb_tbl <- read_tsv('../../data/ensg-hugo-pmtl-mapping.tsv',
                         col_types = cols(.default = col_guess()),
                         guess_max = 10000) %>%
   rename(gene_id = ensg_id) %>%
@@ -598,16 +600,16 @@ stopifnot(identical(
 
 
 
-# Add EFO, MONDO, RMTL to long tables ------------------------------------------
+# Add EFO, MONDO, PMTL to long tables ------------------------------------------
 m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
   rename(Gene_symbol = gene_symbol, Gene_Ensembl_ID = gene_id,
          Disease = cancer_group)
 
 m_tpm_ss_long_tbl <- annotate_long_format_table(
-  m_tpm_ss_long_tbl, columns_to_add = c('MONDO', 'RMTL', 'EFO'))
+  m_tpm_ss_long_tbl, columns_to_add = c('MONDO', 'PMTL', 'EFO'))
 
 m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
-  select(Gene_symbol, RMTL, Gene_Ensembl_ID,
+  select(Gene_symbol, PMTL, Gene_Ensembl_ID,
          Disease, EFO, MONDO, n_samples, cohort,
          tpm_mean, tpm_sd,
          tpm_mean_cancer_group_wise_zscore, tpm_mean_gene_wise_zscore,
