@@ -101,7 +101,7 @@ Add the following annotation columns to variant-level and gene-level tables usin
 - `Protein_RefSeq_ID`
 - `EFO`
 - `MONDO`
-- `RMTL`
+- `PMTL`
 - `OncoKB_cancer_gene`
 - `OncoKB_oncogene_TSG`
 
