@@ -29,7 +29,7 @@ independent_dna_sample_df_all <- readr::read_tsv("results/independent-specimens.
 # all RNA samples
 histology_df <- histology_df %>%
   dplyr::filter(sample_type == "Tumor", 
-                composition == "Solid Tissue" | composition == "Bone Marrow") 
+                composition != "Derived Cell Line" ) 
 
 # write independent sample outputs for independent level of each cohort 
 rnaseq_primary_each_file <- file.path(out_dir, "independent-specimens.rnaseq.primary.eachcohort.tsv")
