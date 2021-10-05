@@ -22,7 +22,7 @@ histology_df <- histology_df[sample(nrow(histology_df)), ]
 # Note that there are some samples with unknown composition, but these will be ignored for now.
 tumor_samples <- histology_df %>%
   dplyr::filter(sample_type == "Tumor", 
-                composition !="Derived Cell Line", 
+                composition == "Solid Tissue" | composition == "Bone Marrow", 
                 experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing"))
 
 # subset to WXS samples only
