@@ -2,11 +2,11 @@
 
 ## current release
 ### release-v10
-- release date: 2021-09-01
+- release date: 2021-10-08
 - status: available
 - overview of changes:
-  - This particular releae added 438 tumor/nomral pairs of TARGET ALL WXS samples as well as a total of 144 samples (including WGS, WXS, RNA-Seq for both tumor and normal) from PNOC clinical samples. 
-  - Usable TCGA RNA-Seq data from diseaseXpress with GDC clinical information are added to (n=10414) were addec to the release
+  - This particular releae added 438 tumor/nomral pairs of TARGET ALL WXS samples as well as a total of 144 samples (including WGS, WXS, RNA-Seq for both tumor and normal) from PNOC clinical trials. 
+  - Usable TCGA RNA-Seq data from diseaseXpress with GDC clinical information are added to (n=10414) were added to the release
   - `cnv-consensus-gistic.zip` from `run-gistic` module was added to the release 
   - `ensg-hugo-rmtl-mapping.tsv` is replaced with `ensg-hugo-pmtl-mapping.tsv` after we switch from RMTL v1.0 to PMTL v1.1
   - All additional changes as well as details about the above 3 changes are as followed.
@@ -14,9 +14,9 @@
 - Update histologies file:
     - Add 120 samples from PNOC_dataset_2 (40 WXS tumor, 40 WXS normal and 40 RNA-Seq from 40 patients) and additional 24 PNOC_dataset_1 tumor WGS from 18 samples to release
        - Details see [ticket 174](https://github.com/PediatricOpenTargets/ticket-tracker/issues/174)
-       - After `tp53-nf1-scores` and `run-gistic` modules were ran with the base hisotlogy file, these samples then ran through `molecular-subtyping-HGG`, `molecular-subtyping-pathology` and `molecular-subtyping-integrate` modules to get their subtype (details also captured below)
+       - After `tp53-nf1-scores` and `run-gistic` modules were ran with the base histology file, these samples then ran through `molecular-subtyping-HGG`, `molecular-subtyping-pathology` and `molecular-subtyping-integrate` modules to get their subtype (details also captured below)
         - See [ticket 210](https://github.com/PediatricOpenTargets/ticket-tracker/issues/210) for details
-    - Add 438 tumor/nomral pairs of TARGET ALL WXS samples
+    - Add 438 tumor/normal pairs of TARGET ALL WXS samples
        - Details see [ticket 158](https://github.com/PediatricOpenTargets/ticket-tracker/issues/158)
     - Change "Known" to "Unknown" in the histologies file since it was mis-coded before
        - Details see [ticket 192](https://github.com/PediatricOpenTargets/ticket-tracker/issues/192)
@@ -39,14 +39,14 @@
     - Run molecular subtyping for new PNOC sample through HGG, pathology and integrate modules 
       - Details see [ticket 210](https://github.com/PediatricOpenTargets/ticket-tracker/issues/210)
 
-- Update `cnv-cnvkit.seg.gz`, `cnv-controlfreec.tsv.gz`,`consensus_wgs_plus_cnvkit_wxs.tsv.gz`,  `snv-consensus-plus-hotspots.maf.tsv.gz` and `sv-manta.tsv` to include 438 tumor/nomral pairs of TARGET ALL WXS samples as well as a total of 144 samples (including WGS, WXS, RNA-Seq for both tumor and normal) from PNOC clinical samples.
+- Update `cnv-cnvkit.seg.gz`, `cnv-controlfreec.tsv.gz`,`consensus_wgs_plus_cnvkit_wxs.tsv.gz`,  `snv-consensus-plus-hotspots.maf.tsv.gz` and `sv-manta.tsv` to include 438 tumor/normal pairs of TARGET ALL WXS samples as well as a total of 144 samples (including WGS, WXS, RNA-Seq for both tumor and normal) from PNOC clinical samples.
     - Details for merging PNOC clinical samples see [ticket 174](https://github.com/PediatricOpenTargets/ticket-tracker/issues/174)
-    - Details for merging 438 tumor/nomral pairs of TARGET ALL WXS samples see [ticket 194](https://github.com/PediatricOpenTargets/ticket-tracker/issues/194)
+    - Details for merging 438 tumor/normal pairs of TARGET ALL WXS samples see [ticket 194](https://github.com/PediatricOpenTargets/ticket-tracker/issues/194)
     
 - Update EFO-MONDO mapped file to remove trailing white space that is causing error
     - Details for merging 438 tumor/nomral pairs of TARGET ALL WXS samples see [ticket 208](https://github.com/PediatricOpenTargets/ticket-tracker/issues/208)
     
-- Update `gene-counts-rsem-expected_count-collapsed.rds`, `ene-expression-rsem-tpm-collapsed.rds`, `fusion-arriba.tsv.gz` and `fusion-starfusion.tsv.gz` with 40 RNA-Seq tumor sample from PNOC_dataset_2 results merged 
+- Update `gene-counts-rsem-expected_count-collapsed.rds`, `gene-expression-rsem-tpm-collapsed.rds`, `fusion-arriba.tsv.gz` and `fusion-starfusion.tsv.gz` with 40 RNA-Seq tumor sample from PNOC_dataset_2 results merged 
     - Details see [ticket 203](https://github.com/PediatricOpenTargets/ticket-tracker/issues/203) 
 - Two TCGA gene expression files, `tcga-gene-counts-rsem-expected_count-collapsed.rds` and `tcga-gene-expression-rsem-tpm-collapsed.rds`, for all TCGA in diseaseXpress and has GDC clinical information (n=10414) were now include in data release 
     - Details see [ticket 200](https://github.com/PediatricOpenTargets/ticket-tracker/issues/200) 
@@ -54,7 +54,7 @@
 - Update `consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz`, `consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz` and  `consensus_wgs_plus_cnvkit_wxs.tsv.gz` files with the following changes:
     - When annotating CNV status, for WXS samples, if WGS was performed on the same sample, we use the `germline_sex_estimate` from the WGS as the `germline_sex_estimate` for the WXS samples. Details see [ticket 177](https://github.com/PediatricOpenTargets/ticket-tracker/issues/177) 
     - When matching WGS samples were not available, `gender` is used as `germline_sex_estimate. Details see [ticket 177](https://github.com/PediatricOpenTargets/ticket-tracker/issues/177)  
-    - Additionally, `focal-cn-file-preparation` module was re-run to include 438 tumor/nomral pairs of TARGET ALL WXS samples as well as a total of 144 samples (including WGS, WXS, RNA-Seq for both tumor and normal) from PNOC clinical samples. Details see [ticket 196](https://github.com/PediatricOpenTargets/ticket-tracker/issues/196)  
+    - Additionally, `focal-cn-file-preparation` module was re-run to include 438 tumor/normal pairs of TARGET ALL WXS samples as well as a total of 144 samples (including WGS, WXS, RNA-Seq for both tumor and normal) from PNOC clinical samples. Details see [ticket 196](https://github.com/PediatricOpenTargets/ticket-tracker/issues/196)  
 
 - `cnv-consensus-gistic.zip` will now be added to data release after 24 WGS PNOC tumor samples were merged and the module re-run
     - Details see [ticket 218](https://github.com/PediatricOpenTargets/ticket-tracker/issues/218) 
@@ -65,10 +65,10 @@
       - `independent-specimens.wgswxspanel.primary.prefer.wxs.tsv`
       - `independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wxs.tsv`
       - `independent-specimens.wgswxspanel.relapse.prefer.wxs.tsv`
-    - The independent lists are re-generated with 438 tumor/nomral pairs of TARGET ALL WXS samples as well as a total of 144 samples (including WGS, WXS, RNA-Seq for both tumor and normal) from PNOC clinical samples added to the histology file
+    - The independent lists are re-generated with 438 tumor/normal pairs of TARGET ALL WXS samples as well as a total of 144 samples (including WGS, WXS, RNA-Seq for both tumor and normal) from PNOC clinical samples added to the histology file
       - Details see [ticket 215](https://github.com/PediatricOpenTargets/ticket-tracker/issues/215)  
 
-- Regenerate `fusion-putative-oncogenic.tsv` to include results from 40 RNA-Seq tuomr samples from PNOC clinical trials
+- Regenerate `fusion-putative-oncogenic.tsv` to include results from 40 RNA-Seq tumor samples from PNOC clinical trials
       - Details see [ticket 214](https://github.com/PediatricOpenTargets/ticket-tracker/issues/214)  
 
 ```

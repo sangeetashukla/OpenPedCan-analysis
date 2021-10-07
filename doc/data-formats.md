@@ -55,6 +55,9 @@ These files are denoted with the prefix `fusion`.
 * `fusion-arriba.tsv.gz`
 * `fusion-starfusion.tsv.gz`
 
+The above gene fusions results were then filtered by the [fusion filtering module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/v10-release/analyses/fusion_filtering) to contain only putative oncogenic fusions.
+* `fusion-putative-oncogenic.tsv.gz`
+
 ### Structural Variant Data
 
 Structural Variants data produced by the [`MANTA` package](https://pubmed.ncbi.nlm.nih.gov/26647377/; https://github.com/Illumina/manta) is 
