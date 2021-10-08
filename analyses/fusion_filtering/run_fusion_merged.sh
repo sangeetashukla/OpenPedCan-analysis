@@ -20,7 +20,7 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 # Set up paths to data files consumed by analysis, and path to result output
-data_path="../../data/v10"
+data_path="../../data"
 scratch_path="../../scratch"
 references_path="references"
 results_path="results/"
@@ -46,8 +46,8 @@ normal_expression_adrenal_gland="${references_path}/gtex_adrenal_gland_TPM_hg38.
 normal_expression_brain="${references_path}/gtex_brain_TPM_hg38.rds"
 
 # independent sample list
-independent_RNA_primary="../independent-samples/results/independent-specimens.rnaseq.primary.tsv"
-independent_RNA_relapse="../independent-samples/results/independent-specimens.rnaseq.relapse.tsv"
+independent_RNA_primary="${data_path}/independent-specimens.rnaseq.primary.tsv"
+independent_RNA_relapse="${data_path}/independent-specimens.rnaseq.relapse.tsv"
    
 # metadata files
 if [[ RUN_FOR_SUBTYPING -eq "0" ]]
