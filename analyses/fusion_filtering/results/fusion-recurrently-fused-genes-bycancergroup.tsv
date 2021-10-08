@@ -1,6 +1,6 @@
 Gene	cancer_group	count
-BRAF	Low-grade glioma astrocytoma	113
-KIAA1549	Low-grade glioma astrocytoma	108
+BRAF	Low-grade glioma/astrocytoma	113
+KIAA1549	Low-grade glioma/astrocytoma	108
 SLC7A5	Acute Lymphoblastic Leukemia	102
 CBFA2T3	Acute Lymphoblastic Leukemia	82
 MAD1L1	Acute Lymphoblastic Leukemia	71
@@ -262,17 +262,17 @@ MKNK2	Acute Myeloid Leukemia	4
 NACC2	Acute Myeloid Leukemia	4
 NFKBIA	Acute Myeloid Leukemia	4
 NR4A1	Acute Myeloid Leukemia	4
-NTRK2	Low-grade glioma astrocytoma	4
+NTRK2	Low-grade glioma/astrocytoma	4
 PLEKHO1	Acute Lymphoblastic Leukemia	4
 PLXNB2	Acute Lymphoblastic Leukemia	4
 PPRC1	Acute Lymphoblastic Leukemia	4
 PRDM16	Acute Myeloid Leukemia	4
 PTTG1IP	Acute Myeloid Leukemia	4
-RAF1	Low-grade glioma astrocytoma	4
+RAF1	Low-grade glioma/astrocytoma	4
 REV3L	Diffuse midline glioma	4
 REXO1	Acute Lymphoblastic Leukemia	4
 RNH1	Acute Myeloid Leukemia	4
-ROS1	High-grade glioma astrocytoma	4
+ROS1	High-grade glioma/astrocytoma	4
 SAP25	Acute Myeloid Leukemia	4
 SH3TC1	Acute Lymphoblastic Leukemia	4
 TAOK3	Acute Myeloid Leukemia	4
