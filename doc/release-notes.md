@@ -2,7 +2,7 @@
 
 ## current release
 ### release-v10
-- release date: 2021-10-08
+- release date: 2021-10-11
 - status: available
 - overview of changes:
   - This particular releae added 438 tumor/nomral pairs of TARGET ALL WXS samples as well as a total of 144 samples (including WGS, WXS, RNA-Seq for both tumor and normal) from PNOC clinical trials. 
@@ -27,6 +27,8 @@
        -  Details see [ticket 202](https://github.com/PediatricOpenTargets/ticket-tracker/issues/202)
     - Additional changes to TCGA histology file - `RNA-library` of `poly-A `and `sample_type` of `Tumor `(a total of 9551 samples) all have NA composition:
        - For these samples, `composition` is modified to `Solid Tissue` as long as `primary_site` is not NA or `Bone Marrow` 
+    - Additionally, there are `normal` samples in TARGET cohort with `broad_histology`, `short_histology`, `tumor_descriptor` and `cancer_group` that are not `NA`
+       - For those samples, these fields are changed to `NA` 
 
 - Use PMTL v1.1 instead of RMTL v1.0 for gene annotation - `ensg-hugo-pmtl-mapping.tsv` will now be the included in the data release and `ensg-hugo-rmtl-mapping.tsv` will not longer be used.
        - Details see [ticket 206](https://github.com/PediatricOpenTargets/ticket-tracker/issues/206)
