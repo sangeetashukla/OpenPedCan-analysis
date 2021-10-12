@@ -101,6 +101,7 @@ relapse_indp_sdf_each <- read_tsv(relapse_independence_each,
 # read ENSEMBL, Hugo Symbol and PMTL mapping file
 ensg_hugo_pmtl_df <- read_tsv(file.path(data_dir,'ensg-hugo-pmtl-mapping.tsv'),
                               col_types = cols(.default = col_guess())) %>%
+  filter(ensg_id != "Symbol_Not_Found") %>% 
   distinct()
 # assert all ensg_ids and gene_symbols are not NA
 stopifnot(identical(sum(is.na(ensg_hugo_pmtl_df$ensg_id)), as.integer(0)))
