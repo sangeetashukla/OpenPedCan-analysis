@@ -422,6 +422,7 @@ stopifnot(all(rna_ec_htl_df$Kids_First_Biospecimen_ID %in% colnames(tpm_df)))
 gid_gsb_tbl <- read_tsv('../../data/ensg-hugo-pmtl-mapping.tsv',
                         col_types = cols(.default = col_guess()),
                         guess_max = 10000) %>%
+  filter(ensg_id != "Symbol_Not_Found") %>%
   rename(gene_id = ensg_id) %>%
   select(gene_id, gene_symbol) %>%
   distinct()
