@@ -647,28 +647,28 @@ stopifnot(identical(sum(is.na(maf_df$Tumor_Sample_Barcode)), as.integer(0)))
 # primary all cohorts independent sample data frame
 primary_ac_indp_sdf <- read_tsv(
   file.path('../..', 'data',
-            'independent-specimens.wgswxspanel.primary.tsv'),
+            'independent-specimens.wgswxspanel.primary.prefer.wxs.tsv'),
   col_types = cols(
     .default = col_guess()))
 
 # primary each cohorts independent sample data frame
 primary_ec_indp_sdf <- read_tsv(
   file.path('../..', 'data',
-            'independent-specimens.wgswxspanel.primary.eachcohort.tsv'),
+            'independent-specimens.wgswxspanel.primary.eachcohort.prefer.wxs.tsv'),
   col_types = cols(
     .default = col_guess()))
 
 # relapse all cohorts independent sample data frame
 relapse_ac_indp_sdf <- read_tsv(
   file.path('../..', 'data',
-            'independent-specimens.wgswxspanel.relapse.tsv'),
+            'independent-specimens.wgswxspanel.relapse.prefer.wxs.tsv'),
   col_types = cols(
     .default = col_guess()))
 
 # relapse each cohorts independent sample data frame
 relapse_ec_indp_sdf <- read_tsv(
   file.path('../..', 'data',
-            'independent-specimens.wgswxspanel.relapse.eachcohort.tsv'),
+            'independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wxs.tsv'),
   col_types = cols(
     .default = col_guess()))
 
