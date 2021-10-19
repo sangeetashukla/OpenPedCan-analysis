@@ -3,6 +3,7 @@ Acute Lymphoblastic Leukemia	EFO_0000220	MONDO_0004967
 Acute Myeloid Leukemia	EFO_0000222	MONDO_0018874
 Adamantinomatous Craniopharyngioma	EFO_1000069	MONDO_0002787
 Adenoma	EFO_0000232	MONDO_0002454
+Atypical choroid plexus papilloma	EFO_1000177
 Atypical Teratoid Rhabdoid Tumor	EFO_1002008	MONDO_0020560
 Cavernoma	EFO_1000151	MONDO_0003155
 Central Neurocytoma	EFO_1000856	MONDO_0002714
@@ -39,6 +40,7 @@ Medulloblastoma	EFO_0002939	MONDO_0007959
 Melanocytic tumor	MONDO_0003222	MONDO_0003222
 Meningioma	Orphanet_2495	MONDO_0016642
 Metastatic secondary tumors	EFO_0009812	MONDO_0024883
+Metastatic secondary tumors;Neuroblastoma	EFO_0000621	MONDO_0005072
 Myofibroblastoma	MONDO_0040675	MONDO_0040675
 Myxoid spindle cell tumor	EFO_0000705	MONDO_0020664
 Neuroblastoma	EFO_0000621	MONDO_0005072
@@ -46,7 +48,9 @@ Neurocytoma	EFO_0007201	MONDO_0002682
 Neurofibroma/Plexiform	EFO_0000658	MONDO_0003304
 Oligodendroglioma	EFO_0000632	
 Osteosarcoma	EFO_0000637	MONDO_0009807
+Pilocytic astrocytoma	MONDO_0016691	MONDO_0016691
 Pineoblastoma	EFO_1000475	MONDO_0016722
+Pleomorphic xanthoastrocytoma	MONDO_0016690	MONDO_0016690
 Primary CNS lymphoma	EFO_1000157	MONDO_0002571
 Rhabdoid tumor	EFO_0005701	MONDO_0002728
 Rhabdomyosarcoma	EFO_0002918	MONDO_0002847
