@@ -67,7 +67,8 @@ if (!dir.exists(results_dir)) {
 # Read fusion, independent sample list, and histology data ------------------------
 message('Read data...')
 htl_df <- read_tsv(input_histologies, guess_max = 100000,
-                   col_types = cols(.default = col_guess()))
+                   col_types = cols(.default = col_guess())) %>% 
+ filter(!grepl("^TCGA", Kids_First_Biospecimen_ID))
 # assert no Kids_First_Biospecimen_ID or Kids_First_Participant_ID is NA
 stopifnot(identical(
   sum(is.na(select(htl_df, Kids_First_Biospecimen_ID,
@@ -80,23 +81,23 @@ stopifnot(identical(sum(is.na(fusion_df$Sample)), as.integer(0)))
 
 # primary independent sample data frame for all cohorts
 primary_indp_sdf_all <- read_tsv(primary_independence_all,
-  col_types = cols(
-    .default = col_guess()))
+                                  col_types = cols(.default = col_guess())) %>% 
+  filter(!grepl("^TCGA", Kids_First_Biospecimen_ID))
 
 # relapse independent samples for all cohorts
 relapse_indp_sdf_all <- read_tsv(relapse_independence_all,
-  col_types = cols(
-    .default = col_guess()))
+                                  col_types = cols(.default = col_guess())) %>% 
+  filter(!grepl("^TCGA", Kids_First_Biospecimen_ID))
 
 # primary independent sample data frame for each cohort
 primary_indp_sdf_each <- read_tsv(primary_independence_each,
-                                 col_types = cols(
-                                   .default = col_guess()))
+                                  col_types = cols(.default = col_guess())) %>% 
+  filter(!grepl("^TCGA", Kids_First_Biospecimen_ID))
 
 # relapse independent samples for each cohort
 relapse_indp_sdf_each <- read_tsv(relapse_independence_each,
-                                 col_types = cols(
-                                   .default = col_guess()))
+                                  col_types = cols(.default = col_guess())) %>% 
+  filter(!grepl("^TCGA", Kids_First_Biospecimen_ID))
 
 # read ENSEMBL, Hugo Symbol and PMTL mapping file
 ensg_hugo_pmtl_df <- read_tsv(file.path(data_dir,'ensg-hugo-pmtl-mapping.tsv'),
