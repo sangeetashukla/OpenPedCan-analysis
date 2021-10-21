@@ -67,8 +67,7 @@ if (!dir.exists(results_dir)) {
 # Read fusion, independent sample list, and histology data ------------------------
 message('Read data...')
 htl_df <- read_tsv(input_histologies, guess_max = 100000,
-                   col_types = cols(.default = col_guess())) %>% 
- filter(!grepl("^TCGA", Kids_First_Biospecimen_ID))
+                   col_types = cols(.default = col_guess()))
 # assert no Kids_First_Biospecimen_ID or Kids_First_Participant_ID is NA
 stopifnot(identical(
   sum(is.na(select(htl_df, Kids_First_Biospecimen_ID,
@@ -79,25 +78,35 @@ fusion_df <- read_tsv(fusion_file, guess_max = 100000)
 # assert all records have Sample
 stopifnot(identical(sum(is.na(fusion_df$Sample)), as.integer(0)))
 
+# get TCGA samples IDs in the histlogies file
+tcga_bs_id <- htl_df %>% 
+  filter(cohort=="TCGA") %>%
+  pull(Kids_First_Biospecimen_ID) %>% 
+  unique()
+
+# filter TCGA samples out of the histologies df
+htl_df <- htl_df %>%  
+  filter(!Kids_First_Biospecimen_ID %in% tcga_bs_id)
+
 # primary independent sample data frame for all cohorts
 primary_indp_sdf_all <- read_tsv(primary_independence_all,
                                   col_types = cols(.default = col_guess())) %>% 
-  filter(!grepl("^TCGA", Kids_First_Biospecimen_ID))
+  filter(!Kids_First_Biospecimen_ID %in% tcga_bs_id)
 
 # relapse independent samples for all cohorts
 relapse_indp_sdf_all <- read_tsv(relapse_independence_all,
                                   col_types = cols(.default = col_guess())) %>% 
-  filter(!grepl("^TCGA", Kids_First_Biospecimen_ID))
+  filter(!Kids_First_Biospecimen_ID %in% tcga_bs_id)
 
 # primary independent sample data frame for each cohort
 primary_indp_sdf_each <- read_tsv(primary_independence_each,
                                   col_types = cols(.default = col_guess())) %>% 
-  filter(!grepl("^TCGA", Kids_First_Biospecimen_ID))
+  filter(!Kids_First_Biospecimen_ID %in% tcga_bs_id)
 
 # relapse independent samples for each cohort
 relapse_indp_sdf_each <- read_tsv(relapse_independence_each,
                                   col_types = cols(.default = col_guess())) %>% 
-  filter(!grepl("^TCGA", Kids_First_Biospecimen_ID))
+  filter(!Kids_First_Biospecimen_ID %in% tcga_bs_id)
 
 # read ENSEMBL, Hugo Symbol and PMTL mapping file
 ensg_hugo_pmtl_df <- read_tsv(file.path(data_dir,'ensg-hugo-pmtl-mapping.tsv'),
