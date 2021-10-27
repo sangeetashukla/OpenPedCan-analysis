@@ -250,7 +250,7 @@ tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
 #### Addressing autosomes first ------------------------------------------------
 # slice the df to avoid memory exhaust issues
 cnv_df_ids <- cnv_df %>% 
-  pull(Kids_First_Biospecimen_ID) %>% unique()
+  dplyr::pull(Kids_First_Biospecimen_ID) %>% unique()
 # slice to 200 samples each
 slice_vector <- seq(1, length(cnv_df_ids), 200) 
 
@@ -267,7 +267,7 @@ for (i in 1:length(slice_vector)){
   cnv_df_ids_each <- cnv_df_ids[start_id:end_id]
   # get the matching CNV dataframe
   cnv_df_each <- cnv_df %>% 
-    filter(Kids_First_Biospecimen_ID %in% cnv_df_ids_each)
+    dplyr::filter(Kids_First_Biospecimen_ID %in% cnv_df_ids_each)
   
   # Exclude the X and Y chromosomes
   # Removing copy neutral segments saves on the RAM required to run this step
@@ -303,10 +303,10 @@ readr::write_tsv(autosome_annotated_cn,
 if (xy_flag) {
   # define combined dataframe
   sex_chrom_annotated_cn <- data.frame()
-  for (i in 1:length(slice_vector)){
-    start_id <- as.numeric(slice_vector[i])
-    if(i<length(slice_vector)){
-      end_id <- as.numeric(slice_vector[i+1]-1)
+  for (j in 1:length(slice_vector)){
+    start_id <- as.numeric(slice_vector[j])
+    if(j<length(slice_vector)){
+      end_id <- as.numeric(slice_vector[j+1]-1)
     } else {
       end_id <- as.numeric(length(cnv_df_ids))
     }
@@ -314,7 +314,7 @@ if (xy_flag) {
     cnv_df_ids_each <- cnv_df_ids[start_id:end_id]
     # get the matching CNV dataframe
     cnv_df_each <- cnv_df %>% 
-      filter(Kids_First_Biospecimen_ID %in% cnv_df_ids_each)
+      dplyr::filter(Kids_First_Biospecimen_ID %in% cnv_df_ids_each)
     
     # Filter to just the X and Y chromosomes and remove neutral segments
     # Removing copy neutral segments saves on the RAM required to run this step
