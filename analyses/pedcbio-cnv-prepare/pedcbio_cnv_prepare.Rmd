@@ -306,18 +306,18 @@ diff_auto_bsid <-cnvkit_seg_bs_id[!cnvkit_seg_bs_id %in% annotated_cnvkit_auto_b
 ## Deal with X and Y first (WXS samples)
 ### add neutral segs for samples that are not in the annotation file 
 ```{r}
+ # get unique gene_symbol + ensembl_id + cytoband
+unique_x_set <- cnvkit_xy %>% 
+  dplyr::select(ensembl, gene_symbol, cytoband) %>% 
+  filter(grepl("X", cytoband)) %>% 
+  distinct()
+
+unique_y_set <- cnvkit_xy %>% 
+  dplyr::select(ensembl, gene_symbol, cytoband) %>% 
+  filter(grepl("Y", cytoband)) %>% 
+  distinct()
+  
 if(length(diff_xy_bsid)>1){
-  # get unique gene_symbol + ensembl_id + cytoband
-  unique_x_set <- cnvkit_xy %>% 
-    dplyr::select(ensembl, gene_symbol, cytoband) %>% 
-    filter(grepl("X", cytoband)) %>% 
-    distinct()
-  
-  unique_y_set <- cnvkit_xy %>% 
-    dplyr::select(ensembl, gene_symbol, cytoband) %>% 
-    filter(grepl("Y", cytoband)) %>% 
-    distinct()
-  
   # for samples that are not in the annotation - add neutral for all unique segments
   for (i in 1:length(diff_xy_bsid)){
     sample_added <- diff_xy_bsid[i] 
@@ -391,7 +391,7 @@ for (j in 1:length(annotated_cnvkit_xy_bs_id)){
     pull(reported_gender)
   
   # only add back when reported gender is known
-  if(length(sample_gender)==1){
+  if(sample_gender %in% c("Male", "Female")){
     # find all the segments that have information for that sample
     sample_annotated_ensembl <- cnvkit_xy %>% 
       dplyr::filter(biospecimen_id == sample_of_interest) %>% 
@@ -439,6 +439,7 @@ for (j in 1:length(annotated_cnvkit_xy_bs_id)){
 
 ```
 
+
 ### check to make sure all samples now have ~nrow of unique x+y set 
 ```{r}
 nrow(unique_x_set)
@@ -450,6 +451,20 @@ cnvkit_xy %>%
   mutate(count = n()) %>% 
   pull(count) %>% 
   unique()
+
+```
+
+## Combine consensus and cnvkit for XY together
+```{r}
+# combine xy 
+consensus_cnvkit_xy <- bind_rows(consensus_xy, cnvkit_xy)
+
+# write out results 
+consensus_cnvkit_xy %>% 
+  readr::write_tsv("results/consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz")
+
+rm(consensus_xy)
+rm(cnvkit_xy)
 
 ```
 
@@ -518,25 +533,20 @@ cnvkit_auto %>%
 ```
 
 
-# Combine all the dataframes together
-### Combine consensus and cnvkit for XY and autosomes
+## Combine autosomes together
 ```{r}
-# combine xy 
-consensus_cnvkit_xy <- bind_rows(consensus_xy, cnvkit_xy)
-
-# write out results 
-consensus_cnvkit_xy %>% 
-  readr::write_tsv("results/consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz")
-
 # combine autosomes
 consensus_cnvkit_auto <- bind_rows(consensus_auto, cnvkit_auto)
 
 # write out results
 consensus_cnvkit_auto %>% 
   readr::write_tsv("results/consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz")
+
+rm(consensus_auto)
+rm(cnvkit_auto)
 ```
 
-### Combine cnv and autosomes and add germline sex estimate
+## Combine cnv and autosomes and add germline sex estimate
 ```{r}
 # first remove germline sex estimate 
 consensus_cnvkit_xy <- consensus_cnvkit_xy %>%
