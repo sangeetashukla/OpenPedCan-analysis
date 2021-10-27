@@ -476,7 +476,8 @@ unique_auto_set <- cnvkit_auto %>%
   dplyr::select(ensembl, gene_symbol, cytoband) %>% 
   distinct()
 # for BS IDs not in annotation, add all segments back
-for (m in 1:length(diff_auto_bsid)){
+if(length(diff_auto_bsid)>1){
+  for (m in 1:length(diff_auto_bsid)){
   sample_added_auto <- diff_auto_bsid[m]
   sample_set <- unique_auto_set %>% 
     mutate(biospecimen_id = sample_added_auto) %>% 
@@ -484,7 +485,9 @@ for (m in 1:length(diff_auto_bsid)){
     mutate(copy_number = 2) %>% 
     mutate(ploidy = 2)
   cnvkit_auto <- bind_rows(cnvkit_auto, sample_set)
+  }
 }
+
 ```
 
 ### check to make sure diff samples now have nrow of unique x+y set 
