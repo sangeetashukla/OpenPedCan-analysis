@@ -317,7 +317,7 @@ unique_y_set <- cnvkit_xy %>%
   filter(grepl("Y", cytoband)) %>% 
   distinct()
   
-if(length(diff_xy_bsid)>1){
+if(length(diff_xy_bsid)>0){
   # for samples that are not in the annotation - add neutral for all unique segments
   for (i in 1:length(diff_xy_bsid)){
     sample_added <- diff_xy_bsid[i] 
@@ -476,7 +476,7 @@ unique_auto_set <- cnvkit_auto %>%
   dplyr::select(ensembl, gene_symbol, cytoband) %>% 
   distinct()
 # for BS IDs not in annotation, add all segments back
-if(length(diff_auto_bsid)>1){
+if(length(diff_auto_bsid)>0){
   for (m in 1:length(diff_auto_bsid)){
   sample_added_auto <- diff_auto_bsid[m]
   sample_set <- unique_auto_set %>% 
