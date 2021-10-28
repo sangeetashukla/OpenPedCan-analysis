@@ -96,6 +96,7 @@ unique_y_set <- consensus_xy %>%
 
 # for samples that are not in the annotation - add neutral for all unique segments
 for (i in 1:length(diff_xy_bsid)){
+  sample_set <- data.frame()
   sample_added <- diff_xy_bsid[i] 
   sample_gender <- histology_df %>% 
     filter(Kids_First_Biospecimen_ID == sample_added) %>% 
@@ -150,6 +151,7 @@ consensus_xy %>% filter(biospecimen_id %in% diff_xy_bsid) %>%
 ### add neutral segs to un-annotated segments for samples that are in the annotation file 
 ```{r}
 for (j in 1:length(annotated_consensus_xy_bs_id)){
+  sample_set <- data.frame()
   sample_of_interest <- annotated_consensus_xy_bs_id[j]
   
   # find the gender of the sample
@@ -215,6 +217,22 @@ consensus_xy %>%
 
 ```
 
+### check to see what those samples are 
+```{r}
+consensus_xy %>% 
+  group_by(biospecimen_id) %>%
+  mutate(count = n()) %>%
+  filter(count == 7) %>%
+  knitr::kable()
+
+consensus_xy %>% 
+  group_by(biospecimen_id) %>%
+  mutate(count = n()) %>%
+  filter(count == 11) %>%
+  knitr::kable()
+```
+These have germline_sex_estimat as Unknown - cannot add segments back - expected.
+
 ## Deal with autosomes next (WGS samples)
 ### add neutral segs for samples that are not in the annotation file 
 ```{r}
@@ -224,6 +242,7 @@ unique_auto_set <- consensus_auto %>%
   distinct()
 # for BS IDs not in annotation, add all segments back
 for (m in 1:length(diff_auto_bsid)){
+  sample_set <- data.frame()
   sample_added_auto <- diff_auto_bsid[m]
   sample_set <- unique_auto_set %>% 
     mutate(biospecimen_id = sample_added_auto) %>% 
@@ -249,6 +268,7 @@ consensus_auto %>% filter(biospecimen_id %in% diff_auto_bsid) %>%
 ### add neutral segs to un-annotated segments for samples that are in the annotation file 
 ```{r}
 for (n in 1:length(annotated_consensus_auto_bs_id)){
+  sample_set <- data.frame()
   sample_of_interest_auto <- annotated_consensus_auto_bs_id[n]
   sample_annotated_ensembl <- consensus_auto %>% 
     dplyr::filter(biospecimen_id == sample_of_interest_auto) %>% 
@@ -320,6 +340,7 @@ unique_y_set <- cnvkit_xy %>%
 if(length(diff_xy_bsid)>0){
   # for samples that are not in the annotation - add neutral for all unique segments
   for (i in 1:length(diff_xy_bsid)){
+    sample_set <- data.frame()
     sample_added <- diff_xy_bsid[i] 
     # gender uses reported gender
     sample_gender <- histology_df %>% 
@@ -327,7 +348,7 @@ if(length(diff_xy_bsid)>0){
       pull(reported_gender)
     
     # we can only add back if there is reported gender
-    if(length(sample_gender)==1){
+    if(sample_gender %in% c("Male", "Female")){
       # add back segments based on gender 
       if(sample_gender == "Female") {
         sample_x_set <- unique_x_set %>% 
@@ -356,9 +377,6 @@ if(length(diff_xy_bsid)>0){
           mutate(ploidy = 1)
         sample_set <- bind_rows(sample_x_set, sample_y_set)
       }
-      
-    } else {
-      sample_set <- data.frame()
     }
     cnvkit_xy  <- bind_rows(cnvkit_xy, sample_set)
   }
@@ -383,6 +401,7 @@ cnvkit_xy %>% filter(biospecimen_id %in% diff_xy_bsid) %>%
 ### add neutral segs to un-annotated segments for samples that are in the annotation file 
 ```{r}
 for (j in 1:length(annotated_cnvkit_xy_bs_id)){
+  sample_set <- data.frame()
   sample_of_interest <- annotated_cnvkit_xy_bs_id[j]
   
   # find the gender of the sample
@@ -430,9 +449,7 @@ for (j in 1:length(annotated_cnvkit_xy_bs_id)){
         mutate(copy_number = 1) %>% 
         mutate(ploidy = 1)
       sample_set <- bind_rows(sample_x_set, sample_y_set)
-    } else {
-      sample_set <- data.frame()
-    }
+    } 
     cnvkit_xy  <- bind_rows(cnvkit_xy, sample_set)
   }
 }
@@ -478,13 +495,14 @@ unique_auto_set <- cnvkit_auto %>%
 # for BS IDs not in annotation, add all segments back
 if(length(diff_auto_bsid)>0){
   for (m in 1:length(diff_auto_bsid)){
-  sample_added_auto <- diff_auto_bsid[m]
-  sample_set <- unique_auto_set %>% 
-    mutate(biospecimen_id = sample_added_auto) %>% 
-    mutate(status = "neutral") %>% 
-    mutate(copy_number = 2) %>% 
-    mutate(ploidy = 2)
-  cnvkit_auto <- bind_rows(cnvkit_auto, sample_set)
+    sample_set <- data.frame()
+    sample_added_auto <- diff_auto_bsid[m]
+    sample_set <- unique_auto_set %>% 
+      mutate(biospecimen_id = sample_added_auto) %>% 
+      mutate(status = "neutral") %>% 
+      mutate(copy_number = 2) %>% 
+      mutate(ploidy = 2)
+    cnvkit_auto <- bind_rows(cnvkit_auto, sample_set)
   }
 }
 
@@ -505,6 +523,7 @@ cnvkit_auto %>% filter(biospecimen_id %in% diff_auto_bsid) %>%
 ### add neutral segs to un-annotated segments for samples that are in the annotation file 
 ```{r}
 for (n in 1:length(annotated_cnvkit_auto_bs_id)){
+  sample_set <- data.frame()
   sample_of_interest_auto <- annotated_cnvkit_auto_bs_id[n]
   sample_annotated_ensembl <- cnvkit_auto %>% 
     dplyr::filter(biospecimen_id == sample_of_interest_auto) %>% 
