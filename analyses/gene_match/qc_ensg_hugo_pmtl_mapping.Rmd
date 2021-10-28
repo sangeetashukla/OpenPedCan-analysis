@@ -14,7 +14,7 @@ suppressPackageStartupMessages({
 ## Read ensg-hugo-pmtl-mapping.tsv and OpenPedCan SNV, CNV, TPM, and fusion data
 
 ```{r read_open_ped_can_data}
-open_ped_can_data_path <- '~/OpenPedCan-analysis/data/v10'
+open_ped_can_data_path <- '../../data'
 
 snv <- file.path(open_ped_can_data_path, 'snv-consensus-plus-hotspots.maf.tsv.gz')
 cnv <- file.path(open_ped_can_data_path, 'consensus_wgs_plus_cnvkit_wxs.tsv.gz')

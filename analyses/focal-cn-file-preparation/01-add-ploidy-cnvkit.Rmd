@@ -64,12 +64,18 @@ no_estimate_still_na_fixed <- no_estimate_still_na %>%
                                   TRUE ~ as.character(NA))
          )
 
+# Define column type to avoid error
+no_estimate_fixed_through_wgs$germline_sex_estimate <- as.character(no_estimate_fixed_through_wgs$germline_sex_estimate)
+
 # Merge back fixed_wgs, fixed_na, and exist_germline_estimate data
 histologies_df_fixed <- bind_rows(no_estimate_fixed_through_wgs, no_estimate_still_na_fixed)
 
 # remove samples in histologies_df_fixed from histologies_df
 histologies_df_rm <- histologies_df %>%
   anti_join(histologies_df_fixed, by = "Kids_First_Biospecimen_ID")
+
+# Define column type to avoid error
+histologies_df_rm$germline_sex_estimate <- as.character(histologies_df_rm$germline_sex_estimate)
 
 # add new rows back
 histologies_df_final <- histologies_df_rm %>% 
