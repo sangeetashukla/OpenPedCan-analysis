@@ -6,8 +6,8 @@ Our ability to understand and successfully treat these diseases is hindered by s
 The Open Pediatric Cancer (OpenPedCan) project at the Children’s Hospital of Philadelphia is an open analysis effort that harmonizes pediatric cancer data from multiple sources. 
 The OpenPedCan analyses currently include the following datasets, described more fully below:
 - TARGET
--	Kids First Neuroblastoma
--	OpenPBTA
+- Kids First Neuroblastoma
+- OpenPBTA
 
 Open Pediatric Brain Tumor Atlas (OpenPBTA)
 In September of 2018, the [Children's Brain Tumor Network (CBTN)](https://cbtn.org/) released the [Pediatric Brain Tumor Atlas (PBTA)](https://cbtn.org/pediatric-brain-tumor-atlas/), a genomic dataset (whole genome sequencing, whole exome sequencing, RNA sequencing, proteomic, and clinical data) for nearly 1,000 tumors, available from the [Gabriella Miller Kids First Portal](https://kidsfirstdrc.org/).
@@ -77,7 +77,7 @@ We invite researchers to join OpenPedCan to help rigorously characterize the gen
 
 The OpenPedCan dataset includes gene expression, fusion, as well as somatic mutation, copy number, structural and variant results in combined tsv or matrix format.
 
-Below is a summary of biospecimens by sequencing strategy:
+Below is a summary of biospecimens by sequencing strategy in v10 release:
 
 
 | Experimental Strategy | Normal | Tumor |
