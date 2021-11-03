@@ -1,16 +1,31 @@
-# OpenPBTA-analysis
+# OpenPedCan-analysis
 
 Pediatric brain tumors are the most common solid tumors and the leading cause of cancer-related death in children.
 Our ability to understand and successfully treat these diseases is hindered by small sample sizes due to the overall rarity of unique molecular subtypes and tainted grouped analyses resulting from misclassification.
-In September of 2018, the [Children's Brain Tumor Network (CBTN)](https://cbtn.org/) released the [Pediatric Brain Tumor Atlas (PBTA)](https://cbtn.org/pediatric-brain-tumor-atlas/), a genomic dataset (whole genome sequencing, whole exome sequencing, RNA sequencing, proteomic, and clinical data) for nearly 1,000 tumors, available from the [Gabriella Miller Kids First Portal](https://kidsfirstdrc.org/).
 
+The Open Pediatric Cancer (OpenPedCan) project at the Children’s Hospital of Philadelphia is an open analysis effort that harmonizes pediatric cancer data from multiple sources. 
+The OpenPedCan analyses currently include the following datasets, described more fully below:
+- TARGET
+-	Kids First Neuroblastoma
+-	OpenPBTA
+
+Open Pediatric Brain Tumor Atlas (OpenPBTA)
+In September of 2018, the [Children's Brain Tumor Network (CBTN)](https://cbtn.org/) released the [Pediatric Brain Tumor Atlas (PBTA)](https://cbtn.org/pediatric-brain-tumor-atlas/), a genomic dataset (whole genome sequencing, whole exome sequencing, RNA sequencing, proteomic, and clinical data) for nearly 1,000 tumors, available from the [Gabriella Miller Kids First Portal](https://kidsfirstdrc.org/).
 The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is a global open science initiative to comprehensively define the molecular landscape of tumors of 943 patients from the CBTN and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/) through real-time, collaborative analyses and [collaborative manuscript writing](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) on GitHub.
 
-The OpenPBTA operates on a pull request model to accept contributions from community participants.
+Therapeutically Applicable Research to Generate Effective Treatments [(TARGET)](https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000218.v23.p8)
+The Therapeutically Applicable Research to Generate Effective Treatments (TARGET) Initiative is an NCI-funded collection of disease-specific projects that seeks to identify the genomic changes of pediatric cancers. The overall goal is to collect genomic data to accelerate the development of more effective therapies. 
+OpenPedCan analyses include the seven  diseases present in the TARGET dataset: Acute Lymphoblastic Leukemia (ALL), Acute Myeloid Leukemia (AML), Clear cell sarcoma of the kidney, Neuroblastoma, Osteosarcoma, Rhabdoid tumor, and Wilm’s Tumor.  
+
+Gabriella Miller Kids First Neuroblastoma [(Kids First)](https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs001436.v1.p1)
+The Gabriella Miller Kids First Pediatric Research Program (Kids First) is a large-scale effort to accelerate research and gene discovery in pediatric cancers and structural birth defects. The program includes whole genome sequencing (WGS) from patients with pediatric cancers and structural birth defects and their families.
+OpenPedCan analyses include Neuroblastoma data from the Kids First project. 
+
+The OpenPedCan operates on a pull request model to accept contributions from community participants.
 The maintainers have set up continuous integration software to confirm the reproducibility of analyses within the project’s Docker container.
-The collaborative manuscript is authored using [Manubot](https://manubot.org) software to provide an up-to-date public version of the manuscript.
-The project maintainers include scientists from [Alex's Lemonade Stand Foundation's Childhood Cancer Data Lab](https://www.ccdatalab.org/) and the [Center for Data-Driven Discovery in Biomedicine at the Children's Hospital of Philadelphia](https://d3b.center/).
-We invite researchers to join OpenPBTA to help rigorously characterize the genomic landscape of these diseases to enable more rapid discovery of additional mechanisms contributing to the pathogenesis of pediatric brain and spinal cord tumors and overall accelerate clinical translation on behalf of patients.
+
+The project maintainers include scientists from [Department of Biomedical and Health Informatics at the Children's Hospital of Philadelphia ](https://www.research.chop.edu/department-of-biomedical-and-health-informatics) and the [Center for Data-Driven Discovery in Biomedicine at the Children's Hospital of Philadelphia](https://d3b.center/).
+We invite researchers to join OpenPedCan to help rigorously characterize the genomic landscape of these diseases to enable more rapid discovery of additional mechanisms contributing to the pathogenesis of pediatric brain and spinal cord tumors and overall accelerate clinical translation on behalf of patients.
 
 **New to the project? Please be sure to read the following documentation before contributing:**
 
@@ -25,7 +40,7 @@ We invite researchers to join OpenPBTA to help rigorously characterize the genom
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Data Description](#data-description)
-- [How to Obtain OpenPBTA Data](#how-to-obtain-openpbta-data)
+- [How to Obtain OpenPedCan Data](#how-to-obtain-openpedcan-data)
   - [Data Access via Download Script](#data-access-via-download-script)
   - [Data Access via CAVATICA](#data-access-via-cavatica)
 - [How to Participate](#how-to-participate)
@@ -45,7 +60,6 @@ We invite researchers to join OpenPBTA to help rigorously characterize the genom
     - [Development in the Project Docker Container](#development-in-the-project-docker-container)
       - [RStudio](#rstudio)
   - [Local Development](#local-development)
-    - [RStudio](#rstudio-1)
   - [Continuous Integration (CI)](#continuous-integration-ci)
     - [Working with the subset files used in CI locally](#working-with-the-subset-files-used-in-ci-locally)
     - [Adding Analyses to CI](#adding-analyses-to-ci)
@@ -61,65 +75,98 @@ We invite researchers to join OpenPBTA to help rigorously characterize the genom
 
 ## Data Description
 
-The OpenPBTA dataset includes gene expression, fusion, as well as somatic mutation, copy number, structural and variant results in combined tsv or matrix format.
+The OpenPedCan dataset includes gene expression, fusion, as well as somatic mutation, copy number, structural and variant results in combined tsv or matrix format.
 
 Below is a summary of biospecimens by sequencing strategy:
 
 
 | Experimental Strategy | Normal | Tumor |
 |-----------------------|--------|-------|
-| Targeted DNA Panel | 1 | 1 |
-| RNA-Seq | 0 | 1036 |
-| WGS | 801 | 940 |
-| WXS | 31 | 31 |
+| Targeted DNA Panel | 500 | 500 |
+| RNA-Seq | 18110 | 12299 |
+| WGS | 1137 | 1300 |
+| WXS | 1133 | 1171 |
 
-
-All sequencing was performed on nucleic acids extracted from fresh-frozen tissues using paired-end strategies.
-The [manuscript methods section](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#data-generation) has additional details.
-
-Below is a detailed table of [broad histologies](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#who-classification-of-disease-types) for the 1028 RNA-Seq biospecimens:
+Below is a detailed table of for the 12299 RNA-Seq biospecimens in v10 release:
 
 
 | Broad Histology | N |
 |-----------------------------------------------|-----|
-| Benign tumor | 34 |
-| Choroid plexus tumor | 11 |
-| Diffuse astrocytic and oligodendroglial tumor | 191 |
-| Embryonal tumor | 184 |
+| Acute Myeloid Leukemia | 147 |
+| Adrenocortical Carcinoma | 77 |
+| Benign tumor | 33 |
+| Bladder Urothelial Carcinoma | 413 |
+| Brain Lower Grade Glioma | 525 |
+| Breast Invasive Carcinoma | 1106 |
+| Cervical Squamous Cell Carcinoma and Endocervical Adenocarcinoma | 306 |
+| Cholangiocarcinoma | 36 |
+| Chordoma | 6 |
+| Choroid plexus tumor | 5 |
+| Colon Adenocarcinoma | 307 |
+| Diffuse astrocytic and oligodendroglial tumor | 231 |
+| Embryonal tumor | 547 |
 | Ependymal tumor | 93 |
+| Esophageal Carcinoma | 159 |
 | Germ cell tumor | 13 |
-| Histiocytic tumor | 6 |
-| Low-grade astrocytic tumor | 303 |
+| Glioblastoma Multiforme | 167 |
+| Head and Neck Squamous Cell Carcinoma | 500 |
+| Hematologic malignancy | 866 |
+| Histiocytic tumor | 7 |
+| Kidney Chromophobe | 65 |
+| Kidney Renal Clear Cell Carcinoma | 536 |
+| Kidney Renal Papillary Cell Carcinoma | 287 |
+| Liver Hepatocellular Carcinoma | 372 |
+| Low-grade astrocytic tumor | 298|
+| Lung Adenocarcinoma | 533 |
+| Lung Squamous Cell Carcinoma | 499 |
+| Lymphoid Neoplasm Diffuse Large B-cell Lymphoma | 47 |
 | Lymphoma | 1 |
 | Melanocytic tumor | 1 |
 | Meningioma | 29 |
-| Mesenchymal non-meningothelial tumor | 25 |
-| Metastatic secondary tumors | 5 |
-| Neuronal and mixed neuronal-glial tumor | 34 |
+| Mesenchymal non-meningothelial tumor | 112 |
+| Mesothelioma | 86 |
+| Metastatic tumors | 7 |
+| Neuronal and mixed neuronal-glial tumor | 42 |
 | Non-CNS tumor | 1 |
 | Non-tumor | 3 |
 | Other astrocytic tumor | 3 |
 | Other tumor | 1 |
+| Ovarian Serous Cystadenocarcinoma | 378 |
+| Pancreatic Adenocarcinoma | 178 |
+| Pheochromocytoma and Paraganglioma | 181 |
 | Pre-cancerous lesion | 14 |
+| Prostate Adenocarcinoma | 498 |
+| Rectum Adenocarcinoma | 93 |
+| Renal tumor | 207 |
+| Sarcoma | 262 |
+| Skin Cutaneous Melanoma | 468 |
+| Stomach Adenocarcinoma | 373 |
+| Testicular Germ Cell Tumors | 154 |
+| Thymoma | 118 |
+| Thyroid Carcinoma | 509 |
 | Tumor of cranial and paraspinal nerves | 44 |
 | Tumor of pineal region | 5 |
 | Tumors of sellar region | 35 |
+| Uterine Carcinosarcoma | 56 |
+| Uterine Corpus Endometrial Carcinoma | 183 |
+| Uveal Melanoma | 79 |
 
-
-Below is a table of number of tumor biospecimens by phase of therapy (DNA and RNA):
+Below is a table of number of tumor biospecimens by phase of therapy (DNA and RNA) in v10 release:
 
 
 | Phase of Therapy | N |
 |---------------------------------|------|
-| Initial CNS Tumor | 1520 |
-| Progressive | 302 |
+| Initial CNS Tumor | 1622 |
+| Metastatic Tumor | 395 |
+| Primary Tumor | 12545 |
+| Progressive | 299 |
 | Progressive Disease Post-Mortem | 13 |
-| Recurrence | 136 |
-| Second Malignancy | 35 |
+| Recurrence | 356 |
+| Second Malignancy | 37 |
 | Unavailable | 2 |
 
 
-## How to Obtain OpenPBTA Data
+## How to Obtain OpenPedCan Data
 
 We are releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS S3.
 Users performing analyses, should always refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
@@ -127,7 +174,7 @@ Users performing analyses, should always refer to the symlinks in the `data/` di
 **The data formats and caveats are described in more detail in [`doc/data-formats.md`](doc/data-formats.md).
 For brief descriptions of the data files, see the [`data-files-description.md`](doc/data-files-description.md) file included in the download.**
 
-Use the [data issue template](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new?assignees=&labels=data&template=data-question.md&title=) to file issues if you have questions about or identify issues with OpenPBTA data.
+Use the [data issue template](https://github.com/PediatricOpenTargets/ticket-tracker/issues/new?assignees=&labels=data&template=data-question.md&title=) to file issues if you have questions about or identify issues with OpenPedCan data.
 
 ### Data Access via Download Script
 
@@ -153,18 +200,10 @@ Users downloading via CAVATICA should place the data files within the `data/rele
 
 ## How to Participate
 
-### Join the Cancer Data Science Slack
-
-<p><img style = "padding: 0 15px; float: left;" src = logo/slack-cancer-data-science-logo.png width = 75></p>
-<p style="margin-top: 20px;"> </p>
-<p><b>Have general questions or need help getting started using GitHub?</b>
-You can join the <a href = "http://ccdatalab.org/slack"> Cancer Data Science Slack</a> to connect with OpenPBTA organizers, other project participants, and the broader cancer data science community.
-Sign up and join the <strong>#open-pbta</strong> channel to get started!</p>
-
 ### Planned Analyses
 
 There are certain analyses that we have planned or that others have proposed, but which nobody is currently in charge of completing.
-Check the existing [issues](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues) to identify these.
+Check the existing [issues](https://github.com/PediatricOpenTargets/ticket-tracker/issues) to identify these.
 If you would like to take on a planned analysis, please comment on the issue noting your interest in tackling the issue in question.
 Ask clarifying questions to understand the current scope and goals.
 Then propose a potential solution.
@@ -174,8 +213,8 @@ When you file a pull request with your solution, you should note that it closes 
 
 ### Proposing a New Analysis
 
-In addition to the planned analyses, we welcome contributors who wish to propose their own analyses of this dataset as part of the OpenPBTA project.
-Check the existing [issues](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues) before proposing an analysis to see if something similar is already planned.
+In addition to the planned analyses, we welcome contributors who wish to propose their own analyses of this dataset as part of the OpenPedCan project.
+Check the existing [issues](https://github.com/PediatricOpenTargets/ticket-tracker/issues) before proposing an analysis to see if something similar is already planned.
 If there is not a similar planned analysis, create a new issue.
 The ideal issue will describe the scientific goals of the analysis, the planned methods to address the scientific goals, the input data that is required for the planned methods, and a proposed timeline for the analysis.
 Project maintainers will interact on the issue to clarify any questions or raise any potential concerns.
@@ -193,14 +232,14 @@ Artifacts include both vector or high-resolution figures sufficient for inclusio
 
 #### Software Dependencies
 
-Analyses should be performed within the project's [Docker container](https://github.com/AlexsLemonade/OpenPBTA-analysis#docker-image).
+Analyses should be performed within the project's [Docker container](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/Dockerfile).
 We use a single monolithic container in these analyses for ease of use.
-If you need software that is not included, please edit the Dockerfile to install the relevant software or file a [new issue on this repository](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new) requesting assistance.
+If you need software that is not included, please edit the Dockerfile to install the relevant software or file a [new issue on this repository](https://github.com/PediatricOpenTargets/ticket-tracker/issues/new/choose) requesting assistance.
 
 #### Pull Request Model
 
-Analyses are added to this repository via [Pull Requests](https://github.com/AlexsLemonade/OpenPBTA-analysis/compare).
-**Please read the [Pull Request section of the contribution guidelines](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/CONTRIBUTING.md#pull-requests) carefully.**
+Analyses are added to this repository via [Pull Requests](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/compare.
+**Please read the [Pull Request section of the contribution guidelines](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/CONTRIBUTING.md#pull-requests) carefully.**
 We are using continuous integration software applied to the supplied test datasets to confirm that the analysis can be carried out successfully within the Docker container.
 
 ## How to Add an Analysis
@@ -233,7 +272,7 @@ The results folder contains a tabular summary as a comma separated values file.
 The author has also included a `README.md` ([see Documenting Your Analysis](#documenting-your-analysis)).
 
 ```
-OpenPBTA-analysis
+OpenPedCan-analysis
 ├── CONTRIBUTING.md
 ├── README.md
 ├── analyses
@@ -255,7 +294,7 @@ OpenPBTA-analysis
 
 ### Documenting Your Analysis
 
-A goal of the OpenPBTA project is to create a collection of workflows that are commonly used for atlas papers.
+A goal of the OpenPedCan project is to create a collection of workflows that are commonly used for atlas papers.
 As such, documenting your analytical code via comments and including information summarizing the purpose of your analysis is important.
 
 When you file the first pull request creating a new analysis module, add your module to the [Modules At A Glance table](analyses#modules-at-a-glance).
@@ -275,12 +314,12 @@ See the [continuous integration instructions for adding analyses with multiple s
 ### Output Expectations
 
 The CI system that we use will generate, as artifacts, the contents of the `analyses` directory applied over a small test dataset.
-Our goal is to capture all of the outputs that will be used for the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) as artifacts.
+Our goal is to capture all of the outputs that produce final results as artifacts.
 Files that are primarily graphic should be placed in a `plots` subdirectory of the analysis's folder.
 Plots should use the specified color palettes for this project.
 See more [specific instructions on how to use the color palette here](./figures/README.md#color-palette-usage).
 Files that are primarily tabular results files should be placed in a `results` subdirectory of the analysis's folder.
-Files that are intermediate, which means that they are useful within an analysis but do not provide outputs intended for tables, figures, or supplementary tables or figures of the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/), should be placed in `../../scratch`.
+Files that are intermediate, which means that they are useful within an analysis but do not provide final outputs should be placed in `../../scratch`.
 
 ### Docker Image
 
@@ -352,17 +391,12 @@ docker exec -ti <CONTAINER_NAME> bash -c "echo a && echo b"
 While we encourage development within the Docker container, it is also possible to conduct analysis without Docker if that is desired.
 In  this case, it is important to ensure that local or personal settings such as file paths or installed packages and libraries are not assumed in the analysis.
 
-#### RStudio
-
-We have supplied an RStudio project (`OpenPBTA-analysis.Rproj`) file at the root of the project to aid in organization and encourage reproducible defaults for analysis.
-In particular, we do not source `.Rprofile` files in new sessions or save/restore workspaces.
-
 ### Continuous Integration (CI)
 
-We use continuous integration (CI) to ensure that the project Docker image will build if there are any changes introduced to the [`Dockerfile`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/Dockerfile) and that all analysis code will execute.
+We use continuous integration (CI) to ensure that the project Docker image will build if there are any changes introduced to the [`Dockerfile`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/Dockerfile) and that all analysis code will execute.
 
 We have put together data files specifically for the purpose of CI that contain all of the features of the full data files for only a small subset of samples.
-You can see how this was done by viewing [this module](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/create-subset-files).
+You can see how this was done by viewing [this module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/create-subset-files).
 We use the subset files to cut down on the computational resources and time required for testing.
 
 Provided that your analytical code points to the symlinks in the `data/` directory per [the instructions above](#how-to-add-an-analysis), adding the analysis to the CI (see below) will run your analysis on this subset of the data.
@@ -406,7 +440,7 @@ This would run the `cluster-samples.R` on the subset files that are specifically
 #### Adding Analyses with Multiple Steps
 
 There is a different procedure for adding an analysis comprised of multiple scripts or notebooks to CI.
-Per [the contribution guidelines](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/CONTRIBUTING.md#size-and-composition-of-pull-requests), each script or notebook should be added via a separate pull request.
+Per [the contribution guidelines](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/CONTRIBUTING.md#size-and-composition-of-pull-requests), each script or notebook should be added via a separate pull request.
 For each of these pull requests, the individual script or notebook should be added as its own run in the `.circleci/config.yml` file.
 This validates that the code being added can be executed at the time of review.
 
@@ -510,14 +544,15 @@ Environment variables without this prefix are not passed.
 ### Molecular-subtyping 
 
 If you would like to identify molecular subtype membership for new RNA-seq PBTA samples belonging to the following broad_histologies, run the bash script below.
- * [`molecular-subtyping-EWS`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-EWS)
- * [`molecular-subtyping-HGG`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-HGG)
- * [`molecular-subtyping-LGAT`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-LGAT)
- * [`molecular-subtyping-embryonal`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-embryonal)
- * [`molecular-subtyping-CRANIO`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-CRANIO)
- * [`molecular-subtyping-EPN`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-EPN)
- * [`molecular-subtyping-MB`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-MB)
- * [`molecular-subtyping-neurocytoma`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-neurocytoma)
+ * [`molecular-subtyping-EWS`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-EWS)
+ * [`molecular-subtyping-HGG`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-HGG)
+ * [`molecular-subtyping-LGAT`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-LGAT)
+ * [`molecular-subtyping-embryonal`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-embryonal)
+ * [`molecular-subtyping-CRANIO`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-CRANIO)
+ * [`molecular-subtyping-EPN`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-EPN)
+ * [`molecular-subtyping-MB`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-MB)
+ * [`molecular-subtyping-neurocytoma`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-neurocytoma)
+ * [`molecular-subtyping-chordoma`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-chordoma)
 
 <!--TODO: Add WGS/WXS summarization modules.-->   
 
@@ -530,8 +565,8 @@ Running this will re-run RNA-seq specific summary file generation modules as wel
 
 #### Adding summary analyses to run-for-subtyping.sh
 
-For an analysis to be run for subyping, it must use `pbta-histologies-base.tsv` as input and shouldn't depend on `molecular_subtype` or `integrated_diagnosis` columns for molecular-subtyping-* modules. 
-Please set BASE_SUBTYPING=1 as a condition to run code with `pbta-histologies-base.tsv`.   
+For an analysis to be run for subyping, it must use `histologies-base.tsv` as input and shouldn't depend on `molecular_subtype` or `integrated_diagnosis` columns for molecular-subtyping-* modules. 
+Please set BASE_SUBTYPING=1 as a condition to run code with `histologies-base.tsv`.   
 
 Here is an example:
 
@@ -540,7 +575,7 @@ BASE_SUBTYPING=1 analyses/gene-set-enrichment-analysis/run-gsea.sh
 
 ```
 
-This would run the `analyses/gene-set-enrichment-analysis/run-gsea.sh` with `pbta-histologies-base.tsv` to generate gsva scores that are used in multiple molecular-subtyping-* modules.
+This would run the `analyses/gene-set-enrichment-analysis/run-gsea.sh` with `histologies-base.tsv` to generate gsva scores that are used in multiple molecular-subtyping-* modules.
 
 
 
