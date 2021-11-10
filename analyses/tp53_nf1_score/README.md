@@ -12,10 +12,10 @@ To evaluate the classifier scores, we use [`02-evaluate-classifier.py`](02-evalu
 
 #### Running the analysis
 
-The analysis can be run with the following (assuming you are in the root repository of the project):
+The analysis can be run with the following (assuming you are in the analysis directory):
 
 ```
-bash analyses/tp53_nf1_score/run_classifier.sh
+bash run_classifier.sh
 ```
 
 #### Inputs from data download

@@ -33,7 +33,7 @@ cds_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
 snvconsensus_file="${data_dir}/snv-consensus-plus-hotspots.maf.tsv.gz"
 cnvconsensus_file="${data_dir}/consensus_wgs_plus_cnvkit_wxs.tsv.gz"
 
-if [[ RUN_FOR_SUBTYPING == "0" ]]
+if [[ $RUN_FOR_SUBTYPING == "0" ]]
 then
    histology_file="../../data/histologies.tsv" 
 else 
