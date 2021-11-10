@@ -6,9 +6,16 @@ gistic-results
 
 # ignore large files
 results/cnvkit_annotated_cn_autosomes.tsv.gz
+results/cnvkit_annotated_cn_wxs_autosomes.tsv.gz
 results/controlfreec_annotated_cn_autosomes.tsv.gz
+results/controlfreec_annotated_cn_wxs_autosomes.tsv.gz
 
 # corresponding xy for the above large files
 results/cnvkit_annotated_cn_x_and_y.tsv.gz
+results/cnvkit_annotated_cn_wxs_x_and_y.tsv.gz
 results/controlfreec_annotated_cn_x_and_y.tsv.gz
-~                                                 
+results/controlfreec_annotated_cn_wxs_x_and_y.tsv.gz      
+
+# consensus files too large
+results/consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz
+results/consensus_wgs_plus_cnvkit_wxs.tsv.gz
