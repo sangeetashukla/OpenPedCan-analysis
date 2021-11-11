@@ -209,7 +209,7 @@ if(runWXSonly){
 }
 
 # Save final data.frame to a tsv file
-readr::write_tsv(x = autosome_annotated_cn, file = file.path(results_dir, autosome_output_file))
+readr::write_tsv(autosome_annotated_cn, file.path(results_dir, autosome_output_file))
 
 #### X&Y -----------------------------------------------------------------------
 
@@ -265,5 +265,5 @@ if(xy_flag){
   }
   
   # Save final data.frame to a tsv file
-  readr::write_tsv(x = sex_chrom_annotated_cn, file = file.path(results_dir, sex_chrom_output_file))
+  readr::write_tsv(sex_chrom_annotated_cn, file.path(results_dir, sex_chrom_output_file))
 }
