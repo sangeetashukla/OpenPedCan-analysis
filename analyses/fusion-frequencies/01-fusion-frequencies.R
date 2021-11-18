@@ -320,11 +320,11 @@ stopifnot(identical(sum(is.na(m_fus_freq_tbl)), as.integer(0)))
 # write to tsv
 annotated_m_fus_freq_tbl <- annotated_m_fus_freq_tbl %>%
   select(keep_cols, Gene_Ensembl_ID, Disease, MONDO, PMTL, EFO,Dataset,
-         Total_alterations_Over_Patients_in_dataset,
+         Total_alterations_over_subjects_in_dataset,
          Frequency_in_overall_dataset,
-         Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
+         Total_primary_tumors_mutated_over_primary_tumors_in_dataset,
          Frequency_in_primary_tumors,
-         Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
+         Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors) %>%
   unique() %>%
   dplyr::rename(Gene_symbol = Gene_Symbol,
