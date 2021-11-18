@@ -1,0 +1,42 @@
+---
+title: "QC EFO MONDO Map file"
+output: html_notebook
+---
+
+## Load libraries
+
+```{r load_libraries}
+suppressPackageStartupMessages({
+  library(tidyverse)
+})
+```
+
+## Read efo-mondo-map.tsv and histologies file
+
+```{r read the two files}
+
+histology_df <- readr::read_tsv('../../data/histologies.tsv', guess_max=100000)
+efo_mondo_map <- readr::read_tsv('results/efo-mondo-map.tsv')
+
+```
+
+## Check to make sure all cancer groups in histologies are in efo mondo map file
+
+```{r}
+cancer_group_summary <- histology_df %>% 
+  dplyr::filter(!is.na(cancer_group)) %>% 
+  dplyr::filter(cohort %in% c("PBTA", "GMKF", "TARGET")) %>%
+  dplyr::group_by(cancer_group) %>% 
+  dplyr::mutate(n=n()) %>% 
+  dplyr::select(cancer_group, n) %>%
+  unique()
+
+cancer_group_effective <- cancer_group_summary %>% 
+  dplyr::filter(n>=3) %>% 
+  pull(cancer_group)
+
+all(cancer_group_effective %in% efo_mondo_map$cancer_group)
+cancer_group_effective[!cancer_group_effective %in% efo_mondo_map$cancer_group] 
+
+```
+

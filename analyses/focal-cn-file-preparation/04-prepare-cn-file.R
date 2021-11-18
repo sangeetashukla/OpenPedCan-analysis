@@ -248,22 +248,44 @@ if (!file.exists(annotation_file)) {
 tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
 
 #### Addressing autosomes first ------------------------------------------------
+# slice the df to avoid memory exhaust issues
+cnv_df_ids <- cnv_df %>% 
+  dplyr::pull(Kids_First_Biospecimen_ID) %>% unique()
+# slice to 200 samples each
+slice_vector <- seq(1, length(cnv_df_ids), 200) 
 
-# Exclude the X and Y chromosomes
-# Removing copy neutral segments saves on the RAM required to run this step
-# and file size
-cnv_no_xy <- cnv_df %>%
-  dplyr::filter(!(chr %in% c("chrX", "chrY")))
-
-# Merge and annotated no X&Y
-autosome_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_no_xy,
-                                                   txdb_exons = tx_exons) %>%
-  # mark possible amplifications in autosomes
-  dplyr::mutate(status = dplyr::case_when(
-    copy_number > (2 * ploidy) ~ "amplification",
-    copy_number == 0 ~ "deep deletion",
-    TRUE ~ as.character(status)
-  ))
+# define combined dataframe
+autosome_annotated_cn <- data.frame()
+for (i in 1:length(slice_vector)){
+  start_id <- as.numeric(slice_vector[i])
+  if(i<length(slice_vector)){
+    end_id <- as.numeric(slice_vector[i+1]-1)
+  } else {
+    end_id <- as.numeric(length(cnv_df_ids))
+  }
+  # get the matching BS IDs
+  cnv_df_ids_each <- cnv_df_ids[start_id:end_id]
+  # get the matching CNV dataframe
+  cnv_df_each <- cnv_df %>% 
+    dplyr::filter(Kids_First_Biospecimen_ID %in% cnv_df_ids_each)
+  
+  # Exclude the X and Y chromosomes
+  # Removing copy neutral segments saves on the RAM required to run this step
+  # and file size
+  cnv_no_xy_each <- cnv_df_each %>%
+    dplyr::filter(!(chr %in% c("chrX", "chrY")))
+  
+  # Merge and annotated no X&Y
+  autosome_annotated_cn_each <- process_annotate_overlaps(cnv_df = cnv_no_xy_each,
+                                                     txdb_exons = tx_exons) %>%
+    # mark possible amplifications in autosomes
+    dplyr::mutate(status = dplyr::case_when(
+      copy_number > (2 * ploidy) ~ "amplification",
+      copy_number == 0 ~ "deep deletion",
+      TRUE ~ as.character(status)
+    ))
+  autosome_annotated_cn <- bind_rows(autosome_annotated_cn, autosome_annotated_cn_each)
+}
 
 # Output file name
 if (opt$runWXSonly){
@@ -272,7 +294,6 @@ if (opt$runWXSonly){
   autosome_output_file <- paste0(opt$filename_lead, "_autosomes.tsv.gz")
 }
 
-
 # Save final data.frame to a tsv file
 readr::write_tsv(autosome_annotated_cn,
                  file.path(results_dir, autosome_output_file))
@@ -280,29 +301,47 @@ readr::write_tsv(autosome_annotated_cn,
 #### X&Y -----------------------------------------------------------------------
 
 if (xy_flag) {
-  # Filter to just the X and Y chromosomes and remove neutral segments
-  # Removing copy neutral segments saves on the RAM required to run this step
-  # and file size
-  cnv_sex_chrom <- cnv_df %>%
-    dplyr::filter(chr %in% c("chrX", "chrY"))
-  
-  # Merge and annotated no X&Y
-  sex_chrom_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_sex_chrom,
-                                                      txdb_exons = tx_exons) %>%
-    # mark possible deep loss in sex chromosome
-    dplyr::mutate(status = dplyr::case_when(
-      copy_number == 0  ~ "deep deletion",
-      TRUE ~ as.character(status)
-    ))
-  
-  
-  # Add germline sex estimate into this data.frame
-  sex_chrom_annotated_cn <- sex_chrom_annotated_cn %>%
-    dplyr::inner_join(dplyr::select(histologies_df,
-                                    Kids_First_Biospecimen_ID,
-                                    germline_sex_estimate),
-                      by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
-    dplyr::select(-germline_sex_estimate, dplyr::everything())
+  # define combined dataframe
+  sex_chrom_annotated_cn <- data.frame()
+  for (j in 1:length(slice_vector)){
+    start_id <- as.numeric(slice_vector[j])
+    if(j<length(slice_vector)){
+      end_id <- as.numeric(slice_vector[j+1]-1)
+    } else {
+      end_id <- as.numeric(length(cnv_df_ids))
+    }
+    # get the matching BS IDs
+    cnv_df_ids_each <- cnv_df_ids[start_id:end_id]
+    # get the matching CNV dataframe
+    cnv_df_each <- cnv_df %>% 
+      dplyr::filter(Kids_First_Biospecimen_ID %in% cnv_df_ids_each)
+    
+    # Filter to just the X and Y chromosomes and remove neutral segments
+    # Removing copy neutral segments saves on the RAM required to run this step
+    # and file size
+    cnv_sex_chrom_each <- cnv_df_each %>%
+      dplyr::filter(chr %in% c("chrX", "chrY"))
+    
+    # Merge and annotated no X&Y
+    sex_chrom_annotated_cn_each <- process_annotate_overlaps(cnv_df = cnv_sex_chrom_each,
+                                                        txdb_exons = tx_exons) %>%
+      # mark possible deep loss in sex chromosome
+      dplyr::mutate(status = dplyr::case_when(
+        copy_number == 0  ~ "deep deletion",
+        TRUE ~ as.character(status)
+      ))
+    
+    
+    # Add germline sex estimate into this data.frame
+    sex_chrom_annotated_cn_each <- sex_chrom_annotated_cn_each %>%
+      dplyr::inner_join(dplyr::select(histologies_df,
+                                      Kids_First_Biospecimen_ID,
+                                      germline_sex_estimate),
+                        by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
+      dplyr::select(-germline_sex_estimate, dplyr::everything())
+    # combine the results
+    sex_chrom_annotated_cn <- bind_rows(sex_chrom_annotated_cn, sex_chrom_annotated_cn_each)
+  }
   
   # Output file name
   if (opt$runWXSonly){
