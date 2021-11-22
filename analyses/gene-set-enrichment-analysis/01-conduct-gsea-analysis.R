@@ -26,7 +26,7 @@
 #### Set Up Libraries --------------------------------------------------------------------
 
 ## Load and/or install libraries ##
-library(tidyr)
+library(tidyverse)
 library(readr)
 library(tibble)
 library(optparse)
