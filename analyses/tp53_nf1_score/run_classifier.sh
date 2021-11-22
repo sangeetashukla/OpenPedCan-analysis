@@ -33,7 +33,7 @@ cds_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
 snvconsensus_file="${data_dir}/snv-consensus-plus-hotspots.maf.tsv.gz"
 cnvconsensus_file="${data_dir}/consensus_wgs_plus_cnvkit_wxs.tsv.gz"
 
-if [[ RUN_FOR_SUBTYPING == "0" ]]
+if [[ $RUN_FOR_SUBTYPING == "0" ]]
 then
    histology_file="../../data/histologies.tsv" 
 else 
@@ -57,15 +57,8 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
   --cohort "PBTA" \
   --gencode ${cds_file}
 
-if [[ RUN_FOR_SUBTYPING == "0" ]]
-then
-   # expression files for prediction
-   collapsed_rna="${data_dir}/gene-expression-rsem-tpm-collapsed.rds"
-else
-   # expression files for prediction
-   collapsed_rna="../collapse-rnaseq/results/gene-expression-rsem-tpm-collapsed.rds"
-fi
-
+# now only one RNA file is available
+collapsed_rna="${data_dir}/gene-expression-rsem-tpm-collapsed.rds"
 
 # Run classifier and ROC plotting for RNA data
 python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_rna} -t ${histology_file} -c "PBTA"
@@ -89,4 +82,5 @@ python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp5
 if [ "$POLYA" -gt "0" ]; then
   python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/gene-expression-rsem-tpm-collapsed_classifier_scores.tsv -c ${histology_file} -r "PBTA"
 fi
+
 

@@ -111,7 +111,7 @@ get_cg_cs_tbl <- function(histology_df) {
 #   contain the following fields: Kids_First_Biospecimen_ID,
 #   Kids_First_Participant_ID, cancer_group, and cohort. This
 #   is used for computing the following columns: Total_alterations,
-#   Patients_in_dataset, Total_alterations_Over_Patients_in_dataset and
+#   Patients_in_dataset, Total_alterations_over_subjects_in_dataset and
 #   Frequency_in_overall_dataset.
 # - primary_histology_df: the histology tibble that contains primary tumor
 #   samples. Must contain the Kids_First_Biospecimen_ID field.
@@ -182,7 +182,7 @@ get_cg_ch_mut_freq_tbl <- function(alt_df, overall_histology_df,
     group_by(Alt_ID) %>%
     summarise(Total_alterations = length(unique(Kids_First_Participant_ID))) %>%
     mutate(Patients_in_dataset = ss_n_patients) %>%
-    mutate(Total_alterations_Over_Patients_in_dataset =
+    mutate(Total_alterations_over_subjects_in_dataset =
              paste(Total_alterations, Patients_in_dataset, sep = '/')) %>%
     mutate(Frequency_in_overall_dataset = num_to_pct_chr(
       Total_alterations / Patients_in_dataset))
@@ -197,10 +197,10 @@ get_cg_ch_mut_freq_tbl <- function(alt_df, overall_histology_df,
         sum(unique(Kids_First_Biospecimen_ID) %in% ss_relapse_kfbids)) %>%
     mutate(Primary_tumors_in_dataset = ss_n_primary_tumors,
            Relapse_tumors_in_dataset = ss_n_relapse_tumors) %>%
-    mutate(Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset =
+    mutate(Total_primary_tumors_mutated_over_primary_tumors_in_dataset =
              paste(Total_primary_tumors_mutated,
                    Primary_tumors_in_dataset, sep = '/'),
-           Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset =
+           Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset =
              paste(Total_relapse_tumors_mutated, Relapse_tumors_in_dataset,
                    sep = '/')) %>%
     mutate(Frequency_in_primary_tumors = num_to_pct_chr(
@@ -216,9 +216,9 @@ get_cg_ch_mut_freq_tbl <- function(alt_df, overall_histology_df,
     replace_na(list(
       Total_mutations_Over_Patients_in_dataset = '',
       Frequency_in_overall_dataset = '',
-      Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset = '',
+      Total_primary_tumors_mutated_over_primary_tumors_in_dataset = '',
       Frequency_in_primary_tumors = '',
-      Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset = '',
+      Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset = '',
       Frequency_in_relapse_tumors = ''))
   
   return(output_var_df)
