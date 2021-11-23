@@ -36,8 +36,6 @@ library(optparse)
 
 library(msigdbr) ## Contains the hallmark data sets
 library(GSVA)    ## Performs GSEA analysis
-BiocManager::install("BiocParallel")
-library("BiocParallel")
 
 
 #### Set Up optparse --------------------------------------------------------------------
@@ -139,8 +137,7 @@ for(i in 1:length(rna_library_list)){
                                  method = "gsva",
                                  min.sz=1, max.sz=1500,## Arguments from K. Rathi
                                  parallel.sz = 8, # For the bigger dataset, this ensures this won't crash due to memory problems
-                                 mx.diff = TRUE,
-                                 BPPARAM=SerialParam(progressbar=T))        ## Setting this argument to TRUE computes Gaussian-distributed scores (bimodal score distribution if FALSE)
+                                 mx.diff = TRUE)        ## Setting this argument to TRUE computes Gaussian-distributed scores (bimodal score distribution if FALSE)
   
   ### Clean scoring into tidy format
   gsea_scores_each_df <- as.data.frame(gsea_scores_each) %>%
