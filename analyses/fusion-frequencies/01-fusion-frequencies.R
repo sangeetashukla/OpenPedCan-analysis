@@ -78,25 +78,35 @@ fusion_df <- read_tsv(fusion_file, guess_max = 100000)
 # assert all records have Sample
 stopifnot(identical(sum(is.na(fusion_df$Sample)), as.integer(0)))
 
+# get TCGA samples IDs in the histlogies file
+tcga_bs_id <- htl_df %>% 
+  filter(cohort=="TCGA") %>%
+  pull(Kids_First_Biospecimen_ID) %>% 
+  unique()
+
+# filter TCGA samples out of the histologies df
+htl_df <- htl_df %>%  
+  filter(!Kids_First_Biospecimen_ID %in% tcga_bs_id)
+
 # primary independent sample data frame for all cohorts
 primary_indp_sdf_all <- read_tsv(primary_independence_all,
-  col_types = cols(
-    .default = col_guess()))
+                                  col_types = cols(.default = col_guess())) %>% 
+  filter(!Kids_First_Biospecimen_ID %in% tcga_bs_id)
 
 # relapse independent samples for all cohorts
 relapse_indp_sdf_all <- read_tsv(relapse_independence_all,
-  col_types = cols(
-    .default = col_guess()))
+                                  col_types = cols(.default = col_guess())) %>% 
+  filter(!Kids_First_Biospecimen_ID %in% tcga_bs_id)
 
 # primary independent sample data frame for each cohort
 primary_indp_sdf_each <- read_tsv(primary_independence_each,
-                                 col_types = cols(
-                                   .default = col_guess()))
+                                  col_types = cols(.default = col_guess())) %>% 
+  filter(!Kids_First_Biospecimen_ID %in% tcga_bs_id)
 
 # relapse independent samples for each cohort
 relapse_indp_sdf_each <- read_tsv(relapse_independence_each,
-                                 col_types = cols(
-                                   .default = col_guess()))
+                                  col_types = cols(.default = col_guess())) %>% 
+  filter(!Kids_First_Biospecimen_ID %in% tcga_bs_id)
 
 # read ENSEMBL, Hugo Symbol and PMTL mapping file
 ensg_hugo_pmtl_df <- read_tsv(file.path(data_dir,'ensg-hugo-pmtl-mapping.tsv'),
@@ -310,11 +320,11 @@ stopifnot(identical(sum(is.na(m_fus_freq_tbl)), as.integer(0)))
 # write to tsv
 annotated_m_fus_freq_tbl <- annotated_m_fus_freq_tbl %>%
   select(keep_cols, Gene_Ensembl_ID, Disease, MONDO, PMTL, EFO,Dataset,
-         Total_alterations_Over_Patients_in_dataset,
+         Total_alterations_over_subjects_in_dataset,
          Frequency_in_overall_dataset,
-         Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
+         Total_primary_tumors_mutated_over_primary_tumors_in_dataset,
          Frequency_in_primary_tumors,
-         Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
+         Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors) %>%
   unique() %>%
   dplyr::rename(Gene_symbol = Gene_Symbol,
