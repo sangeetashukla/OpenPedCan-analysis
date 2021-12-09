@@ -412,6 +412,11 @@ RUN ./install_bioc.r \
 RUN ./install_bioc.r \
     mygene
 
+# Packages for focal-CN-file-prep module
+RUN ./install_bioc.r \
+    GenomicRanges
+
+RUN R -e 'BiocManager::install(c("AnnotationDbi", "org.Hs.eg.db"))'
 
 # Even though apt-get section at top, add installation here to avoid re-RUN
 # previous steps in docker build.
