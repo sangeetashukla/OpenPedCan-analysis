@@ -81,7 +81,7 @@ get_cg_cs_tbl <- function(histology_df) {
 #   for computing mutation frequencies. Must contain the following fields:
 #   Kids_First_Biospecimen_ID, Kids_First_Participant_ID. This is used for
 #   computing the following columns: Total_mutations, Patients_in_dataset,
-#   Total_mutations_Over_Patients_in_dataset and Frequency_in_overall_dataset.
+#   Total_mutations_over_subjects_in_dataset and Frequency_in_overall_dataset.
 # - primary_histology_df: the histology tibble that contains primary tumor
 #   samples. Must contain the Kids_First_Biospecimen_ID field.
 # - relapse_histology_df: the histology tibble that contains relapse tumor
@@ -180,7 +180,7 @@ get_opr_mut_freq_tbl <- function(maf_df, var_group_col,
     group_by_at(var_group_col) %>%
     summarise(Total_mutations = length(unique(Kids_First_Participant_ID))) %>%
     mutate(Patients_in_dataset = ss_n_patients) %>%
-    mutate(Total_mutations_Over_Patients_in_dataset =
+    mutate(Total_mutations_over_subjects_in_dataset =
              paste(Total_mutations, Patients_in_dataset, sep = '/')) %>%
     mutate(Frequency_in_overall_dataset = num_to_pct_chr(
       Total_mutations / Patients_in_dataset))
@@ -195,10 +195,10 @@ get_opr_mut_freq_tbl <- function(maf_df, var_group_col,
         sum(unique(Kids_First_Biospecimen_ID) %in% ss_relapse_kfbids)) %>%
     mutate(Primary_tumors_in_dataset = ss_n_primary_tumors,
            Relapse_tumors_in_dataset = ss_n_relapse_tumors) %>%
-    mutate(Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset =
+    mutate(Total_primary_tumors_mutated_over_primary_tumors_in_dataset =
              paste(Total_primary_tumors_mutated,
                    Primary_tumors_in_dataset, sep = '/'),
-           Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset =
+           Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset =
              paste(Total_relapse_tumors_mutated, Relapse_tumors_in_dataset,
                    sep = '/')) %>%
     mutate(Frequency_in_primary_tumors = num_to_pct_chr(
@@ -227,11 +227,11 @@ get_opr_mut_freq_tbl <- function(maf_df, var_group_col,
            'Total_relapse_tumors_mutated',
            'Primary_tumors_in_dataset',
            'Relapse_tumors_in_dataset',
-           'Total_mutations_Over_Patients_in_dataset',
+           'Total_mutations_over_subjects_in_dataset',
            'Frequency_in_overall_dataset',
-           'Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset',
+           'Total_primary_tumors_mutated_over_primary_tumors_in_dataset',
            'Frequency_in_primary_tumors',
-           'Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset',
+           'Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset',
            'Frequency_in_relapse_tumors'))
   ))
 
@@ -432,7 +432,7 @@ add_cg_ch_pedcbio_pedot_plot_urls <- function(mut_freq_tbl,
 #   contain the following fields: Kids_First_Biospecimen_ID,
 #   Kids_First_Participant_ID, cancer_group, and cohort. This
 #   is used for computing the following columns: Total_mutations,
-#   Patients_in_dataset, Total_mutations_Over_Patients_in_dataset and
+#   Patients_in_dataset, Total_mutations_over_subjects_in_dataset and
 #   Frequency_in_overall_dataset.
 # - primary_histology_df: the histology tibble that contains primary tumor
 #   samples. Must contain the Kids_First_Biospecimen_ID field.
@@ -506,11 +506,11 @@ get_cg_ch_var_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
     select(Gene_symbol, Dataset, Disease, Variant_ID, dbSNP_ID,
            VEP_impact, SIFT_impact, PolyPhen_impact, Variant_classification,
            Variant_type, Gene_Ensembl_ID, Protein_Ensembl_ID, Protein_change,
-           Total_mutations_Over_Patients_in_dataset,
+           Total_mutations_over_subjects_in_dataset,
            Frequency_in_overall_dataset,
-           Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
+           Total_primary_tumors_mutated_over_primary_tumors_in_dataset,
            Frequency_in_primary_tumors,
-           Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
+           Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset,
            Frequency_in_relapse_tumors, HotSpot) %>%
     mutate_all(function(x) replace_na(x, replace = ''))
 
@@ -533,7 +533,7 @@ get_cg_ch_var_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
 #   contain the following fields: Kids_First_Biospecimen_ID,
 #   Kids_First_Participant_ID, cancer_group, and cohort. This
 #   is used for computing the following columns: Total_mutations,
-#   Patients_in_dataset, Total_mutations_Over_Patients_in_dataset and
+#   Patients_in_dataset, Total_mutations_over_subjects_in_dataset and
 #   Frequency_in_overall_dataset.
 # - primary_histology_df: the histology tibble that contains primary tumor
 #   samples. Must contain the Kids_First_Biospecimen_ID field.
@@ -597,11 +597,11 @@ get_cg_ch_gene_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
            Dataset = get_cohort_set_value(ss_cohorts)) %>%
     arrange(desc(as.numeric(Total_mutations))) %>%
     select(Gene_symbol, Dataset, Disease, Gene_Ensembl_ID, Protein_Ensembl_ID,
-           Total_mutations_Over_Patients_in_dataset,
+           Total_mutations_over_subjects_in_dataset,
            Frequency_in_overall_dataset,
-           Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
+           Total_primary_tumors_mutated_over_primary_tumors_in_dataset,
            Frequency_in_primary_tumors,
-           Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
+           Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset,
            Frequency_in_relapse_tumors) %>%
     mutate_all(function(x) replace_na(x, replace = ''))
 
@@ -880,11 +880,11 @@ var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
          VEP_impact, SIFT_impact, PolyPhen_impact, Variant_classification,
          Variant_type, Gene_full_name, Protein_RefSeq_ID,
          Gene_Ensembl_ID, Protein_Ensembl_ID, Protein_change,
-         Total_mutations_Over_Patients_in_dataset,
+         Total_mutations_over_subjects_in_dataset,
          Frequency_in_overall_dataset,
-         Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
+         Total_primary_tumors_mutated_over_primary_tumors_in_dataset,
          Frequency_in_primary_tumors,
-         Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
+         Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors,
          HotSpot, OncoKB_cancer_gene, OncoKB_oncogene_TSG) %>%
   rename(Variant_ID_hg38 = Variant_ID,
@@ -908,11 +908,11 @@ gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
   select(Gene_symbol, PMTL, Dataset, Disease, EFO, MONDO,
          Gene_full_name, Gene_type, Protein_RefSeq_ID,
          Gene_Ensembl_ID, Protein_Ensembl_ID,
-         Total_mutations_Over_Patients_in_dataset,
+         Total_mutations_over_subjects_in_dataset,
          Frequency_in_overall_dataset,
-         Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
+         Total_primary_tumors_mutated_over_primary_tumors_in_dataset,
          Frequency_in_primary_tumors,
-         Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
+         Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors,
          OncoKB_cancer_gene, OncoKB_oncogene_TSG,
          PedcBio_PedOT_oncoprint_plot_URL, PedcBio_PedOT_mutations_plot_URL) %>%

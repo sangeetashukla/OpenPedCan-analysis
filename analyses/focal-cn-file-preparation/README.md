@@ -2,6 +2,8 @@
 
 **Module authors:** Chante Bethell ([@cbethell](https://github.com/cbethell)), Joshua Shapiro ([@jashapiro](https://github.com/jashapiro)), and Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni))
 
+**Modified by:** Komal S. Rathi([@komalsrathi](https://github.com/komalsrathi)) and Run Jin ([@runjin326](https://github.com/runjin326))
+
 The copy number data from OpenPedCan are provided as ranges or segments.
 The purpose of this module is to map from those ranges to gene identifiers for consumption by downstream analyses (e.g., OncoPrint plotting).
 
