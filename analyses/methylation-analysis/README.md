@@ -96,7 +96,7 @@ Methylation array datasets are avaliable on the CHOP HPC `Isilon` sever (locatio
 - `metadata/TARGET_AML_MethylationArray_20160812_27k.sdrf.3.txt` - metadata for Acute Myeloid Leukemia (AML) tumor samples, 27k arrays, batch 3
 
 ## Results
-Summary result files of methylation `beta-values` and `M-values` are too large to upload to this repository and available on the CHOP HPC `Isilon` sever (location: /mnt/isilon/opentargets/wafulae/methylation-analysis/results/`). Please contact `Avin Ferrel (@affrel)` for access.
+Summary result files of methylation `beta-values` and `M-values` are too large to upload to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/results/`). Please contact `Avin Ferrel (@affrel)` for access.
 - `results/Normal-beta-values-methylation.tsv.gz`
 - `results/Normal-m-values-methylation.tsv.gz`
 - `results/NBL-beta-values-methylation.tsv.gz`
