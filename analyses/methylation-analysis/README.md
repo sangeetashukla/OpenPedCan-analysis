@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Process probe hybridization intensity values of selected methylated and unmethylated cytosine (CpG) loci into usable methylation measurements for the [Pediatric Open Targets, OPenPedCan-analysis](https://github.com/PediatricOpenTargets/OpenPedCan-analysis) raw DNA methylation array datasets. 
+Preprocess probe hybridization intensity values of selected methylated and unmethylated cytosine (CpG) loci into usable methylation measurements for the [Pediatric Open Targets, OPenPedCan-analysis](https://github.com/PediatricOpenTargets/OpenPedCan-analysis) raw DNA methylation array datasets. 
 
 ## Data description 
 
@@ -18,7 +18,7 @@ The TARGET Illumina `Infinium HumanMethylation (450k and 27k) BeadChip` and `Roc
 
 ## Analysis
 
-- The TARGET Illumina methylation analysis results available on the [TARGET project website] (https://ocg.cancer.gov/programs/target/target-methods) were processed with different methylation software packages, including `GenomeStudio` (AML27k), `minfi` (AML450k), `BeadStudio` (CCSK and WT), `methylumi` (NBL), and `Lumi+BMIQ` (OS). We have re-analyzed all the cancer types with Illumina arrays using the updated version of [minfi Bioconductor package](https://academic.oup.com/bioinformatics/article/33/4/558/2666344). We utilized the `preprocessQuantile` array preprocessing method implemented in minfi for background correction, removing of outlier samples, and performing stratified quantile normalization to estimate the relative abundance of methylated and unmethylated cytosines at selected loci (Beta and M values). Using the one prepprocessing method for all datasets from the same array platform/vendor allows downstream comparisons of methylation profiles across cancer type.
+- The TARGET Illumina methylation analysis results available on the [TARGET project website] (https://ocg.cancer.gov/programs/target/target-methods) were preprocessed with different methylation software packages, including `GenomeStudio` (AML27k), `minfi` (AML450k), `BeadStudio` (CCSK and WT), `methylumi` (NBL), and `Lumi+BMIQ` (OS). We have re-analyzed all the cancer types with Illumina arrays using the updated version of [minfi Bioconductor package](https://academic.oup.com/bioinformatics/article/33/4/558/2666344). We utilized the `preprocessQuantile` array preprocessing method implemented in minfi for background correction, removing of outlier samples, and performing stratified quantile normalization to estimate the relative abundance of methylated and unmethylated cytosines at selected loci (Beta and M values). Using the one prepprocessing method for all datasets from the same array platform/vendor allows downstream comparisons of methylation profiles across cancer type.
 - A small subset of `non-tumor (normal)` samples (12) only available in the `Neuroblastoma (NBL)` array dataset were processed seperately and could protentially be utlized as control set for both Neuroblastoma and other cancer types. 
 - Unlike the probe annotations Illumina 450k arrays, the probe annotations for older Illumina 27k arrays do not specify methylation region relative to gene coding loci (TSS or body) and are therefore not reported in the summary results. Since CpG sites interogated by the Illumina 27k array probes are a subset of Illumina 450k array probes, the methylation regions of the former can be easily be inferred from the latter for common samples among the two. 
 - The`Acute Lymphoblastic Leukemia (ALL)` array dataset is from a different array platform and vendor, `Nimblegen HELP (Roche)` has not been reanalyzed.
@@ -34,7 +34,7 @@ This is a bash script wrapper for setting input file paths for the main analysis
 
 
 #### `01-process-illumina-arrays.R`
-Prepocesses raw Illumina Infinium HumanMethylation BeadArrays (27K, and 450K) intensities using `minfi Bioconductor package` into usable methylation measurements (Beta and M values) for TARGET normal and tumor samples. 
+Preprocesses raw Illumina Infinium HumanMethylation BeadArrays (27K, and 450K) intensities using `minfi Bioconductor package` into usable methylation measurements (Beta and M values) for TARGET normal and tumor samples. 
 
 Addition data packages for `Ilumina Infinium HumanMethylation27 BeadArrays` that don't with for analyzing `minfi` will need to be installed separately as folllows:
 - `BiocManager::install("IlluminaHumanMethylation27kmanifest")`
@@ -73,7 +73,7 @@ Options:
 ## Input datasets
 
 #### `Methylation arrays:`
-Methylation array datasets are avaliable on the CHOP HPC `Isilon` sever (location: ``/mnt/isilon/opentargets/wafulae/methylation-analysis/data/``). Please contact `Avin Ferrel (@affrel)` for access. 
+Methylation array datasets are avaliable on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/data/`). Please contact `Avin Ferrel (@affrel)` for access. 
 - `data/Normal/*.idat` - Normal samples array files
 - `data/NBL/*.idat` - Neuroblastoma (NBL) tumor samples array files
 - `data/OS/*.idat` - Osteosarcoma (OS) tumor samples samples array files
@@ -96,7 +96,7 @@ Methylation array datasets are avaliable on the CHOP HPC `Isilon` sever (locatio
 - `metadata/TARGET_AML_MethylationArray_20160812_27k.sdrf.3.txt` - metadata for Acute Myeloid Leukemia (AML) tumor samples, 27k arrays, batch 3
 
 ## Results
-Summary result files of methylation `beta-values` and `M-values` are too large to upload to this repository and available on the CHOP HPC `Isilon` sever (location: ``/mnt/isilon/opentargets/wafulae/methylation-analysis/results/``). Please contact `Avin Ferrel (@affrel)` for access.
+Summary result files of methylation `beta-values` and `M-values` are too large to upload to this repository and available on the CHOP HPC `Isilon` sever (location: /mnt/isilon/opentargets/wafulae/methylation-analysis/results/`). Please contact `Avin Ferrel (@affrel)` for access.
 - `results/Normal-beta-values-methylation.tsv.gz`
 - `results/Normal-m-values-methylation.tsv.gz`
 - `results/NBL-beta-values-methylation.tsv.gz`
