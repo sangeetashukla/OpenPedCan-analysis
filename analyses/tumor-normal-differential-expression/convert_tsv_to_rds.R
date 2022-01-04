@@ -18,15 +18,11 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list = option_list))
 
 
-#args <- commandArgs(trailingOnly = TRUE)
-
-#tsv_file <- args[1]
 
 tsv_file <- opt$tsv_file
 outdir <- opt$outdir
 outbase <- opt$basename
 
-print(paste("File name:", tsv_file, sep=" "))
 
 
 tsv_data <- read.delim(file=tsv_file, header = TRUE, sep="\t")

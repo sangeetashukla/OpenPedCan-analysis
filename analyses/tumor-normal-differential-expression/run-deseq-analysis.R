@@ -48,9 +48,6 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list = option_list))
 
 
-#args <- commandArgs(trailingOnly = TRUE)
-
-
 HIST_index <- opt$HIST_i
 GTEX_index <- opt$GTEX_i
 
@@ -295,17 +292,6 @@ if(Cancer.Hist_Hits <= 1) Histology_MEAN_TPMs <- TPMData_filtered[match(rownames
 ##Round the mean TPMs to the 2 decimal places
 Histology_MEAN_TPMs <- round(Histology_MEAN_TPMs,2)
 GTEX_MEAN_TPMs <- round(GTEX_MEAN_TPMs,2)
-
-print(histology_filtered[I])
-print(strsplit(histology_filtered[I],split="_")[[1]][1])
-print(ifelse(strsplit(histology_filtered[I],split="_")[[1]][1]=="all-cohorts","All Cohorts",
-                  paste(unique(hist$cohort[which(hist$Kids_First_Biospecimen_ID %in% HIST_sample_type_df_filtered$Case_ID)])
-                        ,collapse=";",sep=";")))
-print(length(rownames(Result)))
-print(gsub("all-cohorts","all_cohorts",gsub(" |/|;|:|\\(|)","_",paste(histology_filtered[I],GTEX_filtered[J],sep="_v_"))))
-print(paste(gsub("all-cohorts","all_cohorts",unlist(strsplit(histology_filtered[I],split="_"))[-1]),collapse=" "))
-print(Cancer.Hist_Hits)
-print(GTEX_Hits)
 
 
 ##Create Final Dataframe with all the info calculated and extracted from histology file Including EFO/MONDO codes where available and RMTL status

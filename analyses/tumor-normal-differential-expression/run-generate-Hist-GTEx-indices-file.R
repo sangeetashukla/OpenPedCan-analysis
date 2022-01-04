@@ -40,7 +40,6 @@ ind_spec_all_cohorts <- read.delim(opt$ind_allcohorts, header=TRUE, sep='\t')
 ind_spec_each_cohort <- read.delim(opt$ind_eachcohort, header=TRUE, sep='\t')
 
 outdir <- opt$outdir
-#outdir <- "Input_Data"
 cmd_mkdir <- paste("mkdir",outdir,sep=" ")
 system(cmd_mkdir)
 
