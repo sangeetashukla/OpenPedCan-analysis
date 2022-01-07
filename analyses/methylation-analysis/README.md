@@ -126,6 +126,6 @@ Summary result files of methylation `beta-values` and `M-values` are too large t
 
 ## Plots
 Comparison methylation t-SNE plot among cancer types for selected cancer genes. Corresponding `M-values` gene matrices are too large to upload all to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/plots/`). Please contact `Avin Ferrel (@afarrel)` for access.
-- `plots/<GeneSymbol>-m-values.png` - M-values gene matrix 
+- `plots/<GeneSymbol>-m-values.csv` - M-values gene matrix 
 - `plots/<GeneSymbol>-plot.png` - gene t-SNE plot
 
