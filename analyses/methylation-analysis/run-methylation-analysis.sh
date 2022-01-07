@@ -19,7 +19,7 @@ results_path="results"
 
 
 ######################### Process `Normal` samples for Illumina 450k arrays #########################
-Rscript --vanilla 01-process-illumina-arrays.R \
+Rscript --vanilla 01-preprocess-illumina-arrays.R \
   --base_dir ${data_path}/Normal \
   --metadata_file ${metadata_path}/TARGET_Normal_MethylationArray_20160812.sdrf.txt \
   --preprocess_method preprocessQuantile \
@@ -27,7 +27,7 @@ Rscript --vanilla 01-process-illumina-arrays.R \
 
 ######################### Process `NBL` samples for Illumina 450k arrays ############################
 # process first batch
-Rscript --vanilla 01-process-illumina-arrays.R \
+Rscript --vanilla 01-preprocess-illumina-arrays.R \
   --base_dir ${data_path}/NBL \
   --metadata_file ${metadata_path}/TARGET_NBL_MethylationArray_20160812.sdrf.1.txt \
   --preprocess_method preprocessQuantile \
@@ -39,7 +39,7 @@ mv ${results_path}/NBL-m-values-methylation.tsv \
   ${results_path}/NBL-m-values-methylation.1.tsv
 
 # process second batch
-Rscript --vanilla 01-process-illumina-arrays.R \
+Rscript --vanilla 01-preprocess-illumina-arrays.R \
   --base_dir ${data_path}/NBL \
   --metadata_file ${metadata_path}/TARGET_NBL_MethylationArray_20160812.sdrf.2.txt \
   --preprocess_method preprocessQuantile \
@@ -64,21 +64,21 @@ awk 'FNR==1 && NR!=1 {(/^<header>/) getline;} 1 {print}' \
 rm ${results_path}/NBL-*-values-methylation.*.tsv
 
 ######################### Process `CCSK` samples for Illumina 450k arrays ############################
-Rscript --vanilla 01-process-illumina-arrays.R \
+Rscript --vanilla 01-preprocess-illumina-arrays.R \
   --base_dir ${data_path}/CCSK \
   --metadata_file ${metadata_path}/TARGET_CCSK_MethylationArray_20160819.sdrf.txt \
   --preprocess_method preprocessQuantile \
   --snp_filter
 
 ######################### Process `OS` samples for Illumina 450k arrays ##############################
-Rscript --vanilla 01-process-illumina-arrays.R \
+Rscript --vanilla 01-preprocess-illumina-arrays.R \
   --base_dir ${data_path}/OS \
   --metadata_file ${metadata_path}/TARGET_OS_MethylationArray_20161103.sdrf.txt \
   --preprocess_method preprocessQuantile \
   --snp_filter
 
 ######################### Process `WT` samples for Illumina 450k arrays ##############################
-Rscript --vanilla 01-process-illumina-arrays.R \
+Rscript --vanilla 01-preprocess-illumina-arrays.R \
   --base_dir ${data_path}/WT \
   --metadata_file ${metadata_path}/TARGET_WT_MethylationArray_20160831.sdrf.txt \
   --preprocess_method preprocessQuantile \
@@ -86,7 +86,7 @@ Rscript --vanilla 01-process-illumina-arrays.R \
 
 ######################### Process `AML` samples for Illumina 450k arrays #############################
 # process first batch
-Rscript --vanilla 01-process-illumina-arrays.R \
+Rscript --vanilla 01-preprocess-illumina-arrays.R \
   --base_dir ${data_path}/AML450k \
   --metadata_file ${metadata_path}/TARGET_AML_MethylationArray_20160812_450k.sdrf.1.txt \
   --preprocess_method preprocessQuantile \
@@ -98,7 +98,7 @@ mv ${results_path}/AML450k-m-values-methylation.tsv \
   ${results_path}/AML450k-m-values-methylation.1.tsv
 
 # process second batch
-Rscript --vanilla 01-process-illumina-arrays.R \
+Rscript --vanilla 01-preprocess-illumina-arrays.R \
   --base_dir ${data_path}/AML450k \
   --metadata_file ${metadata_path}/TARGET_AML_MethylationArray_20160812_450k.sdrf.2.txt \
   --preprocess_method preprocessQuantile \
@@ -124,7 +124,7 @@ rm ${results_path}/AML450k-*-values-methylation.*.tsv
 
 ######################### Process `AML` samples for Illumina 27k arrays ##############################
 # process first batch
-Rscript --vanilla 01-process-illumina-arrays.R \
+Rscript --vanilla 01-preprocess-illumina-arrays.R \
   --base_dir ${data_path}/AML27k \
   --metadata_file ${metadata_path}/TARGET_AML_MethylationArray_20160812_27k.sdrf.1.txt \
   --preprocess_method preprocessQuantile \
@@ -136,7 +136,7 @@ mv ${results_path}/AML27k-m-values-methylation.tsv \
   ${results_path}/AML27k-m-values-methylation.1.tsv
 
 # process second batch
-Rscript --vanilla 01-process-illumina-arrays.R \
+Rscript --vanilla 01-preprocess-illumina-arrays.R \
   --base_dir ${data_path}/AML27k \
   --metadata_file ${metadata_path}/TARGET_AML_MethylationArray_20160812_27k.sdrf.2.txt \
   --preprocess_method preprocessQuantile \
@@ -148,7 +148,7 @@ mv ${results_path}/AML27k-m-values-methylation.tsv \
   ${results_path}/AML27k-m-values-methylation.2.tsv
 
 # process third batch
-Rscript --vanilla 01-process-illumina-arrays.R \
+Rscript --vanilla 01-preprocess-illumina-arrays.R \
   --base_dir ${data_path}/AML27k \
   --metadata_file ${metadata_path}/TARGET_AML_MethylationArray_20160812_27k.sdrf.3.txt \
   --preprocess_method preprocessQuantile \

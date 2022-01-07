@@ -30,10 +30,13 @@ The TARGET Illumina `Infinium HumanMethylation (450k and 27k) BeadChip` and `Roc
 
 
 #### `run-methylation-analysis.sh`
-This is a bash script wrapper for setting input file paths for the main analysis script, `01-process-illumina-arrays.R` All file paths set in this script relative to the module directory. Therefore, this script should always run as if it were being called from the directory it lives in, the module directory (`OpenPedCan-analysis/analyses/methylation-analysis`).
+This is a bash script wrapper for setting input file paths for the main analysis script, `01-preprocess-illumina-arrays.R` All file paths set in this script relative to the module directory. Therefore, this script should always run as if it were being called from the directory it lives in, the module directory (`OpenPedCan-analysis/analyses/methylation-analysis`).
 
+```
+bash run-methylation-analysis.sh
+```
 
-#### `01-process-illumina-arrays.R`
+#### `01-preprocess-illumina-arrays.R`
 Preprocesses raw Illumina Infinium HumanMethylation BeadArrays (27K, and 450K) intensities using `minfi Bioconductor package` into usable methylation measurements (Beta and M values) for TARGET normal and tumor samples. 
 
 Addition data packages for `Ilumina Infinium HumanMethylation27 BeadArrays` that don't with for analyzing `minfi` will need to be installed separately as folllows:
@@ -42,7 +45,7 @@ Addition data packages for `Ilumina Infinium HumanMethylation27 BeadArrays` that
 
 **Argument descriptions:**
 ```
-Usage: 01-process-illumina-arrays.R [options]
+Usage: 01-preprocess-illumina-arrays.R [options]
 
 
 Options:
@@ -69,6 +72,14 @@ Options:
 		Show this help message and exit
 ```
 
+#### `02-compare-cancers-tsne-plots.R`
+Preprocesses raw Illumina Infinium HumanMethylation BeadArrays (27K, and 450K) intensities using `minfi Bioconductor package` into usable methylation measurements (Beta and M values) for TARGET normal and tumor samples.
+
+Creates comparison methylation t-SNE plots of selected cancer genes for cancer types preprocessed from Illumina Infinium HumanMethylation450 BeadArrays. Utilizes a list of cancer gene symbols (`metadata\TARGET_Methylation_GeneList.txt`) that are present in the array annotation design and methylation result tables with M-values (in the `results` folder) produces by the `01-preprocess-illumina-arrays.R` script.
+
+```
+Rscript --vanilla 02-compare-cancers-tsne-plots.R
+```
 
 ## Input datasets
 
@@ -94,6 +105,7 @@ Methylation array datasets are avaliable on the CHOP HPC `Isilon` sever (locatio
 - `metadata/TARGET_AML_MethylationArray_20160812_27k.sdrf.1.txt` - metadata for Acute Myeloid Leukemia (AML) tumor samples, 27k arrays, batch 1
 - `metadata/TARGET_AML_MethylationArray_20160812_27k.sdrf.2.txt` - metadata for Acute Myeloid Leukemia (AML) tumor samples, 27k arrays, batch 2
 - `metadata/TARGET_AML_MethylationArray_20160812_27k.sdrf.3.txt` - metadata for Acute Myeloid Leukemia (AML) tumor samples, 27k arrays, batch 3
+- `metadata/TARGET_Methylation_GeneList.txt` - a selected set of genes expressed in a subset of the tumor types (contact @afarrel for details)
 
 ## Results
 Summary result files of methylation `beta-values` and `M-values` are too large to upload to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/results/`). Please contact `Avin Ferrel (@afarrel)` for access.
@@ -111,3 +123,9 @@ Summary result files of methylation `beta-values` and `M-values` are too large t
 - `results/AML450k-m-values-methylation.tsv.gz`
 - `results/AML27k-beta-values-methylation.tsv.gz`
 - `results/AML27k-m-values-methylation.tsv.gz`
+
+## Plots
+Comparison methylation t-SNE plot among cancer types for selected cancer genes. Corresponding `M-values` are too large to upload to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/plots/`). Please contact `Avin Ferrel (@afarrel)` for access.
+- `plots/<GeneSymbol>-m-values.png` - combined cancer gene M-values for cancer types
+- `plots/<GeneSymbol>-plot.png` - cancer gene comparison t-SNE plot for cancer types
+
