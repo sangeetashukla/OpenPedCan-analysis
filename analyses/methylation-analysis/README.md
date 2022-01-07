@@ -75,7 +75,7 @@ Options:
 #### `02-compare-cancers-tsne-plots.R`
 Preprocesses raw Illumina Infinium HumanMethylation BeadArrays (27K, and 450K) intensities using `minfi Bioconductor package` into usable methylation measurements (Beta and M values) for TARGET normal and tumor samples.
 
-Creates comparison methylation t-SNE plots of selected cancer genes for cancer types preprocessed from Illumina Infinium HumanMethylation450 BeadArrays. Utilizes a list of cancer gene symbols (`metadata\TARGET_Methylation_GeneList.txt`) that are present in the array annotation design and methylation result tables with M-values (in the `results` folder) produces by the `01-preprocess-illumina-arrays.R` script.
+Creates comparison methylation profiles t-SNE plots of selected cancer genes for cancer types preprocessed from Illumina Infinium HumanMethylation450 BeadArrays. Utilizes a list of cancer gene symbols (`metadata\TARGET_Methylation_GeneList.txt`) that are present in the array annotation design and methylation result tables with M-values (in the `results` folder) produces by the `01-preprocess-illumina-arrays.R` script.
 
 ```
 Rscript --vanilla 02-compare-cancers-tsne-plots.R
@@ -125,7 +125,7 @@ Summary result files of methylation `beta-values` and `M-values` are too large t
 - `results/AML27k-m-values-methylation.tsv.gz`
 
 ## Plots
-Comparison methylation t-SNE plot among cancer types for selected cancer genes. Corresponding `M-values` are too large to upload to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/plots/`). Please contact `Avin Ferrel (@afarrel)` for access.
+Comparison methylation t-SNE plot among cancer types for selected cancer genes. Corresponding `M-values` gene matrices are too large to upload all to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/plots/`). Please contact `Avin Ferrel (@afarrel)` for access.
 - `plots/<GeneSymbol>-m-values.png` - combined cancer gene M-values for cancer types
 - `plots/<GeneSymbol>-plot.png` - cancer gene comparison t-SNE plot for cancer types
 
