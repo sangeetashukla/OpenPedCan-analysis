@@ -17,7 +17,7 @@ bash run-filter-mutation-frequencies-tables.sh
 ```
 
 ### `filter-mutation-frequencies-tables.Rmd`
-This R notebook filters SNV, CNV and fusion mutation frequencies tables to exclude Ensembl gene identifier that are not in `GENCODE v38` and `Ensembl package 104` , and lists identifiers filtered out. 
+This R notebook filters SNV, CNV, and fusion mutation frequencies tables to exclude Ensembl gene identifier that are not in `GENCODE v38` and `Ensembl package 104` , and lists identifiers filtered out. 
 
 Usage:
 ```r
