@@ -16,7 +16,7 @@ results_path="results"
 
 
 ###################### Filter mutation frequencies tables #######################
-printf '\nFiltering mutation frequecies tables...'
+printf '\nFiltering mutation frequencies tables...'
 
 Rscript -e "rmarkdown::render('filter-mutation-frequencies-tables.Rmd', \
   clean = TRUE)"
@@ -51,6 +51,11 @@ rm ${results_path}/*.json
 
 ########################### Compressing JSONL files ###########################
 printf '\nCompressing JSONL files...\n'
+
+if ls ${results_path}/*.jsonl.gz &>/dev/null
+then 
+  rm ${results_path}/*.jsonl.gz 
+fi
 
 gzip -v --no-name ${results_path}/*.jsonl
 

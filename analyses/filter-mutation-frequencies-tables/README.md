@@ -1,7 +1,7 @@
 ## Filter Mutation Frequencies Tables
 
 ### Purpose
-Remove `Ensembl (ESNG)` gene identifier in the OPenPedCan mutation frequency tables, including [SNV](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/snv-frequencies), [CNV](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/cnv-frequencies) and [fusion](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/fusion-frequencies) that are not in [GENCODE v38](http://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_38/) and [Ensembl package 104](http://ftp.ensembl.org/pub/release-104/gtf/homo_sapiens/).
+Remove `Ensembl (ESNG)` gene identifier in the OPenPedCan mutation frequency tables, including [SNV](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/snv-frequencies), [CNV](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/cnv-frequencies) and [fusion](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/fusion-frequencies) that are not in [GENCODE v38 and Ensembl package 104](http://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/rellease_38/).
 
 
 ### Analysis scripts
@@ -30,8 +30,7 @@ Input:
 - `../cnv-frequencies/results/gene-level-cnv-consensus-annotated-mut-freq.tsv.gz`
 - `../fusion-frequencies/results/putative-oncogene-fused-gene-freq.tsv.gz`
 - `../fusion-frequencies/results/putative-oncogene-fusion-freq.tsv.gz`
-- `input/input/gencode.v38.annotation.gtf.gz`
-- `input/Homo_sapiens.GRCh38.104.gtf.gz` (not utilized, similar required content as gencode v38)
+- `../../data/input/gencode.v38.primary_assembly.annotation.gtf.gz"`
 
 
 Results:

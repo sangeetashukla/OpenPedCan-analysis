@@ -25,7 +25,9 @@ _This assumes you are in the modules directory of the repository, OpenPedCan-ana
 Load libraries
 ```{r}
 # R analysis packages
-suppressPackageStartupMessages(library(data.table))
+suppressWarnings(
+  suppressPackageStartupMessages(library(rtracklayer))
+)
 suppressPackageStartupMessages(library(tidyverse))
 
 # Magrittr pipe
@@ -37,6 +39,7 @@ Set up directories.
 ```{r}
 # directories for input and output files
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
 analyses_dir <- file.path(root_dir, "analyses")
 module_dir <- file.path(analyses_dir, "filter-mutation-frequencies-tables")
 snv_results_dir <- file.path(analyses_dir,  "snv-frequencies/results")
@@ -54,24 +57,20 @@ if (!dir.exists(results_dir)) {
 
 Load Gencode gtf file
 ```{r}
-# gtf column names
-col_names <- c("seqname", "source", "feature", "start", "end", "score", "strand", "frame", "attribute")
-
 # read file
-gene_code_annot <- 
-  data.table::fread(file.path(module_dir, "input", "gencode.v38.annotation.gtf.gz"),
-                    col.names = col_names, skip=5, 
-                    showProgress = FALSE)
+gtf <- file.path(data_dir, "gencode.v38.primary_assembly.annotation.gtf.gz")
+gencode_gtf <- rtracklayer::import(con = gtf) %>% as.data.frame() %>% tibble()
 ```
 
 Get Ensembl identifiers
 ```{r}
 # filter for gene rows and get ids
-ensg_ids <- gene_code_annot %>% 
-  dplyr::filter(feature == "gene") %>% 
-  dplyr::mutate(gene_id = stringr::str_extract(attribute, "ENSG\\d+")) %>% 
+ensg_ids <- gencode_gtf %>% 
+  dplyr::filter(type == "gene") %>% 
+  dplyr::mutate(gene_id = stringr::str_extract(gene_id, "ENSG\\d+")) %>% 
   pull(gene_id) %>% 
-  unique()
+  unique() 
+ensg_ids <- ensg_ids[!is.na(ensg_ids)]
 
 # Remove gencode dataframe
 rm(gene_code_annot)
@@ -85,12 +84,13 @@ Function to filter for required Ensembl gene identifiers and write to file
 filter_freq_table <- function(freq_file, ensg_ids) {
   
   # Read gene level table 
-  freq_table <-  data.table::fread(freq_file, showProgress = FALSE) 
+  freq_table <-  readr::read_tsv(freq_file, guess_max = 10000, 
+                                 show_col_types = FALSE) 
   
   # Write filtered TSV file
   file_name <- basename(freq_file)
   freq_table %>% dplyr::filter(targetFromSourceId %in% ensg_ids) %>% 
-  data.table::fwrite(file.path(results_dir, file_name), sep = "\t", compress = "auto")
+  readr::write_tsv(file.path(results_dir, file_name))
 
   # Write filtered JSON file
   json_file <- paste(unlist(str_split(file_name, "\\."))[1], "json", sep = ".")
@@ -109,14 +109,14 @@ gene_level_snv <- filter_freq_table(
 
 # Ensembl gene identifiers removed
 gene_level_snv %>% dplyr::filter(!targetFromSourceId %in% ensg_ids) %>% 
-  dplyr::select(targetFromSourceId) %>%
+  dplyr::select(Gene_symbol, targetFromSourceId) %>%
   dplyr::rename(Ensembl_ID = targetFromSourceId) %>% 
-  dplyr::distinct() %>% 
-  tibble()
+  dplyr::distinct()
 
 # Remove frequencies dataframe
 rm(gene_level_snv)
 ```
+
 #### Variant level SNV frequencies
 ```{r}
 # Remove Ensembl gene identifiers
@@ -125,10 +125,9 @@ variant_level_snv <- filter_freq_table(
 
 # Ensembl gene identifiers removed
 variant_level_snv %>% dplyr::filter(!targetFromSourceId %in% ensg_ids) %>% 
-  dplyr::select(targetFromSourceId) %>%
+  dplyr::select(Gene_symbol, targetFromSourceId) %>%
   dplyr::rename(Ensembl_ID = targetFromSourceId) %>% 
-  dplyr::distinct() %>% 
-  tibble()
+  dplyr::distinct()
 
 # Remove frequencies dataframe
 rm(variant_level_snv)
@@ -142,10 +141,9 @@ gene_level_cnv <- filter_freq_table(
 
 # Ensembl gene identifiers removed
 gene_level_cnv %>% dplyr::filter(!targetFromSourceId %in% ensg_ids) %>% 
-  dplyr::select(targetFromSourceId) %>%
+  dplyr::select(Gene_symbol, targetFromSourceId) %>%
   dplyr::rename(Ensembl_ID = targetFromSourceId) %>% 
-  dplyr::distinct() %>% 
-  tibble()
+  dplyr::distinct()
 
 # Remove frequencies dataframe
 rm(gene_level_cnv)
@@ -159,10 +157,9 @@ fused_gene <- filter_freq_table(
 
 # Ensembl gene identifiers removed
 fused_gene %>% dplyr::filter(!targetFromSourceId %in% ensg_ids) %>% 
-  dplyr::select(targetFromSourceId) %>%
+  dplyr::select(Gene_symbol, targetFromSourceId) %>%
   dplyr::rename(Ensembl_ID = targetFromSourceId) %>% 
-  dplyr::distinct() %>% 
-  tibble()
+  dplyr::distinct()
 
 # Remove frequencies dataframe
 rm(fused_gene)
@@ -176,17 +173,15 @@ fusion <- filter_freq_table(
 
 # Ensembl gene identifiers removed
 fusion %>% dplyr::filter(!targetFromSourceId %in% ensg_ids) %>% 
-  dplyr::select(targetFromSourceId) %>%
+  dplyr::select(Gene_symbol, targetFromSourceId) %>%
   dplyr::rename(Ensembl_ID = targetFromSourceId) %>% 
-  dplyr::distinct() %>% 
-  tibble()
+  dplyr::distinct()
 
 # Remove frequencies dataframe
 rm(fusion)
 ```
 
 ## Session Info
-
 ```{r}
 sessionInfo()
 ```
