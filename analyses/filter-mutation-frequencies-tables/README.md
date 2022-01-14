@@ -31,18 +31,27 @@ Input:
 - `../fusion-frequencies/results/putative-oncogene-fused-gene-freq.tsv.gz`
 - `../fusion-frequencies/results/putative-oncogene-fusion-freq.tsv.gz`
 - `../../data/input/gencode.v38.primary_assembly.annotation.gtf.gz"`
+- `../../data/snv-consensus-plus-hotspots.maf.tsv.gz`
+- `../../data/consensus_wgs_plus_cnvkit_wxs.tsv.gz`
+- `../../data/fusion-putative-oncogenic.tsv`
+- `../../data/histologies.tsv`
 
 
 Results:
 - `results/gene-level-snv-consensus-annotated-mut-freq.tsv.gz`
 - `results/gene-level-snv-consensus-annotated-mut-freq.jsonl.gz`
+- `results/gene-level-snv-consensus-annotated-mut-freq_dropped_ensg.tsv.gz`
 - `results/variant-level-snv-consensus-annotated-mut-freq.tsv.gz`
 - `results/variant-level-snv-consensus-annotated-mut-freq.jsonl.gz`
+- `results/variant-level-snv-consensus-annotated-mut-freq_dropped_ensg.tsv.gz`
 - `results/gene-level-cnv-consensus-annotated-mut-freq.tsv.gz`
 - `results/gene-level-cnv-consensus-annotated-mut-freq.jsonl.gz`
+- `results/gene-level-cnv-consensus-annotated-mut-freq_dropped_ensg.tsv.gz`
 - `results/putative-oncogene-fused-gene-freq.tsv.gz`
 - `results/putative-oncogene-fused-gene-freq.jsonl.gz`
+- `results/putative-oncogene-fused-gene-freq_dropped_ensg.tsv.gz`
 - `results/putative-oncogene-fusion-freq.tsv.gz`
 - `results/putative-oncogene-fusion-freq.jsonl.gz`
+- `results/putative-oncogene-fusion-freq_dropped_ensg.tsv.gz`
 - `filter-mutation-frequencies-tables.nb.html`
 
