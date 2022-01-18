@@ -74,7 +74,7 @@ ensg_ids <- gencode_gtf %>%
 ensg_ids <- ensg_ids[!is.na(ensg_ids)]
 
 # Remove gencode dataframe
-rm(gene_code_annot)
+rm(gencode_gtf)
 ```
 
 Get OpenPedCan sample IDs (Kids_First_Biospecimen_ID)
@@ -145,7 +145,10 @@ filtered_ensg <- filtered_ensg %>%
 readr::write_tsv(filtered_ensg,
   file.path(results_dir, 
             "gene-level-snv-consensus-annotated-mut-freq_dropped_ensg.tsv.gz"))
-filtered_ensg
+
+# Display table
+filtered_ensg %>% dplyr::select(Gene_symbol, Ensembl_ID, cohort) %>% 
+  dplyr::distinct()
 
 # Remove frequencies data frame
 rm(gene_level_snv, filtered_ensg)
@@ -177,7 +180,10 @@ filtered_ensg <- filtered_ensg %>%
 readr::write_tsv(filtered_ensg,
   file.path(results_dir, 
             "variant-level-snv-consensus-annotated-mut-freq_dropped_ensg.tsv.gz"))
-filtered_ensg
+
+# Display table
+filtered_ensg %>% dplyr::select(Gene_symbol, Ensembl_ID, cohort) %>% 
+  dplyr::distinct()
 
 # Remove frequencies data frame
 rm(variant_level_snv, filtered_ensg, consensus_ensg)
@@ -218,7 +224,10 @@ filtered_ensg <- filtered_ensg %>%
 readr::write_tsv(filtered_ensg,
   file.path(results_dir, 
             "gene-level-cnv-consensus-annotated-mut-freq_dropped_ensg.tsv.gz"))
-filtered_ensg
+
+# Display table
+filtered_ensg %>% dplyr::select(Gene_symbol, Ensembl_ID, cohort) %>% 
+  dplyr::distinct()
 
 # Remove frequencies data frame
 rm(gene_level_cnv, filtered_ensg, consensus_ensg)
@@ -264,7 +273,10 @@ filtered_ensg <- filtered_ensg %>%
 readr::write_tsv(filtered_ensg,
   file.path(results_dir, 
             "putative-oncogene-fusion-freq_dropped_ensg.tsv.gz"))
-filtered_ensg
+
+# Display table
+filtered_ensg %>% dplyr::select(Gene_symbol, Ensembl_ID, cohort) %>% 
+  dplyr::distinct()
 
 # Remove frequencies data frame
 rm(fusion, filtered_ensg)
@@ -297,7 +309,10 @@ filtered_ensg <- filtered_ensg %>%
 readr::write_tsv(filtered_ensg,
   file.path(results_dir, 
             "putative-oncogene-fused-gene-freq_dropped_ensg.tsv.gz"))
-filtered_ensg
+
+# Display table
+filtered_ensg %>% dplyr::select(Gene_symbol, Ensembl_ID, cohort) %>% 
+  dplyr::distinct()
 
 # Remove frequencies data frame
 rm(fused_gene, filtered_ensg, fusion_names)
