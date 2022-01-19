@@ -162,8 +162,8 @@ readr::write_tsv(filtered_ensg,
 # Display removed ENSEMBL IDs 
 filtered_ensg %>% dplyr::select(Ensembl_ID, cohort) %>% 
   dplyr::distinct() %>%
-  dplyr::arrange(desc(cohort)) %>% 
-  tidyr::drop_na()
+  tidyr::drop_na() %>%  
+  table()
 
 # Display samples in removed ENSEMBL IDs that are in PMTL list
 filtered_ensg %>% dplyr::filter(Ensembl_ID %in% pmtl_ids) %>% 
@@ -204,8 +204,8 @@ readr::write_tsv(filtered_ensg,
 # Display removed ENSEMBL IDs 
 filtered_ensg %>% dplyr::select(Ensembl_ID, cohort) %>% 
   dplyr::distinct() %>%
-  dplyr::arrange(desc(cohort)) %>% 
-  tidyr::drop_na()
+  tidyr::drop_na() %>% 
+  table()
 
 # Display samples in removed ENSEMBL IDs that are in PMTL list
 filtered_ensg %>% dplyr::filter(Ensembl_ID %in% pmtl_ids) %>% 
@@ -255,8 +255,8 @@ readr::write_tsv(filtered_ensg,
 # Display removed ENSEMBL IDs 
 filtered_ensg %>% dplyr::select(Ensembl_ID, cohort) %>% 
   dplyr::distinct() %>%
-  dplyr::arrange(desc(cohort)) %>% 
-  tidyr::drop_na()
+  tidyr::drop_na() %>% 
+  table()
 
 # Display samples in removed ENSEMBL IDs that are in PMTL list
 filtered_ensg %>% dplyr::filter(Ensembl_ID %in% pmtl_ids) %>% 
@@ -311,8 +311,8 @@ readr::write_tsv(filtered_ensg,
 # Display removed ENSEMBL IDs 
 filtered_ensg %>% dplyr::select(Ensembl_ID, cohort) %>% 
   dplyr::distinct() %>%
-  dplyr::arrange(desc(cohort)) %>% 
-  tidyr::drop_na()
+  tidyr::drop_na() %>% 
+  table()
 
 # Display samples in removed ENSEMBL IDs that are in PMTL list
 filtered_ensg %>% dplyr::filter(Ensembl_ID %in% pmtl_ids) %>% 
@@ -354,8 +354,8 @@ readr::write_tsv(filtered_ensg,
 # Display removed ENSEMBL IDs 
 filtered_ensg %>% dplyr::select(Ensembl_ID, cohort) %>% 
   dplyr::distinct() %>%
-  dplyr::arrange(desc(cohort)) %>% 
-  tidyr::drop_na()
+  tidyr::drop_na() %>% 
+  table()
 
 # Display samples in removed ENSEMBL IDs that are in PMTL list
 filtered_ensg %>% dplyr::filter(Ensembl_ID %in% pmtl_ids) %>% 
