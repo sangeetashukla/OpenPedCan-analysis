@@ -219,43 +219,118 @@ pre code {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KHJlYWRyKVxuYGBgIn0= -->
-<pre class="r"><code>library(tidyverse)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KHJlYWRyKVxuYGBgXG5gYGAifQ== -->
+<pre class="r"><code>```r
+library(tidyverse)
 library(readr)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+### Define directories
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm9vdF9kaXIgPC0gcnByb2pyb290OjpmaW5kX3Jvb3QocnByb2pyb290OjpoYXNfZGlyKFwiLmdpdFwiKSlcbmRhdGFfZGlyIDwtIGZpbGUucGF0aChyb290X2RpciwgXCJkYXRhXCIpXG5hbmFseXNpc19kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5c2VzXCIsIFwicGVkY2Jpby1zYW1wbGUtbmFtZVwiKVxuaW5wdXRfZGlyIDwtIGZpbGUucGF0aChhbmFseXNpc19kaXIsIFwiaW5wdXRcIilcblxucmVzdWx0c19kaXIgPC0gZmlsZS5wYXRoKGFuYWx5c2lzX2RpciwgXCJyZXN1bHRzXCIpXG5pZighZGlyLmV4aXN0cyhyZXN1bHRzX2Rpcikpe1xuICBkaXIuY3JlYXRlKHJlc3VsdHNfZGlyKVxufVxuYGBgIn0= --&gt;
+
+```r
+root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
+data_dir &lt;- file.path(root_dir, &quot;data&quot;)
+analysis_dir &lt;- file.path(root_dir, &quot;analyses&quot;, &quot;pedcbio-sample-name&quot;)
+input_dir &lt;- file.path(analysis_dir, &quot;input&quot;)
+
+results_dir &lt;- file.path(analysis_dir, &quot;results&quot;)
+if(!dir.exists(results_dir)){
+  dir.create(results_dir)
+}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<div id="define-directories" class="section level3">
-<h3>Define directories</h3>
+<div id="read-in-files" class="section level3">
+<h3>Read in files</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm9vdF9kaXIgPC0gcnByb2pyb290OjpmaW5kX3Jvb3QocnByb2pyb290OjpoYXNfZGlyKFwiLmdpdFwiKSlcbmRhdGFfZGlyIDwtIGZpbGUucGF0aChyb290X2RpciwgXCJkYXRhXCIpXG5hbmFseXNpc19kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5bHNpc1wiLCBcInBlZGNiaW8tc2FtcGxlLW5hbWVcIilcbmlucHV0X2RpciA8LSBmaWxlLnBhdGgocm9vdF9kaXIsIFwiYW5hbHlsc2lzXCIsIFwiaW5wdXRcIilcblxucmVzdWx0c19kaXIgPC0gZmlsZS5wYXRoKGFuYWx5c2lzX2RpciwgXCJyZXN1bHRzXCIpXG5pZighZGlyLmV4aXN0cyhyZXN1bHRzX2Rpcil7XG4gIGRpci5jcmVhdGUocmVzdWx0c19kaXIsIHJlY3Vyc2l2ZSA9IFRSVUUpXG59KVxuYGBgIn0= -->
-<pre class="r"><code>root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
-data_dir &lt;- file.path(root_dir, &quot;data&quot;)
-analysis_dir &lt;- file.path(root_dir, &quot;analylsis&quot;, &quot;pedcbio-sample-name&quot;)
-input_dir &lt;- file.path(root_dir, &quot;analylsis&quot;, &quot;input&quot;)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBoaXN0b2xvZ3kgZmlsZSBcbmhpc3RvbG9neV9kZiA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLCBcImhpc3RvbG9naWVzLnRzdlwiKSwgZ3Vlc3NfbWF4ID0gMTAwMDAwKVxuXG4jIHJlYWQgaW4gYWxsIHRoZSBwZWRjYmlvIGZpbGVzXG5jYmlvX25hbWVzX2xpc3QgPC0gbGlzdC5maWxlcyhpbnB1dF9kaXIpXG5cbmZpbGVzX2xpc3QgPC0gbGFwcGx5KGNiaW9fbmFtZXNfbGlzdCwgZnVuY3Rpb24oeCl7XG4gIHggPC0gcmVhZHI6OnJlYWRfY3N2KGZpbGUucGF0aChpbnB1dF9kaXIsIHgpKVxufSlcbmBgYCJ9 -->
+<pre class="r"><code># histology file 
+histology_df &lt;- readr::read_tsv(file.path(data_dir, &quot;histologies.tsv&quot;), guess_max = 100000)
 
-results_dir &lt;- file.path(analysis_dir, &quot;results&quot;)
-if(!dir.exists(results_dir){
-  dir.create(results_dir, recursive = TRUE)
+# read in all the pedcbio files
+cbio_names_list &lt;- list.files(input_dir)
+
+files_list &lt;- lapply(cbio_names_list, function(x){
+  x &lt;- readr::read_csv(file.path(input_dir, x))
 })</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="read-in-files" class="section level3">
-<h3>Read in files</h3>
+<div id="update-the-id-for-those-samples-if-available" class="section level3">
+<h3>Update the ID for those samples if available</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBoaXN0b2xvZ3kgZmlsZSBcbmhpc3RvbG9neV9kZiA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLCBcImhpc3RvbG9naWVzLnRzdlwiKSwgZ3Vlc3NfbWF4ID0gMTAwMDAwKVxuXG5cbmBgYCJ9 -->
-<pre class="r"><code># histology file 
-histology_df &lt;- readr::read_tsv(file.path(data_dir, &quot;histologies.tsv&quot;), guess_max = 100000)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZm9ybWF0dGVkX3NwZWNpbWVuc19saXN0IDwtIGxhcHBseShmaWxlc19saXN0LCBmdW5jdGlvbih4KXtcblxuICAjIGZvcm1hdCB0aGVtIGFuZCBzZWxlY3QgcmVsZXZhbnQgY29sdW1uc1xuICBmb3JtYXR0ZWQgPC0geCAlPiUgXG4gICAgZHBseXI6Om11dGF0ZShzcGVjaW1lbl9pZCA9IGdzdWIoXCJcXFxce1wiLCBcIlwiLCBzcGVjaW1lbl9pZCkpICU+JSBcbiAgICBkcGx5cjo6bXV0YXRlKHNwZWNpbWVuX2lkID0gZ3N1YihcIlxcXFx9XCIsIFwiXCIsIHNwZWNpbWVuX2lkKSkgJT4lIFxuICAgIGRwbHlyOjptdXRhdGUoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCA9IHN0cnNwbGl0KHNwZWNpbWVuX2lkLCBcIixcIikpICU+JSBcbiAgICB1bm5lc3QoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lXG4gICAgZHBseXI6OnNlbGVjdChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELCBmb3JtYXR0ZWRfc2FtcGxlX2lkKVxuICBcbiAgIyBhZGQgdGhvc2UgdG8gaGlzdG9sb2d5IGZpbGVcbiAgaGlzdG9sb2d5X2Zvcm1hdHRlZF9hZGRlZCA8LSBoaXN0b2xvZ3lfZGYgJT4lXG4gICAgZHBseXI6OmZpbHRlcihLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgZm9ybWF0dGVkJEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JVxuICAgIGxlZnRfam9pbihmb3JtYXR0ZWQpXG5cbiAgcmV0dXJuKGhpc3RvbG9neV9mb3JtYXR0ZWRfYWRkZWQpXG59KVxuXG5gYGAifQ== -->
+<pre class="r"><code>formatted_specimens_list &lt;- lapply(files_list, function(x){
+
+  # format them and select relevant columns
+  formatted &lt;- x %&gt;% 
+    dplyr::mutate(specimen_id = gsub(&quot;\\{&quot;, &quot;&quot;, specimen_id)) %&gt;% 
+    dplyr::mutate(specimen_id = gsub(&quot;\\}&quot;, &quot;&quot;, specimen_id)) %&gt;% 
+    dplyr::mutate(Kids_First_Biospecimen_ID = strsplit(specimen_id, &quot;,&quot;)) %&gt;% 
+    unnest(Kids_First_Biospecimen_ID) %&gt;%
+    dplyr::select(Kids_First_Biospecimen_ID, formatted_sample_id)
+  
+  # add those to histology file
+  histology_formatted_added &lt;- histology_df %&gt;%
+    dplyr::filter(Kids_First_Biospecimen_ID %in% formatted$Kids_First_Biospecimen_ID) %&gt;%
+    left_join(formatted)
+
+  return(histology_formatted_added)
+})
 </code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIlxuSm9pbmluZywgYnkgPSBcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIlxuSm9pbmluZywgYnkgPSBcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIlxuSm9pbmluZywgYnkgPSBcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIlxuIn0= -->
+<pre><code>Joining, by = &quot;Kids_First_Biospecimen_ID&quot;
+Joining, by = &quot;Kids_First_Biospecimen_ID&quot;
+Joining, by = &quot;Kids_First_Biospecimen_ID&quot;
+Joining, by = &quot;Kids_First_Biospecimen_ID&quot;</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="add-ids-to-those-without-sample-id-already" class="section level3">
+<h3>Add IDs to those without sample id already</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBmaW5kIHRoZSBzYW1wbGVzIHRoYXQgZG8gbm90IGhhdmUgYW4gSUQgeWV0IFxuaGlzdG9sb2d5X2RmX25vX2Zvcm1hdF9pZCA8LSBoaXN0b2xvZ3lfZGYgJT4lXG4gIGRwbHlyOjpmaWx0ZXIoIUtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBjb21iaW5lZF9oaXN0b2xvZ3lfZm9ybWF0dGVkX2FkZGVkJEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JVxuXG4jIHNlZSB3aGljaCBzYW1wbGUgSURzIG5lZWQgdGllIGJyZWFrZXJcbnNhbXBsZV9pZHMgPC0gaGlzdG9sb2d5X2RmX25vX2Zvcm1hdF9pZCAlPiUgXG4gIHB1bGwoc2FtcGxlX2lkKSAlPiUgXG4gIHVuaXF1ZSgpXG5cbmBgYCJ9 -->
+<pre class="r"><code># find the samples that do not have an ID yet 
+histology_df_no_format_id &lt;- histology_df %&gt;%
+  dplyr::filter(!Kids_First_Biospecimen_ID %in% combined_histology_formatted_added$Kids_First_Biospecimen_ID) %&gt;%
+
+# see which sample IDs need tie breaker
+sample_ids &lt;- histology_df_no_format_id %&gt;% 
+  pull(sample_id) %&gt;% 
+  unique()
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gaGlzdG9sb2d5X2RmICU+JSBkcGx5cjo6ZmlsdGVyKCFLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgIDogXG4gIGNvdWxkIG5vdCBmaW5kIGZ1bmN0aW9uIFwiJT4lPC1cIlxuIn0= -->
+<pre><code>Error in histology_df %&gt;% dplyr::filter(!Kids_First_Biospecimen_ID %in%  : 
+  could not find function &quot;%&gt;%&lt;-&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUGVkQ0JpbyBTYW1wbGUgTmFtZSBDb2x1bW4gQWRkaXRpb24iCmF1dGhvcjogUnVuIEppbgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpgYGB7ciBsb2FkIGxpYnJhcnl9CmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KHJlYWRyKQpgYGAKCiMjIyBEZWZpbmUgZGlyZWN0b3JpZXMKYGBge3IgZGVmaW5lIGRpcmVjdG9yaWVzfQpyb290X2RpciA8LSBycHJvanJvb3Q6OmZpbmRfcm9vdChycHJvanJvb3Q6Omhhc19kaXIoIi5naXQiKSkKZGF0YV9kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCAiZGF0YSIpCmFuYWx5c2lzX2RpciA8LSBmaWxlLnBhdGgocm9vdF9kaXIsICJhbmFseWxzaXMiLCAicGVkY2Jpby1zYW1wbGUtbmFtZSIpCmlucHV0X2RpciA8LSBmaWxlLnBhdGgocm9vdF9kaXIsICJhbmFseWxzaXMiLCAiaW5wdXQiKQoKcmVzdWx0c19kaXIgPC0gZmlsZS5wYXRoKGFuYWx5c2lzX2RpciwgInJlc3VsdHMiKQppZighZGlyLmV4aXN0cyhyZXN1bHRzX2Rpcil7CiAgZGlyLmNyZWF0ZShyZXN1bHRzX2RpciwgcmVjdXJzaXZlID0gVFJVRSkKfSkKYGBgCgojIyMgUmVhZCBpbiBmaWxlcwpgYGB7ciByZWFkIGluIGZpbGVzfQojIGhpc3RvbG9neSBmaWxlIApoaXN0b2xvZ3lfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgImhpc3RvbG9naWVzLnRzdiIpLCBndWVzc19tYXggPSAxMDAwMDApCgoKYGBg</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUGVkQ0JpbyBTYW1wbGUgTmFtZSBDb2x1bW4gQWRkaXRpb24iCmF1dGhvcjogUnVuIEppbgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpgYGB7ciBsb2FkIGxpYnJhcnl9CmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KHJlYWRyKQpgYGAKCiMjIyBEZWZpbmUgZGlyZWN0b3JpZXMKYGBge3IgZGVmaW5lIGRpcmVjdG9yaWVzfQpyb290X2RpciA8LSBycHJvanJvb3Q6OmZpbmRfcm9vdChycHJvanJvb3Q6Omhhc19kaXIoIi5naXQiKSkKZGF0YV9kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCAiZGF0YSIpCmFuYWx5c2lzX2RpciA8LSBmaWxlLnBhdGgocm9vdF9kaXIsICJhbmFseXNlcyIsICJwZWRjYmlvLXNhbXBsZS1uYW1lIikKaW5wdXRfZGlyIDwtIGZpbGUucGF0aChhbmFseXNpc19kaXIsICJpbnB1dCIpCgpyZXN1bHRzX2RpciA8LSBmaWxlLnBhdGgoYW5hbHlzaXNfZGlyLCAicmVzdWx0cyIpCmlmKCFkaXIuZXhpc3RzKHJlc3VsdHNfZGlyKSl7CiAgZGlyLmNyZWF0ZShyZXN1bHRzX2RpcikKfQpgYGAKCiMjIyBSZWFkIGluIGZpbGVzCmBgYHtyIHJlYWQgaW4gZmlsZXN9CiMgaGlzdG9sb2d5IGZpbGUgCmhpc3RvbG9neV9kZiA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLCAiaGlzdG9sb2dpZXMudHN2IiksIGd1ZXNzX21heCA9IDEwMDAwMCkKCiMgcmVhZCBpbiBhbGwgdGhlIHBlZGNiaW8gZmlsZXMKY2Jpb19uYW1lc19saXN0IDwtIGxpc3QuZmlsZXMoaW5wdXRfZGlyKQoKZmlsZXNfbGlzdCA8LSBsYXBwbHkoY2Jpb19uYW1lc19saXN0LCBmdW5jdGlvbih4KXsKICB4IDwtIHJlYWRyOjpyZWFkX2NzdihmaWxlLnBhdGgoaW5wdXRfZGlyLCB4KSkKfSkKYGBgCgojIyMgVXBkYXRlIHRoZSBJRCBmb3IgdGhvc2Ugc2FtcGxlcyBpZiBhdmFpbGFibGUgCmBgYHtyfQpmb3JtYXR0ZWRfc3BlY2ltZW5zX2xpc3QgPC0gbGFwcGx5KGZpbGVzX2xpc3QsIGZ1bmN0aW9uKHgpewoKICAjIGZvcm1hdCB0aGVtIGFuZCBzZWxlY3QgcmVsZXZhbnQgY29sdW1ucwogIGZvcm1hdHRlZCA8LSB4ICU+JSAKICAgIGRwbHlyOjptdXRhdGUoc3BlY2ltZW5faWQgPSBnc3ViKCJcXHsiLCAiIiwgc3BlY2ltZW5faWQpKSAlPiUgCiAgICBkcGx5cjo6bXV0YXRlKHNwZWNpbWVuX2lkID0gZ3N1YigiXFx9IiwgIiIsIHNwZWNpbWVuX2lkKSkgJT4lIAogICAgZHBseXI6Om11dGF0ZShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gc3Ryc3BsaXQoc3BlY2ltZW5faWQsICIsIikpICU+JSAKICAgIHVubmVzdChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiUKICAgIGRwbHlyOjpzZWxlY3QoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCwgZm9ybWF0dGVkX3NhbXBsZV9pZCkKICAKICAjIGFkZCB0aG9zZSB0byBoaXN0b2xvZ3kgZmlsZQogIGhpc3RvbG9neV9mb3JtYXR0ZWRfYWRkZWQgPC0gaGlzdG9sb2d5X2RmICU+JQogICAgZHBseXI6OmZpbHRlcihLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgZm9ybWF0dGVkJEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JQogICAgbGVmdF9qb2luKGZvcm1hdHRlZCkKCiAgcmV0dXJuKGhpc3RvbG9neV9mb3JtYXR0ZWRfYWRkZWQpCn0pCgojIGdldCB0aGUgY29tYmluZWQgZGF0YQpjb21iaW5lZF9oaXN0b2xvZ3lfZm9ybWF0dGVkX2FkZGVkIDwtIGRvLmNhbGwoInJiaW5kIiwgZm9ybWF0dGVkX3NwZWNpbWVuc19saXN0KQpgYGAKCiMjIyBBZGQgSURzIHRvIHRob3NlIHdpdGhvdXQgc2FtcGxlIGlkIGFscmVhZHkKYGBge3J9CiMgZmluZCB0aGUgc2FtcGxlcyB0aGF0IGRvIG5vdCBoYXZlIGFuIElEIHlldCAKaGlzdG9sb2d5X2RmX25vX2Zvcm1hdF9pZCA8LSBoaXN0b2xvZ3lfZGYgJT4lCiAgZHBseXI6OmZpbHRlcighS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCAlaW4lIGNvbWJpbmVkX2hpc3RvbG9neV9mb3JtYXR0ZWRfYWRkZWQkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgCgojIHNlZSB3aGljaCBzYW1wbGUgSURzIG5lZWQgdGllIGJyZWFrZXIKc2FtcGxlX2lkcyA8LSBoaXN0b2xvZ3lfZGZfbm9fZm9ybWF0X2lkICU+JSAKICBwdWxsKHNhbXBsZV9pZCkgJT4lIAogIHVuaXF1ZSgpCgojIGZpbmQgdGhlIHNhbXBsZXMgdGhhdCBuZWVkIGFkZGl0aW9uYWwgYHRpZS1icmVha2VyYApzYW1wbGVzX2lkX25lZWRfdGllYnJlYWsgPC0gYygpCmZvciAoaSBpbiAxOmxlbmd0aChzYW1wbGVfaWRzKSl7CiAgIyBkZWFsIHdpdGggb25lIHNhbXBsZSBhdCBhIHRpbWUKICBzYW1wbGVfaWRfb2ZfaW50ZXJlc3QgPC0gc2FtcGxlX2lkc1tpXQogIAogICMgZmluZCB0aGUgbnVtYmVyIG9mIGNvbXBvc2l0aW9ucwogIG5fY29tcCA8LSBoaXN0b2xvZ3lfZGZfbm9fZm9ybWF0X2lkICU+JSAKICAgIGRwbHlyOjpmaWx0ZXIoc2FtcGxlX2lkID09IHNhbXBsZV9pZF9vZl9pbnRlcmVzdCkgJT4lIAogICAgcHVsbChjb21wb3NpdGlvbikgJT4lIAogICAgdW5pcXVlKCkgJT4lIGxlbmd0aCgpCiAgCiAgIyBzdG9yZSB0aGUgc2FtcGxlcyB3aXRoIG11bHRpcGxlIGNvbXBvc2l0aW9ucwogIGlmKG5fY29tcCA+MSl7CiAgICBzYW1wbGVzX2lkX25lZWRfdGllYnJlYWsgPC0gYyhzYW1wbGVzX2lkX25lZWRfdGllYnJlYWssIHNhbXBsZV9pZF9vZl9pbnRlcmVzdCkKICB9Cn0KCiMgc2VlIHRoZSBzYW1wbGVzIHRoYXQgbmVlZCB0aWVicmVhawpjaGVjayA8LSBoaXN0b2xvZ3lfZGZfbm9fZm9ybWF0X2lkICU+JSAKICBkcGx5cjo6ZmlsdGVyKHNhbXBsZV9pZCAlaW4lIHNhbXBsZXNfaWRfbmVlZF90aWVicmVhaykKCmBgYAoK</div>
 
 
 
