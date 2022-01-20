@@ -9,10 +9,15 @@ This module adds a column called `formatted_sample_id` where the base name is th
 For PBTA samples, `sample_id` column is used as the basename
 - Using `sample_id` column, we can tie all DNA and RNA samples together
 - Using `formatted_sample_id` column, we can distinguish amongst multiple DNA or RNA samples 
+  - Multiple DNA samples associated with the same sample would use `aliquot_id` as the tie breaker
+  - Multiple RNA samples associated with the same sample would use `RNA_library` as the tie breaker 
 
 For TARGET, TCGA, and GTEx samples, `Kids_First_Participant_ID` column is used as the basename
 - Using `Kids_First_Participant_ID` column, we can tie all DNA and RNA samples together
 - Using `formatted_sample_id` column, we can distinguish amongst multiple DNA or RNA samples 
+  - For TARGET, `Kids_First_Participant_ID` + last 7 digits from the `Kids_First_Specimen_ID` is used as formatted sample ID
+  - For TCGA, `Kids_First_Participant_ID` + `sample_id` + `aliquot_id` is used as formatted sample ID
+  - For GTEx, `Kids_First_Participant_ID` + `aliquot_id` is used as formatted sample ID
 
 Usage:
   ```

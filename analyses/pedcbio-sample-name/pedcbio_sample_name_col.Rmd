@@ -109,6 +109,8 @@ pbta_add_tiebreak <- pbta_add_tiebreak %>%
     experimental_strategy == "RNA-Seq" ~ paste0(sample_id, "-", RNA_library),
     experimental_strategy != "RNA-Seq" ~ paste0(sample_id, "-", aliquot_id)
   ))
+
+stopifnot(nrow(pbta_add_tiebreak) != unique(pbta_add_tiebreak$formatted_sample_id))
 ```
 
 ### Generate pedcbio ID for GTEx dataset 
@@ -119,6 +121,8 @@ The donor ID (e.g. GTEX-14753) should be used to link between the various RNA-se
 gtex_add_tiebreak <- histology_df_no_format_id %>% 
   dplyr::filter(cohort == "GTEx") %>%
   dplyr::mutate(formatted_sample_id = paste0(Kids_First_Participant_ID, "-", aliquot_id))
+
+stopifnot(nrow(gtex_add_tiebreak) != unique(gtex_add_tiebreak$formatted_sample_id))
   
 ```
 
@@ -156,6 +160,9 @@ for (i in 1:length(participant_ids_target)){
 target_add_tiebreak <- histology_df_no_format_id %>% 
   dplyr::filter(Kids_First_Biospecimen_ID %in% specimens_id_need_tiebreak,
                 sample_type != "Normal") 
+
+stopifnot(nrow(target_add_tiebreak) != unique(target_add_tiebreak$formatted_sample_id))
+
 
 ```
 
@@ -206,6 +213,9 @@ From what we can see, using Kids_First_Biospecimen_ID plus sample ID and aliquot
 ```{r}
 tcga_add_tiebreak <- tcga_add_tiebreak %>%
   dplyr::mutate(formatted_sample_id = paste0(Kids_First_Participant_ID, "-", sample_id, "-", aliquot_id))
+
+stopifnot(nrow(tcga_add_tiebreak) != unique(tcga_add_tiebreak$formatted_sample_id))
+
 ```
 
 ### Combine all the samples with tiebreak
