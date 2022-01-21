@@ -10,6 +10,7 @@ suppressPackageStartupMessages(library(optparse))
 suppressPackageStartupMessages(library(data.table))
 suppressPackageStartupMessages(library(ggplot2))
 suppressPackageStartupMessages(library(Rtsne))
+suppressPackageStartupMessages(library(umap))
 theme_set(theme_bw(18))
 
 # Magrittr pipe
@@ -157,8 +158,34 @@ for (i in 1:length(cancer_genes)) {
             legend.title = ggplot2::element_text(size=12),
             axis.title = ggplot2::element_text(size=12),
             axis.text = ggplot2::element_text(size=10))
-    ggplot2::ggsave(file.path(plots_dir, paste0(cancer_genes[i], "-plot.png")))
+    ggplot2::ggsave(file.path(plots_dir, paste0(cancer_genes[i], "-tsne-plot.png")))
     rm(tSNE_df)
+    
+    # create and save gene methylation UMAP plot to file
+    UMAP_fit <- cancer_gene_df %>% 
+      dplyr::select(where(is.numeric)) %>% 
+      tibble::column_to_rownames("ID") %>% scale() %>%
+      umap::umap()
+    
+    UMAP_df <- UMAP_fit$layout %>% as.data.frame() %>% 
+      dplyr::rename(UMAP1="V1", UMAP2="V2") %>% 
+      dplyr::mutate(ID=dplyr::row_number())
+    
+    UMAP_df <- UMAP_df %>% dplyr::inner_join(cancer_gene_df, by="ID")
+    
+    UMAP_df %>% ggplot2::ggplot(aes(x = UMAP1, y = UMAP2, 
+                                    color = Cancer_Type,)) +
+      ggplot2::geom_point()+
+      ggplot2::theme(legend.position="right")+
+      ggplot2::ggtitle(cancer_genes[i])+
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 15), 
+                     legend.text = ggplot2::element_text(size=10),
+                     legend.title = ggplot2::element_text(size=12),
+                     axis.title = ggplot2::element_text(size=12),
+                     axis.text = ggplot2::element_text(size=10))
+    ggplot2::ggsave(file.path(plots_dir, paste0(cancer_genes[i], "-umap-plot.png")))
+    rm(UMAP_df)
+    
   } else {
     message(c("No methylation data found for ", cancer_genes[i], 
               " gene in all cancer types...\n")) 
