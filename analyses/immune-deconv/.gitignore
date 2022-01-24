@@ -1,7 +1,5 @@
 # CIBERSORT related files
-LM22.txt
-CIBERSORT.R
+# please download the LM22.txt and CIBERSORT.R by following instructions here: https://icbi-lab.github.io/immunedeconv/articles/immunedeconv.html#special-case-cibersort
+util/LM22.txt
+util/CIBERSORT.R
 CIBERSORT-Results.txt
-
-# output data specifically for making figures
-results/deconv-output-for-figures.RData
