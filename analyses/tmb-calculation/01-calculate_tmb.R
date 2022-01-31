@@ -170,7 +170,7 @@ metadata_df <- bed_df %>%
                       dplyr::select(
                         Kids_First_Biospecimen_ID, 
                         experimental_strategy, 
-                        short_histology), 
+                        cancer_group), 
                     by = "Kids_First_Biospecimen_ID") %>% 
   dplyr::rename(
     Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
@@ -201,7 +201,7 @@ snv_mnv_maf_df <- snv_mnv_maf_df %>%
                       dplyr::select(
                         Tumor_Sample_Barcode,
                         experimental_strategy,
-                        short_histology,
+                        cancer_group,
                         target_bed,
                         target_bed_path
                       ),
