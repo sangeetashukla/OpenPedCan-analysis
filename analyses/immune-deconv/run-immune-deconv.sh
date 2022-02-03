@@ -1,13 +1,14 @@
 #!/bin/bash
 # Module author: Komal S. Rathi
-# 2019
+# 2022
 
-# This script runs the steps for immune deconvolution in PBTA histologies using xCell. 
-# xCell is the most comprehensive deconvolution method (with the largest number of cell types) and widely used in literature vs other deconvolution methods.
-# Reference for benchmarking between xCell and other methods: PMID: 31641033
+# This script runs the steps for immune deconvolution using xCell and CIBERSORT (absolute mode). 
 
 set -e
 set -o pipefail
+
+# Run original files - will not by default
+RUN_CIBERSORT=${RUN_CIBERSORT:-0}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
@@ -16,23 +17,38 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
-# create results directory if it doesn't already exist
-mkdir -p results
-mkdir -p plots
-
-# generate deconvolution output for poly-A and stranded datasets using xCell
+# xCell
+# generate deconvolution output
+echo "Deconvolution..."
 Rscript --vanilla 01-immune-deconv.R \
---polyaexprs '../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds' \
---strandedexprs '../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds' \
---clin '../../data/pbta-histologies.tsv' \
---method 'xcell' \
---outputfile 'results/deconv-output.RData'
+--expr_mat '../../data/gene-expression-rsem-tpm-collapsed.rds' \
+--clin_file '../../data/histologies.tsv' \
+--deconv_method 'xcell' \
+--output_dir 'results'
 
-echo "Deconvolution finished..."
+# generate heatmaps of average normalized immune scores per cancer or gtex group
 echo "Create summary plots"
-
-# Now, run the script to generate heatmaps of average normalized immune scores for xCell, stratified by histology and by molecular subtype
 Rscript --vanilla 02-summary-plots.R \
---input 'results/deconv-output.RData' \
+--deconv_output 'results/xcell_output.rds' \
 --output_dir 'plots'
 
+# CIBERSORT (absolute mode)
+if [ "$RUN_CIBERSORT" -gt "0" ]; then
+
+	# generate deconvolution output
+	echo "Deconvolution..."
+	Rscript --vanilla 01-immune-deconv.R \
+	--expr_mat '../../data/gene-expression-rsem-tpm-collapsed.rds' \
+	--clin_file '../../data/histologies.tsv' \
+	--deconv_method 'cibersort_abs' \
+	--cibersort_mat 'util/LM22.txt' \
+	--cibersort_binary 'util/CIBERSORT.R' \
+	--output_dir 'results'
+
+	# generate heatmaps of average normalized immune scores per cancer or gtex group
+	echo "Create summary plots"
+	Rscript --vanilla 02-summary-plots.R \
+	--deconv_output 'results/cibersort_abs_output.rds' \
+	--output_dir 'plots'
+
+fi
