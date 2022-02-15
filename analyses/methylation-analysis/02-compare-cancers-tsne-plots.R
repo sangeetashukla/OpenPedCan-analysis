@@ -6,8 +6,8 @@
 # 01/05/2022
 
 # Load libraries:
-suppressPackageStartupMessages(library(optparse))
 suppressPackageStartupMessages(library(data.table))
+suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(ggplot2))
 suppressPackageStartupMessages(library(Rtsne))
 suppressPackageStartupMessages(library(umap))

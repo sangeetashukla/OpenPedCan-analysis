@@ -29,11 +29,11 @@ The TARGET Illumina `Infinium HumanMethylation (450k and 27k) BeadChip` and `Roc
 ## General usage of scripts
 
 
-#### `run-methylation-analysis.sh`
+#### `run-preprocess-illumina-arrays.sh`
 This is a bash script wrapper for setting input file paths for the main analysis script, `01-preprocess-illumina-arrays.R` All file paths set in this script relative to the module directory. Therefore, this script should always run as if it were being called from the directory it lives in, the module directory (`OpenPedCan-analysis/analyses/methylation-analysis`).
 
 ```
-bash run-methylation-analysis.sh
+bash run-preprocess-illumina-arrays.sh
 ```
 
 #### `01-preprocess-illumina-arrays.R`
@@ -73,12 +73,24 @@ Options:
 ```
 
 #### `02-compare-cancers-tsne-plots.R`
-Preprocesses raw Illumina Infinium HumanMethylation BeadArrays (27K, and 450K) intensities using `minfi Bioconductor package` into usable methylation measurements (Beta and M values) for TARGET normal and tumor samples.
-
-Creates comparison methylation profiles t-SNE and UMAP plots of selected cancer genes for cancer types preprocessed from Illumina Infinium HumanMethylation450 BeadArrays. Utilizes a list of cancer gene symbols (`metadata\TARGET_Methylation_GeneList.txt`) that are present in the array annotation design and methylation result tables with M-values (in the `results` folder) produces by the `01-preprocess-illumina-arrays.R` script.
+Creates comparison methylation profiles t-SNE and UMAP plots of selected cancer genes for cancer types preprocessed from Illumina Infinium HumanMethylation450 BeadArrays. Utilizes a list of cancer gene symbols (`metadata/TARGET_Methylation_GeneList.txt`) that are present in the array annotation design reported in the methylation M-values result tables (in the `results` folder) produced by the `01-preprocess-illumina-arrays.R` script.
 
 ```
 Rscript --vanilla 02-compare-cancers-tsne-plots.R
+```
+
+#### `03-summarize-methylation-values.R`
+Summarizes methylation `Beta-values` and `M-values` to obtain a representative `median value` per CpG probe site for all samples from each cancer type preprocessed from Illumina Infinium HumanMethylation450 BeadArrays reported in a single combined file, `results/median-beta-values-methylation.tsv.gz` and `results/median-m-values-methylation.tsv.gz` respectively. It also annotates the CpG probe sites with the associated genes from the evidence-based annotation of the human genome (hg19/GRCh37), GENCODE version 19 (Ensembl 74), on which the array CpG site coordinates are based. 
+
+```
+Rscript --vanilla 03-summarize-methylation-values.R
+```
+
+#### `04-get-array-gencode-annotations.R`
+Parses GENCODE annotation of the human genome (GRCh37), version 19 (Ensembl 74), and associated feature coordinates for genes in the Illumina Infinium HumanMethylation450 BeadArrays annotation design (`results/methylation-array-gencode.annotations.tsv.gz`) to use for plotting comparative methylation profiles with GViz R package in association with any one of the two results tables of representative median CpG probe sites methylation values. 
+
+```
+Rscript --vanilla 04-get-array-gencode-annotations.R
 ```
 
 ## Input datasets
@@ -93,7 +105,7 @@ Methylation array datasets are avaliable on the CHOP HPC `Isilon` sever (locatio
 - `data/AML/*.idat` - Acute Myeloid Leukemia (AML) tumor samples array
 
 
-#### `Sample metadata:`
+#### `Sample and reference metadata:`
 - `metadata/TARGET_Normal_MethylationArray_20160812.sdrf.txt` - metadata for Normal samples
 - `metadata/TARGET_NBL_MethylationArray_20160812.sdrf.1.txt` - metadata for Neuroblastoma (NBL) tumor samples, batch 1
 - `metadata/TARGET_NBL_MethylationArray_20160812.sdrf.2.txt` - metadata for Neuroblastoma (NBL) tumor samples, batch 2
@@ -106,9 +118,11 @@ Methylation array datasets are avaliable on the CHOP HPC `Isilon` sever (locatio
 - `metadata/TARGET_AML_MethylationArray_20160812_27k.sdrf.2.txt` - metadata for Acute Myeloid Leukemia (AML) tumor samples, 27k arrays, batch 2
 - `metadata/TARGET_AML_MethylationArray_20160812_27k.sdrf.3.txt` - metadata for Acute Myeloid Leukemia (AML) tumor samples, 27k arrays, batch 3
 - `metadata/TARGET_Methylation_GeneList.txt` - a selected set of genes expressed in a subset of the tumor types (contact @afarrel for details)
+- `metadata/UCSC_hg19-GRCh37_Ensembl2RefSeq.tsv` - [UCSC hg19/GRCh37 Ensemble to RefSeq gene IDs mapping file](https://genome.ucsc.edu/cgi-bin/hgTables)
+- `metadata/gencode.v19.annotation.gtf.gz` [GENCODE evidence-based annotation of the human genome (GRCh37), version 19 (Ensembl 74)](http://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/)
 
 ## Results
-Summary result files of methylation `beta-values` and `M-values` are too large to upload to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/results/`). Please contact `Avin Ferrel (@afarrel)` for access.
+Summary result files of methylation `beta-values` and `M-values` are too large to upload to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/results/`). Please contact `Avin Ferrel (@afarrel)` for access. Only the median `beta-values` and `M-values` are uploaded to this repository.
 - `results/Normal-beta-values-methylation.tsv.gz`
 - `results/Normal-m-values-methylation.tsv.gz`
 - `results/NBL-beta-values-methylation.tsv.gz`
@@ -123,6 +137,9 @@ Summary result files of methylation `beta-values` and `M-values` are too large t
 - `results/AML450k-m-values-methylation.tsv.gz`
 - `results/AML27k-beta-values-methylation.tsv.gz`
 - `results/AML27k-m-values-methylation.tsv.gz`
+- `results/median-beta-values-methylation.tsv.gz`
+- `results/median-m-values-methylation.tsv.gz`
+- `results/methylation-array-gencode.annotations.tsv.gz`
 
 ## Plots
 Comparison methylation t-SNE and UMAP plots among cancer types for selected genes expressed in a subset of the tumor type. Corresponding `M-values` gene matrices are too large to upload all to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/plots/`). Please contact `Avin Ferrel (@afarrel)` for access.
