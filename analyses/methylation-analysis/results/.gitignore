@@ -1,4 +1,4 @@
+*
+!.gitignore
 !median-beta-values-methylation.tsv.gz
-!median-beta-values-methylation.tsv.gz
-*-beta-values-methylation.tsv.gz
-*-m-values-methylation.tsv.gz
+!median-m-values-methylation.tsv.gz
