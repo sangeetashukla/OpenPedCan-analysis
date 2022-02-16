@@ -96,7 +96,7 @@ Rscript --vanilla 04-get-array-gencode-annotations.R
 ## Input datasets
 
 #### `Methylation arrays:`
-Methylation array datasets are avaliable on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/data/`). Please contact `Avin Ferrel (@afarrel)` for access. 
+Methylation array datasets are avaliable on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/data/`). Please contact `Avin Farrel (@afarrel)` for access. 
 - `data/Normal/*.idat` - Normal samples array files
 - `data/NBL/*.idat` - Neuroblastoma (NBL) tumor samples array files
 - `data/OS/*.idat` - Osteosarcoma (OS) tumor samples samples array files
@@ -122,7 +122,7 @@ Methylation array datasets are avaliable on the CHOP HPC `Isilon` sever (locatio
 - `metadata/gencode.v19.annotation.gtf.gz` [GENCODE evidence-based annotation of the human genome (GRCh37), version 19 (Ensembl 74)](http://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/)
 
 ## Results
-Summary result files of methylation `beta-values` and `M-values` are too large to upload to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/results/`). Please contact `Avin Ferrel (@afarrel)` for access. Only the median `beta-values` and `M-values` are uploaded to this repository.
+Summary result files of methylation `beta-values` and `M-values` are too large to upload to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/results/`). Please contact `Avin Farrel (@afarrel)` for access. Only the median `beta-values` and `M-values` are uploaded to this repository.
 - `results/Normal-beta-values-methylation.tsv.gz`
 - `results/Normal-m-values-methylation.tsv.gz`
 - `results/NBL-beta-values-methylation.tsv.gz`
@@ -142,7 +142,7 @@ Summary result files of methylation `beta-values` and `M-values` are too large t
 - `results/methylation-array-gencode.annotations.tsv.gz`
 
 ## Plots
-Comparison methylation t-SNE and UMAP plots among cancer types for selected genes expressed in a subset of the tumor type. Corresponding `M-values` gene matrices are too large to upload all to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/plots/`). Please contact `Avin Ferrel (@afarrel)` for access.
+Comparison methylation t-SNE and UMAP plots among cancer types for selected genes expressed in a subset of the tumor type. Corresponding `M-values` gene matrices are too large to upload all to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/plots/`). Please contact `Avin Farrel (@afarrel)` for access.
 - `plots/<GeneSymbol>-m-values.csv` - M-values gene matrices 
 - `plots/<GeneSymbol>-plot.png` - gene t-SNE plots
 - `plots/<GeneSymbol>-plot.png` - gene UMAP plot
