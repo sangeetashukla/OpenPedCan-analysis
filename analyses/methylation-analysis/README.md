@@ -1,4 +1,4 @@
-# OpenPencan Methylation Analysis
+# OpenPedCan Methylation Analysis
 
 ## Purpose
 
