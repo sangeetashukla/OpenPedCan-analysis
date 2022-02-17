@@ -12,5 +12,8 @@ script_directory="$(perl -e 'use File::Basename;
  print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
-# run the module 
-Rscript -e "rmarkdown::render('pedcbio_sample_name_col.Rmd')"
+hist_dir="../../data"
+
+# Compare all methods and
+Rscript --vanilla pedcbio_sample_name_col.R \
+--hist_dir $hist_dir
