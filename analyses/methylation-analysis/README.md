@@ -142,7 +142,7 @@ Summary result files of methylation `beta-values` and `M-values` are too large t
 - `results/methylation-array-gencode.annotations.tsv.gz`
 
 ## Plots
-Comparison methylation t-SNE and UMAP plots among cancer types for selected genes expressed in a subset of the tumor type. Corresponding `M-values` gene matrices are too large to upload all to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/plots/`). Please contact `Avin Ferrel (@afarrel)` for access.
+Comparison methylation t-SNE and UMAP plots among cancer types for selected genes expressed in a subset of the tumor type. ``Plots` and `M-values` gene matrices are available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/plots/`). Please contact `Avin Ferrel (@afarrel)` for access.
 - `plots/<GeneSymbol>-m-values.csv` - M-values gene matrices 
 - `plots/<GeneSymbol>-plot.png` - gene t-SNE plots
 - `plots/<GeneSymbol>-plot.png` - gene UMAP plot
