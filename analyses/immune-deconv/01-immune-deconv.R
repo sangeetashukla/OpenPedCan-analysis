@@ -1,99 +1,112 @@
 # Author: Komal S. Rathi
-# Function:
-# Script to perform immune characterization using immunedeconv, uses xCell by default.
-
-# Find the root directory of this repository
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+# script to perform immune characterization using immunedeconv
 
 # load libraries
-suppressPackageStartupMessages(library(optparse))
-suppressPackageStartupMessages(library(tidyverse))
-suppressPackageStartupMessages(library(immunedeconv))
-
-option_list <- list(
-  make_option(c("-p", "--polyaexprs"), type = "character",
-              help = "PolyA Expression data: HUGO symbol x Sample identifiers (.RDS)"),
-  make_option(c("-s", "--strandedexprs"), type = "character",
-              help = "Stranded Expression data: HUGO symbol x Sample identifiers (.RDS)"),
-  make_option(c("-c", "--clin"), type = "character",
-              help = "Clinical file (.TSV)"),
-  make_option(c("-m", "--method"), type = "character",
-              default = "xcell",
-              help = "Deconvolution Method"),
-  make_option(c("-o","--outputfile"), type = "character",
-              help = "Deconv Output (.RData)")
-)
-
-# Example Run:
-# Rscript 01-immune-deconv.R \
-# --polyaexprs '../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds' \
-# --strandedexprs '../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds' \
-# --clin '../../data/pbta-histologies.tsv' \
-# --method 'xcell' \
-# --outputfile 'results/deconv-output.RData'
+suppressPackageStartupMessages({
+  library(optparse)
+  library(tidyverse)
+  library(immunedeconv)
+})
 
 # parse parameters
+option_list <- list(
+  make_option(c("--expr_mat"), type = "character",
+              help = "expression data: gene symbol x sample identifiers (.rds)"),
+  make_option(c("--clin_file"), type = "character",
+              help = "histologies file (.tsv)"),
+  make_option(c("--deconv_method"), type = "character",
+              help = "deconvolution method"),
+  make_option(c("--cibersort_binary"), type = "character",
+              default = NA,
+              help = "path to CIBERSORT binary (CIBERSORT.R)"),
+  make_option(c("--cibersort_mat"), type = "character",
+              default = NA,
+              help = "path to CIBERSORT signature matrix (LM22.txt)"),
+  make_option(c("--output_dir"), type = "character", 
+              help = "output directory")
+)
 opt <- parse_args(OptionParser(option_list = option_list))
-polya <- opt$polyaexprs
-stranded <- opt$strandedexprs
-clin_file <- opt$clin
-deconv_method <- opt$method
-output_file <- opt$outputfile
+expr_mat <- opt$expr_mat
+clin_file <- opt$clin_file
+deconv_method <- opt$deconv_method
+cibersort_binary <- opt$cibersort_binary
+cibersort_mat <- opt$cibersort_mat
+output_dir <- opt$output_dir
 
-#### Check model parameter - must be in deconvolution_methods (immunedeconv accepted options)
-if (!is.null(deconv_method)){
-  if (!(deconv_method %in% deconvolution_methods)) {
-    stop( paste(c("Specified method not available. Must be one of the following: ", deconvolution_methods), collapse=" ") )
-  }
+# output file
+dir.create(output_dir, showWarnings = F, recursive = T)
+output_file <- file.path(output_dir, paste0(deconv_method, "_output.rds"))
+
+# method should be one of xcell or cibersort_abs
+stopifnot(deconv_method %in% c("xcell", "cibersort_abs"))
+
+# CIBERSORT needs a binary and signature matrix  
+if(deconv_method %in% c("cibersort", "cibersort_abs")){
+  stopifnot(!is.na(cibersort_binary) & !is.na(cibersort_mat))
+  print("Setting cibersort params...")
+  set_cibersort_binary(cibersort_binary)
+  set_cibersort_mat(cibersort_mat)
 }
 
-# merge expression from polya and stranded data on common genes
-polya <- readRDS(polya)
-stranded <- readRDS(stranded)
+# read expression data 
+expr_mat <- readRDS(expr_mat)
 
 # read clinical data
 clin_file <- readr::read_tsv(clin_file, guess_max = 10000)
+clin_file <- clin_file %>% 
+  filter(Kids_First_Biospecimen_ID %in% colnames(expr_mat),
+         experimental_strategy == "RNA-Seq",
+         cohort == "GTEx" | !is.na(cancer_group)) # remove non-annotated samples
 
-# function to run immunedeconv
-deconv <- function(expr_input, clin_file, method) {
-
-  # get data
-  expr_input <- get(expr_input)
-
-  # Import standard color palettes for project
-  histology_label_mapping <- readr::read_tsv(
-    file.path(root_dir, "figures", "palettes", "histology_label_color_table.tsv")) %>%
-    # Select just the columns we will need for plotting
-    dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>%
-    # Reorder display_group based on display_order
-    dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
-
-  # subset clinical
-  clin_file_sub  <- clin_file %>%
-    filter(Kids_First_Biospecimen_ID %in% colnames(expr_input)) %>%
-    dplyr::inner_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID") %>%
-    dplyr::select(Kids_First_Biospecimen_ID, broad_histology, display_group, molecular_subtype)
-
+# process each group separately because xCell uses the variability among the samples for a linear transformation of the output score
+# a group is a combination of cohort + cancer group or gtex group
+n_groups <- clin_file %>%
+  mutate(group = ifelse(cohort == "GTEx", gtex_group, cancer_group),
+         group = paste0(cohort, "_", group)) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, group)
+full_output <- plyr::dlply(.data = n_groups, .variables = "group", .fun = function(x) {
+  
+  # get kf ids for all samples in the group
+  print(x %>% pull(group) %>% unique)
+  kf_ids <- x %>%
+    pull(Kids_First_Biospecimen_ID)
+  
+  # at least two samples are needed for processing
+  if(length(kf_ids) < 2){
+    print("Only one sample available; skip processing")
+    return()
+  }
+  
+  # subset input matrix to group
+  expr_mat_sub <- expr_mat %>%
+    dplyr::select(kf_ids)
+  
   # deconvolute using specified method
-  res <- deconvolute(gene_expression = as.matrix(expr_input), method = method)
-  res$method <- names(grep(method, deconvolution_methods, value = TRUE)) # assign method name
-
-  # merge output with clinical data
-  res <- res %>%
-    gather(sample, fraction, -c(cell_type, method)) %>%
+  print("Starting deconvolution...")
+  if(deconv_method == "xcell"){
+    deconv_output <- deconvolute_xcell(gene_expression = as.matrix(expr_mat_sub), arrays = F)
+  } else if(deconv_method == "cibersort_abs"){
+    deconv_output <- deconvolute_cibersort(gene_expression = as.matrix(expr_mat_sub), arrays = F)
+  }
+  
+  # convert to long format
+  deconv_output <- deconv_output %>%
     as.data.frame() %>%
-    inner_join(clin_file_sub, by = c("sample" = "Kids_First_Biospecimen_ID"))
+    rownames_to_column("cell_type") %>%
+    gather(Kids_First_Biospecimen_ID, fraction, -c(cell_type)) %>%
+    as.data.frame()
+})
 
-  return(res)
-}
+# combine all groups
+full_output <- dplyr::bind_rows(full_output)
 
-# Deconvolute using xCell for poly-a and stranded datasets
-expr_input <- c("polya", "stranded")
-combo <- expand.grid(expr_input, deconv_method, stringsAsFactors = F) 
-deconv_output <- apply(combo, 1, FUN = function(x) deconv(expr_input = x[1], clin_file = clin_file, method = x[2]))
-deconv_output <- do.call(rbind.data.frame, deconv_output)
+# merge output with clinical data
+full_output <- clin_file %>% 
+  dplyr::select(Kids_First_Biospecimen_ID, cohort, sample_type, gtex_group, gtex_subgroup, cancer_group, molecular_subtype) %>%
+  inner_join(full_output, by = "Kids_First_Biospecimen_ID") %>%
+  mutate(method = deconv_method)
 
-# save output to RData object
-print("Writing output to file..")
-save(deconv_output, file = output_file)
+# save output to rds file
+print("Writing output to file...")
+saveRDS(object = full_output, file = output_file)
 print("Done!")
