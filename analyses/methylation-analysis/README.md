@@ -72,11 +72,11 @@ Options:
 		Show this help message and exit
 ```
 
-#### `02-compare-cancers-tsne-plots.R`
+#### `002-compare-cancers-tsne-and-umap-plots.R`
 Creates comparison methylation profiles t-SNE and UMAP plots of selected cancer genes for cancer types preprocessed from Illumina Infinium HumanMethylation450 BeadArrays. Utilizes a list of cancer gene symbols (`metadata/TARGET_Methylation_GeneList.txt`) that are present in the array annotation design reported in the methylation M-values result tables (in the `results` folder) produced by the `01-preprocess-illumina-arrays.R` script.
 
 ```
-Rscript --vanilla 02-compare-cancers-tsne-plots.R
+Rscript --vanilla 02-compare-cancers-tsne-and-umap-plots.R
 ```
 
 #### `03-summarize-methylation-values.R`
