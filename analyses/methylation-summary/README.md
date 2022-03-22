@@ -108,3 +108,4 @@ Analysis result files sizes exceed the limit allowable to push on to a GitHub re
 - `results/methylation-probe-beta-quantiles.tsv.gz`
 - `results/methylation-probe-beta-tpm-correlations.tsv.gz`
 - `results/methylation-beta-values-summary.tsv.gz`
+- `results/methylation-beta-values-summary.jsonl.gz`
