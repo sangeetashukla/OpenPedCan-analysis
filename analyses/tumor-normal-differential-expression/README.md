@@ -72,4 +72,7 @@ docker run --volume $PWD:/analysis deseq2_cavatica bash -c "cd /analysis && Rscr
 Note: In the above command, `--HIST_i` and `-–GTEX_i` are initialized as 1, since the process is CPU heavy, and not recommended to run on non-HPC servers. Initializing those index values small, is meant only for testing purposes.
 
 ## CAVATICA
-This module is also wrapped into a CAVATICA application that is made public. The application can be found [here](https://cavatica.sbgenomics.com/u/shuklas1/tumor-normal-differential-expression/apps/#shuklas1/tumor-normal-differential-expression/tumor-normal-differential-expression) . The data files required for running the application are also publicly available [here](https://cavatica.sbgenomics.com/u/cavatica/opentarget). 
+While the module requires an HPC environment for implementation, to enable non-HPC implementation this module is also wrapped into a [CAVATICA](https://d3b.center/our-research/cavatica/) application. To run on CAVATICA, the user must download scripts and publish an application. Following command can be used to publish an application on CAVATICA:
+`sbpack cavatica user/projectname/workflowname workflows/run_deseq_analysis_wf.cwl`
+Refer to this link for instructions on setting up [sbpack](https://docs.cavatica.org/docs/maintaining-and-versioning-cwl-on-external-tool-repositories).
+The data files required for running the application are also publicly available [here](https://cavatica.sbgenomics.com/u/cavatica/opentarget). 
