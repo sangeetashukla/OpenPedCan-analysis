@@ -17,7 +17,7 @@ hist_dir <- opt$hist_dir
 
 ### Define directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-
+data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "pedcbio-sample-name")
 input_dir <- file.path(analysis_dir, "input")
 
@@ -138,7 +138,6 @@ for (i in 1:length(participant_ids_target)){
   
   # find the number of compositions
   each_specimen_need_tiebreak <- histology_df_no_format_id %>% 
-    dplyr::filter(sample_type == "Tumor") %>% 
     dplyr::filter(Kids_First_Participant_ID == participant_of_interest) %>% 
     group_by(experimental_strategy) %>% 
     dplyr::mutate(n_sample_type = n()) %>%
@@ -151,14 +150,16 @@ for (i in 1:length(participant_ids_target)){
 
 # see the samples that need tiebreak
 target_add_tiebreak <- histology_df_no_format_id %>% 
-  dplyr::filter(Kids_First_Biospecimen_ID %in% specimens_id_need_tiebreak,
-                sample_type != "Normal") 
-
-stopifnot(nrow(target_add_tiebreak) != unique(target_add_tiebreak$formatted_sample_id))
+  dplyr::filter(Kids_First_Biospecimen_ID %in% specimens_id_need_tiebreak) 
 
 # For TARGET cohort, looks like using the last 7 digits from the specimen ID + Participant ID should be enough 
 target_add_tiebreak <- target_add_tiebreak %>%
-  dplyr::mutate(formatted_sample_id = gsub("^.{0,10}", "", Kids_First_Biospecimen_ID))
+  dplyr::mutate(formatted_sample_id = gsub("^.{0,10}", "", Kids_First_Biospecimen_ID)) %>%
+  dplyr::mutate(formatted_sample_id = case_when(
+    sample_type == "Normal" ~ paste0(formatted_sample_id, "-N"),
+    TRUE ~ formatted_sample_id
+  ))
+stopifnot(nrow(target_add_tiebreak) != unique(target_add_tiebreak$formatted_sample_id))
 
 
 ### Generate pedcbio ID for TCGA
@@ -180,7 +181,6 @@ for (i in 1:length(participant_ids_tcga)){
   
   # find the number of compositions
   each_specimen_need_tiebreak <- histology_df_no_format_id %>% 
-    dplyr::filter(sample_type == "Tumor") %>% 
     dplyr::filter(Kids_First_Participant_ID == participant_of_interest) %>% 
     group_by(experimental_strategy) %>% 
     dplyr::mutate(n_sample_type = n()) %>%
@@ -193,17 +193,19 @@ for (i in 1:length(participant_ids_tcga)){
 
 # see the samples that need tiebreak
 tcga_add_tiebreak <- histology_df_no_format_id %>% 
-  dplyr::filter(Kids_First_Biospecimen_ID %in% specimens_id_need_tiebreak,
-                sample_type != "Normal") 
+  dplyr::filter(Kids_First_Biospecimen_ID %in% specimens_id_need_tiebreak) 
 
 # From what we can see, using Kids_First_Biospecimen_ID minus the center code is sufficient
 tcga_add_tiebreak <- tcga_add_tiebreak %>%
-  dplyr::mutate(formatted_sample_id = stringr::str_sub(Kids_First_Biospecimen_ID, start = 9, end = -4)) 
+  dplyr::mutate(formatted_sample_id = stringr::str_sub(Kids_First_Biospecimen_ID, start = 9, end = -4)) %>%
+  dplyr::mutate(formatted_sample_id = case_when(
+    sample_type == "Normal" ~ paste0(formatted_sample_id, "-N"),
+    TRUE ~ formatted_sample_id
+  ))
 
 stopifnot(nrow(tcga_add_tiebreak) != unique(tcga_add_tiebreak$formatted_sample_id))
 
 ### Combine all the samples with tiebreak
-
 # combine all tie break needed samples
 all_tiebreaks <- bind_rows(combined_histology_formatted_added,
                            pbta_add_tiebreak,
@@ -217,10 +219,14 @@ no_need_for_tiebreaks <- histology_df %>%
   dplyr::mutate(formatted_sample_id = case_when(
     cohort == "PBTA" ~ sample_id,
     TRUE ~ Kids_First_Participant_ID
-  ))
+))
 
-# combine them together and write out 
-bind_rows(all_tiebreaks, no_need_for_tiebreaks) %>% 
+# combine the files
+histology_all_fixed <- bind_rows(all_tiebreaks, no_need_for_tiebreaks)
+
+# write out the results
+histology_all_fixed %>% 
+  dplyr::filter(cohort != "TCGA") %>%
   readr::write_tsv(file.path(results_dir, "histologies-formatted-id-added.tsv"))
 
 
