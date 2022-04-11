@@ -1,44 +1,43 @@
 # Author: Komal S. Rathi
-# Function: Summarise results and create plots
+# summarise deconvolution results and create plots
 
 # load libraries
-suppressPackageStartupMessages(library(optparse))
-suppressPackageStartupMessages(library(tidyverse))
-suppressPackageStartupMessages(library(pheatmap))
+suppressPackageStartupMessages({
+  library(optparse)
+  library(tidyverse)
+  library(rlist)
+})
+
+# parse parameters
+option_list <- list(
+  make_option(c("--deconv_output"), type = "character", 
+              help = "deconvolution output from 01-immune.deconv.R (.rds)"),
+  make_option(c("--output_dir"), type = "character", 
+              help = "output directory")
+)
+opt <- parse_args(OptionParser(option_list = option_list))
+deconv_output <- opt$deconv_output
+output_dir <- opt$output_dir
 
 # source plotting theme and heatmap functions
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-source(file.path(root_dir, "analyses", "immune-deconv", "util", "pubTheme.R"))
-source(file.path(root_dir, "analyses", "immune-deconv", "util", "heatmap_by_histology.R"))
-source(file.path(root_dir, "analyses", "immune-deconv", "util", "heatmap_by_molecular_subtype.R"))
-
-option_list <- list(
-  make_option(c("-i", "--input"), type = "character", help = "Immunedeconv output from 01-immune.deconv.R (.RData)"),
-  make_option(c("-o",  "--output_dir"), type = "character", help = "Output directory")
-)
-
-# Example Run:
-# Rscript 02-summary-plots.R \
-# -i 'results/deconv-output.RData' \
-# -o 'plots
-
-# parse parameters
-opt <- parse_args(OptionParser(option_list = option_list))
-deconvout <- opt$input
-output_dir <- opt$output_dir
-load(deconvout) 
+source(file.path(root_dir, "analyses", "immune-deconv", "util", "heatmap_by_group.R"))
 
 # deconvolution method
-deconv_method <- unique(deconv_output$method)
+deconv_output <- readRDS(deconv_output)
 
-# create heatmap of average immune scores per cell type per histology
-output_file <- file.path(output_dir, paste0("heatmap_", deconv_method, "_by_histology.pdf"))
-heatmap_by_histology(deconv_output = deconv_output, output_file = output_file)
+# output file
+dir.create(output_dir, showWarnings = F, recursive = T)
+method <- deconv_output %>%
+  pull(method) %>%
+  unique()
 
-# create heatmap of average immune scores per cell type per molecular subtype per histology 
-output_file <- file.path(output_dir, paste0("heatmap_", deconv_method, "_by_molecular_subtype.pdf"))
-pdf(output_file, width = 15, height = 8)
-plyr::d_ply(deconv_output, 
-            .variables = "broad_histology", 
-            .fun = function(x) heatmap_by_molecular_subtype(deconv_output = x))
-dev.off()
+# annotation colors
+annot_colors <- file.path(root_dir, "analyses", "immune-deconv", "util", "colors.yaml")
+annot_colors <- list.load(annot_colors)
+annot_colors <- lapply(annot_colors, function(x) unlist(x))
+
+# create heatmap of average immune scores per cell type per cancer and gtex group
+output_file <- file.path(output_dir, paste0(method, "_heatmap_by_group.pdf"))
+heatmap_by_group(deconv_output = deconv_output, annot_colors = annot_colors,
+                 output_file = output_file)
