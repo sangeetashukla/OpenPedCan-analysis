@@ -627,6 +627,10 @@ if (!dir.exists(tables_dir)) {
 message('Read data...')
 htl_df <- read_tsv('../../data/histologies.tsv', guess_max = 100000,
                    col_types = cols(.default = col_guess()))
+
+htl_df <- htl_df %>%
+  filter(!experimental_strategy == "Methylation")
+
 # assert no Kids_First_Biospecimen_ID or Kids_First_Participant_ID is NA
 stopifnot(identical(
   sum(is.na(select(htl_df, Kids_First_Biospecimen_ID,
