@@ -25,8 +25,8 @@ Issues addressed:
 - Variant-level mutation frequencies: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/64>
 - Gene-level mutation frequencies: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/91>
 - <https://github.com/PediatricOpenTargets/ticket-tracker/issues/8>. This issue is no longer compatible with the purpose of this module. This module intends to compute mutation frequencies for each variant, but this issue intents to compute the mutation frequencies for each gene. This issue is listed here for future reference.
-- Change independent sample lists used in snv-frequencies: https://github.com/PediatricOpenTargets/ticket-tracker/issues/137
-- Rerun snv-frequencies module for v9 data release: https://github.com/PediatricOpenTargets/ticket-tracker/issues/173
+- Change independent sample lists used in snv-frequencies: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/137>.
+- Change biospecimen filtering procedure: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/287>.
 
 ### Methods
 
