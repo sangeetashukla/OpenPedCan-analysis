@@ -130,7 +130,7 @@ dge_output <- dge_output %>%
 p <- deseq2_pvals_histogram(res_df = dge_output,
                             xlab = 'stranded vs poly-A RNA-seq DGE RLE nbinomWaldTest p-value',
                             ylab = 'Gene count', title = paste0('Histogram of stranded vs poly-A RNA-seq\n', 'DESeq2 nbinomWaldTest p-values'))
-filename <- file.path(output_dir, 'stranded_vs_polya_dge_deseq2_histogram.pdf')
+filename <- file.path(output_dir, 'deseq2_analysis', 'stranded_vs_polya_dge_deseq2_histogram.pdf')
 ggsave(filename = filename, plot = p, width = 8, height = 7, bg = "white")
 
 # pull empirical control genes to be used in RUVg
