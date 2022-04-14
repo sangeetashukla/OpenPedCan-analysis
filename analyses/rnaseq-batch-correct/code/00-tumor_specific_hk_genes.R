@@ -2,7 +2,6 @@ setwd('~/Projects/PediatricOpenTargets/OpenPedCan-analysis/analyses/rnaseq-batch
 
 suppressPackageStartupMessages({
   library(tidyverse)
-  library(edgeR)
 })
 
 # histology
@@ -26,8 +25,8 @@ gene_lengths <- rowsum(gencode_gtf$end-gencode_gtf$start+1, gencode_gtf$gene_nam
 gene_lengths <- gene_lengths[rownames(expr_counts),]
 
 # create DGEList object
-y <- DGEList(counts = expr_counts, genes = data.frame(Length = gene_lengths))
-y <- calcNormFactors(y, method = "TMM")
+y <- edgeR::DGEList(counts = expr_counts, genes = data.frame(Length = gene_lengths))
+y <- edgeR::calcNormFactors(y, method = "TMM")
 rpkm_mat <- rpkm(y)
 
 # apply filters

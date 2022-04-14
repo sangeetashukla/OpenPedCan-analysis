@@ -4,7 +4,6 @@
 suppressPackageStartupMessages({
   library(ggplot2)
   library(tidyverse)
-  library(plotly)  
   library(ggpubr)
 })
 

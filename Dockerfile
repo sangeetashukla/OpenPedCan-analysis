@@ -402,6 +402,7 @@ RUN R -e "remotes::install_github('d3b-center/annoFuse',ref = 'c6a2111b5949ca2aa
 # Package for RNA-seq differential gene expression analysis
 RUN ./install_bioc.r \
     DESeq2
+    edgeR
 
 # Package for removing unwanted variation from RNA-Seq data
 RUN ./install_bioc.r \
