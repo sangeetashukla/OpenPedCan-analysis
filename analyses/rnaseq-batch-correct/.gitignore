@@ -1,3 +1,11 @@
 Rplots.pdf
-input/
-output/
+
+# archive code and output need to revisit
+code/archive/
+archive/
+util/clustering_plots.R
+util/density_plots.R
+code/04-test_combatseq.R
+
+# PCA and UMAP output
+output/QC_clustering/*.rds
