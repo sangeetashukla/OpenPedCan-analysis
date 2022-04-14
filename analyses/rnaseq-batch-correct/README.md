@@ -106,7 +106,7 @@ The goal of this section is to identify and remove factors of unwanted variation
 1. `RUVg`: Estimating the factors of unwanted variation using control genes. RUVg was tested with both DESeq2 as well as edgeR. Three sets of control genes were evaluated:
 a. Housekeeping genes identified in Normal tissues by the HRT protocol
 b. Housekeeping genes identified collectively in Tumors + Normal tissues using the HRT protocol
-c. Use the residuals from a DGE analysis
+c. Empirical control genes from the first-pass DGE analysis. These are “in-silico empirical” negative controls, e.g., least significantly DE genes (p-adjust > 0.05) based on a first-pass DE analysis performed prior to RUVg normalization.
 
 2. `RUVr`: use the residuals from a DGE analysis (without batch correction) as a source of unwanted variation to correct for in a second pass DGE. RUVr was tested only using edgeR.
 
@@ -144,11 +144,11 @@ General description of output files:
 
 * RUVr analysis:
 
-1. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals}_stranded_vs_polya_dge_ruvr_edger_chisq_pvalues.tsv`: Chisq test on p-values obtained using second pass DEG analysis for all Ks. 
+1. `stranded_vs_polya_dge_ruvr_edger_chisq_pvalues.tsv`: Chisq test on p-values obtained using second pass DEG analysis for all Ks. 
 
-2. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals}_stranded_vs_polya_dge_ruvr_edger_clustering.pdf`: PCA and UMAP after applying RUVg for all Ks.
+2. `stranded_vs_polya_dge_ruvr_edger_clustering.pdf`: PCA and UMAP after applying RUVg for all Ks.
 
-3. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals}_stranded_vs_polya_dge_ruvr_edger_histogram.pdf`: Histogram of p-values for second-pass DESeq2 analysis for all Ks.
+3. `stranded_vs_polya_dge_ruvr_edger_histogram.pdf`: Histogram of p-values for second-pass DESeq2 analysis for all Ks.
 
 Output files:
 
@@ -206,7 +206,7 @@ output/match_pbta_hgg/edger_analysis
 └── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_edger_histogram.pdf
 
 ## edgeR + RUVr analysis
-# using empirical genes identified in first pass edgeR-based DEG analysis
+# using residuals identified in first pass edgeR-based DEG analysis
 output/match_pbta_hgg/edger_analysis
 ├── stranded_vs_polya_dge_ruvr_edger_chisq_pvalues.tsv
 ├── stranded_vs_polya_dge_ruvr_edger_clustering.pdf
@@ -267,7 +267,7 @@ output/match_target_all/edger_analysis
 └── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_edger_histogram.pdf
 
 ## edgeR + RUVr analysis
-# using empirical genes identified in first pass edgeR-based DEG analysis
+# using residuals identified in first pass edgeR-based DEG analysis
 output/match_target_all/edger_analysis
 ├── stranded_vs_polya_dge_ruvr_edger_chisq_pvalues.tsv
 ├── stranded_vs_polya_dge_ruvr_edger_clustering.pdf
