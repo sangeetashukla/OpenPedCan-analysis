@@ -4,157 +4,272 @@
 
 ### Description
 
-The goal of this analysis is to combine and batch-correct expression matrices from various RNA-seq datasets. 
-The module generates combined uncorrected and batch-corrected matrices as well as combined metadata files that has the sample identifier, batch information and other specified columns only.
-For QC, the module also generates UMAP/t-SNE clustering of most variable genes and housekeeping genes before and after correction as well as density plots with housekeeping genes. The housekeeping genes were obtained from the Housekeeping Transcript Atlas: https://housekeeping.unicamp.br/Housekeeping_GenesHuman.csv. 
-
-There are some strict requirements for the input files for the module to function as expected:
-
-1. `Expression matrix`: Input expression matrices must be collapsed to unique gene symbols.
-2. `Metadata file`: The user should supply a histology/metadata file for each corresponding matrix to be merged.
-3. `Sample identifier`: Each metadata file should have the same column name for the sample identifier that matches the columns in the corresponding expression matrix. For e.g. one histology cannot have `Kids_First_Biospecimen_ID` and the second cannot have `sample_id` for mapping sample names. If you have these differences, you can create temporary histology files for the purpose of running this module.
-4. `Batch variables`: Each metadata file must have the same column name for the columns that are to be combined and used as a batch variable. For e.g. one histology cannot have `RNA_library` and the second cannot have `library_type` for mapping library names.
-5. `Normal Tissue/Disease Groups`: Each metadata file must have the same column name for the columns that are to be used for to color the points in the clustering plots. For e.g. all GTEx tissues and TARGET diseases were mapped to a `group` column for the purpose of this module.
-
-### Module Structure
-
-```sh
-.
-├── README.md
-├── code
-│   ├── 01-batch-correct.R	# script to batch correct combined TPM matrices
-│   ├── 02-qc-plots.R		# script to create t-SNE and density plots
-├── output
-│   ├── *_corrected.rds		# matrices for batch corrected datasets
-│   ├── *_uncorrected.rds	# matrices for uncorrected datasets
-│   ├── *_metadata.rds		# combined metadata with sample identifier, batch info and specified columns
-├── plots
-│   ├── *_density.pdf		# density plots of housekeeping genes before and after batch correction
-│   ├── *_tsne.pdf		# t-SNE plots before and after batch correction with most variable and housekeeping genes
-│   └── *_umap.pdf		# umap plots before and after batch correction with most variable and housekeeping genes
-├── run_analysis.sh		# script to run full analysis
-└── util
-    ├── combine_mat.R		# function to combined input matrices for batch correction
-    ├── combine_meta.R		# function to combined input metadata for batch correction
-    ├── density_plots.R		# function to create density plots
-    ├── pubTheme.R		# function for publication quality ggplot2 theme
-    └── clustering_plots.R	# function to create UMAP/t-SNE plots
-```
+The goal of this analysis is to identify and correct the source of technical variation in RNA-seq datasets. 
 
 ### Analysis scripts
 
-#### code/01-batch-correct.R
+#### Identify housekeeping genes
 
-This script combines various input matrices using their rownames. The input matrices MUST be collapsed to unique gene symbols. Batch correction is done on the combined matrices using `sva::ComBat` when input type is TPM/FPKM and `sva::ComBat_seq` when input type is expected counts. Normalized expression inputs for e.g. TPM/FPKM are log-transformed before batch-correction and so is the corresponding matrix resulting from `sva::ComBat`. These are back-transformed within the script for downstream analyses.
+The goal of this section is to generate a list of house keeping genes identified collectively in tumors as well as normal samples using the HRT Atlas protocol: https://housekeeping.unicamp.br/Housekeeping_GenesHuman.csv 
 
 
-```sh
-Rscript code/01-batch-correct.R --help
-
-Options:
-	--mat=MAT
-		comma-separated list of expression matrices to combine (TPM, FPKM or expected counts) (.rds)
-
-	--type=TYPE
-		Type of expression data: TPM, FPKM or expected_count
-
-	--metadata=METADATA
-		comma-separated list of sample metadata files to combine (.rds)
-
-	--id_col=ID_COL
-		identifier column from metadata file that matches with expression matrix columns
-
-	--batch_cols=BATCH_COLS
-		comma-separated list of columns from meta file to be used to create batch variable
-
-	--other_cols_to_keep=OTHER_COLS_TO_KEEP
-		comma-separated list of columns to keep in the combined metadata in addition to the sample identifier and batch variables
-
-	--output_prefix=OUTPUT_PREFIX
-		prefix for output files
-```
-
-##### Example Run
+Example run:
 
 ```sh
-# GTEx + TARGET NBL
-Rscript code/01-batch-correct.R \
---mat 'input/gtex-gene-expression-rsem-tpm-collapsed.polya.rds, input/target-nbl-gene-expression-rsem-tpm-collapsed.polya.rds' \
---type 'tpm' \
---metadata 'input/gtex_metadata.rds, input/target_nbl_metadata.rds' \
---id_col 'sample_id' \
---batch_cols 'study_id, library_type' \
---other_cols_to_keep 'group' \
---output_prefix 'gtex-target-nbl-gene-expression-rsem-tpm-collapsed.polya'
+Rscript 00-tumor_specific_hk_genes.R
 ```
 
-##### Outputs
-
-Output files in .rds format are generated under `output` folder:
-
-```
-output
-├── gtex-target-nbl-gene-expression-rsem-tpm-collapsed.polya_corrected.rds	# batch corrected matrix
-├── gtex-target-nbl-gene-expression-rsem-tpm-collapsed.polya_metadata.rds	# combined metadata with sample identifier, batch info and specified columns
-└── gtex-target-nbl-gene-expression-rsem-tpm-collapsed.polya_uncorrected.rds	# uncorrected matrix
-```
-
-#### code/02-qc-plots.R
-
-This script takes the output files generated in `01-batch-correct.R` and creates the following plots for uncorrected and corrected matrices: 
-
-1. UMAP/t-SNE of most variable genes and housekeeping genes. UMAP is recommended for large datasets because t-SNE takes a lot of time.
-2. density plots of house-keeping genes
+Output files in .rds format are generated under `input` folder:
 
 ```sh
-Rscript code/02-qc-plots.R --help
-
-Options:
-	--uncorrected_mat=UNCORRECTED_MAT
-		combined expression matrix with multiple batches (.rds)
-
-	--corrected_mat=CORRECTED_MAT
-		corrected expression matrix with multiple batches (.rds)
-
-	--combined_metadata=COMBINED_METADATA
-		combined metadata file with batch information (.rds)
-
-	--var_prop=VAR_PROP
-		proportion of most variable genes to be used
-
-	--sample_id=SAMPLE_ID
-		sample identifier column in metadata file matching column names in expression datasets
-
-	--hk_genes=HK_GENES
-		comma separated list of house keeping genes
-
-	--clustering_type=CLUSTERING_TYPE
-		type of clustering to use: umap or tsne
-
-	--plots_prefix=PLOTS_PREFIX
-		prefix for clustering plots
+input
+├── hk_genes_normals.rds # downloaded from HRT atlas
+└── hk_genes_tumor_normals.rds # output of 00-tumor_specific_hk_genes.R
 ```
 
-##### Example Run
+#### Initial QC plots using PCA and UMAP
+
+Here the goal is to create initial QC clustering plots using PCA and UMAP with the most variable genes (> 90% quantile) as well as housekeeping genes. We are using three datasets for testing:
+
+1. Tumor + Normal samples
+2. Tumor samples only
+3. Matched tumor samples i.e. patients with samples sequenced with different `RNA_library` protocol.
+
+Example run:
 
 ```sh
-Rscript code/02-qc-plots.R \
---uncorrected_mat 'output/gtex-target-nbl-gene-expression-rsem-tpm-collapsed.polya_uncorrected.rds' \
---corrected_mat 'output/gtex-target-nbl-gene-expression-rsem-tpm-collapsed.polya_corrected.rds' \
---combined_metadata 'output/gtex-target-nbl-gene-expression-rsem-tpm-collapsed.polya_metadata.rds' \
---var_prop 10 \
---sample_id 'sample_id' \
---hk_genes 'ACTB, TUBA1A, TUBB, GAPDH, LDHA, RPL19' \
---clustering_type 'umap' \
---plots_prefix 'gtex-target-nbl-gene-expression-rsem-tpm-collapsed.polya'
+# compute PCA and UMAP from count data
+Rscript 01-full_dataset_compute_pca_umap_counts.R
+
+# create PCA plots 
+Rscript 02-full_dataset_plot_pca_counts.R
+
+# create UMAP plots
+Rscript 02-full_dataset_plot_umap_counts.R
+
+# full run script
+bash run_pca_umap_clustering.sh
 ```
 
-##### Outputs
+Output files of PCA and UMAP output (.rds) as well as plots (.pdf):
 
-UMAP/t-SNE and density plots are generated under the `plots` folder:
+```sh
+# PCA
+# tumor + normal samples across all cohorts
+output/QC_clustering
+├── pca_output_tumors_normals.rds # most variable genes > 90% quantile 
+├── pca_output_tumors_normals_hk.rds # housekeeping genes
+├── pca_output_tumors_normals_composition_combined.pdf # combined plot with composition type
+└── pca_output_tumors_normals_library_combined.pdf # combined plot with RNA library type
 
+# tumor samples across all cohorts
+output/QC_clustering
+├── pca_output_tumors.rds # most variable genes > 90% quantile 
+├── pca_output_tumors_hk.rds # housekeeping genes
+├── pca_output_tumors_composition_combined.pdf # combined plot with composition type 
+└── pca_output_tumors_library_combined.pdf # combined plot with RNA library type
+
+# matched samples from PBTA and TARGET
+output/QC_clustering
+├── pca_output_matched_samples.rds # most variable genes > 90% quantile
+├── pca_output_matched_samples_hk.rds # housekeeping genes
+├── pca_output_matched_samples_composition_combined.pdf # combined plot with composition type 
+└── pca_output_matched_samples_library_combined.pdf # combined plot with RNA library type
+
+# UMAP
+# tumor + normal samples across all cohorts
+output/QC_clustering
+├── umap_output_tumors_normals.rds
+├── umap_output_tumors_normals_hk.rds
+├── umap_output_tumors_normals_composition_combined.pdf
+└── umap_output_tumors_normals_library_combined.pdf
+
+# tumor samples across all cohorts
+output/QC_clustering
+├── umap_output_tumors.rds
+├── umap_output_tumors_hk.rds
+├── umap_output_tumors_composition_combined.pdf
+└── umap_output_tumors_library_combined.pdf
+
+# matched samples from PBTA and TARGET
+output/QC_clustering
+├── umap_output_matched_samples.rds
+├── umap_output_matched_samples_hk.rds
+├── umap_output_matched_samples_composition_combined.pdf
+└── umap_output_matched_samples_library_combined.pdf
 ```
-plots
-├── gtex-target-nbl-gene-expression-rsem-tpm-collapsed.polya_density.pdf	# density plots of housekeeping genes before and after batch correction
-├── gtex-target-nbl-gene-expression-rsem-tpm-collapsed.polya_umap.pdf		# UMAP plots before and after batch correction with most variable and housekeeping genes
+
+#### RUVSeq analysis 
+
+The goal of this section is to identify and remove factors of unwanted variation. We evaluate the following methods: 
+
+1. `RUVg`: Estimating the factors of unwanted variation using control genes. RUVg was tested with both DESeq2 as well as edgeR. Three sets of control genes were evaluated:
+a. Housekeeping genes identified in Normal tissues by the HRT protocol
+b. Housekeeping genes identified collectively in Tumors + Normal tissues using the HRT protocol
+c. Use the residuals from a DGE analysis
+
+2. `RUVr`: use the residuals from a DGE analysis (without batch correction) as a source of unwanted variation to correct for in a second pass DGE. RUVr was tested only using edgeR.
+
+For each of these methods, multiple Ks are evaluated from 1 to 5. A chisq test is performed on the p-values obtained using second pass DEG analysis to identify if the distribution of the p-values is significantly different than uniform distribution.   
+
+Example run:
+
+```sh
+# matched samples in PBTA cohort
+# 4 CNS Embryonal tumor, 4 Diffuse midline glioma and 10 High-grade glioma/astrocytoma
+# sample size is okay in HGG so we will use that as a test
+Rscript code/03-test_ruvseq.R \
+--dataset match_pbta_hgg \
+--k_value 5
+
+# matched samples in TARGET cohort
+# 24 Acute Lymphoblastic Leukemia samples have been sequenced with > 1 technology
+Rscript code/03-test_ruvseq.R \
+--dataset match_target_all \
+--k_value 5
+
+# full run script
+bash run_ruvseq.sh
+```
+
+General description of output files:
+
+* RUVg analysis:
+
+1. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals}_stranded_vs_polya_dge_ruvg_{edger, deseq2}_chisq_pvalues.tsv`: Chisq test on p-values obtained using second pass DEG analysis for all Ks. 
+
+2. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals}_stranded_vs_polya_dge_ruvg_{edger, deseq2}_clustering.pdf`: PCA and UMAP after RUVg for all Ks
+
+3. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals}_stranded_vs_polya_dge_ruvg_{edger, deseq2}_histogram.pdf`: Histogram of p-values for second-pass DESeq2 analysis for all Ks
+
+* RUVr analysis:
+
+1. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals}_stranded_vs_polya_dge_ruvr_edger_chisq_pvalues.tsv`: Chisq test on p-values obtained using second pass DEG analysis for all Ks. 
+
+2. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals}_stranded_vs_polya_dge_ruvr_edger_clustering.pdf`: PCA and UMAP after applying RUVg for all Ks.
+
+3. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals}_stranded_vs_polya_dge_ruvr_edger_histogram.pdf`: Histogram of p-values for second-pass DESeq2 analysis for all Ks.
+
+Output files:
+
+1. Matched PBTA HGG samples:
+
+```sh
+## PCA and UMAP clustering before running RUVg or RUVr
+output/match_pbta_hgg/
+└── clustering_with_and_without_norm.pdf
+
+## DESeq2 + RUVg analysis
+# histogram of p-values in first pass DESeq2-based DEG analysis
+output/match_pbta_hgg/deseq2_analysis
+└── stranded_vs_polya_dge_deseq2_histogram.pdf 
+
+# using empirical genes identified in first pass DESeq2-based DEG analysis
+output/match_pbta_hgg/deseq2_analysis
+├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_deseq2_chisq_pvalues.tsv 
+├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_deseq2_clustering.pdf 
+└── dge_empirical_genes_stranded_vs_polya_dge_ruvg_deseq2_histogram.pdf 
+
+# using housekeeping genes in normals (HRT atlas)
+output/match_pbta_hgg/deseq2_analysis
+├── hk_genes_normals_stranded_vs_polya_dge_ruvg_deseq2_chisq_pvalues.tsv
+├── hk_genes_normals_stranded_vs_polya_dge_ruvg_deseq2_clustering.pdf
+└── hk_genes_normals_stranded_vs_polya_dge_ruvg_deseq2_histogram.pdf
+
+# using housekeeping genes identified in tumors + normals (following HRT protocol)
+output/match_pbta_hgg/deseq2_analysis
+├── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_deseq2_chisq_pvalues.tsv
+├── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_deseq2_clustering.pdf
+└── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_deseq2_histogram.pdf
+
+## edgeR + RUVg analysis
+# histogram of p-values in first-pass edgeR-based DEG analysis
+output/match_pbta_hgg/edger_analysis
+└── stranded_vs_polya_dge_edger_histogram.pdf
+
+# using empirical genes identified in first pass edgeR-based DEG analysis
+output/match_pbta_hgg/edger_analysis
+├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_edger_chisq_pvalues.tsv
+├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_edger_clustering.pdf
+└── dge_empirical_genes_stranded_vs_polya_dge_ruvg_edger_histogram.pdf
+
+# using housekeeping genes in normals (HRT atlas)
+output/match_pbta_hgg/edger_analysis
+├── hk_genes_normals_stranded_vs_polya_dge_ruvg_edger_chisq_pvalues.tsv
+├── hk_genes_normals_stranded_vs_polya_dge_ruvg_edger_clustering.pdf
+└── hk_genes_normals_stranded_vs_polya_dge_ruvg_edger_histogram.pdf
+
+# using housekeeping genes identified in tumors + normals (following HRT protocol)
+output/match_pbta_hgg/edger_analysis
+├── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_edger_chisq_pvalues.tsv
+├── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_edger_clustering.pdf
+└── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_edger_histogram.pdf
+
+## edgeR + RUVr analysis
+# using empirical genes identified in first pass edgeR-based DEG analysis
+output/match_pbta_hgg/edger_analysis
+├── stranded_vs_polya_dge_ruvr_edger_chisq_pvalues.tsv
+├── stranded_vs_polya_dge_ruvr_edger_clustering.pdf
+└── stranded_vs_polya_dge_ruvr_edger_histogram.pdf
+```
+
+2. Matched TARGET ALL samples:
+
+```sh
+## PCA and UMAP clustering before running RUVg or RUVr
+output/match_target_all
+└── clustering_with_and_without_norm.pdf
+
+## DESeq2 + RUVg analysis
+# histogram of p-values in first pass DESeq2-based DEG analysis
+output/match_target_all/deseq2_analysis
+└── stranded_vs_polya_dge_deseq2_histogram.pdf
+
+# using empirical genes identified in first pass DESeq2-based DEG analysis
+output/match_target_all/deseq2_analysis
+├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_deseq2_chisq_pvalues.tsv
+├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_deseq2_clustering.pdf
+└── dge_empirical_genes_stranded_vs_polya_dge_ruvg_deseq2_histogram.pdf
+
+# using housekeeping genes in normals (HRT atlas)
+output/match_target_all/deseq2_analysis
+├── hk_genes_normals_stranded_vs_polya_dge_ruvg_deseq2_chisq_pvalues.tsv
+├── hk_genes_normals_stranded_vs_polya_dge_ruvg_deseq2_clustering.pdf
+└── hk_genes_normals_stranded_vs_polya_dge_ruvg_deseq2_histogram.pdf
+
+# using housekeeping genes identified in tumors + normals (following HRT protocol)
+output/match_target_all/deseq2_analysis
+├── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_deseq2_chisq_pvalues.tsv
+├── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_deseq2_clustering.pdf
+└── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_deseq2_histogram.pdf
+
+## edgeR + RUVg analysis
+# histogram of p-values in first-pass edgeR-based DEG analysis
+output/match_target_all/edger_analysis
+└── stranded_vs_polya_dge_edger_histogram.pdf
+
+# using empirical genes identified in first pass edgeR-based DEG analysis
+output/match_target_all/edger_analysis
+├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_edger_chisq_pvalues.tsv
+├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_edger_clustering.pdf
+└── dge_empirical_genes_stranded_vs_polya_dge_ruvg_edger_histogram.pdf
+
+# using housekeeping genes in normals (HRT atlas)
+output/match_target_all/edger_analysis
+├── hk_genes_normals_stranded_vs_polya_dge_ruvg_edger_chisq_pvalues.tsv
+├── hk_genes_normals_stranded_vs_polya_dge_ruvg_edger_clustering.pdf
+└── hk_genes_normals_stranded_vs_polya_dge_ruvg_edger_histogram.pdf
+
+# using housekeeping genes identified in tumors + normals (following HRT protocol)
+output/match_target_all/edger_analysis
+├── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_edger_chisq_pvalues.tsv
+├── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_edger_clustering.pdf
+└── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_edger_histogram.pdf
+
+## edgeR + RUVr analysis
+# using empirical genes identified in first pass edgeR-based DEG analysis
+output/match_target_all/edger_analysis
+├── stranded_vs_polya_dge_ruvr_edger_chisq_pvalues.tsv
+├── stranded_vs_polya_dge_ruvr_edger_clustering.pdf
+└── stranded_vs_polya_dge_ruvr_edger_histogram.pdf
 ```
