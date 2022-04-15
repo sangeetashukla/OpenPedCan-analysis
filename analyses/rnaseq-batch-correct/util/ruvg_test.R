@@ -16,6 +16,16 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
   emp_neg_ctrl_genes <- emp_neg_ctrl_genes[emp_neg_ctrl_genes %in% rownames(seq_expr_set@assayData$counts)]
   print(paste("Number of negative control genes:", length(emp_neg_ctrl_genes)))
   
+  # if no genes left in emp_neg_ctrl_genes, then don't run function
+  if(length(emp_neg_ctrl_genes) == 0){
+    return(NULL)
+  } 
+  
+  # if length of emp_neg_ctrl_genes is less than k_val but greater than 0, then set max k_val number of genes
+  if(length(emp_neg_ctrl_genes) < max(k_val)) {
+    k_val <- c(1:length(emp_neg_ctrl_genes))
+  }
+  
   # loop through all Ks
   cluster_plot <- list()
   pval_hist_plot <- list()

@@ -133,12 +133,23 @@ p <- deseq2_pvals_histogram(res_df = dge_output,
 filename <- file.path(output_dir, 'deseq2_analysis', 'stranded_vs_polya_dge_deseq2_histogram.pdf')
 ggsave(filename = filename, plot = p, width = 8, height = 7, bg = "white")
 
-# pull empirical control genes to be used in RUVg
+# pull empirical control genes to be used in RUVg (not differential expressed)
 emp_neg_ctrl_genes_dge_deseq2 <- dge_output %>% 
   filter(padj > 0.05) %>%
   pull(gene)
 ruvg_test(seq_expr_set = seq_expr_set, k_val = 1:k_value,
           emp_neg_ctrl_genes = emp_neg_ctrl_genes_dge_deseq2,  prefix = "dge_empirical_genes", 
+          diff_type = "deseq2", 
+          output_dir = output_dir)
+
+# 1.4 HK genes (HRT atlas) differentially expressed in DEG analysis
+hk_genes_normals <- readRDS('input/hk_genes_normals.rds')
+emp_neg_ctrl_hk_genes_dge_deseq2 <- dge_output %>% 
+  filter(padj < 0.05,
+         gene %in% hk_genes_normals) %>%
+  pull(gene)
+ruvg_test(seq_expr_set = seq_expr_set, k_val = 1:k_value,
+          emp_neg_ctrl_genes = emp_neg_ctrl_hk_genes_dge_deseq2,  prefix = "dge_empirical_hk_genes", 
           diff_type = "deseq2", 
           output_dir = output_dir)
 
@@ -186,7 +197,7 @@ p <- deseq2_pvals_histogram(res_df = dge_output,
 filename <- file.path(output_dir, 'edger_analysis', 'stranded_vs_polya_dge_edger_histogram.pdf')
 ggsave(filename = filename, plot = p, width = 8, height = 7, bg = "white")
 
-# pull empirical control genes to be used in RUVg
+# pull empirical control genes to be used in RUVg (not differential expressed)
 emp_neg_ctrl_genes_dge_edgeR <- dge_output %>% 
   filter(padj > 0.05) %>%
   pull(gene)
@@ -195,7 +206,19 @@ ruvg_test(seq_expr_set = seq_expr_set, k_val = 1:k_value,
           diff_type = "edger", 
           output_dir = output_dir)
 
-# 2.4 RUVr using empirical control genes (dge from edgeR)
+# 2.4 HK genes (HRT atlas) differentially expressed in DEG analysis
+hk_genes_normals <- readRDS('input/hk_genes_normals.rds')
+emp_neg_ctrl_hk_genes_dge_edgeR <- dge_output %>% 
+  filter(padj < 0.05,
+         gene %in% hk_genes_normals) %>%
+  pull(gene)
+print(paste0("Differentially expressed HK genes:", length(emp_neg_ctrl_hk_genes_dge_edgeR)))
+ruvg_test(seq_expr_set = seq_expr_set, k_val = 1:k_value, 
+          emp_neg_ctrl_genes = emp_neg_ctrl_hk_genes_dge_edgeR, prefix = "dge_empirical_hk_genes", 
+          diff_type = "edger", 
+          output_dir = output_dir)
+
+# 2.5 RUVr using empirical control genes (dge from edgeR)
 # Estimating the factors of unwanted variation using residuals
 # uses residuals, e.g., from a first-pass GLM regression of the counts on the covariates of interest.
 res <- residuals(edger_fit, type = "deviance") # edger_fit from line 169

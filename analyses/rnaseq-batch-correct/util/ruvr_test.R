@@ -2,6 +2,16 @@
 # NOTE: this function can only be run with edgeR
 ruvr_test <- function(seq_expr_set, emp_neg_ctrl_genes, residuals, k_val = 1:2, output_dir){
   
+  # if no genes left in emp_neg_ctrl_genes, then don't run function
+  if(length(emp_neg_ctrl_genes) == 0){
+    return(NULL)
+  } 
+  
+  # if length of emp_neg_ctrl_genes is less than k_val but greater than 0, then set max k_val number of genes
+  if(length(emp_neg_ctrl_genes) < max(k_val)) {
+    k_val <- c(1:length(emp_neg_ctrl_genes))
+  }
+  
   # create output directory
   output_dir <- file.path(output_dir, "edger_analysis")
   dir.create(output_dir, showWarnings = F, recursive = T)
