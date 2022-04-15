@@ -107,6 +107,7 @@ The goal of this section is to identify and remove factors of unwanted variation
 a. Housekeeping genes identified in Normal tissues by the HRT protocol
 b. Housekeeping genes identified collectively in Tumors + Normal tissues using the HRT protocol
 c. Empirical control genes from the first-pass DGE analysis. These are “in-silico empirical” negative controls, e.g., least significantly DE genes (p-adjust > 0.05) based on a first-pass DE analysis performed prior to RUVg normalization.
+d. Housekeeping genes identified in Normal tissues by the HRT protocol that are differentially expressed with p-adjust < 0.05 from the first-pass DGE analysis.
 
 2. `RUVr`: use the residuals from a DGE analysis (without batch correction) as a source of unwanted variation to correct for in a second pass DGE. RUVr was tested only using edgeR.
 
@@ -136,11 +137,11 @@ General description of output files:
 
 * RUVg analysis:
 
-1. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals}_stranded_vs_polya_dge_ruvg_{edger, deseq2}_chisq_pvalues.tsv`: Chisq test on p-values obtained using second pass DEG analysis for all Ks. 
+1. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals, dge_empirical_hk_genes}_stranded_vs_polya_dge_ruvg_{edger, deseq2}_chisq_pvalues.tsv`: Chisq test on p-values obtained using second pass DEG analysis for all Ks. 
 
-2. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals}_stranded_vs_polya_dge_ruvg_{edger, deseq2}_clustering.pdf`: PCA and UMAP after RUVg for all Ks
+2. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals, dge_empirical_hk_genes}_stranded_vs_polya_dge_ruvg_{edger, deseq2}_clustering.pdf`: PCA and UMAP after RUVg for all Ks
 
-3. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals}_stranded_vs_polya_dge_ruvg_{edger, deseq2}_histogram.pdf`: Histogram of p-values for second-pass DESeq2 analysis for all Ks
+3. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals, dge_empirical_hk_genes}_stranded_vs_polya_dge_ruvg_{edger, deseq2}_histogram.pdf`: Histogram of p-values for second-pass DESeq2 analysis for all Ks
 
 * RUVr analysis:
 
@@ -164,7 +165,7 @@ output/match_pbta_hgg/
 output/match_pbta_hgg/deseq2_analysis
 └── stranded_vs_polya_dge_deseq2_histogram.pdf 
 
-# using empirical genes identified in first pass DESeq2-based DEG analysis
+# using empirical genes identified in first pass DESeq2-based DEG analysis (p-adjust > 0.05)
 output/match_pbta_hgg/deseq2_analysis
 ├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_deseq2_chisq_pvalues.tsv 
 ├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_deseq2_clustering.pdf 
@@ -182,12 +183,18 @@ output/match_pbta_hgg/deseq2_analysis
 ├── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_deseq2_clustering.pdf
 └── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_deseq2_histogram.pdf
 
+# differentially expressed housekeeping genes in normals (HRT atlas) from the first-pass DESeq2-based DGE analysis (p-adjust < 0.05)
+output/match_pbta_hgg/deseq2_analysis
+├── dge_empirical_hk_genes_stranded_vs_polya_dge_ruvg_deseq2_chisq_pvalues.tsv
+├── dge_empirical_hk_genes_stranded_vs_polya_dge_ruvg_deseq2_clustering.pdf
+└── dge_empirical_hk_genes_stranded_vs_polya_dge_ruvg_deseq2_histogram.pdf
+
 ## edgeR + RUVg analysis
 # histogram of p-values in first-pass edgeR-based DEG analysis
 output/match_pbta_hgg/edger_analysis
 └── stranded_vs_polya_dge_edger_histogram.pdf
 
-# using empirical genes identified in first pass edgeR-based DEG analysis
+# using empirical genes identified in first pass edgeR-based DEG analysis (p-adjust > 0.05)
 output/match_pbta_hgg/edger_analysis
 ├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_edger_chisq_pvalues.tsv
 ├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_edger_clustering.pdf
@@ -204,6 +211,12 @@ output/match_pbta_hgg/edger_analysis
 ├── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_edger_chisq_pvalues.tsv
 ├── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_edger_clustering.pdf
 └── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_edger_histogram.pdf
+
+# differentially expressed housekeeping genes in normals (HRT atlas) from the first-pass edgeR-based DGE analysis (p-adjust < 0.05)
+output/match_pbta_hgg/edger_analysis
+├── dge_empirical_hk_genes_stranded_vs_polya_dge_ruvg_edger_chisq_pvalues.tsv
+├── dge_empirical_hk_genes_stranded_vs_polya_dge_ruvg_edger_clustering.pdf
+└── dge_empirical_hk_genes_stranded_vs_polya_dge_ruvg_edger_histogram.pdf
 
 ## edgeR + RUVr analysis
 # using residuals identified in first pass edgeR-based DEG analysis
@@ -225,7 +238,7 @@ output/match_target_all
 output/match_target_all/deseq2_analysis
 └── stranded_vs_polya_dge_deseq2_histogram.pdf
 
-# using empirical genes identified in first pass DESeq2-based DEG analysis
+# using empirical genes identified in first pass DESeq2-based DEG analysis (p-adjust > 0.05)
 output/match_target_all/deseq2_analysis
 ├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_deseq2_chisq_pvalues.tsv
 ├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_deseq2_clustering.pdf
@@ -243,12 +256,18 @@ output/match_target_all/deseq2_analysis
 ├── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_deseq2_clustering.pdf
 └── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_deseq2_histogram.pdf
 
+# differentially expressed housekeeping genes in normals (HRT atlas) from the first-pass DESeq2-based DGE analysis (p-adjust < 0.05)
+output/match_target_all/deseq2_analysis
+├── dge_empirical_hk_genes_stranded_vs_polya_dge_ruvg_deseq2_chisq_pvalues.tsv
+├── dge_empirical_hk_genes_stranded_vs_polya_dge_ruvg_deseq2_clustering.pdf
+└── dge_empirical_hk_genes_stranded_vs_polya_dge_ruvg_deseq2_histogram.pdf
+
 ## edgeR + RUVg analysis
 # histogram of p-values in first-pass edgeR-based DEG analysis
 output/match_target_all/edger_analysis
 └── stranded_vs_polya_dge_edger_histogram.pdf
 
-# using empirical genes identified in first pass edgeR-based DEG analysis
+# using empirical genes identified in first pass edgeR-based DEG analysis (p-adjust > 0.05)
 output/match_target_all/edger_analysis
 ├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_edger_chisq_pvalues.tsv
 ├── dge_empirical_genes_stranded_vs_polya_dge_ruvg_edger_clustering.pdf
@@ -265,6 +284,12 @@ output/match_target_all/edger_analysis
 ├── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_edger_chisq_pvalues.tsv
 ├── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_edger_clustering.pdf
 └── hk_genes_tumor_normals_stranded_vs_polya_dge_ruvg_edger_histogram.pdf
+
+# differentially expressed housekeeping genes in normals (HRT atlas) from the first-pass edgeR-based DGE analysis (p-adjust < 0.05)
+output/match_target_all/edger_analysis
+├── dge_empirical_hk_genes_stranded_vs_polya_dge_ruvg_edger_chisq_pvalues.tsv
+├── dge_empirical_hk_genes_stranded_vs_polya_dge_ruvg_edger_clustering.pdf
+└── dge_empirical_hk_genes_stranded_vs_polya_dge_ruvg_edger_histogram.pdf
 
 ## edgeR + RUVr analysis
 # using residuals identified in first pass edgeR-based DEG analysis
