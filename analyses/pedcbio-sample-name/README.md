@@ -3,7 +3,7 @@
 **Module author:** Run Jin ([@runjin326](https://github.com/runjin326))
 
 Currently, for some of the samples, when multiple DNA or RNA specimens are associated with the same sample, there 
-is no column that would distinguish between different aliquots while still tieing DNA and RNA together.
+is no column that would distinguish between different aliquots while still tying DNA and RNA together.
 This module adds a column called `formatted_sample_id` where the base name is the sample id and additional `tiebreaks` were added when multiple RNA or DNA samples are associated with the same participant.
 
 For PBTA samples, `sample_id` column is used as the basename
@@ -33,7 +33,7 @@ Input:
 - `input/cbtn_cbio_sample.csv`
 - `input/oligo_nation_cbio_sample.csv`
 - `input/dgd_cbio_sample.csv`
-- `input/x01_fy16_nbl_maris_cbio_sample.csvz`
+- `input/x01_fy16_nbl_maris_cbio_sample.csv`
 
 Output:
 - `results/histologies-formatted-id-added.tsv`
