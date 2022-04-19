@@ -26,6 +26,8 @@ edaseq_plot <- function(object, isLog = F, title = "", type = c("PCA", "UMAP")){
     Y <- apply(counts, 1, function(y) scale(y, center=TRUE, scale=FALSE))
   }
   
+  # assign rownames
+  rownames(Y) <- colnames(counts)
   s <- svd(Y)
   percent <- s$d^2/sum(s$d^2)*100
   labs <- sapply(seq_along(percent), function(i) {

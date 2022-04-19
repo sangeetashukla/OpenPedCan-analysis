@@ -156,8 +156,9 @@ Output files:
 1. Matched PBTA HGG samples:
 
 ```sh
-## PCA and UMAP clustering before running RUVg or RUVr
+## PCA and UMAP clustering as well as boxplots before running RUVg or RUVr
 output/match_pbta_hgg/
+├── boxplots_with_and_without_norm.pdf 
 └── clustering_with_and_without_norm.pdf
 
 ## DESeq2 + RUVg analysis
@@ -229,8 +230,9 @@ output/match_pbta_hgg/edger_analysis
 2. Matched TARGET ALL samples:
 
 ```sh
-## PCA and UMAP clustering before running RUVg or RUVr
+## PCA and UMAP clustering as well as boxplots before running RUVg or RUVr
 output/match_target_all
+├── boxplots_with_and_without_norm.pdf 
 └── clustering_with_and_without_norm.pdf
 
 ## DESeq2 + RUVg analysis

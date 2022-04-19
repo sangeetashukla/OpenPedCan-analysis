@@ -23,7 +23,8 @@ dir.create(output_dir, showWarnings = F, recursive = T)
 
 # source functions 
 source('util/deseq2_pvals_histogram.R') # DESeq2 pval histograms
-source('util/edaseq_plot.R') # PCA and UMAP clusterings
+source('util/edaseq_plot.R') # PCA and UMAP clustering
+source('util/box_plots.R') # boxplots for samples
 source('util/ruvg_test.R') # function to run RUVg
 source('util/ruvr_test.R') # function to run RUVr (only works with edgeR)
 
@@ -77,6 +78,7 @@ counts_object <- counts_object[counts_object_filtered, , keep.lib.sizes = FALSE]
 seq_expr_set <- newSeqExpressionSet(counts = round(counts_object$counts), phenoData = data.frame(patient_id, rna_library, bs_id, row.names = colnames(round(counts_object$counts))))
 pca_p <- edaseq_plot(object = seq_expr_set, title = "Before normalization", type = "PCA")
 umap_p <- edaseq_plot(object = seq_expr_set, title = "Before normalization", type = "UMAP")
+boxplot_p <- box_plots(object = seq_expr_set, title = "Before normalization")
 
 # from https://support.bioconductor.org/p/95805/#95808
 # The "betweenLaneNormalization" is just a poorly named function that perform between-sample normalization, 
@@ -86,11 +88,17 @@ umap_p <- edaseq_plot(object = seq_expr_set, title = "Before normalization", typ
 seq_expr_set <- EDASeq::betweenLaneNormalization(seq_expr_set, which = "upper")
 pca_p_norm <- edaseq_plot(object = seq_expr_set, title = "After UQ normalization", type = "PCA")
 umap_p_norm <- edaseq_plot(object = seq_expr_set, title = "After UQ normalization", type = "UMAP")
+boxplot_p_norm <- box_plots(object = seq_expr_set, title = "After UQ normalization")
 
 # save both UMAP and PCA in a single file
 p <- ggpubr::ggarrange(pca_p, pca_p_norm, umap_p, umap_p_norm, common.legend = T, legend = "bottom")
 fname <- file.path(output_dir, 'clustering_with_and_without_norm.pdf')
 ggsave(filename = fname, plot = p, width = 6, height = 6, device = "pdf", bg = "white")
+
+# save boxplots in a single file
+p <- ggpubr::ggarrange(boxplot_p, boxplot_p_norm, nrow = 2, common.legend = T, legend = "bottom")
+fname <- file.path(output_dir, 'boxplots_with_and_without_norm.pdf')
+ggsave(filename = fname, plot = p, width = 12, height = 6, device = "pdf", bg = "white")
 
 ########################################### DESeq2 analysis ##############################################################
 
