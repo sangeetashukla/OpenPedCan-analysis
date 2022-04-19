@@ -300,3 +300,52 @@ output/match_target_all/edger_analysis
 ├── stranded_vs_polya_dge_ruvr_edger_clustering.pdf
 └── stranded_vs_polya_dge_ruvr_edger_histogram.pdf
 ```
+
+#### ComBat analysis 
+
+In this section, we will generate some QC plots with and without sva::ComBat batch correction using `RNA_library` as the batch variable.
+
+Example run:
+
+```sh
+# matched samples in PBTA cohort
+# 4 CNS Embryonal tumor, 4 Diffuse midline glioma and 10 High-grade glioma/astrocytoma
+# sample size is okay in HGG so we will use that as a test
+Rscript code/04-test_combat.R \
+--dataset match_pbta_hgg 
+
+# matched samples in TARGET cohort
+# 24 Acute Lymphoblastic Leukemia samples have been sequenced with > 1 technology
+Rscript code/04-test_combat.R \
+--dataset match_target_all
+
+# full run script
+bash run_combat.sh
+```
+
+Output files:
+
+1. `{expressed_genes, hk_genes_normals, hk_genes_tumors_normals}_boxplots_with_and_without_bc.pdf`: Boxplots of matched samples using either all expressed genes, housekeeping genes in Normals from HRT, housekeeping genes in Tumors + Normals using HRT protocol. 
+
+2. `{expressed_genes, hk_genes_normals, hk_genes_tumors_normals}_clustering_with_and_without_bc.pdf`: PCA and UMAP of matched samples using either all expressed genes, housekeeping genes in Normals from HRT, housekeeping genes in Tumors + Normals using HRT protocol.
+
+
+```sh
+# matched samples from PBTA HGG
+output/combat_output/match_pbta_hgg
+├── expressed_genes_boxplots_with_and_without_bc.pdf 
+├── expressed_genes_clustering_with_and_without_bc.pdf
+├── hk_genes_normals_boxplots_with_and_without_bc.pdf
+├── hk_genes_normals_clustering_with_and_without_bc.pdf
+├── hk_genes_tumors_normals_boxplots_with_and_without_bc.pdf
+└── hk_genes_tumors_normals_clustering_with_and_without_bc.pdf
+
+# matched samples from TARGET ALL
+output/combat_output/match_target_all
+├── expressed_genes_boxplots_with_and_without_bc.pdf
+├── expressed_genes_clustering_with_and_without_bc.pdf
+├── hk_genes_normals_boxplots_with_and_without_bc.pdf
+├── hk_genes_normals_clustering_with_and_without_bc.pdf
+├── hk_genes_tumors_normals_boxplots_with_and_without_bc.pdf
+└── hk_genes_tumors_normals_clustering_with_and_without_bc.pdf
+```
