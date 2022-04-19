@@ -4,19 +4,20 @@ suppressPackageStartupMessages({
   library(ggplot2)
   library(ggpubr)
   library(uwot)
+  library(EDASeq)
 })
 
 # create clustering using PCA or UMAP 
 edaseq_plot <- function(object, isLog = F, title = "", type = c("PCA", "UMAP")){
-  if(ncol(counts(object)) <= 1){
+  if(ncol(EDASeq::counts(object)) <= 1){
     stop("At least two samples needed for the PCA plot.")
   } else {
-    if(all(is.na(normCounts(object)))) {
+    if(all(is.na(EDASeq::normCounts(object)))) {
       print("use raw counts")
-      counts <- counts(object)
+      counts <- EDASeq::counts(object)
     } else {
       print("use norm counts")
-      counts <- normCounts(object)
+      counts <- EDASeq::normCounts(object)
     }
   }
   

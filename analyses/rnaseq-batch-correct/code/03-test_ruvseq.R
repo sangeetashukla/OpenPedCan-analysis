@@ -5,7 +5,9 @@
 suppressPackageStartupMessages({
   library(optparse)
   library(tidyverse)
+  library(edgeR)
   library(RUVSeq)
+  library(EDASeq)
 })
 
 # parse parameters
@@ -75,7 +77,7 @@ counts_object_filtered <- edgeR::filterByExpr(counts_object, group = rna_library
 counts_object <- counts_object[counts_object_filtered, , keep.lib.sizes = FALSE]
 
 # create new expression set
-seq_expr_set <- newSeqExpressionSet(counts = round(counts_object$counts), phenoData = data.frame(patient_id, rna_library, bs_id, row.names = colnames(round(counts_object$counts))))
+seq_expr_set <- EDASeq::newSeqExpressionSet(counts = round(counts_object$counts), phenoData = data.frame(patient_id, rna_library, bs_id, row.names = colnames(round(counts_object$counts))))
 pca_p <- edaseq_plot(object = seq_expr_set, title = "Before normalization", type = "PCA")
 umap_p <- edaseq_plot(object = seq_expr_set, title = "Before normalization", type = "UMAP")
 boxplot_p <- box_plots(object = seq_expr_set, title = "Before normalization")

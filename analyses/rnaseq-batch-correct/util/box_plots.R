@@ -1,28 +1,27 @@
 suppressPackageStartupMessages({
   library(ggplot2)
   library(ggpubr)
+  library(EDASeq)
 })
 
 # create boxplot 
 box_plots <- function(object, isLog = F, title = ""){
-  if(ncol(counts(object)) <= 1){
+  if(ncol(EDASeq::counts(object)) <= 1){
     stop("At least two samples needed for the PCA plot.")
   } else {
-    if(all(is.na(normCounts(object)))) {
+    if(all(is.na(EDASeq::normCounts(object)))) {
       print("use raw counts")
-      counts <- counts(object)
+      counts <- EDASeq::counts(object)
     } else {
       print("use norm counts")
-      counts <- normCounts(object)
+      counts <- EDASeq::normCounts(object)
     }
   }
   
   if(!isLog) {
-    print("log")
     Y <- apply(log(counts+1), 1, function(y) scale(y, center=TRUE, scale=FALSE))
     y_lab <- "log2(counts)"
   } else {
-    print("no log")
     Y <- apply(counts, 1, function(y) scale(y, center=TRUE, scale=FALSE))
     y_lab <- "counts"
   }
