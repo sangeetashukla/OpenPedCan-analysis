@@ -1,4 +1,4 @@
-# Prepocess raw Illumina Infinium HumanMethylation BeadArrays (27K, and 450K) 
+# Prepocess raw Illumina Infinium HumanMethylation BeadArrays (27K, 450K, and 850k) 
 # intensities using minfi into usable methylation measurements (Beta and M values) 
 # for TARGET normal and tumor samples.
 
@@ -58,7 +58,7 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 # The array data directory can copied from the Maris Lab folder 
 # on Isilon where a copy of this module is available.
 # Check with Alvin Ferrel (GitHub handle: @aferrel)
-module_dir <- file.path(root_dir, "analyses", "methylation-analysis")
+module_dir <- file.path(root_dir, "analyses", "methylation-preprocessing")
 data_dir <- file.path(module_dir, "data")
 results_dir <- file.path(module_dir, "results")
 metadata_dir <- file.path(module_dir, "metadata")
@@ -81,25 +81,45 @@ stopifnot(dir.exists(array_data_dir))
 ######################### Create metadata sample sheet #########################
 message("Creating metadata sample sheet...\n")
 
-# read metadata file
-metadata <- readr::read_tsv(metadata_file, guess_max = 10000,
-                            show_col_types = FALSE)
-
-# Select the required columns and rename appropriately
-metadata %>% dplyr::select(as.name("Characteristics[DiseaseState]"), 
-                           as.name("Characteristics[OrganismPart]"), 
-                           as.name("Extract Name")) %>% 
-  dplyr::rename(Sample_Type = as.name("Characteristics[DiseaseState]"), 
-                Primary_Site = as.name("Characteristics[OrganismPart]"), 
-                Sample_Name = as.name("Extract Name")) %>% 
-  dplyr::mutate(Sample_Group = 
-                  dplyr::case_when(
-                    Sample_Type == "Normal" ~ "Normal",
-                    Sample_Type != "Normal" ~ "Tumor")) %>%
-  dplyr::distinct() %>% 
-  dplyr::mutate(Basename = file.path(base_dir, Sample_Name)) %>% 
-  readr::write_csv(file.path(base_dir, "SampleSheet.csv"))
-rm(metadata)
+if (grepl("TARGET", metadata_file, fixed = TRUE)) {
+  # read metadata file
+  metadata <- readr::read_tsv(metadata_file, guess_max = 10000,
+                              show_col_types = FALSE)
+  # Select the required columns and rename appropriately
+  metadata %>% dplyr::select(as.name("Characteristics[DiseaseState]"), 
+                             as.name("Characteristics[OrganismPart]"), 
+                             as.name("Extract Name")) %>% 
+    dplyr::rename(Sample_Type = as.name("Characteristics[DiseaseState]"), 
+                  Primary_Site = as.name("Characteristics[OrganismPart]"), 
+                  Sample_Name = as.name("Extract Name")) %>% 
+    dplyr::mutate(Sample_Group = 
+                    dplyr::case_when(
+                      Sample_Type == "Normal" ~ "Normal",
+                      Sample_Type != "Normal" ~ "Tumor")) %>%
+    dplyr::distinct() %>% 
+    dplyr::mutate(Basename = file.path(base_dir, Sample_Name)) %>% 
+    readr::write_csv(file.path(base_dir, "SampleSheet.csv"))
+  rm(metadata) 
+}
+if (grepl("CBTN", metadata_file, fixed = TRUE)) {
+  # read metadata file
+  metadata <- readr::read_csv(metadata_file, guess_max = 10000,
+                              show_col_types = FALSE)
+  # Select the required columns and rename appropriately
+  metadata %>% dplyr::select(disease_type, sample_type, primary_site,
+                             as.name("Kids First Biospecimen ID")) %>% 
+    dplyr::rename(Sample_Type = disease_type,
+                  Primary_Site = primary_site,
+                  Sample_Group = sample_type, 
+                  Sample_Name = as.name("Kids First Biospecimen ID")) %>% 
+    dplyr::mutate(Sample_Group = 
+                    replace(Sample_Group, 
+                            Sample_Group == "Non-Tumor", "Normal")) %>% 
+    dplyr::distinct() %>%
+    dplyr::mutate(Basename = file.path(base_dir, Sample_Name)) %>%
+    readr::write_csv(file.path(base_dir, "SampleSheet.csv"))
+  rm(metadata)
+}
 
 ########################### Read sample array data  ############################
 message("Reading sample array data files...\n")

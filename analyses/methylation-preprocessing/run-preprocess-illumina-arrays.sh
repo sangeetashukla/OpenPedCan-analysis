@@ -18,7 +18,7 @@ metadata_path="metadata"
 results_path="results"
 
 
-######################### Process `Normal` samples for Illumina 450k arrays #########################
+######################### Process TARGET `Normal` samples for Illumina 450k arrays #########################
 Rscript --vanilla 01-preprocess-illumina-arrays.R \
   --base_dir ${data_path}/Normal \
   --metadata_file ${metadata_path}/TARGET_Normal_MethylationArray_20160812.sdrf.txt \
@@ -159,7 +159,7 @@ mv ${results_path}/AML27k-beta-values-methylation.tsv \
 mv ${results_path}/AML27k-m-values-methylation.tsv \
   ${results_path}/AML27k-m-values-methylation.3.tsv
 
-# merge first and second batches
+# merge first, second and third batches
 echo "Merging batches..."
 awk 'FNR==1 && NR!=1 {(/^<header>/) getline;} 1 {print}' \
   ${results_path}/AML27k-beta-values-methylation.*.tsv \
@@ -171,6 +171,68 @@ awk 'FNR==1 && NR!=1 {(/^<header>/) getline;} 1 {print}' \
 
 # remove intermediate files
 rm ${results_path}/AML27k-*-values-methylation.*.tsv
+
+######################### Process `CBTN` samples for Illumina 850k arrays ############################
+# process first batch
+Rscript --vanilla 01-preprocess-illumina-arrays.R \
+  --base_dir ${data_path}/CBTN \
+  --metadata_file ${metadata_path}/manifest_methylation_CBTN_20220410.1.csv \
+  --preprocess_method preprocessQuantile \
+  --snp_filter
+
+mv ${results_path}/CBTN-beta-values-methylation.tsv \
+  ${results_path}/CBTN-beta-values-methylation.1.tsv
+mv ${results_path}/CBTN-m-values-methylation.tsv \
+  ${results_path}/CBTN-m-values-methylation.1.tsv
+
+# process second batch
+Rscript --vanilla 01-preprocess-illumina-arrays.R \
+  --base_dir ${data_path}/CBTN \
+  --metadata_file ${metadata_path}/manifest_methylation_CBTN_20220410.2.csv \
+  --preprocess_method preprocessQuantile \
+  --snp_filter
+
+mv ${results_path}/CBTN-beta-values-methylation.tsv \
+  ${results_path}/CBTN-beta-values-methylation.2.tsv
+mv ${results_path}/CBTN-m-values-methylation.tsv \
+  ${results_path}/CBTN-m-values-methylation.2.tsv
+
+# process third batch
+Rscript --vanilla 01-preprocess-illumina-arrays.R \
+  --base_dir ${data_path}/CBTN \
+  --metadata_file ${metadata_path}/manifest_methylation_CBTN_20220410.3.csv \
+  --preprocess_method preprocessQuantile \
+  --snp_filter
+
+mv ${results_path}/CBTN-beta-values-methylation.tsv \
+  ${results_path}/CBTN-beta-values-methylation.3.tsv
+mv ${results_path}/CBTN-m-values-methylation.tsv \
+  ${results_path}/CBTN-m-values-methylation.3.tsv
+
+# process fourth batch
+Rscript --vanilla 01-preprocess-illumina-arrays.R \
+  --base_dir ${data_path}/CBTN \
+  --metadata_file ${metadata_path}/manifest_methylation_CBTN_20220410.4.csv \
+  --preprocess_method preprocessQuantile \
+  --snp_filter
+
+mv ${results_path}/CBTN-beta-values-methylation.tsv \
+  ${results_path}/CBTN-beta-values-methylation.4.tsv
+mv ${results_path}/CBTN-m-values-methylation.tsv \
+  ${results_path}/CBTN-m-values-methylation.4.tsv
+
+# merge first, second, third, and third batches
+echo "Merging batches..."
+awk 'FNR==1 && NR!=1 {(/^<header>/) getline;} 1 {print}' \
+  ${results_path}/CBTN-beta-values-methylation.*.tsv \
+  > ${results_path}/CBTN-beta-values-methylation.tsv
+
+awk 'FNR==1 && NR!=1 {(/^<header>/) getline;} 1 {print}' \
+  ${results_path}/CBTN-m-values-methylation.*.tsv \
+  > ${results_path}/CBTN-m-values-methylation.tsv
+
+# remove intermediate files
+rm ${results_path}/CBTN-*-values-methylation.*.tsv
 
 ################################## Compressing methylations results #####################################
 echo "Compressing processed methylations result files..."
