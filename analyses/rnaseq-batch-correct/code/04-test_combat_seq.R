@@ -1,4 +1,4 @@
-# function to perform ComBat batch correction
+# function to perform ComBat_seq batch correction
 suppressPackageStartupMessages({
   library(tidyverse)
   library(optparse)
@@ -14,7 +14,7 @@ option_list <- list(
 )
 opt <- parse_args(OptionParser(option_list = option_list))
 dataset <- opt$dataset
-output_dir <- file.path('output', 'combat_output', dataset)
+output_dir <- file.path('output', 'combatseq_output', dataset)
 dir.create(output_dir, showWarnings = F, recursive = T)
 
 # source functions
@@ -80,17 +80,16 @@ run_combat <- function(counts_object, genes_to_filter = NULL, prefix = ""){
   seq_expr_set <- EDASeq::newSeqExpressionSet(counts = round(count_data), phenoData = counts_object$samples)
   
   # before batch correction
-  pca_p <- edaseq_plot(object = seq_expr_set, title = "Before ComBat", type = "PCA")
-  umap_p <- edaseq_plot(object = seq_expr_set, title = "Before ComBat", type = "UMAP")
-  boxplot_p <- box_plots(object = seq_expr_set, title = "Before ComBat")
+  pca_p <- edaseq_plot(object = seq_expr_set, title = "Before ComBat_seq", type = "PCA")
+  umap_p <- edaseq_plot(object = seq_expr_set, title = "Before ComBat_seq", type = "UMAP")
+  boxplot_p <- box_plots(object = seq_expr_set, title = "Before ComBat_seq")
   
   # after batch correction
-  counts_batch_corrected <- sva::ComBat(dat = log2(count_data + 1), batch = rna_library)
-  counts_batch_corrected <- 2^(counts_batch_corrected)
+  counts_batch_corrected <- sva::ComBat_seq(counts = count_data, batch = rna_library, group = rep(1, ncol(count_data)), full_mod = FALSE)
   seq_expr_set_bc <- EDASeq::newSeqExpressionSet(counts = round(counts_batch_corrected), phenoData = counts_object$samples)
-  pca_p_bc <- edaseq_plot(object = seq_expr_set_bc, title = "After ComBat", type = "PCA")
-  umap_p_bc <- edaseq_plot(object = seq_expr_set_bc, title = "After ComBat", type = "UMAP")
-  boxplot_p_bc <- box_plots(object = seq_expr_set_bc, title = "After ComBat")
+  pca_p_bc <- edaseq_plot(object = seq_expr_set_bc, title = "After ComBat_seq", type = "PCA")
+  umap_p_bc <- edaseq_plot(object = seq_expr_set_bc, title = "After ComBat_seq", type = "UMAP")
+  boxplot_p_bc <- box_plots(object = seq_expr_set_bc, title = "After ComBat_seq")
   
   # save both UMAP and PCA in a single file
   p <- ggpubr::ggarrange(pca_p, pca_p_bc, umap_p, umap_p_bc, common.legend = T, legend = "bottom")
