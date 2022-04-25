@@ -30,6 +30,28 @@ if(!dir.exists(results_dir)){
 # histology file 
 histology_df <- readr::read_tsv(file.path(hist_dir, "histologies.tsv"), guess_max = 100000)
 
+# tmp update for broad histology bug, to be fixed in v11
+histology_df <- histology_df %>%
+  mutate(broad_histology = ifelse(broad_histology == "Hematologic malignancies", 
+                                 "Hematologic malignancy", broad_histology),
+         # move GTEX to cancer group for pedcbio viz
+         cancer_group = case_when(
+           cohort == "GTEx" ~ paste0(gtex_group, " (GTEx)"), 
+           TRUE ~ as.character(cancer_group)),
+         harmonized_diagnosis = case_when(
+           cohort == "GTEx" ~ paste0(gtex_subgroup, " (GTEx)"),
+         # add NBL subtyping to harm dx
+           (cohort == "TARGET" | cohort == "GMKF") & !is.na(molecular_subtype) ~ paste0(cancer_group, ", ", molecular_subtype),
+         # for remaining without a harm dx, use cancer group
+         is.na(harmonized_diagnosis) ~ cancer_group, 
+           TRUE ~ as.character(harmonized_diagnosis)))
+
+filled_harm_dx <- histology_df %>%
+  filter(!is.na(harmonized_diagnosis)) # 32652
+
+table(histology_df$cohort) # 17382 gtex
+table(histology_df$sample_type) # 15270 tumor 
+
 # read in all the pedcbio files
 cbio_names_list <- list.files(input_dir)
 
