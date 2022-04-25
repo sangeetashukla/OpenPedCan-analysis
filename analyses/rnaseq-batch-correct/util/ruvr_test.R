@@ -21,6 +21,7 @@ ruvr_test <- function(seq_expr_set, emp_neg_ctrl_genes, residuals, k_val = 1:2, 
   pval_hist_plot <- list()
   dge_output_neg_control_genes <- list()
   chisq_out <- list()
+  ks_out <- list()
   for(i in 1:length(k_val)){
     print(paste0("K = ", i))
     print(paste0('Run differential gene expression with RUVSeq estimated batch effect on poly-A vs stranded RNA-seq...'))
@@ -64,6 +65,11 @@ ruvr_test <- function(seq_expr_set, emp_neg_ctrl_genes, residuals, k_val = 1:2, 
     chisq_out[[i]] <- chisq.test(x = dge_output_neg_control_genes[[i]]$pvalue)
     chisq_out[[i]] <- broom::tidy(chisq_out[[i]])
     chisq_out[[i]]$k <- k_val[i]
+    
+    # ks test for p-values
+    ks_out[[i]] <- ks.test(x = dge_output_neg_control_genes[[i]]$pvalue, punif)
+    ks_out[[i]] <- broom::tidy(ks_out[[i]])
+    ks_out[[i]]$k <- k_val[i]
   }
   
   # save the plots for all k values in a multi-page pdf file
@@ -80,4 +86,8 @@ ruvr_test <- function(seq_expr_set, emp_neg_ctrl_genes, residuals, k_val = 1:2, 
   # rbind and save chisq values
   data.table::rbindlist(chisq_out) %>%
     write_tsv(file = file.path(output_dir, 'stranded_vs_polya_dge_ruvr_edger_chisq_pvalues.tsv'))
+  
+  # rbind and save ks values
+  data.table::rbindlist(ks_out) %>%
+    write_tsv(file = file.path(output_dir, 'stranded_vs_polya_dge_ruvr_edger_ks_pvalues.tsv'))
 }
