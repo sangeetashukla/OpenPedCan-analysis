@@ -53,15 +53,17 @@ ruvr_test <- function(seq_expr_set, emp_neg_ctrl_genes, residuals, k_val = 1:2, 
     # write_tsv(dge_output, file = filename)
     
     # plot and save p-value histogram
-    # evaluate the distribution of p-values among negative control genes only
-    dge_output_neg_control_genes[[i]] <- dge_output %>%
-      filter(gene %in% emp_neg_ctrl_genes)
-    pval_hist_plot[[i]] <- deseq2_pvals_histogram(res_df = dge_output_neg_control_genes[[i]],
+    # evaluate the distribution of p-values for full transcriptome
+    pval_hist_plot[[i]] <- deseq2_pvals_histogram(res_df = dge_output,
                                                   xlab = 'stranded vs poly-A RUVr p-value (negative control genes)',
                                                   ylab = 'Gene count',
                                                   title = paste0('Histogram of stranded vs poly-A paired analysis (k = ', i, ')'))
     
-    # chisq test for p-values (negative control genes only)
+    # test for uniformity (negative control genes only)
+    dge_output_neg_control_genes[[i]] <- dge_output %>%
+      filter(gene %in% emp_neg_ctrl_genes)
+    
+    # chisq test for p-values 
     chisq_out[[i]] <- chisq.test(x = dge_output_neg_control_genes[[i]]$pvalue)
     chisq_out[[i]] <- broom::tidy(chisq_out[[i]])
     chisq_out[[i]]$k <- k_val[i]

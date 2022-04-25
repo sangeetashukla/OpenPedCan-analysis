@@ -111,7 +111,7 @@ d. Housekeeping genes identified in Normal tissues by the HRT protocol that are 
 
 2. `RUVr`: use the residuals from a DGE analysis (without batch correction) as a source of unwanted variation to correct for in a second pass DGE. RUVr was tested only using edgeR.
 
-For each of these methods, multiple Ks are evaluated from 1 to 5. A chisq test as well as a KS test is performed on the p-values obtained using second pass DEG analysis to identify if the distribution of the p-values is significantly different than uniform distribution.   
+For each of these methods, multiple Ks are evaluated from 1 to 5. A p-value histogram is created for the full transcriptome. A chisq test as well as a KS test is performed on the p-values of negative control genes obtained after second pass DEG analysis to identify if the distribution of the p-values is significantly different than uniform distribution.   
 
 Example run:
 
@@ -137,19 +137,19 @@ General description of output files:
 
 * RUVg analysis:
 
-1. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals, dge_empirical_hk_genes}_stranded_vs_polya_dge_ruvg_{edger, deseq2}_{chisq, ks}_pvalues.tsv`: Chisq/KS test of uniformity on p-values obtained using second pass DEG analysis for all Ks. 
+1. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals, dge_empirical_hk_genes}_stranded_vs_polya_dge_ruvg_{edger, deseq2}_{chisq, ks}_pvalues.tsv`: Chisq/KS test of uniformity on p-values obtained using second pass DEG analysis for all Ks (only negative control gene set)
 
-2. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals, dge_empirical_hk_genes}_stranded_vs_polya_dge_ruvg_{edger, deseq2}_clustering.pdf`: PCA and UMAP after RUVg for all Ks
+2. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals, dge_empirical_hk_genes}_stranded_vs_polya_dge_ruvg_{edger, deseq2}_clustering.pdf`: PCA and UMAP after RUVg for all Ks. (full transcriptome)
 
-3. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals, dge_empirical_hk_genes}_stranded_vs_polya_dge_ruvg_{edger, deseq2}_histogram.pdf`: Histogram of p-values for second-pass DESeq2 analysis for all Ks
+3. `{dge_empirical_genes, hk_genes_normals, hk_genes_tumor_normals, dge_empirical_hk_genes}_stranded_vs_polya_dge_ruvg_{edger, deseq2}_histogram.pdf`: Histogram of p-values for second-pass DESeq2 analysis for all Ks (full transcriptome)
 
 * RUVr analysis:
 
-1. `stranded_vs_polya_dge_ruvr_edger_{chisq, ks}_pvalues.tsv`: Chisq/KS test of uniformity on p-values obtained using second pass DEG analysis for all Ks. 
+1. `stranded_vs_polya_dge_ruvr_edger_{chisq, ks}_pvalues.tsv`: Chisq/KS test of uniformity on p-values obtained using second pass DEG analysis for all Ks (only negative control gene set)
 
-2. `stranded_vs_polya_dge_ruvr_edger_clustering.pdf`: PCA and UMAP after applying RUVg for all Ks.
+2. `stranded_vs_polya_dge_ruvr_edger_clustering.pdf`: PCA and UMAP after RUVr for all Ks. (full transcriptome)
 
-3. `stranded_vs_polya_dge_ruvr_edger_histogram.pdf`: Histogram of p-values for second-pass DESeq2 analysis for all Ks.
+3. `stranded_vs_polya_dge_ruvr_edger_histogram.pdf`: Histogram of p-values for second-pass DESeq2 analysis for all Ks (full transcriptome)
 
 Output files:
 
