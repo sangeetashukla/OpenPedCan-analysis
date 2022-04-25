@@ -1,0 +1,6 @@
+statistic	p.value	method	alternative	k
+0.16582563631599245	0	One-sample Kolmogorov-Smirnov test	two-sided	1
+0.10525948660523282	0	One-sample Kolmogorov-Smirnov test	two-sided	2
+0.05468005720043038	0	One-sample Kolmogorov-Smirnov test	two-sided	3
+0.0459596017799812	0	One-sample Kolmogorov-Smirnov test	two-sided	4
+0.06000640741180907	0	One-sample Kolmogorov-Smirnov test	two-sided	5
