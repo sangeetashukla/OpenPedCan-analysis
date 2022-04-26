@@ -42,15 +42,18 @@ bash run-preprocess-illumina-arrays.sh
 
 #### `01-preprocess-illumina-arrays.R`
 Preprocesses raw Illumina Infinium HumanMethylation BeadArrays (27K, 450K, and 850k) intensities using `minfi Bioconductor package` into usable methylation measurements (Beta and M values) for TARGET normal and tumor samples. 
+- `BiocManager::install("minfi")`
 
 Addition data packages for `Ilumina Infinium HumanMethylation 27k and 850k BeadArrays` that don't get installed automatically with `minfi`  and will need to be installed separately as folllows:
 - `BiocManager::install("IlluminaHumanMethylation27kmanifest")`
+- `BiocManager::install("IlluminaHumanMethylation450kmanifest")`
 - `BiocManager::install("IlluminaHumanMethylationEPICmanifest")`
 - `BiocManager::install("IlluminaHumanMethylation27kanno.ilmn12.hg19")`
+- `BiocManager::install("IlluminaHumanMethylation450kanno.ilmn12.hg19")`
 - `BiocManager::install("IlluminaHumanMethylationEPICanno.ilm10b4.hg19")`
-- `BiocManager::install("IlluminaHumanMethylation27kanno.ilmn12.hg19")`
 
-In some `Ububtu OS` flavors, error occurs from the `preprocessCore library` which is installed by `BiocManger` when `minfi` calls the normalization functions. The work around is to [disable threading](https://support.bioconductor.org/p/122925/). This is not an issue on Mac and Redhat OS. 
+
+In some `Ububtu OS` flavors, error occurs from the `preprocessCore library` is installed by `BiocManger` when `minfi` calls the normalization functions. The workaround is to [disable threading](https://support.bioconductor.org/p/122925/) as shown below. This is not an issue on Mac and Redhat OS. 
 - `BiocManager::install("preprocessCore", configure.args="--disable-threading", force = TRUE)`
 
 **Argument descriptions:**
