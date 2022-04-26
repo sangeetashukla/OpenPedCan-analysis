@@ -25,7 +25,7 @@ ruvr_test <- function(seq_expr_set, emp_neg_ctrl_genes, residuals, k_val = 1:2, 
   ks_out <- list()
   for(i in 1:length(k_val)){
     print(paste0("K = ", i))
-    print(paste0('Run differential gene expression with RUVSeq estimated batch effect on poly-A vs stranded RNA-seq...'))
+    print(paste0('Run RUVr...'))
     
     # run RUVr assuming there are k_val factors of unwanted variation
     ruvr_set <- RUVr(x = seq_expr_set, cIdx = emp_neg_ctrl_genes, k = k_val[i], residuals = residuals)
@@ -38,13 +38,13 @@ ruvr_test <- function(seq_expr_set, emp_neg_ctrl_genes, residuals, k_val = 1:2, 
     # differential expression after RUVg
     # W corresponds to the factors of "unwanted variation"
     # factor for unwanted variation comes last for edgeR
-    design <- model.matrix(as.formula(paste0('~0 + patient_id + rna_library +', 'W_', i)), data = pData(ruvr_set))
+    design <- model.matrix(as.formula(paste0('~0 + patient_id +', 'W_', i)), data = pData(ruvr_set))
     y <- DGEList(counts = counts(ruvr_set), group = rna_library)
     y <- calcNormFactors(y, method = "upperquartile")
     y <- estimateGLMCommonDisp(y, design)
     y <- estimateGLMTagwiseDisp(y, design)
     fit <- glmFit(y, design)
-    lrt <- glmLRT(fit, coef = grep('rna_library', colnames(fit$coefficients)))
+    lrt <- glmLRT(fit, coef = grep('W_', i, colnames(fit$coefficients)))
     dge_output <- topTags(lrt, n = Inf)$table %>%
       rownames_to_column('gene') %>%
       dplyr::rename("pvalue" = "PValue", "padj" = "FDR")
@@ -56,9 +56,9 @@ ruvr_test <- function(seq_expr_set, emp_neg_ctrl_genes, residuals, k_val = 1:2, 
     # plot and save p-value histogram
     # evaluate the distribution of p-values for full transcriptome
     pval_hist_plot[[i]] <- deseq2_pvals_histogram(res_df = dge_output,
-                                                  xlab = 'stranded vs poly-A RUVr p-value (full transcriptome)',
+                                                  xlab = 'RUVr p-value (full transcriptome)',
                                                   ylab = 'Gene count',
-                                                  title = paste0('Histogram of stranded vs poly-A paired analysis (k = ', i, ')'))
+                                                  title = paste0('Histogram of paired analysis (k = ', i, ')'))
     
     # test for uniformity (negative control genes only)
     dge_output_neg_control_genes[[i]] <- dge_output %>%
@@ -66,9 +66,9 @@ ruvr_test <- function(seq_expr_set, emp_neg_ctrl_genes, residuals, k_val = 1:2, 
     
     # evaluate the distribution of p-values 
     pval_hist_plot_subset[[i]] <- deseq2_pvals_histogram(res_df = dge_output_neg_control_genes[[i]],
-                                                  xlab = 'stranded vs poly-A RUVr p-value (negative control genes)',
-                                                  ylab = 'Gene count',
-                                                  title = paste0('Histogram of stranded vs poly-A paired analysis (k = ', i, ')'))
+                                                         xlab = 'RUVr p-value (negative control genes)',
+                                                         ylab = 'Gene count',
+                                                         title = paste0('Histogram of paired analysis (k = ', i, ')'))
     
     # chisq test for p-values 
     chisq_out[[i]] <- chisq.test(x = dge_output_neg_control_genes[[i]]$pvalue)
