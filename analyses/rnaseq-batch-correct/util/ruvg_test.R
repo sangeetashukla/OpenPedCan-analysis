@@ -29,6 +29,7 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
   # loop through all Ks
   cluster_plot <- list()
   pval_hist_plot <- list()
+  pval_hist_plot_subset <- list()
   dge_output_neg_control_genes <- list()
   chisq_out <- list()
   ks_out <- list()
@@ -80,14 +81,21 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
     # plot and save p-value histogram
     # evaluate the distribution of p-values for full transcriptome
     pval_hist_plot[[i]] <- deseq2_pvals_histogram(res_df = dge_output,
-                                xlab = 'stranded vs poly-A RUVg p-value (negative control genes)',
+                                xlab = 'stranded vs poly-A RUVg p-value (full transcriptome)',
                                 ylab = 'Gene count',
                                 title = paste0('Histogram of stranded vs poly-A paired analysis (k = ', i, ')'))
     
     # test for uniformity (negative control genes only)
-    # chisq test for p-values 
     dge_output_neg_control_genes[[i]] <- dge_output %>%
       filter(gene %in% emp_neg_ctrl_genes)
+    
+    # evaluate the distribution of p-values 
+    pval_hist_plot_subset[[i]] <- deseq2_pvals_histogram(res_df = dge_output_neg_control_genes[[i]],
+                                                         xlab = 'stranded vs poly-A RUVr p-value (negative control genes)',
+                                                         ylab = 'Gene count',
+                                                         title = paste0('Histogram of stranded vs poly-A paired analysis (k = ', i, ')'))
+    
+    # chisq test for p-values 
     chisq_out[[i]] <- chisq.test(x = dge_output_neg_control_genes[[i]]$pvalue)
     chisq_out[[i]] <- broom::tidy(chisq_out[[i]])
     chisq_out[[i]]$k <- k_val[i]
@@ -104,9 +112,14 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
   print(cluster_plot)
   dev.off()
 
-  # p-value histogram (negative control genes only)
-  pdf(file = file.path(output_dir, paste0(prefix, '_stranded_vs_polya_dge_ruvg_', diff_type, '_histogram.pdf')), width = 8, height = 7)
+  # p-value histogram (full transcriptome)
+  pdf(file = file.path(output_dir, paste0(prefix, '_stranded_vs_polya_dge_ruvg_', diff_type, '_histogram_full_transcriptome.pdf')), width = 8, height = 7)
   print(pval_hist_plot)
+  dev.off()
+  
+  # p-value histogram (neg control genes)
+  pdf(file = file.path(output_dir, paste0(prefix, '_stranded_vs_polya_dge_ruvg_', diff_type, '_histogram_controls.pdf')), width = 8, height = 7)
+  print(pval_hist_plot_subset)
   dev.off()
   
   # rbind and save chisq values
