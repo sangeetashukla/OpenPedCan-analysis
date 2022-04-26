@@ -44,7 +44,7 @@ ruvr_test <- function(seq_expr_set, emp_neg_ctrl_genes, residuals, k_val = 1:2, 
     y <- estimateGLMCommonDisp(y, design)
     y <- estimateGLMTagwiseDisp(y, design)
     fit <- glmFit(y, design)
-    lrt <- glmLRT(fit, coef = grep('W_', i, colnames(fit$coefficients)))
+    lrt <- glmLRT(fit, coef = grep(paste0('W_', i), colnames(fit$coefficients)))
     dge_output <- topTags(lrt, n = Inf)$table %>%
       rownames_to_column('gene') %>%
       dplyr::rename("pvalue" = "PValue", "padj" = "FDR")
