@@ -1,6 +1,6 @@
 statistic	p.value	parameter	method	k
-7316.406904083305	1	15103	Chi-squared test for given probabilities	1
-7059.079680141791	1	15103	Chi-squared test for given probabilities	2
-6896.221658373533	1	15103	Chi-squared test for given probabilities	3
-6892.507068506238	1	15103	Chi-squared test for given probabilities	4
-6853.587723352181	1	15103	Chi-squared test for given probabilities	5
+3934.691455311871	1	15103	Chi-squared test for given probabilities	1
+2097.769087868377	1	15103	Chi-squared test for given probabilities	2
+1180.1227192544309	1	15103	Chi-squared test for given probabilities	3
+1005.2857076510487	1	15103	Chi-squared test for given probabilities	4
+949.1931892165912	1	15103	Chi-squared test for given probabilities	5

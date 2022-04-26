@@ -1,6 +1,6 @@
 statistic	p.value	parameter	method	k
-39.00250512157863	1	253	Chi-squared test for given probabilities	1
-61.015109886958484	1	253	Chi-squared test for given probabilities	2
-0.9208526226896288	1	253	Chi-squared test for given probabilities	3
-1.113572596063801	0.9999999999999999	253	Chi-squared test for given probabilities	4
-0.9824459412052672	1	253	Chi-squared test for given probabilities	5
+1.432883421081585e-54	1	253	Chi-squared test for given probabilities	1
+2.656247166197133e-31	1	253	Chi-squared test for given probabilities	2
+1.4170529683740497e-9	1	253	Chi-squared test for given probabilities	3
+0.0032009726244434595	1	253	Chi-squared test for given probabilities	4
+2.4526227189459686e-32	1	253	Chi-squared test for given probabilities	5
