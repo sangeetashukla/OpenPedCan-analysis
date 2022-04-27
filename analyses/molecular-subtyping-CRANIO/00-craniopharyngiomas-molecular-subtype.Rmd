@@ -37,6 +37,7 @@ Rscript -e "rmarkdown::render('analyses/molecular-subtyping-CRANIO/00-craniophar
 
 ```{r load-library}
 library(tidyverse)
+library(dplyr)
 ```
 
 ## Directories and File Inputs/Outputs
@@ -62,11 +63,11 @@ output_subtype <- file.path(results_dir, "CRANIO_molecular_subtype.tsv")
 # Inputs
 ## Read in metadata
 metadata <-
-  read_tsv(file.path(root_dir, "data", "pbta-histologies-base.tsv")) %>%
+  read_tsv(file.path(root_dir, "data", "pbta-histologies-base-adapt.tsv")) %>%
   filter(pathology_diagnosis == "Craniopharyngioma")
 ## Read in snv consensus mutation data
-snv_df <-
-  read_tsv(file.path(root_dir, "data", "pbta-snv-consensus-mutation.maf.tsv.gz"))
+snv_file <- file.path(root_dir, "data", "snv-consensus-plus-hotspots.maf.tsv.gz")
+snv_df <- read_tsv(snv_file, comment = '#')
 ```
 
 # Process Data
