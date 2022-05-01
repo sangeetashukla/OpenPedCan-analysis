@@ -17,11 +17,10 @@ PT_9BZETM0M	7316-158	BS_STNH7YSX	BS_TV5B86ZD	17	NA	Supratentorial or Spinal Cord
 PT_9BZETM0M	7316-158	BS_SV4V3N4Y	BS_5P1TN10Z	17	NA	Supratentorial or Spinal Cord PNET	pnet with glial and neuronal differentiation and subarachnoid growth	-0.44731953429963245	None	No	-0.3326431692971264	None	None	None
 PT_9BZETM0M	7316-158	BS_SV4V3N4Y	BS_TV5B86ZD	17	NA	Supratentorial or Spinal Cord PNET	pnet with glial and neuronal differentiation and subarachnoid growth	-0.44731953429963245	None	No	-0.3326431692971264	None	None	None
 PT_9CSZBV2P	7316-1473	NA	BS_YBJBSRHV	13	NA	Supratentorial or Spinal Cord PNET	pnet	-0.44731953429963245	None	NA	2.240217368973409	ZC4H2--AL627224.1/FOXR2, ZC4H2--FOXR2	None	None
-PT_C73C5BBZ	7316-2658	BS_BF95AEXC	BS_0HW7W7SD	0	NA	Other	medullooepithelioma	0.592606634086588	None	No	-0.3326431692971264	None	None	None
+PT_C73C5BBZ	7316-2658	NA	BS_0HW7W7SD	0	NA	Other	medullooepithelioma	0.592606634086588	None	NA	-0.3326431692971264	None	None	None
 PT_CMB6TASJ	7316-505	BS_B73JK7T1	BS_SXCZ3CXN	1	NA	Supratentorial or Spinal Cord PNET	residual primitive neuroectodermal tumor (pnet), who grade iv	-0.44731953429963245	None	No	-0.3326431692971264	None	None	None
 PT_DQT78GS5	7316-3326	BS_69VS8PS1	BS_37GTVG4N	3	NA	Embryonal Tumor with Multilayered Rosettes (ETMR)	embryonal tumor with multilayer rosettes, ros (who grade iv)	2.1178345854507703	TTYH1--MIR512-2/MIR1323, TTYH1--MIR515-2/MIR519C	Yes	-0.3171509733242303	None	None	None
 PT_FF0MSK4D	7316-2987	BS_KJQXZ8GK	BS_D0RDN4K5	16	NA	Supratentorial or Spinal Cord PNET	pnet iv	-0.38689016625380224	None	No	-0.3326431692971264	None	None	None
-PT_FMK5VFYW	7316-950	BS_0HYD1VHH	BS_FBJ5Q54N	0	NA	Supratentorial or Spinal Cord PNET	spnet	-0.44731953429963245	None	No	-0.3326431692971264	None	None	None
 PT_FMK5VFYW	7316-950	BS_80X7AVCP	BS_FBJ5Q54N	0	NA	Supratentorial or Spinal Cord PNET	spnet	-0.44731953429963245	None	No	-0.3326431692971264	None	None	None
 PT_MRTHX2AQ	7316-23	BS_07NXQC7P	BS_TD1ZEQ7R	2	NA	Neuroblastoma	neuroblastoma	-0.44731953429963245	None	No	-0.3326431692971264	None	None	None
 PT_NBY8PZR9	7316-871	BS_Z9NCH2XA	NA	4	NA	Supratentorial or Spinal Cord PNET	supratentorial pnet	NA	NA	No	NA	NA	NA	NA

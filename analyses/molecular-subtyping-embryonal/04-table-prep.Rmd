@@ -93,7 +93,7 @@ Set up filenames.
 
 ```{r}
 # full clinical file
-histologies_file <- file.path(data_dir, "pbta-histologies-base-adapt.tsv")
+histologies_file <- file.path(data_dir, "histologies-base-adapt.tsv")
 # full fusions of interest file
 fusion_file <- file.path(file.path(root_dir, 
                                    "analyses", 

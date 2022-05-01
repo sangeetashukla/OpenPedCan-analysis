@@ -11,7 +11,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 SUBSET=${OPENPBTA_SUBSET:-1}
 
 # Define needed files
-HISTOLOGIES=../../data/pbta-histologies-base-adapt.tsv
+HISTOLOGIES=../../data/histologies-base-adapt.tsv
 FULL_EXPRESSION=../../data/gene-expression-rsem-tpm-collapsed.rds
 SUBSET_EXPRESSION=epn-subset/epn-gene-expression-rsem-tpm-collapsed.tsv.gz
 DISEASE_GROUP_FILE=../../scratch/EPN_molecular_subtype.tsv
