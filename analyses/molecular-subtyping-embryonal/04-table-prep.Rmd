@@ -227,7 +227,7 @@ head(rna_df, n = 10)
 ```
 
 We see some repeated negative values for the expression z-scores here.
-Generally that comes from small or zero log2(FPKM + 1) values.
+Generally that comes from small or zero log2(TPM + 1) values.
 For example, all of the poly-A values for _FOXR2_ are zero prior to scaling.
 
 ### Structural variant data
@@ -281,7 +281,8 @@ rm(bcor_sv_df, manta_sv_df, consensus_sex_chr)
 identifiers_df <- histologies_df %>%
   select(Kids_First_Participant_ID, 
          sample_id, 
-         Kids_First_Biospecimen_ID)
+         Kids_First_Biospecimen_ID) %>%
+  distinct()
 # add IDs to chromosome 19 data
 chr19_cn_df <- identifiers_df %>%
   inner_join(chr19_cn_df, by = "Kids_First_Biospecimen_ID")

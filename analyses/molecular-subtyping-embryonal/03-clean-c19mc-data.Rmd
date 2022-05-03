@@ -218,6 +218,7 @@ Write to file.
 ```{r}
 chr19_cn_df %>% 
   rename(Kids_First_Biospecimen_ID = ID) %>%
+  distinct() %>%
   write_tsv(output_file)
 ```
 
