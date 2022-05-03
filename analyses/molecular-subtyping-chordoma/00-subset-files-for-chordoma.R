@@ -9,7 +9,7 @@
 # of the repository as follows:
 #
 # Rscript 'analyses/molecular-subtyping-chordoma/00-subset-files-for-chordoma.R'
-
+library(tidyverse)
 
 #### Set Up --------------------------------------------------------------------
 
