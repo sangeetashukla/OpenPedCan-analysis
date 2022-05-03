@@ -46,8 +46,11 @@ EP_rnaseq_WGS = EP_rnaseq_samples %>%
 
 # add disease group (supra/infra category) inferred from primary_site
 EP_rnaseq_WGS <- EP_rnaseq_WGS %>%
-  mutate(disease_group = ifelse(grepl(paste0(supra, collapse = "|"), tolower(primary_site)), "supratentorial", 
-                                ifelse(grepl(paste0(infra, collapse = "|"), tolower(primary_site)), "infratentorial", "undetermined"))) %>%
+  mutate(disease_group_supra = ifelse(grepl(paste0(supra, collapse = "|"), tolower(primary_site)), "supratentorial", "undetermined"),
+         disease_group_infra = ifelse(grepl(paste0(infra, collapse = "|"), tolower(primary_site)), "infratentorial", "undetermined"),
+         disease_group = ifelse(disease_group_supra == "supratentorial" & disease_group_infra == "undetermined", "supratentorial",
+                                ifelse(disease_group_supra == "undetermined" & disease_group_infra == "infratentorial", "infratentorial",
+                                       ifelse(disease_group_supra == "supratentorial" & disease_group_infra == "infratentorial", "mixed", "undetermined")))) %>%
   arrange(Kids_First_Participant_ID, sample_id) %>%
   dplyr::select(Kids_First_Participant_ID, sample_id, 
                 Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA,
