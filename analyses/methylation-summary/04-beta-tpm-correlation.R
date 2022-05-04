@@ -86,7 +86,8 @@ for (cancer_type in unique(meth_histologies$cancer_group)) {
     dplyr::select(-cohort)
   print(cancer_type_ids) 
   # Get cancer type tpm values for patients with both RNA-Seq and 
-  # methylation data
+  # methylation data and only keep array probes present in cancer type
+  #  that have standard deviation > 0
   cancer_type_tpm <- tpm %>% 
     dplyr::select(tidyselect::any_of(c("Probe_ID",
                                        unique(cancer_type_ids$RNASeq_ID)))) %>%
@@ -97,11 +98,14 @@ for (cancer_type in unique(meth_histologies$cancer_group)) {
                        values_from = TPM, values_fn = median) %>% 
     tidyr::pivot_longer(-Probe_ID, 
                         names_to = "Patient_ID", values_to = "TPM") %>%
-    tidyr::pivot_wider(names_from = Probe_ID, values_from = TPM)
+    tidyr::pivot_wider(names_from = Probe_ID, values_from = TPM) %>% 
+    tibble::column_to_rownames(var = "Patient_ID") %>%
+    purrr::discard(~ all(is.numeric(.x) & sd(.x) == 0)) %>% 
+    tibble::rownames_to_column(var = "Patient_ID")
   
   # Get cancer type beta values for patients with both RNA-Seq and 
-  # methylation data and only keep array probes present in 
-  # cancer type tmp values
+  # methylation data and only keep array probes present in cancer type
+  # tmp values that have standard deviation > 0
   cancer_type_beta <- beta %>% 
     dplyr::select(tidyselect::any_of(c("Probe_ID", 
                                        unique(cancer_type_ids$Meth_ID)))) %>%
@@ -113,35 +117,39 @@ for (cancer_type in unique(meth_histologies$cancer_group)) {
                        values_from = Beta, values_fn = median) %>% 
     tidyr::pivot_longer(-Probe_ID, 
                         names_to = "Patient_ID", values_to = "Beta") %>%
-    tidyr::pivot_wider(names_from = Probe_ID, values_from = Beta)
+    tidyr::pivot_wider(names_from = Probe_ID, values_from = Beta) %>% 
+    tibble::column_to_rownames(var = "Patient_ID") %>%
+    purrr::discard(~ all(is.numeric(.x) & sd(.x) == 0)) %>% 
+    tibble::rownames_to_column(var = "Patient_ID")
   
-  # Only keep cancer type tpm values for patient IDs that are in beta values
-  # reorder and drop Patient_ID column 
+  # Only keep cancer type tpm values for patient IDs and array probes that are 
+  # in beta values then sort patient IDs and probe arrays to be in the same
+  # order in both matrices
   cancer_type_tpm <- cancer_type_tpm %>% 
     dplyr::filter(Patient_ID %in% cancer_type_beta$Patient_ID) %>%
+    dplyr::select(tidyselect::all_of(colnames(cancer_type_beta))) %>%
     dplyr::arrange(Patient_ID) %>%
-    dplyr::select(-Patient_ID)
+    tibble::column_to_rownames(var = "Patient_ID") %>% 
+    dplyr::select(sort(tidyselect::peek_vars()))
   print(cancer_type_tpm)
   cancer_type_beta <- cancer_type_beta %>% 
     dplyr::arrange(Patient_ID) %>%
-    dplyr::select(-Patient_ID)
+    tibble::column_to_rownames(var = "Patient_ID") %>% 
+    dplyr::select(sort(tidyselect::peek_vars()))
   print(cancer_type_beta)
   
   # calculate probe correlation between methylation beta values
   # RNA-Seq expression tpm values
-  for (probe in colnames(cancer_type_tpm)) {
-    if (sd(unlist(cancer_type_beta[,probe])) == 0 || 
-        sd(unlist(cancer_type_tpm[,probe])) == 0) {
-      next 
-    }
-    beta_tmp_correlation <-  beta_tmp_correlation %>%
-      dplyr::bind_rows(
-        tibble("Probe_ID" = probe,
-               "RNA_Correlation" = cor(cancer_type_beta[,probe], 
-                                       cancer_type_tpm[,probe][1]),
-               "Disease" = cancer_type)
-        )
-  }
+  beta_tmp_correlation <-  beta_tmp_correlation %>%
+    dplyr::bind_rows(
+      tibble::tibble(
+        "Probe_ID" = names(cancer_type_beta),
+        "RNA_Correlation" = 
+          sapply(1:ncol(cancer_type_beta),
+                 function(i) cor(cancer_type_beta[,i], cancer_type_tpm[,i])),
+      ) %>% 
+        dplyr::mutate(Disease = cancer_type)
+    )
   rm(cancer_type_rnaseq_ids, cancer_type_ids, cancer_type_beta, cancer_type_tpm)
 }
 rm(beta, tpm, rnaseq_histologies, meth_histologies) 

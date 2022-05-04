@@ -1,5 +1,5 @@
 # Calculate representative probe-level correlations between RNA-Seq (TPM) and 
-# methylation (Beta) for patients who have samples in both datasets 
+# methylation (Beta) for TARGET patients who have samples in both datasets 
 
 # Eric Wafula for Pediatric OpenTargets
 # 03/18/2022
@@ -30,8 +30,8 @@ histologies <- data.table::fread(file.path(data_dir, "histologies.tsv"),
                                  showProgress = FALSE) %>% 
   tibble::as_tibble() %>% 
   dplyr::filter(sample_type == "Tumor" & 
-                  (tumor_descriptor == "Primary Tumor" | 
-                     tumor_descriptor == "Initial CNS Tumor") & 
+                  tumor_descriptor == "Primary Tumor" & 
+                  cohort == "TARGET" & 
                   (experimental_strategy == "RNA-Seq" | 
                      experimental_strategy == "Methylation"))
 
@@ -40,12 +40,14 @@ beta <- data.table::fread(file.path(results_dir,
                                     "methylation-beta-values-matrix.tsv.gz"),
                           sep = "\t", 
                           showProgress = FALSE) %>% 
-  tibble::as_tibble()
+  tibble::as_tibble() %>% 
+  dplyr::select(Probe_ID, tidyselect::starts_with("TARGET-"))
 
 # Get RNA-Seq expression TPM values for array probes in GENCODE version 38 
 # (Ensembl 104) gene symbols
 tpm <- readr::read_rds(file.path(data_dir, 
                                  "gene-expression-rsem-tpm-collapsed.rds")) %>% 
+  dplyr::select(dplyr::starts_with("TARGET-")) %>% 
   tibble::rownames_to_column(var = "Gene_symbol")
 tpm <- data.table::fread(
   file.path(results_dir, "methylation-probe-annotations.tsv.gz"), 
@@ -56,11 +58,11 @@ tpm <- data.table::fread(
   dplyr::select(-Gene_symbol)
 
 # Calculating representative probe-level correlations between RNA-Seq (TPM) and 
-# preprocessed methylation (Beta) samples
-message("========================================================================================")
-message("Calculating probe-level correlations between methylation beta and expression tpm values")
-message("========================================================================================\n")
-# Compute cancer type methylation to expression correlation
+# preprocessed methylation (Beta) samples for the TARGET cohort
+message("=====================================================================================")
+message("Calculating probe-level correlations between beta and tpm values for TARGET samples")
+message("=====================================================================================\n")
+# Compute cancer type methylation to expression correlation for TARGET cohort
 rnaseq_histologies <- histologies %>% 
   dplyr::filter(experimental_strategy == "RNA-Seq")
 meth_histologies <- histologies %>% 
@@ -68,67 +70,53 @@ meth_histologies <- histologies %>%
 rm(histologies)
 beta_tmp_correlation <- tibble::tibble()
 for (cancer_type in unique(meth_histologies$cancer_group)) {
-  message(c("Calculating probe-level correlations between beta and tpm values, ", cancer_type, " samples...\n"))
+  message(c("Calculating probe-level correlations between beta and tpm values for TARGET, ", cancer_type, " samples...\n"))
   # Get cancer type patients with RNA-Seq data
-  cancer_type_rnaseq_ids <-  rnaseq_histologies %>% 
+  rnaseq_usi <-  rnaseq_histologies %>% 
     dplyr::filter(cancer_group == cancer_type) %>% 
-    dplyr::select(Kids_First_Biospecimen_ID, 
-                  Kids_First_Participant_ID, cohort) %>% 
-    dplyr::rename(RNASeq_ID = Kids_First_Biospecimen_ID)
-  cancer_type_ids <- meth_histologies %>% 
-    dplyr::filter(cancer_group == cancer_type) %>% 
-    dplyr::select(Kids_First_Biospecimen_ID, 
-                  Kids_First_Participant_ID,  cohort) %>% 
-    dplyr::rename(Meth_ID = Kids_First_Biospecimen_ID) %>% 
-    dplyr::inner_join(cancer_type_rnaseq_ids, 
-                      by = c("Kids_First_Participant_ID", "cohort")) %>% 
-    dplyr::rename(Patient_ID = Kids_First_Participant_ID) %>%
-    dplyr::select(-cohort)
-  print(cancer_type_ids) 
+    dplyr::pull(Kids_First_Participant_ID)
+  rnaseq_usi <- unique(rnaseq_usi) 
+  sample_ids <- meth_histologies %>% 
+    dplyr::filter(cancer_group == cancer_type,
+                  Kids_First_Participant_ID %in% rnaseq_usi) %>% 
+    dplyr::pull(Kids_First_Biospecimen_ID)
+  # Get cancer type beta values for patients with both RNA-Seq and 
+  # methylation data
+  cancer_type_beta <- beta %>% 
+    dplyr::select(tidyselect::any_of(c("Probe_ID", sample_ids))) %>%
+    tidyr::pivot_longer(-Probe_ID, names_to = "Sample", values_to = "Beta") %>% 
+    tidyr::pivot_wider(names_from = Probe_ID, values_from = Beta) %>%
+    dplyr::mutate(USI = stringr::str_split(Sample, "-", simplify = TRUE)[,3]) %>%
+    dplyr::select(-Sample) %>%
+    tidyr::pivot_longer(-USI, names_to = "Probe_ID", values_to = "Beta") %>%
+    tidyr::pivot_wider(names_from = USI, values_from = Beta, values_fn = median)
   # Get cancer type tpm values for patients with both RNA-Seq and 
   # methylation data
   cancer_type_tpm <- tpm %>% 
-    dplyr::select(tidyselect::any_of(c("Probe_ID",
-                                       unique(cancer_type_ids$RNASeq_ID)))) %>%
-    tidyr::pivot_longer(-Probe_ID, names_to = "RNASeq_ID", values_to = "TPM") %>% 
-    dplyr::left_join(cancer_type_ids, by = "RNASeq_ID") %>% 
-    dplyr::select(-c("Meth_ID", "RNASeq_ID")) %>%
-    tidyr::pivot_wider(names_from = Patient_ID, 
-                       values_from = TPM, values_fn = median) %>% 
-    tidyr::pivot_longer(-Probe_ID, 
-                        names_to = "Patient_ID", values_to = "TPM") %>%
-    tidyr::pivot_wider(names_from = Probe_ID, values_from = TPM)
-  
-  # Get cancer type beta values for patients with both RNA-Seq and 
-  # methylation data and only keep array probes present in 
-  # cancer type tmp values
-  cancer_type_beta <- beta %>% 
-    dplyr::select(tidyselect::any_of(c("Probe_ID", 
-                                       unique(cancer_type_ids$Meth_ID)))) %>%
-    dplyr::filter(Probe_ID %in% unique(colnames(cancer_type_tpm))) %>% 
-    tidyr::pivot_longer(-Probe_ID, names_to = "Meth_ID", values_to = "Beta") %>%
-    dplyr::left_join(cancer_type_ids, by = "Meth_ID") %>% 
-    dplyr::select(-c("Meth_ID", "RNASeq_ID")) %>%
-    tidyr::pivot_wider(names_from = Patient_ID, 
-                       values_from = Beta, values_fn = median) %>% 
-    tidyr::pivot_longer(-Probe_ID, 
-                        names_to = "Patient_ID", values_to = "Beta") %>%
-    tidyr::pivot_wider(names_from = Probe_ID, values_from = Beta)
-  
-  # Only keep cancer type tpm values for patient IDs that are in beta values
-  # reorder and drop Patient_ID column 
-  cancer_type_tpm <- cancer_type_tpm %>% 
-    dplyr::filter(Patient_ID %in% cancer_type_beta$Patient_ID) %>%
-    dplyr::arrange(Patient_ID) %>%
-    dplyr::select(-Patient_ID)
-  print(cancer_type_tpm)
+    dplyr::select(tidyselect::contains(colnames(cancer_type_beta))) %>% 
+    tidyr::pivot_longer(-Probe_ID, names_to = "Sample", values_to = "TPM") %>%
+    tidyr::pivot_wider(names_from = Probe_ID, values_from = TPM, 
+                       values_fn = median) %>%
+    dplyr::mutate(USI = stringr::str_split(Sample, "-", simplify = TRUE)[,3]) %>%
+    dplyr::select(-Sample) %>%
+    tidyr::pivot_longer(-USI, names_to = "Probe_ID", values_to = "TPM") %>%
+    tidyr::pivot_wider(names_from = USI, values_from = TPM, values_fn = median)
+  # Keep array probes in cancer type beta values to that only present 
+  # in cancer type tmp values
   cancer_type_beta <- cancer_type_beta %>% 
-    dplyr::arrange(Patient_ID) %>%
-    dplyr::select(-Patient_ID)
-  print(cancer_type_beta)
-  
+    dplyr::filter(Probe_ID %in% unique(cancer_type_tpm$Probe_ID))
   # calculate probe correlation between methylation beta values
   # RNA-Seq expression tpm values
+  cancer_type_beta <- cancer_type_beta %>%
+    tidyr::pivot_longer(-Probe_ID, names_to = "Sample", values_to = "Beta") %>%
+    tidyr::pivot_wider(names_from = Probe_ID, values_from = Beta) %>%
+    dplyr::arrange(Sample) %>%
+    dplyr::select(-Sample)
+  cancer_type_tpm <- cancer_type_tpm %>%
+    tidyr::pivot_longer(-Probe_ID, names_to = "Sample", values_to = "TPM") %>%
+    tidyr::pivot_wider(names_from = Probe_ID, values_from = TPM) %>%
+    dplyr::arrange(Sample) %>%
+    dplyr::select(-Sample)
   for (probe in colnames(cancer_type_tpm)) {
     if (sd(unlist(cancer_type_beta[,probe])) == 0 || 
         sd(unlist(cancer_type_tpm[,probe])) == 0) {
@@ -142,7 +130,7 @@ for (cancer_type in unique(meth_histologies$cancer_group)) {
                "Disease" = cancer_type)
         )
   }
-  rm(cancer_type_rnaseq_ids, cancer_type_ids, cancer_type_beta, cancer_type_tpm)
+  rm(rnaseq_usi, sample_ids, cancer_type_beta, cancer_type_tpm)
 }
 rm(beta, tpm, rnaseq_histologies, meth_histologies) 
 

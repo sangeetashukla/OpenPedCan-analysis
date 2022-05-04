@@ -101,12 +101,17 @@ message("Annotating array probes in Acute Myeloid Leukemia (AML) samples...\n")
 aml_annotations <- annotate_array_probes(
   file.path(data_dir, "AML450k-beta-values-methylation.tsv.gz"))
 
+# CBTN beta-values samples 
+message("Annotating array probes in Children's Brain Tumor Network (CBTN) samples...\n")
+cbtn_annotations <- annotate_array_probes(
+  file.path(data_dir, "CBTN-beta-values-methylation.tsv.gz"))
+
 # merge array probe annotations
 message("Merging array probes annotations for normal and all cancer types ...\n")
 probe_annotations <- rbind(nbl_annotations, os_annotations, ccsk_annotations, 
-                           wt_annotations, aml_annotations)
+                           wt_annotations, aml_annotations, cbtn_annotations)
 rm(nbl_annotations, os_annotations, ccsk_annotations, wt_annotations, 
-   aml_annotations)
+   aml_annotations, cbtn_annotations)
 probe_annotations <- probe_annotations %>% dplyr::distinct()
 
 # write merged beta-values to file

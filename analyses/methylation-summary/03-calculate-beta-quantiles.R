@@ -18,7 +18,7 @@ data_dir <- file.path(root_dir, "data")
 module_dir <- file.path(root_dir, "analyses", "methylation-summary")
 results_dir <- file.path(module_dir, "results")
 
-# Get required columns from histologies file
+# Get required columns from histologies file for primary tumors
 required_cols <- c("Kids_First_Biospecimen_ID", "Kids_First_Participant_ID", 
                    "experimental_strategy", "sample_type", "tumor_descriptor",
                    "cohort", "cancer_group")
@@ -27,8 +27,10 @@ histologies <- data.table::fread(file.path(data_dir, "histologies.tsv"),
                                select = required_cols, 
                                showProgress = FALSE) %>% 
   tibble::as_tibble() %>% 
-  dplyr::filter(sample_type == "Tumor" & tumor_descriptor == "Primary Tumor" &  
-                experimental_strategy == "Methylation")
+  dplyr::filter(sample_type == "Tumor" & 
+                  (tumor_descriptor == "Primary Tumor" | 
+                     tumor_descriptor == "Initial CNS Tumor") & 
+                  experimental_strategy == "Methylation") %>% 
   
 # Get methylation beta values
 beta <- data.table::fread(file.path(results_dir, 
