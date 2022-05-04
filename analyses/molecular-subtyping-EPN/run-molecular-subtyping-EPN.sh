@@ -44,7 +44,6 @@ Rscript 01-assign-disease-group.R \
 # combine data from various output files for EPN samples that can be used to categorize samples under different EPN subtypes
 echo "Generating results/EPN_all_data.tsv that has all the relevant data needed for subtyping"
 Rscript 02_ependymoma_generate_all_data.R \
---histology=$HISTOLOGIES \
 --expr_dat=$SUBSET_EXPRESSION \
 --disease_group_file=$DISEASE_GROUP_FILE \
 --gistic=$GISTIC \

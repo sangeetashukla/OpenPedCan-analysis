@@ -12,8 +12,6 @@ suppressPackageStartupMessages({
 
 # Parse command line options
 option_list <- list(
-  make_option(c("--histology"), type = "character",
-              help = "histology file (tsv)"),
   make_option(c("--disease_group_file"), type = "character",
               help = "file with disease group info (tsv)"),
   make_option(c("--gistic"), 
@@ -38,7 +36,6 @@ option_list <- list(
               help = "subfile of the GISTIC zip folder that contains focal data fro CDKN2A")
 )
 opt <- parse_args(OptionParser(option_list = option_list))
-histology <- opt$histology
 disease_group_file <- opt$disease_group_file
 gistic <- opt$gistic
 subfile_gistic_broad <- opt$subfile_gistic_broad
@@ -52,17 +49,17 @@ focal_gene_cn <- opt$focal_gene_cn
 outfile <- opt$outfile
 
 # Reading GISTIC broad_values and focal_by_genefile for CNA
-broad_CNA <- read.delim(unz(gistic, subfile_gistic_broad))
+broad_CNA <- read_tsv(unz(gistic, subfile_gistic_broad))
 broad_CNA <- broad_CNA %>%
-  column_to_rownames('Chromosome.Arm')
-gistic_focalCN <- read.delim(unz(gistic, subfile_gistic_focalbygene))
+  column_to_rownames("Chromosome Arm")
+gistic_focalCN <- read_tsv(unz(gistic, subfile_gistic_focalbygene))
 gistic_focalCN <- gistic_focalCN %>%
-  filter(Gene.Symbol == "CDKN2A") %>%
-  column_to_rownames("Gene.Symbol")
+  filter(`Gene Symbol` == "CDKN2A") %>%
+  column_to_rownames("Gene Symbol")
 gistic_focalCN <- t(gistic_focalCN)
 
 # Reading in gene set enrichment analyses file for GSEA scores for NFKB pathway
-gsva <- read.delim(gsva)
+gsva <- read_tsv(gsva)
 gsva_NFKB <- gsva %>% 
   filter(hallmark_name == "HALLMARK_TNFA_SIGNALING_VIA_NFKB") %>% 
   column_to_rownames('Kids_First_Biospecimen_ID')
@@ -73,27 +70,27 @@ expr_dat <- expr_dat %>%
   column_to_rownames('GENE')
 
 # Reading fusion summary file
-fusion_df <- read.delim(fusion, check.names = F)
+fusion_df <- read_tsv(fusion)
 fusion_df <- fusion_df %>%
   column_to_rownames("Kids_First_Biospecimen_ID")
 
 # Reading chromosomal instability file for breakpoint density for CNV
-breakpoint_density_cnv <- read.delim(breakpoints_cnv)
+breakpoint_density_cnv <- read_tsv(breakpoints_cnv)
 breakpoint_density_cnv <- breakpoint_density_cnv %>%
   column_to_rownames("samples")
 
 # Reading chromosomal instability  file for breakpoint for SV
-breakpoint_density_sv <- read.delim(breakpoints_sv)
+breakpoint_density_sv <- read_tsv(breakpoints_sv)
 breakpoint_density_sv <- breakpoint_density_sv %>%
   column_to_rownames("samples")
 
 # Reading consensus focal CN results from analyses
-focal_cn_gene <- read.delim(focal_gene_cn)
+focal_cn_gene <- read_tsv(focal_gene_cn)
 focal_cn_gene_CDKN2A <- focal_cn_gene %>%
   filter(gene_symbol == "CDKN2A") 
 
 # Reading the input in a  dataframe
-EPN_notebook = read.delim(disease_group_file)
+EPN_notebook = read_tsv(disease_group_file)
 
 # Get the list of DNA samples that made it through the pipeline
 # All that are present in the GISTIC data passed consensus filtering.
@@ -146,7 +143,7 @@ fill_df <- function(sample, ref_df, col_name, included_samples = NULL, default =
   } else if(!is.null(included_samples) && !sample %in% included_samples) { # sample is not present in included samples, return NA
     return("NA")
   } else if(!sample %in% rownames(ref_df)){ # sample is not present in the reference data set, return default
-      return(default)
+    return(default)
   } else {
     value <- ref_df[sample, col_name]
     return(value)
@@ -168,7 +165,7 @@ for(i in 1:length(fusions_list)){
 EPN_notebook[,"breaks_density-chromosomal_instability_CNV"] <- sapply(EPN_notebook$Kids_First_Biospecimen_ID_DNA, 
                                                                       function(x) fill_df(sample = x, ref_df = breakpoint_density_cnv, col_name = "breaks_density", included_samples = cn_called_samples))
 EPN_notebook[,"breaks_density-chromosomal_instability_SV"] <- sapply(EPN_notebook$Kids_First_Biospecimen_ID_DNA, 
-                                                                      function(x) fill_df(sample = x, ref_df = breakpoint_density_sv, col_name = "breaks_density", included_samples = cn_called_samples))
+                                                                     function(x) fill_df(sample = x, ref_df = breakpoint_density_sv, col_name = "breaks_density", included_samples = cn_called_samples))
 
 # Adding focal CN from GISTIC files for CDKN2A
 EPN_notebook[,"GISTIC_focal_CN_CDKN2A"] <- sapply(EPN_notebook$Kids_First_Biospecimen_ID_DNA, 
@@ -177,7 +174,7 @@ EPN_notebook[,"GISTIC_focal_CN_CDKN2A"] <- sapply(EPN_notebook$Kids_First_Biospe
 # Adding focal CN from CDKN2A from CNV consensus files in analyses
 # Using status column from consensus_seg_annotated_cn_autosomes.tsv.gz file
 EPN_notebook[,"consensus_focal_CN_CDKN2"] <- sapply(EPN_notebook$Kids_First_Biospecimen_ID_DNA, 
-                                                   function(x) fill_df(sample = x, ref_df = focal_cn_gene_CDKN2A, col_name = "status", included_samples = cn_called_samples))
+                                                    function(x) fill_df(sample = x, ref_df = focal_cn_gene_CDKN2A, col_name = "status", included_samples = cn_called_samples))
 
 # Adding expression z-scores to dataframe
 genes_of_interest = c("RELA", "L1CAM", "ARL4D", "CLDN1", "CXorf67", "TKTL1", "GPBP1", "IFT46")

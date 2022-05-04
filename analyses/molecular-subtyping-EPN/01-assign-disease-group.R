@@ -39,7 +39,7 @@ WGS_dnaseqsamples = EP %>%
   dplyr::select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, sample_id, primary_site) %>%
   dplyr::rename("Kids_First_Biospecimen_ID_DNA" = "Kids_First_Biospecimen_ID")
 
-# sample_id is common between both  datafarmes and also unique between RNA and DNA. 
+# sample_id is common between both  dataframes and also unique between RNA and DNA. 
 # Some DNA BSID's are missing for the corresponding RNA samples
 EP_rnaseq_WGS = EP_rnaseq_samples %>%
   full_join(WGS_dnaseqsamples, by = c("sample_id", "Kids_First_Participant_ID","primary_site"))
