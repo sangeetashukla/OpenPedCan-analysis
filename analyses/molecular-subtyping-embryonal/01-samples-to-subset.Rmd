@@ -21,7 +21,7 @@ To summarize - we will identify biospecimen IDs that should be included for down
 2. An RNA-seq biospecimen sample includes a _MN1_ fusion (5' partner) [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/785#issuecomment-695015488).
   Note that the `MN1--PATZ1` fusion is excluded as it is an entity separate of CNS HGNET-MN1 tumors [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#discussion_r495302880).
 
-3. Any sample with "Supratentorial or Spinal Cord PNET" in the `pathology_diagnosis` column of the metadata `pbta-histologies.tsv` (also [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066)).
+3. Any sample with "Supratentorial or Spinal Cord PNET" in the `pathology_diagnosis` column of the metadata `histologies.tsv` (also [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066)).
 
 4. Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, where `primary_site` does not contain "Other locations NOS", and `pathology_free_text_diagnosis` does not contain "peripheral" or "metastatic".
 
@@ -47,7 +47,8 @@ library(tidyverse)
 ### Directories
 
 ```{r}
-data_dir <- file.path("..", "..", "data")
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
 
 results_dir <- "results"
 if (!dir.exists(results_dir)) {
@@ -60,8 +61,11 @@ subset_dir <- "subset-files"
 ### Read in relevant files
 
 ```{r message=FALSE}
-histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies-base.tsv"), guess_max = 10000)
-fusion_summary_df <- read_tsv(file.path(data_dir,
+histologies_df <- read_tsv(file.path(data_dir, "histologies-base-adapt.tsv"), guess_max = 10000)
+fusion_summary_df <- read_tsv(file.path(root_dir, 
+                                        "analyses", 
+                                        "fusion-summary", 
+                                        "results",
                                         "fusion_summary_embryonal_foi.tsv"))
 # Read in the JSON file that contains the strings we'll use to include or
 # exclude samples for subtyping - see 00-embryonal-select-pathology-dx.Rmd
