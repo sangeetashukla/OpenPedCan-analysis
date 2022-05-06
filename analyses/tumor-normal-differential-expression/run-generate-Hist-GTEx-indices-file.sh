@@ -17,7 +17,7 @@ cd "$script_directory" || exit
 #This script creates a subset of the histologies.tsv, to use for testing the deseq module.
 
 module load R/4.1.0
-Rscript --vanilla run-Generate_Hist_GTEx_indices_file.R \
+Rscript --vanilla run-generate_Hist_GTEx_indices_file.R \
         --hist_file ../../data/histologies.tsv \
         --counts_file ../../data/gene-counts-rsem-expected_count-collapsed.rds \
         --outdir Input_Data \

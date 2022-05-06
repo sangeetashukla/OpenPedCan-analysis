@@ -33,3 +33,7 @@ Rscript --vanilla 02-classify-mb.R \
 
 # summarize output from both classifiers and expected classification
 Rscript -e "rmarkdown::render('03-compare-classes.Rmd', clean = TRUE)"
+
+# classify samples with no RNA as "MB, To be classified"
+Rscript --vanilla 04-classify-no-RNA-samples.R
+
