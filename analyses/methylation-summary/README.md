@@ -7,11 +7,11 @@ Summarize preprocessed `Illumina Infinium HumanMethylation` methylation array me
 
 ## Analysis
 
-- Parse `Illumina Infinium HumanMethylation` array probe metadata from the preprocessed methylation measurements produced by the [OpenPedCan methylation-analysis module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/158) for all cancer types using `01-create-methylation-annotation-table.R` script to create array probe annotations (`results/methylation-probe-annotations.tsv.gz`) matching `GENCODE version 38 (Ensembl 104)` gene symbols and asocciated Ensembl IDs.
-- Parse `Beta-values` and `M-values`  produced by the [OpenPedCan methylation-analysis module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/158) for preprocessed methylation samples of all cancer types using `02-create-methylation-matrices.R` script to create sample-probe methylation measurements matrices (`results/methylation-beta-values-matrix.tsv.gz` and `results/methylation-m-values-matrix.tsv.gz`). 
-- Using `03-calculate-beta-quantiles.R` script and the methylation `Beta-values matrix`, calculate probe-level `quantiles` for each cancer type (cancer_group) within an OpenPedCan cohort (`results/methylation-probe-beta-quantiles.tsv.gz`). 
-- Using `04-target-beta-tpm-correlation.R` script (for the TARGET cohort) and the methylation `Beta-values matrix`, calculate probe-level `correlations` between `RNA-Seq TPM-values` and `Beta-values` for each cancer type (cancer_group) within an OpenPedCan cohort for patients who have both datasets (`results/methylation-probe-beta-tpm-correlations.tsv.gz`). Correlations for cohorts will have independent scripts becuase of the differences in how samples with patients in both RNA-Seq and methylation data are determined. 
-- Summarize all results using `05-create-methylation-summary-table.R` script into a methylation summary table (`results/methylation-beta-values-summary.tsv.gz` and `results/methylation-beta-values-summary.jsonl.gz`) that will be utilized with OPenPedCan plotting API and displayed on the NCI MTP portal with the following columns:
+- Parse `Illumina Infinium HumanMethylation` array probe metadata from the preprocessed methylation measurements produced by the [OpenPedCan methylation-analysis module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/158) for all cancer types using `01-create-methylation-annotation-table.R` script to create array probe annotations (`results/methyl-probe-annotations.tsv.gz`) matching `GENCODE version 38 (Ensembl 104)` gene symbols and asocciated Ensembl IDs.
+- Parse `Beta-values` and `M-values`  produced by the [OpenPedCan methylation-analysis module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/158) for preprocessed methylation samples of all cancer types using `02-create-methylation-matrices.R` script to create sample-probe methylation measurements matrices (`results/methyl-beta-values.rds` and `results/methyl-m-values.rds`). 
+- Using `03-calculate-beta-quantiles.R` script and the methylation `Beta-values matrix`, calculate probe-level `quantiles` for each cancer type (cancer_group) within an OpenPedCan cohort (`results/methyl-probe-beta-quantiles.tsv.gz`). 
+- Using `04-beta-tpm-correlation.R` script and the methylation `Beta-values matrix`, calculate probe-level `correlations` between `RNA-Seq TPM-values` and `Beta-values` for each cancer type (cancer_group) within an OpenPedCan cohort for patients who have both datasets (`results/methyl-probe-beta-tpm-correlations.tsv.gz`). Correlations for cohorts will have independent scripts becuase of the differences in how samples with patients in both RNA-Seq and methylation data are determined. 
+- Summarize all results using `05-create-methylation-summary-table.R` script into a methylation summary table (`results/methyl-beta-values-summary.rds`, `results/methyl-beta-values-summary.tsv.gz` and `results/methyl-beta-values-summary.jsonl.gz`) that will be utilized with OPenPedCan plotting API and displayed on the NCI MTP portal with the following columns:
     - **Gene_Symbol**: gene symbol
     - **targetFromSourceId**: Ensemble ID
     - **PMTL**: Is gene on PMTL (`Relevant Molecular Target`) 
@@ -64,12 +64,12 @@ This script calculates probe-level `Beta-value quantiles` for all cancer types.
 Rscript --vanilla 03-calculate-beta-quantiles.R
 ```
 
-#### `04-target-beta-tpm-correlation.R`
-This script calculates representative probe-level `correlations` between `TPM-values` and `Beta-values` for TARGET patients who have both RNA-Seq and methylation sample datasets.
+#### `04-beta-tpm-correlation.R`
+This script calculates representative probe-level `correlations` between `TPM-values` and `Beta-values` for patients who have both RNA-Seq and methylation sample datasets.
 **Note:** Run times for this script is approximately 3 hours per cancer_group to calculate correlations for all preprocessed probes in the Illumina Infinium HumanMethylation 450k BeadArrays.
 
 ```
-Rscript --vanilla 04-target-beta-tpm-correlation.R
+Rscript --vanilla 04-beta-tpm-correlation.R
 ```
 
 #### `05-create-methylation-summary-table.R`
@@ -81,18 +81,11 @@ Rscript --vanilla 05-create-methylation-summary-table.R
 
 ## Input datasets
 Methylation `beta-values` and `M-values` ar available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/results/`). Please contact `Avin Farrel (@afarrel)` for access if not already for dowbnload using the [OpenPedCan data release download script](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/download-data.sh). The modules requires the [v11 OpenPedCan histologies file](https://github.com/d3b-center/D3b-codes/pull/53) that includes the methylation array samples. 
-- `../../data/NBL-beta-values-methylation.tsv.gz`
-- `../../data/NBL-m-values-methylation.tsv.gz`
-- `../../data/OS-beta-values-methylation.tsv.gz`
-- `../../data/OS-m-values-methylation.tsv.gz` 
-- `../../data/CCSK-beta-values-methylation.tsv.gz`
-- `../../data/CCSK-m-values-methylation.tsv.gz`
-- `../../data/WT-beta-values-methylation.tsv.gz`
-- `../../data/WT-m-values-methylation.tsv.gz`
-- `../../data/AML450k-beta-values-methylation.tsv.gz`
-- `../../data/AML450k-m-values-methylation.tsv.gz`
+- `../../data/TARGET-beta-values-methylation.tsv.gz`
+- `../../data/TARGET-m-values-methylation.tsv.gz`
+- `../../data/CBTN-beta-values-methylation.tsv.gz`
+- `../../data/CBTN-m-values-methylation.tsv.gz` 
 - `../../data/results/gencode.v38.primary_assembly.annotation.gtf.gz`
-- `../../data/gene-expression-rsem-tpm-collapsed.rds`
 - `../../data/gene-expression-rsem-tpm-collapsed.rds`
 - `../../data/efo-mondo-map.tsv`
 - `../../data/histologies.tsv` (v11 release) 
@@ -102,10 +95,11 @@ Methylation `beta-values` and `M-values` ar available on the CHOP HPC `Isilon` s
 
 ## Results
 Analysis result files sizes exceed the limit allowable to push on to a GitHub repository and are available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-summary/results/`). Please contact `Avin Ferrel (@afarrel)` for access.
-- `results/methylation-probe-annotations.tsv.gz`
-- `results/methylation-beta-values-matrix.tsv.gz`
-- `results/methylation-m-values-matrix.tsv.gz`
-- `results/methylation-probe-beta-quantiles.tsv.gz`
-- `results/methylation-probe-beta-tpm-correlations.tsv.gz`
-- `results/methylation-beta-values-summary.tsv.gz`
-- `results/methylation-beta-values-summary.jsonl.gz`
+- `results/methyl-probe-annotations.tsv.gz`
+- `results/methyl-beta-values.rds`
+- `results/methyl-beta-values.rds`
+- `results/methyl-probe-beta-quantiles.tsv.gz`
+- `results/methyl-probe-beta-tpm-correlations.tsv.gz`
+- `results/methyl-beta-values-summary.rds` (for API DB loading)
+- `results/methyl-beta-values-summary.tsv.gz` (for users download on MTP)
+- `results/methyl-beta-values-summary.jsonl.gz` (for MTP DB loading)

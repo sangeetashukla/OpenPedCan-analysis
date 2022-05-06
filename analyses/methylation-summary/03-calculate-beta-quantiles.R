@@ -33,11 +33,7 @@ histologies <- data.table::fread(file.path(data_dir, "histologies.tsv"),
                   experimental_strategy == "Methylation") %>% 
   
 # Get methylation beta values
-beta <- data.table::fread(file.path(results_dir, 
-                                    "methylation-beta-values-matrix.tsv.gz"),
-                          sep = "\t", 
-                          showProgress = FALSE) %>% 
-  tibble::as_tibble()
+beta <- readr::read_rds(file.path(results_dir, "methyl-beta-values.rds"))
 
 # Calculating probe-level beta quantiles all preprocessed methylation samples
 message("===================================================================")
@@ -57,9 +53,10 @@ for (dataset in unique(histologies$cohort)) {
       dplyr::filter(cancer_group == cancer_type) %>% 
       dplyr::pull(Kids_First_Biospecimen_ID) 
     quantiles <- beta %>% 
+      dplyr::filter(!is.na(.)) %>% 
       tibble::column_to_rownames(var = "Probe_ID") %>% 
       dplyr::select(any_of(sample_ids)) %>% 
-      apply(1, quantile) %>% t() %>% 
+      apply(1, quantile, na.rm = TRUE) %>% t() %>% 
       tibble::as_tibble(rownames = NA) %>%
       dplyr::mutate(Dataset = dataset, Disease = cancer_type) %>%
       tibble::rownames_to_column(var = "Probe_ID") %>%
@@ -73,10 +70,10 @@ for (dataset in unique(histologies$cohort)) {
 beta_quantiles <- dplyr::bind_rows(beta_quantiles_dfs)
 
 # Write probe-level beta quantiles to file
-message("Writing probe-level beta quantile to methylation-probe-beta-quantiles.tsv file...\n")
+message("Writing probe-level beta quantile to methyl-probe-beta-quantiles.tsv file...\n")
 beta_quantiles %>% data.table::setDT() %>%
   data.table::fwrite(file.path(results_dir,
-                               "methylation-probe-beta-quantiles.tsv.gz"), 
+                               "methyl-probe-beta-quantiles.tsv.gz"), 
                      sep="\t", compress = "auto")
 
 message("Analysis Done..\n")

@@ -38,7 +38,7 @@ primary_tumors <- data.table::fread(file.path(data_dir, "histologies.tsv"),
 # Get array annotation probes corresponding to GENCODE version 38 (Ensembl 104) 
 # gene symbols
 annot_file <- file.path(results_dir, 
-                        "methylation-array-probes-annotations.tsv.gz")
+                        "methyl-probes-annotations.tsv.gz")
 probe_ids <- data.table::fread(annot_file, select = "Probe_ID", 
                                showProgress = FALSE) %>% 
   dplyr::distinct() %>% 
@@ -62,59 +62,24 @@ message("===================================================================")
 message(c("Creating merged Beta-values matrix for all methylation samples"))
 message("===================================================================\n")
 
-# NBL beta-values samples
-message("Creating Beta-values matrix for Neuroblastoma (NBL) samples...\n")
-nbl_matrix <- create_matrix(
-  file.path(data_dir, "NBL-beta-values-methylation.tsv.gz"), probe_ids) 
-colnames(nbl_matrix) <- paste0(colnames(nbl_matrix), ".M")
-
-
-# OS beta-values samples
-message("Creating Beta-values matrix for Osteosarcoma (OS) samples...\n")
-os_matrix <- create_matrix(
-  file.path(data_dir, "OS-beta-values-methylation.tsv.gz"), probe_ids)
-colnames(os_matrix) <- paste0(colnames(os_matrix), ".M")
-beta_matrix <- nbl_matrix %>% dplyr::full_join(os_matrix, by = "Probe_ID")
-rm(nbl_matrix, os_matrix)
-
-# CCSK beta-values samples
-message("Creating Beta-values matrix for Clear Cell Sarcoma of the Kidney (CCSK) samples...\n")
-ccsk_matrix <- create_matrix(
-  file.path(data_dir, "CCSK-beta-values-methylation.tsv.gz"), probe_ids) 
-colnames(ccsk_matrix) <- paste0(colnames(ccsk_matrix), ".M")
-beta_matrix <- beta_matrix %>% dplyr::full_join(ccsk_matrix, by = "Probe_ID")
-rm(ccsk_matrix)
-
-# WT beta-values samples 
-message("Creating Beta-values matrix for Wilms Tumor (WT) samples...\n")
-wt_matrix <- create_matrix(
-  file.path(data_dir, "WT-beta-values-methylation.tsv.gz"), probe_ids)
-colnames(wt_matrix) <- paste0(colnames(wt_matrix), ".M")
-beta_matrix <- beta_matrix %>% dplyr::full_join(wt_matrix, by = "Probe_ID")
-rm(wt_matrix)
-
-# AML beta-values samples 
-message("Creating Beta-values matrix for Acute Myeloid Leukemia (AML) samples...\n")
-aml_matrix <- create_matrix(
-  file.path(data_dir, "AML450k-beta-values-methylation.tsv.gz"), probe_ids) 
-colnames(aml_matrix) <- paste0(colnames(aml_matrix), ".M")
-beta_matrix <- beta_matrix %>% dplyr::full_join(aml_matrix, by = "Probe_ID")
-rm(aml_matrix)
+# TARGET beta-values samples
+message("Creating Beta-values matrix for TARGET samples...\n")
+target_matrix <- create_matrix(
+  file.path(data_dir, "TARGET-beta-values-methylation.tsv.gz"), probe_ids) %>%
+  # add ".M" to TARGET methylation samples to avoid conflicts with WXS samples
+  dplyr::rename_with(.fn = ~ paste0(., ".M"), .cols = starts_with("TARGET-"))
 
 # CBTN beta-values samples 
-message("Creating Beta-values matrix for Children's Brain Tumor Network (CBTN) samples...\n")
+message("Creating Beta-values matrix for CBTN samples...\n")
 cbtn_matrix <- create_matrix(
   file.path(data_dir, "CBTN-beta-values-methylation.tsv.gz"), probe_ids)
-beta_matrix <- beta_matrix %>% dplyr::full_join(aml_matrix, by = "Probe_ID")
-rm(cbtn_matrix)
+beta_matrix <- target_matrix %>% dplyr::full_join(cbtn_matrix, by = "Probe_ID")
+rm(target_matrix, cbtn_matrix)
 
 # write merged beta-values to file
-message("Writing merged Beta-values matrix to methylation-beta-values-matrix.tsv file...\n")
+message("Writing merged Beta-values matrix to methyl-beta-values.rds file...\n")
 beta_matrix %>% dplyr::select(tidyselect::any_of(c("Probe_ID", primary_tumors))) %>% 
-  data.table::setDT() %>%
-  data.table::fwrite(file.path(results_dir,
-                               "methylation-beta-values-matrix.tsv.gz"), 
-                     sep="\t", compress = "auto")
+  readr::write_rds(file.path(results_dir, "methyl-beta-values.rds"))
 rm(beta_matrix)
 
 # Creating M-values matrix for all methylation samples
@@ -122,58 +87,24 @@ message("=================================================================")
 message("Creating merged M-values matrix for all methylation samples")
 message("=================================================================\n")
 
-# NBL m-values samples
-message("Creating M-values matrix for Neuroblastoma (NBL) samples...\n")
-nbl_matrix <- create_matrix(
-  file.path(data_dir, "NBL-m-values-methylation.tsv.gz"), probe_ids)
-colnames(nbl_matrix) <- paste0(colnames(nbl_matrix), ".M")
-
-# OS m-values samples
-message("Creating M-values matrix for Osteosarcoma (OS) samples...\n")
-os_matrix <- create_matrix(
-  file.path(data_dir, "OS-m-values-methylation.tsv.gz"), probe_ids)
-colnames(os_matrix) <- paste0(colnames(os_matrix), ".M")
-m_matrix <- nbl_matrix %>% dplyr::full_join(os_matrix, by = "Probe_ID")
-rm(nbl_matrix, os_matrix)
-
-# CCSK m-values samples
-message("Creating M-values matrix for Clear Cell Sarcoma of the Kidney (CCSK) samples...\n")
-ccsk_matrix <- create_matrix(
-  file.path(data_dir, "CCSK-m-values-methylation.tsv.gz"), probe_ids)
-colnames(ccsk_matrix) <- paste0(colnames(ccsk_matrix), ".M")
-m_matrix <- m_matrix %>% dplyr::full_join(ccsk_matrix, by = "Probe_ID")
-rm(ccsk_matrix)
-
-# WT m-values samples 
-message("Creating M-values matrix for Wilms Tumor (WT) samples...\n")
-wt_matrix <- create_matrix(
-  file.path(data_dir, "WT-m-values-methylation.tsv.gz"), probe_ids)
-colnames(wt_matrix) <- paste0(colnames(wt_matrix), ".M")
-m_matrix <- m_matrix %>% dplyr::full_join(wt_matrix, by = "Probe_ID")
-rm(wt_matrix)
-
-# AML m-values samples 
-message("Creating M-values matrix for Acute Myeloid Leukemia (AML) samples...\n")
-aml_matrix <- create_matrix(
-  file.path(data_dir, "AML450k-m-values-methylation.tsv.gz"), probe_ids)
-colnames(aml_matrix) <- paste0(colnames(aml_matrix), ".M")
-m_matrix <- m_matrix %>% dplyr::full_join(aml_matrix, by = "Probe_ID")
-rm(aml_matrix)
+# TARGET m-values samples
+message("Creating M-values matrix for TARGET samples...\n")
+target_matrix <- create_matrix(
+  file.path(data_dir, "TARGET-m-values-methylation.tsv.gz"), probe_ids) %>%
+  # add ".M" to TARGET methylation samples to avoid conflicts with WXS samples
+  dplyr::rename_with(.fn = ~ paste0(., ".M"), .cols = starts_with("TARGET-"))
 
 # CBTN m-values samples 
-message("Creating M-values matrix for Children's Brain Tumor Network (CBTN) samples...\n")
+message("Creating M-values matrix for CBTN samples...\n")
 cbtn_matrix <- create_matrix(
   file.path(data_dir, "CBTN-m-values-methylation.tsv.gz"), probe_ids)
-m_matrix <- m_matrix %>% dplyr::full_join(aml_matrix, by = "Probe_ID")
-rm(cbtn_matrix)
+m_matrix <- target_matrix %>% dplyr::full_join(cbtn_matrix, by = "Probe_ID")
+rm(target_matrix, cbtn_matrix)
 
 # write merged m-values to file
-message("Writing merged M-values matrix to methylation-m-values-matrix.tsv file...\n")
+message("Writing merged M-values matrix to methyl-m-values.rds file...\n")
 m_matrix %>% dplyr::select(tidyselect::any_of(c("Probe_ID", primary_tumors))) %>% 
-  data.table::setDT() %>%
-  data.table::fwrite(file.path(results_dir,
-                               "methylation-m-values-matrix.tsv.gz"), 
-                     sep="\t", compress = "auto")
+  readr::write_rds(file.path(results_dir, "methyl-m-values.rds"))
 rm(m_matrix)
 
 message("Analysis Done..\n")

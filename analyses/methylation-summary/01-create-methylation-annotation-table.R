@@ -76,49 +76,27 @@ message("===========================================================")
 message("Creating merged annotations for methylation array probes")
 message("===========================================================\n")
 
-# NBL beta-values samples
-message("Annotating array probes in Neuroblastoma (NBL) samples...\n")
-nbl_annotations <- annotate_array_probes(
-  file.path(data_dir, "NBL-beta-values-methylation.tsv.gz"))
-
-# OS beta-values samples
-message("Annotating array probes in Osteosarcoma (OS) samples...\n")
-os_annotations <- annotate_array_probes(
-  file.path(data_dir, "OS-beta-values-methylation.tsv.gz"))
-
-# CCSK beta-values samples
-message("Annotating array probes in Clear Cell Sarcoma of the Kidney (CCSK) samples...\n")
-ccsk_annotations <- annotate_array_probes(
-  file.path(data_dir, "CCSK-beta-values-methylation.tsv.gz"))
-
-# WT beta-values samples 
-message("Annotating array probes in Wilms Tumor (WT) samples...\n")
-wt_annotations <- annotate_array_probes(
-  file.path(data_dir, "WT-beta-values-methylation.tsv.gz"))
-
 # AML beta-values samples 
-message("Annotating array probes in Acute Myeloid Leukemia (AML) samples...\n")
-aml_annotations <- annotate_array_probes(
-  file.path(data_dir, "AML450k-beta-values-methylation.tsv.gz"))
+message("Annotating array probes in TARGET samples...\n")
+target_annotations <- annotate_array_probes(
+  file.path(data_dir, "TARGET-beta-values-methylation.tsv.gz"))
 
 # CBTN beta-values samples 
-message("Annotating array probes in Children's Brain Tumor Network (CBTN) samples...\n")
+message("Annotating array probes in CBTN samples...\n")
 cbtn_annotations <- annotate_array_probes(
   file.path(data_dir, "CBTN-beta-values-methylation.tsv.gz"))
 
 # merge array probe annotations
 message("Merging array probes annotations for normal and all cancer types ...\n")
-probe_annotations <- rbind(nbl_annotations, os_annotations, ccsk_annotations, 
-                           wt_annotations, aml_annotations, cbtn_annotations)
-rm(nbl_annotations, os_annotations, ccsk_annotations, wt_annotations, 
-   aml_annotations, cbtn_annotations)
+probe_annotations <- rbind(target_annotations, cbtn_annotations)
+rm(target_annotations, cbtn_annotations)
 probe_annotations <- probe_annotations %>% dplyr::distinct()
 
 # write merged beta-values to file
-message("Writing merged array probes annotations to methylation-probe-annotations.tsv file...\n")
+message("Writing merged array probes annotations to methyl-probe-annotations.tsv file...\n")
 probe_annotations %>% data.table::setDT() %>%
   data.table::fwrite(file.path(results_dir,
-                               "methylation-probe-annotations.tsv.gz"), 
+                               "methyl-probe-annotations.tsv.gz"), 
                      sep="\t", compress = "auto")
 
 message("Analysis Done..\n")

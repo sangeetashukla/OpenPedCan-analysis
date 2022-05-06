@@ -36,11 +36,7 @@ histologies <- data.table::fread(file.path(data_dir, "histologies.tsv"),
                      experimental_strategy == "Methylation"))
 
 # Get methylation beta values
-beta <- data.table::fread(file.path(results_dir, 
-                                    "methylation-beta-values-matrix.tsv.gz"),
-                          sep = "\t", 
-                          showProgress = FALSE) %>% 
-  tibble::as_tibble()
+beta <- readr::read_rds(file.path(results_dir, "methyl-beta-values.rds"))
 
 # Get RNA-Seq expression TPM values for array probes in GENCODE version 38 
 # (Ensembl 104) gene symbols
@@ -48,7 +44,7 @@ tpm <- readr::read_rds(file.path(data_dir,
                                  "gene-expression-rsem-tpm-collapsed.rds")) %>% 
   tibble::rownames_to_column(var = "Gene_symbol")
 tpm <- data.table::fread(
-  file.path(results_dir, "methylation-probe-annotations.tsv.gz"), 
+  file.path(results_dir, "methyl-probe-annotations.tsv.gz"), 
   select = c("Probe_ID", "Gene_symbol"), showProgress = FALSE)  %>% 
   tibble::as_tibble() %>% 
   dplyr::distinct()  %>%
@@ -84,10 +80,10 @@ for (cancer_type in unique(meth_histologies$cancer_group)) {
                       by = c("Kids_First_Participant_ID", "cohort")) %>% 
     dplyr::rename(Patient_ID = Kids_First_Participant_ID) %>%
     dplyr::select(-cohort)
-  print(cancer_type_ids) 
+ 
   # Get cancer type tpm values for patients with both RNA-Seq and 
   # methylation data and only keep array probes present in cancer type
-  #  that have standard deviation > 0
+  #  that have standard deviation == 0
   cancer_type_tpm <- tpm %>% 
     dplyr::select(tidyselect::any_of(c("Probe_ID",
                                        unique(cancer_type_ids$RNASeq_ID)))) %>%
@@ -99,16 +95,15 @@ for (cancer_type in unique(meth_histologies$cancer_group)) {
     tidyr::pivot_longer(-Probe_ID, 
                         names_to = "Patient_ID", values_to = "TPM") %>%
     tidyr::pivot_wider(names_from = Probe_ID, values_from = TPM) %>% 
-    tibble::column_to_rownames(var = "Patient_ID") %>%
-    purrr::discard(~ all(is.numeric(.x) & sd(.x) == 0)) %>% 
-    tibble::rownames_to_column(var = "Patient_ID")
-  
+    purrr::discard(~ all(is.numeric(.x) & sd(.x) == 0))
+
   # Get cancer type beta values for patients with both RNA-Seq and 
   # methylation data and only keep array probes present in cancer type
   # tmp values that have standard deviation > 0
   cancer_type_beta <- beta %>% 
     dplyr::select(tidyselect::any_of(c("Probe_ID", 
                                        unique(cancer_type_ids$Meth_ID)))) %>%
+    dplyr::filter(!is.na(.)) %>% 
     dplyr::filter(Probe_ID %in% unique(colnames(cancer_type_tpm))) %>% 
     tidyr::pivot_longer(-Probe_ID, names_to = "Meth_ID", values_to = "Beta") %>%
     dplyr::left_join(cancer_type_ids, by = "Meth_ID") %>% 
@@ -118,25 +113,26 @@ for (cancer_type in unique(meth_histologies$cancer_group)) {
     tidyr::pivot_longer(-Probe_ID, 
                         names_to = "Patient_ID", values_to = "Beta") %>%
     tidyr::pivot_wider(names_from = Probe_ID, values_from = Beta) %>% 
-    tibble::column_to_rownames(var = "Patient_ID") %>%
-    purrr::discard(~ all(is.numeric(.x) & sd(.x) == 0)) %>% 
-    tibble::rownames_to_column(var = "Patient_ID")
-  
+    purrr::discard(~ all(is.numeric(.x) & sd(.x) == 0))
+
   # Only keep cancer type tpm values for patient IDs and array probes that are 
-  # in beta values then sort patient IDs and probe arrays to be in the same
-  # order in both matrices
+  # in beta values then sort patient IDs and array probes to be in the same
+  # order in both matrices. 
+  # Once again drop any array probes with standard deviation == 0 as result of
+  # filtering 
   cancer_type_tpm <- cancer_type_tpm %>% 
     dplyr::filter(Patient_ID %in% cancer_type_beta$Patient_ID) %>%
-    dplyr::select(tidyselect::all_of(colnames(cancer_type_beta))) %>%
-    dplyr::arrange(Patient_ID) %>%
-    tibble::column_to_rownames(var = "Patient_ID") %>% 
-    dplyr::select(sort(tidyselect::peek_vars()))
-  print(cancer_type_tpm)
+    purrr::discard(~ all(is.numeric(.x) & sd(.x) == 0)) %>% 
+    dplyr::arrange(Patient_ID)
   cancer_type_beta <- cancer_type_beta %>% 
+    dplyr::select(tidyselect::any_of(colnames(cancer_type_tpm))) %>%
     dplyr::arrange(Patient_ID) %>%
     tibble::column_to_rownames(var = "Patient_ID") %>% 
     dplyr::select(sort(tidyselect::peek_vars()))
-  print(cancer_type_beta)
+  cancer_type_tpm <- cancer_type_tpm %>% 
+    tibble::column_to_rownames(var = "Patient_ID") %>%
+    dplyr::select(tidyselect::all_of(colnames(cancer_type_beta))) %>%
+    dplyr::select(sort(tidyselect::peek_vars()))
   
   # calculate probe correlation between methylation beta values
   # RNA-Seq expression tpm values
@@ -156,10 +152,10 @@ rm(beta, tpm, rnaseq_histologies, meth_histologies)
 
 # Write probe-level correlations between methylation beta values
 # RNA-Seq expression tpm values
-message("Writing probe-level correlations to methylation-probe-beta-tpm-correlations.tsv file...\n")
+message("Writing probe-level correlations to methyl-probe-beta-tpm-correlations.tsv file...\n")
 beta_tmp_correlation %>% data.table::setDT() %>%
   data.table::fwrite(file.path(results_dir,
-                               "methylation-probe-beta-tpm-correlations.tsv.gz"), 
+                               "methyl-probe-beta-tpm-correlations.tsv.gz"), 
                      sep="\t", compress = "auto")
 
 message("Analysis Done..\n")

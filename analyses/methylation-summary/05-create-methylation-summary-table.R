@@ -35,11 +35,11 @@ message("==========================================================\n")
 # and beta-tpm correlations tables
 message("Merging probe-level quantiles and beta-tpm correlations...\n")
 beta_tpm_correlations <- data.table::fread(
-  file.path(results_dir, "methylation-probe-beta-tpm-correlations.tsv.gz"),
+  file.path(results_dir, "methyl-probe-beta-tpm-correlations.tsv.gz"),
   showProgress = FALSE) %>% 
   tibble::as_tibble()
 summary_table <- data.table::fread(
-  file.path(results_dir, "methylation-probe-beta-quantiles.tsv.gz"), 
+  file.path(results_dir, "methyl-probe-beta-quantiles.tsv.gz"), 
   showProgress = FALSE)  %>% 
   tibble::as_tibble() %>% 
   dplyr::left_join(beta_tpm_correlations, by = c("Probe_ID", "Disease"))
@@ -49,7 +49,7 @@ rm(beta_tpm_correlations)
 # annotation to the the methylation summary table
 message("Including gene symbols and Ensembl probe annotations ...\n")
 summary_table <- data.table::fread(
-  file.path(results_dir, "methylation-probe-annotations.tsv.gz"),
+  file.path(results_dir, "methyl-probe-annotations.tsv.gz"),
   showProgress = FALSE) %>% 
   tibble::as_tibble() %>% 
   dplyr::right_join(summary_table, by = "Probe_ID")
@@ -88,16 +88,21 @@ summary_table <-  summary_table %>%
                 chop_uuid = uuid_strings, 
                 datasourceId = "chop_gene_level_methylation")
 
-# Write methylation summary table to TSV file
-message("Writing methylation summary table to methylation-beta-values-summary.tsv file...\n")
+# Write methylation summary table to RDS file - needed for API DB loading
+message("Writing methylation summary table to methyl-beta-values-summary.rds file...\n")
+summary_table %>% 
+  readr::write_rds(file.path(results_dir, "methyl-beta-values-summary.rds"))
+
+# Write methylation summary table to TSV file - need for MPT user download
+message("Writing methylation summary table to methyl-beta-values-summary.tsv file...\n")
 summary_table %>% data.table::setDT() %>%
   data.table::fwrite(file.path(results_dir,
-                               "methylation-beta-values-summary.tsv.gz"), 
+                               "methyl-beta-values-summary.tsv.gz"), 
                      sep="\t", compress = "auto")
 
-# Write methylation summary table to JSON file
-message("Writing methylation summary table to methylation-beta-values-summary.json file...\n")
+# Write methylation summary table to JSON file - needed for MPT DB loading
+message("Writing methylation summary table to methyl-beta-values-summary.json file...\n")
 summary_table %>% jsonlite::write_json(
-  file.path(results_dir, "methylation-beta-values-summary.json"))  
+  file.path(results_dir, "methyl-beta-values-summary.json"))  
   
 message("Analysis Done..\n")

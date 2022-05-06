@@ -24,7 +24,7 @@ Rscript --vanilla 02-create-methylation-matrices.R
 Rscript --vanilla 03-calculate-beta-quantiles.R
 
 ############ Calculate probe-level correlations between Beta and TPM values ###############
-Rscript --vanilla 04-target-beta-tpm-correlation.R
+Rscript --vanilla 04-beta-tpm-correlation.R
 
 ############################ Create methylation summary table #############################
 Rscript --vanilla 05-create-methylation-summary-table.R
@@ -33,8 +33,8 @@ Rscript --vanilla 05-create-methylation-summary-table.R
 printf '\nConverting JSON file to JSONL files...\n'
 
 jq --compact-output '.[]' \
-  ${results_path}/methylation-beta-values-summary.json \
-  > ${results_path}/methylation-beta-values-summary.jsonl
+  ${results_path}/methyl-beta-values-summary.json \
+  > ${results_path}/methyl-beta-values-summary.jsonl
 
 ################################# Remove JSON file ########################################
 printf '\nRemoving JSON files...\n'
