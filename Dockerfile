@@ -435,6 +435,10 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 RUN pip3 install \
     "openpyxl==2.6.4"
 
+# Package for generating UUIDs
+RUN ./install_bioc.r \
+    ids
+
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 
