@@ -38,7 +38,7 @@ primary_tumors <- data.table::fread(file.path(data_dir, "histologies.tsv"),
 # Get array annotation probes corresponding to GENCODE version 38 (Ensembl 104) 
 # gene symbols
 annot_file <- file.path(results_dir, 
-                        "methyl-probes-annotations.tsv.gz")
+                        "methyl-probe-annotations.tsv.gz")
 probe_ids <- data.table::fread(annot_file, select = "Probe_ID", 
                                showProgress = FALSE) %>% 
   dplyr::distinct() %>% 

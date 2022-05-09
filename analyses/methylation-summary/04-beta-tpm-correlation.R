@@ -87,6 +87,7 @@ for (cancer_type in unique(meth_histologies$cancer_group)) {
   cancer_type_tpm <- tpm %>% 
     dplyr::select(tidyselect::any_of(c("Probe_ID",
                                        unique(cancer_type_ids$RNASeq_ID)))) %>%
+    dplyr::filter(if_any(!starts_with("Probe_ID"), ~ !is.na(.))) %>%  
     tidyr::pivot_longer(-Probe_ID, names_to = "RNASeq_ID", values_to = "TPM") %>% 
     dplyr::left_join(cancer_type_ids, by = "RNASeq_ID") %>% 
     dplyr::select(-c("Meth_ID", "RNASeq_ID")) %>%
@@ -103,7 +104,7 @@ for (cancer_type in unique(meth_histologies$cancer_group)) {
   cancer_type_beta <- beta %>% 
     dplyr::select(tidyselect::any_of(c("Probe_ID", 
                                        unique(cancer_type_ids$Meth_ID)))) %>%
-    dplyr::filter(!is.na(.)) %>% 
+    dplyr::filter(if_any(!starts_with("Probe_ID"), ~ !is.na(.))) %>% 
     dplyr::filter(Probe_ID %in% unique(colnames(cancer_type_tpm))) %>% 
     tidyr::pivot_longer(-Probe_ID, names_to = "Meth_ID", values_to = "Beta") %>%
     dplyr::left_join(cancer_type_ids, by = "Meth_ID") %>% 
