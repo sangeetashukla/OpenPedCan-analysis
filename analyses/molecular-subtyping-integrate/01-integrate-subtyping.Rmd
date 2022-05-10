@@ -134,6 +134,33 @@ histology <- base_histology %>%
                   is.na(harmonized_diagnosis) &
                   !is.na(pathology_diagnosis) ~ pathology_diagnosis
     )) 
+
+# add broad_histology and short_histology for TARGET and NBL-GMKF samples
+histology <- histology %>% 
+  dplyr::mutate(
+    short_histology = dplyr::case_when(
+      pathology_diagnosis == "Neuroblastoma" ~ "Neuroblastoma",
+      pathology_diagnosis == "Ganglioneuroblastoma, intermixed" ~ "Neuroblastoma",
+      pathology_diagnosis == "Ganglioneuroblastoma, nodular" ~ "Neuroblastoma",
+      pathology_diagnosis == "Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated" ~ "Neuroblastoma",
+      pathology_diagnosis == "Acute Lymphoblastic Leukemia" ~ "Acute Lymphoblastic Leukemia",
+      pathology_diagnosis == "Acute Myeloid Leukemia" ~ "Acute Myeloid Leukemia",
+      pathology_diagnosis == "Osteosarcoma" ~ "Osteosarcoma",
+      pathology_diagnosis == "Kidney Rhabdoid Tumor" ~ "Rhabdoid tumor",
+      pathology_diagnosis == "Kidney Wilms Tumor" ~ "Wilms tumor",
+      pathology_diagnosis == "Kidney Clear Cell Sarcoma of the Kidney" ~ "Clear cell sarcoma of the kidney",
+      TRUE ~ as.character(short_histology)),
+    broad_histology = dplyr::case_when(
+      short_histology == "Neuroblastoma" ~ "Embryonal tumor",
+      short_histology == "Acute Lymphoblastic Leukemia" ~ "Hematologic malignancy",
+      short_histology == "Acute Myeloid Leukemia" ~ "Hematologic malignancy",
+      short_histology == "Osteosarcoma" ~ "Osteosarcoma",
+      short_histology == "Rhabdoid tumor" ~ "Renal tumor",
+      short_histology == "Wilms tumor" ~ "Renal tumor",
+      short_histology == "Clear cell sarcoma of the kidney" ~ "Renal tumor",
+      TRUE ~ as.character(broad_histology))
+  )
+
 ```
 
 
@@ -186,6 +213,13 @@ histology<- histology %>%
     cancer_group == "Adamantinomatous craniopharyngioma" ~ "Craniopharyngioma",
     sample_id == "7316-2577" ~ "Embryonal tumor with multilayer rosettes",
     cancer_group %in% c("Benign tumor","Dysplasia/Gliosis","Other","Dysplasia/Gliosis-Glial-neuronal tumor NOS") ~ NA_character_,
+    short_histology == "Neuroblastoma" ~ "Neuroblastoma",
+    short_histology == "Acute Lymphoblastic Leukemia" ~ "Acute Lymphoblastic Leukemia",
+    short_histology == "Acute Myeloid Leukemia" ~ "Acute Myeloid Leukemia",
+    short_histology == "Osteosarcoma" ~ "Osteosarcoma",
+    short_histology == "Rhabdoid tumor" ~ "Rhabdoid tumor",
+    short_histology == "Wilms tumor" ~ "Wilms tumor",
+    short_histology == "Clear cell sarcoma of the kidney" ~ "Clear cell sarcoma of the kidney",
     TRUE ~ as.character(cancer_group))
   ) %>%
   # Additional update to clean up terms that we will use in plots
