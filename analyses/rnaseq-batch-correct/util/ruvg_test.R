@@ -1,6 +1,6 @@
 # function to evaluate RUVg: Estimating the factors of unwanted variation using control genes
 # uses negative control genes, assumed to have constant expression across samples
-ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, diff_type = c("deseq2", "edger"), output_dir){
+ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, diff_type = c("deseq2", "edger"), output_dir, design_variable, color_var, shape_var){
   
   # create output directory
   if(diff_type == "edger"){
@@ -41,15 +41,15 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
     ruvg_set <- RUVg(x = seq_expr_set, cIdx = emp_neg_ctrl_genes, k = k_val[i])
     
     # pca and umap after ruvg
-    ruvg_pca <- edaseq_plot(object = ruvg_set, title = paste0("PCA: RUVg output (k = ", i, ")"), type = "PCA")
-    ruvg_umap <- edaseq_plot(object = ruvg_set, title = paste0("UMAP: RUVg output (k = ", i, ")"), type = "UMAP")
+    ruvg_pca <- edaseq_plot(object = ruvg_set, title = paste0("PCA: RUVg output (k = ", i, ")"), type = "PCA", color_var = color_var, shape_var = shape_var)
+    ruvg_umap <- edaseq_plot(object = ruvg_set, title = paste0("UMAP: RUVg output (k = ", i, ")"), type = "UMAP", color_var = color_var, shape_var = shape_var)
     cluster_plot[[i]] <- ggpubr::ggarrange(ruvg_pca, ruvg_umap, common.legend = T, legend = "bottom")
     
     # differential expression after RUVg
     if(diff_type == "deseq2"){
       # W_i corresponds to the factors of "unwanted variation"
       # factor for unwanted variation comes first for deseq2
-      design <- model.matrix(as.formula(paste0('~0 + W_', i, '+ patient_id')), data = pData(ruvg_set))
+      design <- model.matrix(as.formula(paste0('~0 + W_', i, '+' , design_variable)), data = pData(ruvg_set))
       ruv_dds <- DESeq2::DESeqDataSetFromMatrix(countData = counts(ruvg_set), colData = pData(ruvg_set), design = design)
       ruv_dds <- DESeq2::DESeq(ruv_dds)
       
@@ -62,8 +62,8 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
     } else if(diff_type == "edger") {
       # W corresponds to the factors of "unwanted variation"
       # factor for unwanted variation comes last for edgeR
-      design <- model.matrix(as.formula(paste0('~0 + patient_id +', 'W_', i)), data = pData(ruvg_set))
-      y <- DGEList(counts = counts(ruvg_set), group = rna_library)
+      design <- model.matrix(as.formula(paste0('~0 +', design_variable, '+', 'W_', i)), data = pData(ruvg_set))
+      y <- DGEList(counts = counts(ruvg_set))
       y <- calcNormFactors(y, method = "upperquartile")
       y <- estimateGLMCommonDisp(y, design)
       y <- estimateGLMTagwiseDisp(y, design)
@@ -74,16 +74,12 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
         dplyr::rename("pvalue" = "PValue", "padj" = "FDR")
     }
     
-    # save dge output (commenting out to reduce output files)
-    # filename <- file.path(output_dir, paste0(prefix, '_stranded_vs_polya_dge_ruvg_k', k_val[i], '_', diff_type, '_result.csv'))
-    # write_tsv(dge_output, file = filename)
-    
     # plot and save p-value histogram
     # evaluate the distribution of p-values for full transcriptome
     pval_hist_plot[[i]] <- deseq2_pvals_histogram(res_df = dge_output,
                                 xlab = 'RUVg p-value (full transcriptome)',
                                 ylab = 'Gene count',
-                                title = paste0('Histogram of paired analysis (k = ', i, ')'))
+                                title = paste0('Histogram (k = ', i, ')'))
     
     # test for uniformity (negative control genes only)
     dge_output_neg_control_genes[[i]] <- dge_output %>%
@@ -93,7 +89,7 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
     pval_hist_plot_subset[[i]] <- deseq2_pvals_histogram(res_df = dge_output_neg_control_genes[[i]],
                                                          xlab = 'RUVr p-value (negative control genes)',
                                                          ylab = 'Gene count',
-                                                         title = paste0('Histogram of paired analysis (k = ', i, ')'))
+                                                         title = paste0('Histogram (k = ', i, ')'))
     
     # chisq test for p-values 
     chisq_out[[i]] <- chisq.test(x = dge_output_neg_control_genes[[i]]$pvalue)
@@ -108,25 +104,25 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
   
   # save the plots for all k values in a multi-page pdf file
   # clustering output (PCA/UMAP)
-  pdf(file = file.path(output_dir, paste0(prefix, '_stranded_vs_polya_dge_ruvg_', diff_type, '_clustering.pdf')), width = 6, height = 4)
+  pdf(file = file.path(output_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_clustering.pdf')), width = 6, height = 4)
   print(cluster_plot)
   dev.off()
 
   # p-value histogram (full transcriptome)
-  pdf(file = file.path(output_dir, paste0(prefix, '_stranded_vs_polya_dge_ruvg_', diff_type, '_histogram_full_transcriptome.pdf')), width = 8, height = 7)
+  pdf(file = file.path(output_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_histogram_full_transcriptome.pdf')), width = 8, height = 7)
   print(pval_hist_plot)
   dev.off()
   
   # p-value histogram (neg control genes)
-  pdf(file = file.path(output_dir, paste0(prefix, '_stranded_vs_polya_dge_ruvg_', diff_type, '_histogram_controls.pdf')), width = 8, height = 7)
+  pdf(file = file.path(output_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_histogram_controls.pdf')), width = 8, height = 7)
   print(pval_hist_plot_subset)
   dev.off()
   
   # rbind and save chisq values
   data.table::rbindlist(chisq_out) %>%
-    write_tsv(file = file.path(output_dir, paste0(prefix, '_stranded_vs_polya_dge_ruvg_', diff_type, '_chisq_pvalues.tsv')))
+    write_tsv(file = file.path(output_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_chisq_pvalues.tsv')))
   
   # rbind and save ks values
   data.table::rbindlist(ks_out) %>%
-    write_tsv(file = file.path(output_dir, paste0(prefix, '_stranded_vs_polya_dge_ruvg_', diff_type, '_ks_pvalues.tsv')))
+    write_tsv(file = file.path(output_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_ks_pvalues.tsv')))
 }
