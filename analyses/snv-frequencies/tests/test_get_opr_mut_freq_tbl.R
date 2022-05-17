@@ -74,17 +74,17 @@ test_each_indp_gene_mut_freq_tbl <- tibble::tibble(
   # number of patients with the mutation
   Total_mutations = as.integer(c(1, 2, 2)),
   Patients_in_dataset = as.integer(3),
-  Total_mutations_Over_Patients_in_dataset = c("1/3", "2/3", "2/3"),
+  Total_mutations_over_subjects_in_dataset = c("1/3", "2/3", "2/3"),
   Frequency_in_overall_dataset = num_to_pct_chr(c(1/3, 2/3, 2/3)),
   # number of primary samples with the mutation
   Total_primary_tumors_mutated = as.integer(c(2, 2, 2)),
   Total_relapse_tumors_mutated = as.integer(c(0, 1, 1)),
   Primary_tumors_in_dataset = as.integer(4),
   Relapse_tumors_in_dataset = as.integer(2),
-  Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset = c(
+  Total_primary_tumors_mutated_over_primary_tumors_in_dataset = c(
     "2/4", "2/4", "2/4"
   ),
-  Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset = c(
+  Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset = c(
     "0/2", "1/2", "1/2"
   ),
   Frequency_in_primary_tumors = num_to_pct_chr(c(2/4, 2/4, 2/4)),
@@ -96,17 +96,17 @@ test_all_indp_gene_mut_freq_tbl <- tibble::tibble(
   # number of patients with the mutation
   Total_mutations = as.integer(c(1, 2, 2)),
   Patients_in_dataset = as.integer(3),
-  Total_mutations_Over_Patients_in_dataset = c("1/3", "2/3", "2/3"),
+  Total_mutations_over_subjects_in_dataset = c("1/3", "2/3", "2/3"),
   Frequency_in_overall_dataset = num_to_pct_chr(c(1/3, 2/3, 2/3)),
   # number of primary samples with the mutation
   Total_primary_tumors_mutated = as.integer(c(1, 1, 2)),
   Total_relapse_tumors_mutated = as.integer(c(0, 1, 1)),
   Primary_tumors_in_dataset = as.integer(3),
   Relapse_tumors_in_dataset = as.integer(2),
-  Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset = c(
+  Total_primary_tumors_mutated_over_primary_tumors_in_dataset = c(
     "1/3", "1/3", "2/3"
   ),
-  Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset = c(
+  Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset = c(
     "0/2", "1/2", "1/2"
   ),
   Frequency_in_primary_tumors = num_to_pct_chr(c(1/3, 1/3, 2/3)),
@@ -118,7 +118,7 @@ test_each_indp_var_mut_freq_tbl <- tibble::tibble(
   # number of patients with the mutation
   Total_mutations = as.integer(c(1, 1, 2, 1, 2)),
   Patients_in_dataset = as.integer(3),
-  Total_mutations_Over_Patients_in_dataset = c(
+  Total_mutations_over_subjects_in_dataset = c(
     "1/3", "1/3", "2/3", "1/3", "2/3"
   ),
   Frequency_in_overall_dataset = num_to_pct_chr(c(1/3, 1/3, 2/3, 1/3, 2/3)),
@@ -127,10 +127,10 @@ test_each_indp_var_mut_freq_tbl <- tibble::tibble(
   Total_relapse_tumors_mutated = as.integer(c(0, 0, 1, 0, 1)),
   Primary_tumors_in_dataset = as.integer(4),
   Relapse_tumors_in_dataset = as.integer(2),
-  Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset = c(
+  Total_primary_tumors_mutated_over_primary_tumors_in_dataset = c(
     "2/4", "1/4", "2/4", "1/4", "2/4"
   ),
-  Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset = c(
+  Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset = c(
     "0/2", "0/2", "1/2", "0/2", "1/2"
   ),
   Frequency_in_primary_tumors = num_to_pct_chr(c(2/4, 1/4, 2/4, 1/4, 2/4)),
@@ -142,7 +142,7 @@ test_all_indp_var_mut_freq_tbl <- tibble::tibble(
   # number of patients with the mutation
   Total_mutations = as.integer(c(1, 1, 2, 1, 2)),
   Patients_in_dataset = as.integer(3),
-  Total_mutations_Over_Patients_in_dataset = c(
+  Total_mutations_over_subjects_in_dataset = c(
     "1/3", "1/3", "2/3", "1/3", "2/3"
   ),
   Frequency_in_overall_dataset = num_to_pct_chr(c(1/3, 1/3, 2/3, 1/3, 2/3)),
@@ -151,10 +151,10 @@ test_all_indp_var_mut_freq_tbl <- tibble::tibble(
   Total_relapse_tumors_mutated = as.integer(c(0, 0, 1, 0, 1)),
   Primary_tumors_in_dataset = as.integer(3),
   Relapse_tumors_in_dataset = as.integer(2),
-  Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset = c(
+  Total_primary_tumors_mutated_over_primary_tumors_in_dataset = c(
     "1/3", "0/3", "1/3", "1/3", "2/3"
   ),
-  Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset = c(
+  Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset = c(
     "0/2", "0/2", "1/2", "0/2", "1/2"
   ),
   Frequency_in_primary_tumors = num_to_pct_chr(c(1/3, 0/3, 1/3, 1/3, 2/3)),
@@ -202,7 +202,7 @@ testthat::expect_equal(
   test_all_indp_gene_mut_freq_tbl %>% mutate(
     Total_primary_tumors_mutated = as.integer(0),
     Primary_tumors_in_dataset = as.integer(0),
-    Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset = "0/0",
+    Total_primary_tumors_mutated_over_primary_tumors_in_dataset = "0/0",
     Frequency_in_primary_tumors = num_to_pct_chr(0/0)
   ),
 )
@@ -217,7 +217,7 @@ testthat::expect_equal(
   test_each_indp_gene_mut_freq_tbl %>% mutate(
     Total_primary_tumors_mutated = as.integer(0),
     Primary_tumors_in_dataset = as.integer(0),
-    Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset = "0/0",
+    Total_primary_tumors_mutated_over_primary_tumors_in_dataset = "0/0",
     Frequency_in_primary_tumors = num_to_pct_chr(0/0)
   ),
 )
@@ -233,7 +233,7 @@ testthat::expect_equal(
   test_all_indp_gene_mut_freq_tbl %>% mutate(
     Total_relapse_tumors_mutated = as.integer(0),
     Relapse_tumors_in_dataset = as.integer(0),
-    Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset = "0/0",
+    Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset = "0/0",
     Frequency_in_relapse_tumors = num_to_pct_chr(0/0)
   ),
 )
@@ -250,7 +250,7 @@ testthat::expect_equal(
   test_each_indp_gene_mut_freq_tbl %>% mutate(
     Total_relapse_tumors_mutated = as.integer(0),
     Relapse_tumors_in_dataset = as.integer(0),
-    Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset = "0/0",
+    Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset = "0/0",
     Frequency_in_relapse_tumors = num_to_pct_chr(0/0)
   ),
 )
@@ -268,11 +268,11 @@ testthat::expect_equal(
   test_each_indp_gene_mut_freq_tbl %>% mutate(
     Total_primary_tumors_mutated = as.integer(0),
     Primary_tumors_in_dataset = as.integer(0),
-    Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset = "0/0",
+    Total_primary_tumors_mutated_over_primary_tumors_in_dataset = "0/0",
     Frequency_in_primary_tumors = num_to_pct_chr(0/0),
     Total_relapse_tumors_mutated = as.integer(0),
     Relapse_tumors_in_dataset = as.integer(0),
-    Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset = "0/0",
+    Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset = "0/0",
     Frequency_in_relapse_tumors = num_to_pct_chr(0/0)
   ),
 )
