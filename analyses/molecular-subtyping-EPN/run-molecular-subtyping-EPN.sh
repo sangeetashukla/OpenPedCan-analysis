@@ -1,10 +1,5 @@
 #!/bin/bash
 
-
-# Run `00-subsetting-files-for-EPN.py`  to subset gene expression data and
-# Run `01-make_notebook_RNAandDNA.py` to match RNA and DNA Biospecimen ID's based on corresponding matching  sample_ID from pbta-histologies-base.tsv  file and
-# Run `02_ependymoma_generate_all_data.py` to combine data  from various output files for EPN samples that can be used to categorize samples under different EPN subtypes
-
 set -e
 set -o pipefail
 
@@ -16,51 +11,50 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 SUBSET=${OPENPBTA_SUBSET:-1}
 
 # Define needed files
-HISTOLOGIES=../../data/pbta-histologies-base.tsv
-FULL_EXPRESSION=../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
-SUBSET_EXPRESSION=epn-subset/epn-pbta-gene-expression-rsem-fpkm-collapsed.stranded.tsv.gz
-NOTEBOOK=../../scratch/EPN_molecular_subtype.tsv
-GISTIC=../../data/pbta-cnv-consensus-gistic.zip
-GISTIC_SUBFILE_BROAD=pbta-cnv-consensus-gistic/broad_values_by_arm.txt
-GSVA=../gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv
+HISTOLOGIES=../../data/histologies-base-adapt.tsv
+FULL_EXPRESSION=../../data/gene-expression-rsem-tpm-collapsed.rds
+SUBSET_EXPRESSION=epn-subset/epn-gene-expression-rsem-tpm-collapsed.tsv.gz
+DISEASE_GROUP_FILE=../../scratch/EPN_molecular_subtype.tsv
+GISTIC=../../data/cnv-consensus-gistic.zip
+GISTIC_SUBFILE_BROAD=cnv-consensus-gistic/broad_values_by_arm.txt
+GSVA=../gene-set-enrichment-analysis/results/gsva_scores.tsv
 FUSION=../fusion-summary/results/fusion_summary_ependymoma_foi.tsv
 BREAKPOINTS_CNV=../chromosomal-instability/breakpoint-data/cnv_breaks_densities.tsv
 BREAKPOINTS_SV=../chromosomal-instability/breakpoint-data/sv_breaks_densities.tsv
-FOCAL_GENE_CN=../../data/consensus_seg_annotated_cn_autosomes.tsv.gz
-GISTIC_SUBFILE_FOCALBYGENE=pbta-cnv-consensus-gistic/focal_data_by_genes.txt
-
+FOCAL_GENE_CN=../../data/consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz
+GISTIC_SUBFILE_FOCALBYGENE=cnv-consensus-gistic/focal_data_by_genes.txt
 EPN_TABLE=results/EPN_all_data.tsv
 
 # make the subset and results directory if they don't exist
 mkdir -p epn-subset
 mkdir -p results
 
+# subset gene expression data
 if [ "$SUBSET" -gt "0" ]; then
   echo "Subsetting  for CI"
   Rscript 00-subset-for-EPN.R -i $HISTOLOGIES -e $FULL_EXPRESSION -o $SUBSET_EXPRESSION
 fi
 
-echo "Generating analyses/molecular-subtyping-EPN/results/EPN_molecular_subtype.tsv that maps DNA and RNA ID's"
-python3 01-make_notebook_RNAandDNA.py -i $HISTOLOGIES -o $NOTEBOOK
+# map DNA and RNA ID's for each participant and assign disease group
+echo "Generating ../../scratch/EPN_molecular_subtype.tsv that maps DNA and RNA ID's and assigns disease group"
+Rscript 01-assign-disease-group.R \
+--histology $HISTOLOGIES \
+--outfile $DISEASE_GROUP_FILE
 
-echo  "Generating analyses/molecular-subtyping-EPN/results/EPN_all_data.tsv  that has all the relevant data needed for subtyping"
-python3 02_ependymoma_generate_all_data.py \
-    --notebook $NOTEBOOK \
-    --gistic $GISTIC \
-    --subfile-gistic-broad $GISTIC_SUBFILE_BROAD \
-    --gsva $GSVA \
-    --expression $SUBSET_EXPRESSION \
-    --fusion $FUSION \
-    --breakpoints-cnv $BREAKPOINTS_CNV \
-    --breakpoints-sv $BREAKPOINTS_SV \
-    --focal-gene-cn $FOCAL_GENE_CN \
-    --subfile-gistic-focalbygene $GISTIC_SUBFILE_FOCALBYGENE \
-    --outfile $EPN_TABLE
+# combine data from various output files for EPN samples that can be used to categorize samples under different EPN subtypes
+echo "Generating results/EPN_all_data.tsv that has all the relevant data needed for subtyping"
+Rscript 02_ependymoma_generate_all_data.R \
+--expr_dat=$SUBSET_EXPRESSION \
+--disease_group_file=$DISEASE_GROUP_FILE \
+--gistic=$GISTIC \
+--subfile_gistic_broad=$GISTIC_SUBFILE_BROAD \
+--gsva=$GSVA \
+--fusion=$FUSION \
+--breakpoints_cnv=$BREAKPOINTS_CNV \
+--breakpoints_sv=$BREAKPOINTS_SV \
+--focal_gene_cn=$FOCAL_GENE_CN \
+--subfile_gistic_focalbygene=$GISTIC_SUBFILE_FOCALBYGENE \
+--outfile=$EPN_TABLE
 
-
-#python3 03-subgrouping_samples.py \
-#	--final_table $EPN_TABLE \
-#	--subgroup_table results/EPN_all_data_withsubgroup.tsv
-
-#jupyter nbconvert --to notebook --execute  03-subgrouping_samples.ipynb
-jupyter nbconvert --to html --execute  03-subgrouping_samples.ipynb
+# summary of molecular subtypes
+Rscript -e "rmarkdown::render('03-summary.Rmd', clean = TRUE)"

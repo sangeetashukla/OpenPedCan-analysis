@@ -83,7 +83,8 @@ wrangle_fusions <- function(fusions_df, string_to_match, column_name) {
 ```{r}
 subset_dir <- "subset-files"
 results_dir <- "results"
-data_dir <- file.path("..", "..", "data")
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
 ```
 
 ### Read in files
@@ -92,25 +93,26 @@ Set up filenames.
 
 ```{r}
 # full clinical file
-histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
+histologies_file <- file.path(data_dir, "histologies-base-adapt.tsv")
 # full fusions of interest file
-fusion_file <- file.path(data_dir,"fusion_summary_embryonal_foi.tsv")
+fusion_file <- file.path(file.path(root_dir, 
+                                   "analyses", 
+                                   "fusion-summary", 
+                                   "results",
+                                   "fusion_summary_embryonal_foi.tsv"))
+
 # subset files
 manta_file <- file.path(subset_dir, "embryonal_manta_sv.tsv")
-polya_file <- file.path(subset_dir, "embryonal_zscored_exp.polya.rds")
-stranded_file <- file.path(subset_dir, "embryonal_zscored_exp.stranded.rds")
+exp_file <- file.path(subset_dir, "embryonal_zscored_exp.rds")
+
 # file that contains the biospecimen IDs that met criteria for subtyping
 biospecimen_file <- file.path(results_dir, 
                               "biospecimen_ids_embryonal_subtyping.tsv")
 # cleaned chr19 data
 chr19_file <- file.path(results_dir, "cleaned_chr19_cn.tsv")
 # annotated sex chromosomes copy number alterations
-sex_chr_consensus <- file.path(data_dir,
+sex_chr_consensus <- file.path("..", "focal-cn-file-preparation", "results",
                                "consensus_seg_annotated_cn_x_and_y.tsv.gz")
-sex_chr_cnvkit <- file.path("..", "focal-cn-file-preparation", "results", 
-                            "cnvkit_annotated_cn_x_and_y.tsv.gz")
-sex_chr_controlfreec <- file.path("..", "focal-cn-file-preparation", "results", 
-                                  "controlfreec_annotated_cn_x_and_y.tsv.gz")
 ```
 
 Read in files.
@@ -125,8 +127,7 @@ histologies_df <- read_tsv(histologies_file,
 manta_sv_df <- read_tsv(manta_file)
 
 # all of the RNA data
-polya_exp <- read_rds(polya_file)
-stranded_exp <- read_rds(stranded_file)
+exp_dat <- read_rds(exp_file)
 fusions_df <- read_tsv(fusion_file)
 
 # get biospecimen ids as a vector rather than data frame
@@ -139,10 +140,6 @@ chr19_cn_df <- read_tsv(chr19_file)
 # we'll filter to only the relevant biospecimens for the copy number alteration
 # data that is committed to the repository
 consensus_sex_chr <- read_tsv(sex_chr_consensus) %>%
-  filter(biospecimen_id %in% biospecimen_ids)
-cnvkit_sex_chr <- read_tsv(sex_chr_cnvkit) %>%
-  filter(biospecimen_id %in% biospecimen_ids)
-controlfreec_sex_chr <- read_tsv(sex_chr_controlfreec) %>%
   filter(biospecimen_id %in% biospecimen_ids)
 ```
 
@@ -206,32 +203,20 @@ Summarizing salient points from [`AlexsLemonade/OpenPBTA-analysis#251`](https://
 
 ```{r}
 exp_genes_of_interest <- c("LIN28A", "FOXR2")
-# set up poly-A data
-polya_exp <- polya_exp[, exp_genes_of_interest] %>%
+# set up expression data
+exp_df <- exp_dat[, exp_genes_of_interest] %>%
   as.data.frame() %>%
   tibble::rownames_to_column("Kids_First_Biospecimen_ID")
-# set up stranded data
-stranded_exp <- stranded_exp[, exp_genes_of_interest] %>%
-  as.data.frame() %>%
-  tibble::rownames_to_column("Kids_First_Biospecimen_ID")
-
-# bind together both datasets, but keep track of what selection strategy was
-# used
-exp_df <- bind_rows("polya" = polya_exp, 
-                    "stranded" = stranded_exp, 
-                    .id = "exp_dataset") %>%
-  select(-exp_dataset, everything())
 
 # remove data.frame we no longer need
-rm(polya_exp, stranded_exp, exp_genes_of_interest)
+rm(exp_dat, exp_genes_of_interest)
 ```
 
 ### Join RNA data
 
 ```{r}
 rna_df <- exp_df %>%
-  left_join(fusions_summary_df) %>%
-  select(-exp_dataset, everything())
+  left_join(fusions_summary_df) 
 
 # remove data.frame we no longer need
 rm(exp_df)
@@ -242,7 +227,7 @@ head(rna_df, n = 10)
 ```
 
 We see some repeated negative values for the expression z-scores here.
-Generally that comes from small or zero log2(FPKM + 1) values.
+Generally that comes from small or zero log2(TPM + 1) values.
 For example, all of the poly-A values for _FOXR2_ are zero prior to scaling.
 
 ### Structural variant data
@@ -281,20 +266,11 @@ Not necessarily specific to _BCOR_ alterations.
 consensus_sex_chr %>% filter(gene_symbol == "BCOR") 
 ```
 
-```{r}
-cnvkit_sex_chr %>% filter(gene_symbol == "BCOR") 
-```
-
-```{r}
-controlfreec_sex_chr %>% filter(gene_symbol == "BCOR")
-```
-
 This is not conclusive.
 
 ```{r}
 # remove all the sv and cnv data we will not use
-rm(bcor_sv_df, manta_sv_df, consensus_sex_chr, controlfreec_sex_chr,
-   cnvkit_sex_chr)
+rm(bcor_sv_df, manta_sv_df, consensus_sex_chr)
 ```
 
 ## Final table
@@ -305,7 +281,8 @@ rm(bcor_sv_df, manta_sv_df, consensus_sex_chr, controlfreec_sex_chr,
 identifiers_df <- histologies_df %>%
   select(Kids_First_Participant_ID, 
          sample_id, 
-         Kids_First_Biospecimen_ID)
+         Kids_First_Biospecimen_ID) %>%
+  distinct()
 # add IDs to chromosome 19 data
 chr19_cn_df <- identifiers_df %>%
   inner_join(chr19_cn_df, by = "Kids_First_Biospecimen_ID")

@@ -56,6 +56,7 @@ epn_samples <- histologies %>%
          # pathology_free_text_diagnosis adds no additional samples
          pathology_diagnosis == "Ependymoma") %>%
   pull(Kids_First_Biospecimen_ID)
+epn_samples <- intersect(epn_samples, colnames(expression))
 
 # Subsetting expression columns with column names/BSIDs that are in the list of ependymoma samples
 epn_expression <- expression %>%
