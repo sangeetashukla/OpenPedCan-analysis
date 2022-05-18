@@ -1,9 +1,20 @@
 cwlVersion: v1.2
 class: Workflow
-id: opentargets-methylation-array-workflow 
+id: opentargets-methylation-array-workflow
 label: OpenTargets Methylation Array Workflow
 doc: |
-  BLAH
+  Preprocess probe hybridization intensity values of selected methylated and
+  unmethylated cytosine (CpG) loci into usable methylation measurements for the
+  [Pediatric Open Targets, OPenPedCan-analysis](https://github.com/PediatricOpenTargets/OpenPedCan-analysis)
+  raw DNA methylation array datasets.
+
+  This workflow is used to efficiently handle a large number of IDAT files that
+  have been provided with a manifest (either from TARGET or CBTN). The workflow
+  will:
+  1. using perl and linux split, optionally split the manifest file by the `samples_per_split` input
+  2. for each manifest, run the 01-preprocess-illumina-arrays.R module
+  3. merge the beta and m value outputs from the scattered module runs
+  4. return the merged files to the user
 requirements:
 - class: InlineJavascriptRequirement
 - class: MultipleInputFeatureRequirement
@@ -67,7 +78,7 @@ steps:
       input_methlyation_files: preprocess_methylation_arrays/beta_values
       output_filename:
         source: output_basename
-        valueFrom: $(self).beta-values-methylation.tsv 
+        valueFrom: $(self).beta-values-methylation.tsv
     out: [output]
   merge_methylation_m_values:
     run: ../tools/merge_methylation_outputs.cwl
@@ -75,7 +86,7 @@ steps:
       input_methlyation_files: preprocess_methylation_arrays/m_values
       output_filename:
         source: output_basename
-        valueFrom: $(self).m-values-methylation.tsv 
+        valueFrom: $(self).m-values-methylation.tsv
     out: [output]
 
 $namespaces:
