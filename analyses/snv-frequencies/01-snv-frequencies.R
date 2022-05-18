@@ -627,6 +627,10 @@ if (!dir.exists(tables_dir)) {
 message('Read data...')
 htl_df <- read_tsv('../../data/histologies.tsv', guess_max = 100000,
                    col_types = cols(.default = col_guess()))
+
+htl_df <- htl_df %>%
+  filter(!experimental_strategy == "Methylation")
+
 # assert no Kids_First_Biospecimen_ID or Kids_First_Participant_ID is NA
 stopifnot(identical(
   sum(is.na(select(htl_df, Kids_First_Biospecimen_ID,
@@ -694,48 +698,15 @@ stopifnot(identical(length(pcb_pot_case_set_id_vec),
 
 
 
-# Subset tumor samples and used columns in MAF table ---------------------------
+# Subset tumor samples ---------------------------------------------------------
 tumor_kfbids <- htl_df %>%
   filter(sample_type == 'Tumor', !is.na(cancer_group),
          !is.na(cohort)) %>%
   pull(Kids_First_Biospecimen_ID)
 
-# It is ok to subset non-synonymous variants before computing frequencies,
-# because the total numbers of patients, primary samples, and relapse samples
-# are determined by histology dataframes.
-#
-# If a sample has only synonymous variants, it will still be counted in the
-# total numbers, but it will not be counted in any mutated number of
-# non-synonymous mutation.
-#
-# Remove rows that have NA in columns that are used as the grouping column when
-# computing frequencies using get_opr_mut_freq_tbl
 maf_df <- maf_df %>%
-  filter(Variant_Classification %in% c("Frame_Shift_Del",
-                                       "Frame_Shift_Ins",
-                                       "Splice_Site",
-                                       "Nonsense_Mutation",
-                                       "Nonstop_Mutation",
-                                       "In_Frame_Del",
-                                       "In_Frame_Ins",
-                                       "Missense_Mutation",
-                                       "Fusion",
-                                       "Multi_Hit",
-                                       "Multi_Hit_Fusion",
-                                       "Hom_Deletion",
-                                       "Hem_Deletion",
-                                       "Amp",
-                                       "Del",
-                                       "Translation_Start_Site")) %>%
   filter(Tumor_Sample_Barcode %in% tumor_kfbids) %>%
-  mutate(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
-  filter(!is.na(Chromosome), !is.na(Start_Position), !is.na(Reference_Allele),
-         !is.na(Tumor_Seq_Allele2), !is.na(Gene)) %>%
-  mutate(Variant_ID = paste(Chromosome, Start_Position, Reference_Allele,
-                            Tumor_Seq_Allele2, sep = '_')) %>%
-  select(Kids_First_Biospecimen_ID, Variant_ID,
-         Hugo_Symbol, dbSNP_RS, IMPACT, SIFT, PolyPhen, Variant_Classification,
-         Variant_Type, RefSeq, Gene, ENSP, HGVSp_Short, HotSpotAllele)
+  mutate(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)
 
 rm(tumor_kfbids)
 
@@ -776,6 +747,45 @@ td_htl_dfs <- list(
   overall_htl_df = maf_sample_htl_df
 )
 
+
+
+# Keep only non-synonymous variants in MAF data frame --------------------------
+
+# It is ok to subset non-synonymous variants before computing frequencies,
+# because the total numbers of patients, primary samples, and relapse samples
+# are determined by histology dataframes.
+#
+# If a sample has only synonymous variants, it will still be counted in the
+# total numbers, but it will not be counted in any mutated number of
+# non-synonymous mutation.
+#
+# Remove rows that have NA in columns that are used as the grouping column when
+# computing frequencies using get_opr_mut_freq_tbl
+
+maf_df <- maf_df %>%
+  filter(Variant_Classification %in% c("Frame_Shift_Del",
+                                       "Frame_Shift_Ins",
+                                       "Splice_Site",
+                                       "Nonsense_Mutation",
+                                       "Nonstop_Mutation",
+                                       "In_Frame_Del",
+                                       "In_Frame_Ins",
+                                       "Missense_Mutation",
+                                       "Fusion",
+                                       "Multi_Hit",
+                                       "Multi_Hit_Fusion",
+                                       "Hom_Deletion",
+                                       "Hem_Deletion",
+                                       "Amp",
+                                       "Del",
+                                       "Translation_Start_Site")) %>%
+  filter(!is.na(Chromosome), !is.na(Start_Position), !is.na(Reference_Allele),
+         !is.na(Tumor_Seq_Allele2), !is.na(Gene)) %>%
+  mutate(Variant_ID = paste(Chromosome, Start_Position, Reference_Allele,
+                            Tumor_Seq_Allele2, sep = '_')) %>%
+  select(Kids_First_Biospecimen_ID, Variant_ID,
+         Hugo_Symbol, dbSNP_RS, IMPACT, SIFT, PolyPhen, Variant_Classification,
+         Variant_Type, RefSeq, Gene, ENSP, HGVSp_Short, HotSpotAllele)
 
 
 # Compute mutation frequencies -------------------------------------------------
