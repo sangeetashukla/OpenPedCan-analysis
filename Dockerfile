@@ -40,6 +40,11 @@ RUN pip3 install \
 RUN apt-get -y --no-install-recommends install \
    default-jdk
 
+
+# Required for running matplotlib in Python in an interactive session
+RUN apt-get -y --no-install-recommends install \
+    python3-tk
+
 # Standalone tools and libraries
 ################################
 
@@ -434,6 +439,10 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 # Package for python pandas to read and write xlsx files
 RUN pip3 install \
     "openpyxl==2.6.4"
+
+# Package for generating UUIDs
+RUN ./install_bioc.r \
+    ids
 
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
