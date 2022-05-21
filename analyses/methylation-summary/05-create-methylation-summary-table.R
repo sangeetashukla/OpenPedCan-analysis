@@ -8,10 +8,6 @@
 suppressPackageStartupMessages(library(data.table))
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(ids))
-suppressWarnings(
-  suppressPackageStartupMessages(library(jsonlite))
-)
-
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -42,7 +38,7 @@ summary_table <- data.table::fread(
   file.path(results_dir, "methyl-probe-beta-quantiles.tsv.gz"), 
   showProgress = FALSE)  %>% 
   tibble::as_tibble() %>% 
-  dplyr::left_join(beta_tpm_correlations, by = c("Probe_ID", "Disease"))
+  dplyr::left_join(beta_tpm_correlations, by = c("Probe_ID", "Dataset", "Disease"))
 rm(beta_tpm_correlations)
 
 # Add GENCODE version 38 (Ensembl 104) gene symbols and Ensembl IDs probe 
@@ -99,10 +95,5 @@ summary_table %>% data.table::setDT() %>%
   data.table::fwrite(file.path(results_dir,
                                "methyl-beta-values-summary.tsv.gz"), 
                      sep="\t", compress = "auto")
-
-# Write methylation summary table to JSON file - needed for MPT DB loading
-message("Writing methylation summary table to methyl-beta-values-summary.json file...\n")
-summary_table %>% jsonlite::write_json(
-  file.path(results_dir, "methyl-beta-values-summary.json"))  
   
 message("Analysis Done..\n")

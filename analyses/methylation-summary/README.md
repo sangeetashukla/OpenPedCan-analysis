@@ -11,7 +11,7 @@ Summarize preprocessed `Illumina Infinium HumanMethylation` methylation array me
 - Parse `Beta-values` and `M-values`  produced by the [OpenPedCan methylation-analysis module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/158) for preprocessed methylation samples of all cancer types using `02-create-methylation-matrices.R` script to create sample-probe methylation measurements matrices (`results/methyl-beta-values.rds` and `results/methyl-m-values.rds`). 
 - Using `03-calculate-beta-quantiles.R` script and the methylation `Beta-values matrix`, calculate probe-level `quantiles` for each cancer type (cancer_group) within an OpenPedCan cohort (`results/methyl-probe-beta-quantiles.tsv.gz`). 
 - Using `04-beta-tpm-correlation.R` script and the methylation `Beta-values matrix`, calculate probe-level `correlations` between `RNA-Seq TPM-values` and `Beta-values` for each cancer type (cancer_group) within an OpenPedCan cohort for patients who have both datasets (`results/methyl-probe-beta-tpm-correlations.tsv.gz`). Correlations for cohorts will have independent scripts becuase of the differences in how samples with patients in both RNA-Seq and methylation data are determined. 
-- Summarize all results using `05-create-methylation-summary-table.R` script into a methylation summary table (`results/methyl-beta-values-summary.rds`, `results/methyl-beta-values-summary.tsv.gz` and `results/methyl-beta-values-summary.jsonl.gz`) that will be utilized with OPenPedCan plotting API and displayed on the NCI MTP portal with the following columns:
+- Summarize all results using `05-create-methylation-summary-table.R` and `06-methyly-summary-tsv2jsonl.py` scripts into a methylation summary table (`results/methyl-beta-values-summary.rds`, `results/methyl-beta-values-summary.tsv.gz` and `results/methyl-beta-values-summary.jsonl.gz`) that will be utilized with OPenPedCan plotting API and displayed on the NCI MTP portal with the following columns:
     - **Gene_Symbol**: gene symbol
     - **targetFromSourceId**: Ensemble ID
     - **PMTL**: Is gene on PMTL (`Relevant Molecular Target`) 
@@ -34,7 +34,30 @@ Summarize preprocessed `Illumina Infinium HumanMethylation` methylation array me
 
 
 ## General usage of scripts
+Analyses involving 850k arrays with large number of samples representing OPenPedCan cancer groups (as in the CBTN cohort) will require `~256gb` of memory to run successfully. In some instances the `system /tmp` is too small to hold temporary files generated during analysis by R scripts. Users are advised to create create a `./tmp` in the module directory then execute R script by prepending with TMP/TMPDIR environmental variable as illustrated in the wrapper module bash script, `run-methylation-summary.sh`.
 
+
+#### `Rrequired R packages`
+```
+- tidyverse
+- rtracklayer
+- data.table
+- ids
+```
+
+#### `Rrequired Python3 modules`
+```
+- re
+- os
+- sys
+- csv
+- gzip
+- json
+- numpy
+- pandas
+- pyreadr
+- collections
+```
 
 #### `run-methylation-summary.sh`
 This is a bash script wrapper for running analysis scripts in the module. All file paths set in this script relative to the module directory. Therefore, this script should always run as if it were being called from the directory it lives in, the module directory (`OpenPedCan-analysis/analyses/methylation-summary`).
@@ -64,12 +87,12 @@ This script calculates probe-level `Beta-value quantiles` for all cancer types.
 Rscript --vanilla 03-calculate-beta-quantiles.R
 ```
 
-#### `04-beta-tpm-correlation.R`
+#### `04-beta-tpm-correlation.py`
 This script calculates representative probe-level `correlations` between `TPM-values` and `Beta-values` for patients who have both RNA-Seq and methylation sample datasets.
 **Note:** Run times for this script is approximately 3 hours per cancer_group to calculate correlations for all preprocessed probes in the Illumina Infinium HumanMethylation 450k BeadArrays.
 
 ```
-Rscript --vanilla 04-beta-tpm-correlation.R
+python3 04-beta-tpm-correlation.py
 ```
 
 #### `05-create-methylation-summary-table.R`
@@ -77,6 +100,13 @@ This script creates Pediatric OpenTargets methylation summary table that will be
 
 ```
 Rscript --vanilla 05-create-methylation-summary-table.R
+```
+
+#### `06-methyly-summary-tsv2jsonl.py`
+This script create a JSONL file for Pediatric OpenTargets methylation summary table utilized on NCI MTP portal.
+
+```
+python3 06-methyly-summary-tsv2jsonl.py
 ```
 
 ## Input datasets
