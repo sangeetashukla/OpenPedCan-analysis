@@ -2,13 +2,13 @@
 
 ## Purpose
 
-Summarize preprocessed `Illumina Infinium HumanMethylation` methylation array measurements produced by the [OpenPedCan methylation-analysis module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/158). 
+Summarize preprocessed `Illumina Infinium HumanMethylation` methylation array measurements produced by the [OpenPedCan methylation-analysis module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/169). 
 
 
 ## Analysis
 
-- Parse `Illumina Infinium HumanMethylation` array probe metadata from the preprocessed methylation measurements produced by the [OpenPedCan methylation-analysis module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/158) for all cancer types using `01-create-methylation-annotation-table.R` script to create array probe annotations (`results/methyl-probe-annotations.tsv.gz`) matching `GENCODE version 38 (Ensembl 104)` gene symbols and asocciated Ensembl IDs.
-- Parse `Beta-values` and `M-values`  produced by the [OpenPedCan methylation-analysis module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/158) for preprocessed methylation samples of all cancer types using `02-create-methylation-matrices.R` script to create sample-probe methylation measurements matrices (`results/methyl-beta-values.rds` and `results/methyl-m-values.rds`). 
+- Parse `Illumina Infinium HumanMethylation` array probe metadata from the preprocessed methylation measurements produced by the [OpenPedCan methylation-analysis module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/169) for all cancer types using `01-create-methylation-annotation-table.R` script to create array probe annotations (`results/methyl-probe-annotations.tsv.gz`) matching `GENCODE version 38 (Ensembl 104)` gene symbols and asocciated Ensembl IDs.
+- Parse `Beta-values` and `M-values`  produced by the [OpenPedCan methylation-analysis module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/169) for preprocessed methylation samples of all cancer types using `02-create-methylation-matrices.R` script to create sample-probe methylation measurements matrices (`results/methyl-beta-values.rds` and `results/methyl-m-values.rds`). 
 - Using `03-calculate-beta-quantiles.R` script and the methylation `Beta-values matrix`, calculate probe-level `quantiles` for each cancer type (cancer_group) within an OpenPedCan cohort (`results/methyl-probe-beta-quantiles.tsv.gz`). 
 - Using `04-beta-tpm-correlation.R` script and the methylation `Beta-values matrix`, calculate probe-level `correlations` between `RNA-Seq TPM-values` and `Beta-values` for each cancer type (cancer_group) within an OpenPedCan cohort for patients who have both datasets (`results/methyl-probe-beta-tpm-correlations.tsv.gz`). Correlations for cohorts will have independent scripts becuase of the differences in how samples with patients in both RNA-Seq and methylation data are determined. 
 - Summarize all results using `05-create-methylation-summary-table.R` and `06-methyly-summary-tsv2jsonl.py` scripts into a methylation summary table (`results/methyl-beta-values-summary.rds`, `results/methyl-beta-values-summary.tsv.gz` and `results/methyl-beta-values-summary.jsonl.gz`) that will be utilized with OPenPedCan plotting API and displayed on the NCI MTP portal with the following columns:
