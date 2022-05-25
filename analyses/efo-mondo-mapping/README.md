@@ -20,7 +20,3 @@ This QC step should be done for all new histologies file release before generati
 
 ## Note
 As more cancer groups or subtypes are added to existing histologies dataset and/or in case of any ambiguity, these codes will be revised.
-
-Update on 09/21/2021
-Unnecessary trailing white space from three cancer groups have been removed.
-
