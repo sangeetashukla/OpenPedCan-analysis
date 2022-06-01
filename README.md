@@ -475,7 +475,7 @@ runs:
 
 In this file, the workflow is run in the docker container defined in [`Dockerfile`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/Dockerfile) using [`scripts/run-analysis.sh`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/scripts/run-analysis.sh) as an entrypoint script. Any commands defined under the `with: args:` tags in [`.github/run-analysis.yml`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/.github/run-analysis.yml) will run as commands inside of the docker container when the action is run.
 
-To add a new analysis job, take the template below and value each missing prompt, then add it to [`.github/run-analysis.yml`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/dev/.github/run-analysis.yml)
+To add a new analysis job, take the template below and value each missing prompt, then add it to [`.github/run-analysis.yml`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/.github/run-analysis.yml)
 
 ```yaml
       - name: Run <Name of analysis to run> in container
