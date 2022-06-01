@@ -427,7 +427,7 @@ Running this will change the symlinks in `data` to point to the files in `data/t
 
 #### Adding Analyses to Circle CI
 
-For an analysis to be run in CI, it must be added to the Circle CI configuration file, [`.circleci/config.yml`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/.circleci/config.yml).
+For an analysis to be run in CI, it must be added to the Circle CI configuration file, [`.circleci/config.yml`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/.circleci/config.yml).
 A new analysis should be added as the last step of the `run_analyses` section.
 
 Here is an example analysis that simply lists the contents of the data directory that contains the files for the test:
