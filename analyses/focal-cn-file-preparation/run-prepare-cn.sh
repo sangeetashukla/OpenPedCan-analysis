@@ -28,7 +28,7 @@ then
 fi
 
 scratch_dir=../../scratch
-data_dir=../../data
+data_dir=../../data/
 results_dir=../../analyses/focal-cn-file-preparation/results
 histologies_file=${data_dir}/histologies.tsv
 #gtf_file=${data_dir}/gencode.v38.primary_assembly.annotation.gtf.gz
