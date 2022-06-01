@@ -2,7 +2,7 @@
 
 **Module authors:** Chante Bethell ([@cbethell](https://github.com/cbethell)), Joshua Shapiro ([@jashapiro](https://github.com/jashapiro)), and Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni))
 
-**Modified by:** Komal S. Rathi([@komalsrathi](https://github.com/komalsrathi)) and Run Jin ([@runjin326](https://github.com/runjin326))
+**Modified by:** Komal S. Rathi([@komalsrathi](https://github.com/komalsrathi)), Run Jin ([@runjin326](https://github.com/runjin326)), Sangeeta Shukla ([@sangeetashukla](https://github.com/sangeetashukla))
 
 The copy number data from OpenPedCan are provided as ranges or segments.
 The purpose of this module is to map from those ranges to gene identifiers for consumption by downstream analyses (e.g., OncoPrint plotting).
@@ -23,6 +23,7 @@ Running the following from the root directory of the repository will run the ste
 ```
 RUN_ORIGINAL=1 bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
 ```
+**Temporary Note**: The `run-prepare-cn.sh` script currently downloads the `gencode.v38.annotation.gtf.gz` file since it is not available in the data directory. When it is added to the set of files within the data directory, this script will need to be updated to remove the download requirement and instead read it along with the rest of the files.
 
 ### Scripts and notebooks
 
