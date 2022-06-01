@@ -452,7 +452,7 @@ This would run the `cluster-samples.R` on the subset files that are specifically
 
 #### Adding Analyses to Github Actions workflow
 
-For an analysis to be run in a Github Actions workflow, it must be added to [`.github/run-analysis.yml`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/dev/.github/run-analysis.yml). Here is an example of a step in that workflow:
+For an analysis to be run in a Github Actions workflow, it must be added to [`.github/run-analysis.yml`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/.github/workflows/run-analysis.yml). Here is an example of a step in that workflow:
 
 ```yaml
       - name: Run RUN-telomerase-activity-prediction in container
