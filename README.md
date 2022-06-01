@@ -462,7 +462,7 @@ For an analysis to be run in a Github Actions workflow, it must be added to [`.g
           args: bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
 ```
 
-The `uses:` tag specifies for the step to run using the action defined in the [`action.yml`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/dev/action.yml) file.
+The `uses:` tag specifies for the step to run using the action defined in the [`action.yml`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/action.yml) file.
 
 ```yaml
 name: "Run OpenPedCan Analysis"
