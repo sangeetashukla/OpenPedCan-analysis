@@ -25,9 +25,9 @@ scratch_dir="$BASEDIR/scratch"
 compiled_dir=${scratch_dir}/analysis_files_for_release
 mkdir -p ${compiled_dir}
 
-# Create the independent sample list using the *BASE* histology file
+# Create the independent sample list using the *FULL* histology file
 echo "Create independent sample list"
-OPENPBTA_BASE_RELEASE=1 bash ${analyses_dir}/independent-samples/run-independent-samples.sh
+bash ${analyses_dir}/independent-samples/run-independent-samples.sh
 
 # Fusion summary
 echo "Run fusion summary for subtypes"
