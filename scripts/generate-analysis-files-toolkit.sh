@@ -62,7 +62,7 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
   cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_wgs_plus_cnvkit_wxs.tsv.gz ${compiled_dir}
 
   # Move over the consensus with status file 
-  cp ${scratch_dir}/consensus_seg_with_status.tsv ${compiled_dir}
+  cp ${scratch_dir}/focal-cn-file-preparation/results/consensus_seg_with_status.tsv ${compiled_dir}
 
 fi
 
