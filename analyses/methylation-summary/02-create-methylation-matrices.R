@@ -28,12 +28,8 @@ primary_tumors <- data.table::fread(file.path(data_dir, "histologies.tsv"),
                                  select = required_cols, 
                                  showProgress = FALSE) %>% 
   tibble::as_tibble() %>% 
-  dplyr::filter(sample_type == "Tumor" & 
-                  (tumor_descriptor == "Primary Tumor" | 
-                     tumor_descriptor == "Initial CNS Tumor") & 
-                  experimental_strategy == "Methylation") %>% 
+  dplyr::filter(experimental_strategy == "Methylation") %>% 
   dplyr::pull(Kids_First_Biospecimen_ID)
-
 
 # Get array annotation probes corresponding to GENCODE version 38 (Ensembl 104) 
 # gene symbols
