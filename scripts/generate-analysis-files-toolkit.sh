@@ -63,6 +63,7 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
 
   # Move over the consensus with status file 
   cp ${scratch_dir}/focal-cn-file-preparation/results/consensus_seg_with_status.tsv ${compiled_dir}
+  cp ${scratch_dir}/focal-cn-file-preparation/results/cnvkit_with_status.tsv ${compiled_dir}
 
 fi
 
