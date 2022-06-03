@@ -93,10 +93,7 @@ tp53_coding <- coding_consensus_snv %>%
 # subset to TP53 cnv loss and format to tp53_coding file format
 tp53_loss<-cnvConsesus %>% 
   filter(gene_symbol=="TP53",
-         status=="loss") %>%
-  rename("biospecimen_id"="Tumor_Sample_Barcode",
-         "status"="Variant_Classification",
-         "gene_symbol"="Hugo_Symbol")
+         status=="loss") 
 
 # subset to NF1, removing silent mutations, mutations in introns, and missense
 # mutations -- we exclude missense mutations because they are not annotated
@@ -111,11 +108,7 @@ nf1_coding <- coding_consensus_snv %>%
 # subset to NF1 loss and format to nf1_coding file format
 nf1_loss<-cnvConsesus %>% 
   filter(gene_symbol=="NF1",
-         status=="loss") %>%
-  rename("biospecimen_id"="Tumor_Sample_Barcode",
-         "status"="Variant_Classification",
-         "gene_symbol"="Hugo_Symbol")
-
+         status=="loss") 
 
 # include only the relevant columns from the MAF file and merge cnv loss dataframes as well
 tp53_nf1_coding <- tp53_coding %>%
