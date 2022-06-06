@@ -32,7 +32,7 @@ Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = T
 
 # Run annotation step for consensus file
 Rscript --vanilla 04-prepare-cn-file.R \
---cnv_file ${scratch_dir}/consensus_seg_with_status.tsv \
+--cnv_file ${results_dir}/consensus_seg_with_status.tsv \
 --gtf_file $gtf_file \
 --metadata $histologies_file \
 --filename_lead "consensus_seg_annotated_cn" \
@@ -48,7 +48,7 @@ Rscript --vanilla -e "rmarkdown::render('01-add-ploidy-cnvkit.Rmd', clean = TRUE
 
 # Run annotation step for CNVkit
 Rscript --vanilla 04-prepare-cn-file.R \
---cnv_file ${scratch_dir}/cnvkit_with_status.tsv \
+--cnv_file ${results_dir}/cnvkit_with_status.tsv \
 --gtf_file $gtf_file \
 --metadata $histologies_file \
 --filename_lead "cnvkit_annotated_cn" \
