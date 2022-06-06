@@ -139,25 +139,27 @@ histology <- base_histology %>%
 histology <- histology %>% 
   dplyr::mutate(
     short_histology = dplyr::case_when(
-      pathology_diagnosis == "Neuroblastoma" ~ "Neuroblastoma",
+      cohort == "GMKF" ~ pathology_diagnosis,
+      cohort == "TARGET" ~ pathology_diagnosis,
+      cohort == "TCGA" ~ pathology_diagnosis,
       pathology_diagnosis == "Ganglioneuroblastoma, intermixed" ~ "Neuroblastoma",
       pathology_diagnosis == "Ganglioneuroblastoma, nodular" ~ "Neuroblastoma",
       pathology_diagnosis == "Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated" ~ "Neuroblastoma",
-      pathology_diagnosis == "Acute Lymphoblastic Leukemia" ~ "Acute lymphoblastic leukemia",
-      pathology_diagnosis == "Acute Myeloid Leukemia" ~ "Acute myeloid leukemia",
-      pathology_diagnosis == "Osteosarcoma" ~ "Osteosarcoma",
-      pathology_diagnosis == "Kidney Rhabdoid Tumor" ~ "Rhabdoid tumor",
-      pathology_diagnosis == "Kidney Wilms Tumor" ~ "Wilms tumor",
-      pathology_diagnosis == "Clear Cell Sarcoma of the Kidney" ~ "Clear cell sarcoma of the kidney",
       TRUE ~ as.character(short_histology)),
     broad_histology = dplyr::case_when(
       short_histology == "Neuroblastoma" ~ "Embryonal tumor",
-      short_histology == "Acute lymphoblastic leukemia" ~ "Hematologic malignancy",
-      short_histology == "Acute myeloid leukemia" ~ "Hematologic malignancy",
+      short_histology == "Acute Lymphoblastic Leukemia" ~ "Hematologic malignancy",
+      short_histology == "Acute Myeloid Leukemia" ~ "Hematologic malignancy",
       short_histology == "Osteosarcoma" ~ "Osteosarcoma",
       short_histology == "Rhabdoid tumor" ~ "Renal tumor",
       short_histology == "Wilms tumor" ~ "Renal tumor",
-      short_histology == "Clear cell sarcoma of the kidney" ~ "Renal tumor",
+      short_histology == "Clear Cell Sarcoma of the Kidney" ~ "Renal tumor",
+      short_histology == "Liver Hepatocellular Carcinoma" ~ "Hepatic tumor",
+      short_histology == "Lymphoid Neoplasm Diffuse Large B-cell Lymphoma" ~ "Hematologic malignancy",
+      short_histology == "Kidney Renal Clear Cell Carcinoma" ~ "Renal tumor",
+      short_histology == "Kidney Renal Papillary Cell Carcinoma" ~ "Renal tumor",
+      short_histology == "Kidney Chromophobe" ~ "Renal tumor",
+      short_histology == "Stomach Adenocarcinoma" ~ "Gastric tumor",
       TRUE ~ as.character(broad_histology))
   )
 
@@ -213,13 +215,9 @@ histology<- histology %>%
     cancer_group == "Adamantinomatous craniopharyngioma" ~ "Craniopharyngioma",
     sample_id == "7316-2577" ~ "Embryonal tumor with multilayer rosettes",
     cancer_group %in% c("Benign tumor","Dysplasia/Gliosis","Other","Dysplasia/Gliosis-Glial-neuronal tumor NOS") ~ NA_character_,
-    short_histology == "Neuroblastoma" ~ "Neuroblastoma",
-    short_histology == "Acute lymphoblastic leukemia" ~ "Acute lymphoblastic leukemia",
-    short_histology == "Acute myeloid leukemia" ~ "Acute myeloid leukemia",
-    short_histology == "Osteosarcoma" ~ "Osteosarcoma",
-    short_histology == "Rhabdoid tumor" ~ "Rhabdoid tumor",
-    short_histology == "Wilms tumor" ~ "Wilms tumor",
-    short_histology == "Clear cell sarcoma of the kidney" ~ "Clear cell sarcoma of the kidney",
+    cohort == "GMKF" ~ short_histology,
+    cohort == "TARGET" ~ short_histology,
+    cohort == "TCGA" ~ short_histology,
     TRUE ~ as.character(cancer_group))
   ) %>%
   # Additional update to clean up terms that we will use in plots
