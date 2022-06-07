@@ -1,0 +1,34 @@
+pathology_diagnosis	broad_histology	short_histology	cancer_group
+Colon Adenocarcinoma	Colorectal tumor	COAD	Colon Adenocarcinoma
+Bladder Urothelial Carcinoma	Bladder tumor	BLCA	Bladder Urothelial Carcinoma
+Liver Hepatocellular Carcinoma	Hepatic tumor	LIHC	Liver Hepatocellular Carcinoma
+Cholangiocarcinoma	Bile Duct tumor	CHOL	Cholangiocarcinoma
+Lung Adenocarcinoma	Lung tumor	LUAD	Lung Adenocarcinoma
+Esophageal Carcinoma	Esophageal tumor	ESCA	Esophageal Carcinoma
+Head and Neck Squamous Cell Carcinoma	Head and Neck tumor	HNSC	Head and Neck Squamous Cell Carcinoma
+Breast Invasive Carcinoma	Breast tumor	BRCA	Breast Invasive Carcinoma
+Pancreatic Adenocarcinoma	Pancreatic tumor	PAAD	Pancreatic Adenocarcinoma
+Skin Cutaneous Melanoma	Skin tumor	SKCM	Skin Cutaneous Melanoma
+Cervical Squamous Cell Carcinoma and Endocervical Adenocarcinoma	Cervical tumor	CESC	Cervical Squamous Cell Carcinoma and Endocervical Adenocarcinoma
+Lymphoid Neoplasm Diffuse Large B-cell Lymphoma	Lymphatic tumor	DLBC	Lymphoid Neoplasm Diffuse Large B-cell Lymphoma
+Brain Lower Grade Glioma	Low-grade glioma	LGG	Brain Lower Grade Glioma
+Kidney Renal Clear Cell Carcinoma	Renal tumor	KIRC	Kidney Renal Clear Cell Carcinoma
+Adrenocortical Carcinoma	Adrenal Gland tumor	ACC	Adrenocortical Carcinoma
+Lung Squamous Cell Carcinoma	Lung tumor	LUSC	Lung Squamous Cell Carcinoma
+Uterine Corpus Endometrial Carcinoma	Uterine tumor	UCEC	Uterine Corpus Endometrial Carcinoma
+Kidney Renal Papillary Cell Carcinoma	Renal tumor	KIRP	Kidney Renal Papillary Cell Carcinoma
+Kidney Chromophobe	Renal tumor	KICH	Kidney Chromophobe
+Glioblastoma Multiforme	High-grade glioma	GBM	Glioblastoma Multiforme
+Thyroid Carcinoma	Thyroid tumor	THCA	Thyroid Carcinoma
+Stomach Adenocarcinoma	Gastric tumor	STAD	Stomach Adenocarcinoma
+Uterine Carcinosarcoma	Uterine tumor	UCS	Uterine Carcinosarcoma
+Pheochromocytoma and Paraganglioma	Adrenal Gland tumor	PCPG	Pheochromocytoma and Paraganglioma
+Testicular Germ Cell Tumor	Testicular tumor	TGCT	Testicular Germ Cell tumor
+Mesothelioma	Mesothelioma	MESO	Mesothelioma
+Acute Myeloid Leukemia	Hematologic malignancy	LAML	Acute Myeloid Leukemia
+Sarcoma	Sarcoma	SARC	Sarcoma
+Prostate Adenocarcinoma	Prostate tumor	PRAD	Prostate Adenocarcinoma
+Rectum Adenocarcinoma	Colorectal tumor	READ	Rectum Adenocarcinoma
+Ovarian Serous Cystadenocarcinoma	Ovarian tumor	OV	Ovarian Serous Cystadenocarcinoma
+Thymoma	Thymic Epithelial tumor	THYM	Thymoma
+Uveal Melanoma	Eye tumor	UVM	Uveal Melanoma
