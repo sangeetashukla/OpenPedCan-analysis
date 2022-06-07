@@ -45,7 +45,7 @@ snvConsensusFile <- opt$snvConsensus
 histologyFile <- opt$histologyFile
 outputFolder <- opt$outputFolder
 gencodeBed <- opt$gencode
-cnvConsesusFile <- opt$cnvConsensus
+cnvConsensusFile <- opt$cnvConsensus
 cohort_interest<-unlist(strsplit(opt$cohort,","))
 
 if(!dir.exists(outputFolder)){
@@ -66,7 +66,7 @@ consensus_snv <- data.table::fread(snvConsensusFile,
                                    data.table = FALSE)
 
 # read in consensus CNV file
-cnvConsesus <- data.table::fread( cnvConsesusFile) %>%
+cnvConsensus <- data.table::fread( cnvConsensusFile) %>%
   dplyr::filter(!grepl('X|Y', cytoband)) %>%
   dplyr::select(gene_symbol,
            biospecimen_id,
@@ -91,7 +91,7 @@ tp53_coding <- coding_consensus_snv %>%
   filter(!(Variant_Classification %in% c("Silent", "Intron")))
 
 # subset to TP53 cnv loss and format to tp53_coding file format
-tp53_loss<-cnvConsesus %>% 
+tp53_loss<-cnvConsensus %>% 
   filter(gene_symbol=="TP53",
          status=="loss") 
 
@@ -106,7 +106,7 @@ nf1_coding <- coding_consensus_snv %>%
                                          "Missense_Mutation")))
 
 # subset to NF1 loss and format to nf1_coding file format
-nf1_loss<-cnvConsesus %>% 
+nf1_loss<-cnvConsensus %>% 
   filter(gene_symbol=="NF1",
          status=="loss") 
 
