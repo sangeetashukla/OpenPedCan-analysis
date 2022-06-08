@@ -1,6 +1,124 @@
 # release notes
 
 ## current release
+- release date: 2022-06-21
+- status: available
+- overview of changes:
+  - This particular release added the following datasets:
+    - 11 RNA-Seq and WXS PNOC samples (plus 2 WXS PNOC results from previous release)
+    - 1689 DGD targeted sequencing tumor samples
+    - methylation samples
+      - methylation samples: 
+        - 5 PBTA samples
+        - 12 TARGET samples
+      - methylation sample type not reported
+        - 3 PBTA 
+      - methylation tumor samples
+        - 1143 PBTA samples
+        - 751 TARGET samples
+      - RNA isoform merged TPM samples
+  - Update TCGA RNA-Seq data with GENCODE v36 GDC
+  - All additional changes as well as details about the above changes are as followed.
+
+- Add base histologies file to data release, see [ticket 333](https://github.com/PediatricOpenTargets/ticket-tracker/issues/333)
+- Update histologies file - key changes noted here (other tickets can be found in OpenPedCan repo)
+    - Change cancer_group of `Metastatic secondary tumors;Neuroblastoma` to `Neuroblastoma`
+            - See discussion in [ticket 232](https://github.com/PediatricOpenTargets/ticket-tracker/issues/232)
+            - [Ticket 234](https://github.com/PediatricOpenTargets/ticket-tracker/issues/234)
+    - Update `primary_site` for some GMKF and TARGET NBL samples to resolve lumped together `primary_site` issues
+            - [Ticket 257](https://github.com/PediatricOpenTargets/ticket-tracker/issues/257)
+    - Update histologies file to use `pathology_diagnosis` (when available) or `cancer_group` (when path dx not available) to fill in `harmonized_diagnosis` 
+            - [Ticket 259](https://github.com/PediatricOpenTargets/ticket-tracker/issues/259)
+     - DGD histologies cleanup: [ticket 325](https://github.com/PediatricOpenTargets/ticket-tracker/issues/325)
+     - Short histology for PBTA cohort does not match: [ticket 309](https://github.com/PediatricOpenTargets/ticket-tracker/issues/309)
+     - Add extent of tumor regression: [ticket 298](https://github.com/PediatricOpenTargets/ticket-tracker/issues/298)
+
+- Update EFO MONDO file 
+    - Update EFO MONDO map file to contain new cancer group in v10 histologies file: [ticket 237](https://github.com/PediatricOpenTargets/ticket-tracker/issues/237)
+    - Add NCIT column to the EFO MONDO map file + add new AML terms: [ticket 261](https://github.com/PediatricOpenTargets/ticket-tracker/issues/261)
+- Update `ensg-hugo-pmtl-mapping.tsv` to remove NA line: [ticket 231](https://github.com/PediatricOpenTargets/ticket-tracker/issues/231)
+
+- Re-run independent samples module since we would have cancer group update for the histologies file and addition of samples: [ticket 304](https://github.com/PediatricOpenTargets/ticket-tracker/issues/304)
+- Add concatenated DGD MAF files to data release as `snv-dgd.maf.tsv.gz`: [ticket 248](https://github.com/PediatricOpenTargets/ticket-tracker/issues/248)
+- Add concatenated DGD fusion files as `fusion-dgd.tsv.gz`: [ticket 249](https://github.com/PediatricOpenTargets/ticket-tracker/issues/249)
+- Update DNA and RNA delivery data files with the addition of PNOC samples: [ticket 253](https://github.com/PediatricOpenTargets/ticket-tracker/issues/253)
+- Re-run fusion filtering after PNOC samples added: [ticket 316](https://github.com/PediatricOpenTargets/ticket-tracker/issues/316)
+- Update focal CN preparation module to fine tune ENSEMBL, gene symbol and cytoband matching
+   - [Ticket 320](https://github.com/PediatricOpenTargets/ticket-tracker/issues/320)
+   - [Ticket 318](https://github.com/PediatricOpenTargets/ticket-tracker/issues/318)
+- After updating focal CN preparation module + addition of PNOC samples, modules need to re-run to update CNV annotation file: [ticket 254](https://github.com/PediatricOpenTargets/ticket-tracker/issues/254)
+- Run subtyping for all samples
+    - [Ticket 299](https://github.com/PediatricOpenTargets/ticket-tracker/issues/299)
+    - [Ticket 303](https://github.com/PediatricOpenTargets/ticket-tracker/issues/303)
+
+- Update the download link to not only change the version from v10 to v11, but also change GENCODE versions: [ticket 270](https://github.com/PediatricOpenTargets/ticket-tracker/issues/270)
+- Add bed files for TMB calculation and TMB results to data release 
+    - [Ticket 250](https://github.com/PediatricOpenTargets/ticket-tracker/issues/250)
+    - [Ticket 258](https://github.com/PediatricOpenTargets/ticket-tracker/issues/258)
+- Add methylation array data for v11 release 
+    - [Ticket 278](https://github.com/PediatricOpenTargets/ticket-tracker/issues/278)
+    - [Ticket 269](https://github.com/PediatricOpenTargets/ticket-tracker/issues/269)
+- Add TCGA with new GENCODE version to release
+    - [Ticket 285](https://github.com/PediatricOpenTargets/ticket-tracker/issues/285)
+    - [Ticket 308](https://github.com/PediatricOpenTargets/ticket-tracker/issues/308)
+- Run GISTIC module and upload zip file for data release: [ticket 302](https://github.com/PediatricOpenTargets/ticket-tracker/issues/302)
+- Merge all RNA isoform files into one for data release and downstream analyses: [ticket 341](https://github.com/PediatricOpenTargets/ticket-tracker/issues/341)
+  
+```
+v11
+├── WGS.hg38.lancet.300bp_padded.bed
+├── WGS.hg38.lancet.unpadded.bed
+├── WGS.hg38.mutect2.vardict.unpadded.bed
+├── WGS.hg38.strelka2.unpadded.bed
+├── WGS.hg38.vardict.100bp_padded.bed
+├── cnv-cnvkit.seg.gz
+├── cnv-controlfreec.tsv.gz
+├── cnv-consensus.seg.gz
+├── cnv-consensus-gistic.zip
+├── consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz
+├── consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz
+├── consensus_wgs_plus_cnvkit_wxs.tsv.gz
+├── data-files-description.md
+├── efo-mondo-map.tsv
+├── ensg-hugo-pmtl-mapping.tsv
+├── fusion-arriba.tsv.gz
+├── fusion-starfusion.tsv.gz
+├── fusion-putative-oncogenic.tsv
+├── gene-counts-rsem-expected_count-collapsed.rds
+├── gene-expression-rsem-tpm-collapsed.rds
+├── tcga-gene-counts-rsem-expected_count-collapsed.rds
+├── tcga-gene-expression-rsem-tpm-collapsed.rds
+├── histologies.tsv
+├── histologies-base.tsv
+├── independent-specimens.wgswxspanel.primary.eachcohort.tsv
+├── independent-specimens.wgswxspanel.relapse.eachcohort.tsv
+├── independent-specimens.rnaseq.primary.eachcohort.tsv
+├── independent-specimens.rnaseq.relapse.eachcohort.tsv
+├── independent-specimens.wgswxspanel.primary.tsv
+├── independent-specimens.wgswxspanel.relapse.tsv
+├── independent-specimens.rnaseq.primary.tsv
+├── independent-specimens.rnaseq.relapse.tsv
+├── independent-specimens.wgswxspanel.primary.eachcohort.prefer.wxs.tsv
+├── independent-specimens.wgswxspanel.primary.prefer.wxs.tsv
+├── independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wxs.tsv
+├── independent-specimens.wgswxspanel.relapse.prefer.wxs.tsv
+├── intersect_cds_lancet_strelka_mutect_WGS.bed
+├── intersect_strelka_mutect_WGS.bed
+├── *.bed (for TMB calculation module)
+├── release-notes.md
+├── snv-consensus-plus-hotspots.maf.tsv.gz
+├── sv-manta.tsv.gz
+├── methyl-beta-values.rds
+├── methyl-m-values.rds
+├── snv-dgd.maf.tsv.gz
+├── fusion-dgd.tsv
+├── rna-isoform-expression-rsem-tpm.rds
+├── uberon-map-gtex-group.tsv
+└── uberon-map-gtex-subgroup.tsv
+
+```
+
+## archived release
 ### release-v10
 - release date: 2021-10-11
 - status: available
@@ -120,7 +238,6 @@ v10
 
 ```
 
-## archived release
 ### release-v9
 - release date: 2021-09-01
 - status: available
