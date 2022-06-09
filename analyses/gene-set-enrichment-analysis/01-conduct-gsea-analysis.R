@@ -100,7 +100,7 @@ human_hallmark_list    <- base::split(human_hallmark_twocols$human_gene_symbol, 
 # filter to RNA and exclude TCGA and GTEx
 histology_rna_df <- histology_df %>% 
   dplyr::filter(experimental_strategy == "RNA-Seq") %>% 
-  dplyr::filter(!cohort %in% c("GTEx", "TCGA")) %>%
+  dplyr::filter(cohort == "PBTA") %>%
   dplyr::filter(!is.na(RNA_library))
 
 # First filter expression data to exclude GTEx and TCGA
