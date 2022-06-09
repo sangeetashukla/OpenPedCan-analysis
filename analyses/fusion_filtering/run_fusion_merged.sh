@@ -112,10 +112,12 @@ Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(ba
 Rscript -e "rmarkdown::render('05-QC_putative_onco_fusion_distribution.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
 # Recurrent fusion/fused genes
-Rscript 06-recurrent-fusions-per-cancer-group.R --standardFusionCalls $putative_oncogenic_fusion \
-                                                --clinicalFile $histologies_file \
-                                                --cohortInterest "PBTA,GMKF,TARGET" \
-                                                --outputfolder $results_path \
-                                                --independentPrimary $independent_RNA_primary \
-                                                --independentRelapse $independent_RNA_relapse
-
+if [[ RUN_FOR_SUBTYPING -eq "0" ]]
+then
+   Rscript 06-recurrent-fusions-per-cancer-group.R --standardFusionCalls $putative_oncogenic_fusion \
+                                                   --clinicalFile $histologies_file \
+                                                   --cohortInterest "PBTA,GMKF,TARGET" \
+                                                   --outputfolder $results_path \
+                                                   --independentPrimary $independent_RNA_primary \
+                                                   --independentRelapse $independent_RNA_relapse
+fi
