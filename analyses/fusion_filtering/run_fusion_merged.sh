@@ -50,7 +50,7 @@ independent_RNA_primary="${data_path}/independent-specimens.rnaseq.primary.tsv"
 independent_RNA_relapse="${data_path}/independent-specimens.rnaseq.relapse.tsv"
    
 # metadata files
-if [[ RUN_FOR_SUBTYPING -eq "0" ]]
+if [[ "$RUN_FOR_SUBTYPING" -eq "0" ]]
 then
    histologies_file="${data_path}/histologies.tsv" 
 else 
@@ -72,6 +72,7 @@ putative_oncogenic_fusion="${results_path}/fusion-putative-oncogenic.tsv"
 #                                        --clinicalFile $histologies_file \
 #                                        --specimenType "Brain" \
 #                                        --outputFile $normal_expression_brain
+
 
 # Run Fusion standardization for arriba caller
 Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
@@ -112,7 +113,7 @@ Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(ba
 Rscript -e "rmarkdown::render('05-QC_putative_onco_fusion_distribution.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
 # Recurrent fusion/fused genes
-if [[ RUN_FOR_SUBTYPING -eq "0" ]]
+if [[ "$RUN_FOR_SUBTYPING" -eq "0" ]]
 then
    Rscript 06-recurrent-fusions-per-cancer-group.R --standardFusionCalls $putative_oncogenic_fusion \
                                                    --clinicalFile $histologies_file \

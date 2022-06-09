@@ -204,24 +204,26 @@ if ( params$base_run ==0 ){
 }
 ```
 
-### get fusions that are found in more than 4 cancer groups
+### get fusions that are found in more than 4 grouping variable of interest for full histology file
 
-```{r get fusions that are found in more than 4 cancer groups}
-# count number of fusions in putative oncogene annotated fused gene are in more than N (countGroup) cancer groups
-FusionInNcg<-fusion_calls %>% dplyr::select(FusionName,group) %>% unique() %>% group_by(FusionName) %>% tally(name="count")
-
-FusionInNcg<-FusionInNcg[FusionInNcg$count>countGroup,]
-FusionInNcg
-
-# plot cancer groups that have Fusions that are potential false positives and found in multiple cancer groups
-multiCGFusion<-fusion_calls %>% dplyr::filter(FusionName %in% FusionInNcg$FusionName) %>%
-  # we want to remove annots column since there is difference in arriba annotation (uniquely has duplication/translocation/deletion values) and StarFusion annotation which will be counted twice since they are not unique
-  dplyr::select(-annots) %>% 
-  unique() 
-
-ggplot(multiCGFusion,aes(x=multiCGFusion$FusionName))+geom_bar()+theme(axis.text.x = element_text(angle=90))+coord_flip()+ylab("count")+xlab("FusionName(Total)")
-
+```{r get fusions that are found in more than 4 grouping variable of interest}
+if ( params$base_run ==0 ){
+  # count number of fusions in putative oncogene annotated fused gene are in more than N (countGroup) cancer groups
+  FusionInNcg<-fusion_calls %>% dplyr::select(FusionName,group) %>% unique() %>% group_by(FusionName) %>% tally(name="count")
+  
+  FusionInNcg<-FusionInNcg[FusionInNcg$count>countGroup,]
+  FusionInNcg
+  
+  # plot cancer groups that have Fusions that are potential false positives and found in multiple cancer groups
+  multiCGFusion<-fusion_calls %>% dplyr::filter(FusionName %in% FusionInNcg$FusionName) %>%
+    # we want to remove annots column since there is difference in arriba annotation (uniquely has duplication/translocation/deletion values) and StarFusion annotation which will be counted twice since they are not unique
+    dplyr::select(-annots) %>% 
+    unique() 
+  
+  ggplot(multiCGFusion,aes(x=multiCGFusion$FusionName))+geom_bar()+theme(axis.text.x = element_text(angle=90))+coord_flip()+ylab("count")+xlab("FusionName(Total)")
+} 
 ```
+
 
 ### Filtering fusions found in more than 4 broad histologies removes 1183 fusions.  
 
@@ -232,7 +234,7 @@ We can assume these fusions to be potential false calls because it is highly unl
 FusionInNbh<-fusion_calls %>% dplyr::select(FusionName,group_base) %>% unique() %>% group_by(FusionName) %>% tally(name="count")
 
 # select fusions that will be filtered (found in more than 4 grouping variables for base histology)
-FusionInNbh<-FusionInNcg[FusionInNcg$count>countBaseGroup,]
+FusionInNbh<-FusionInNbh[FusionInNbh$count>countBaseGroup,]
 FusionInNbh
 
 putative_driver_fusions<-fusion_calls %>% dplyr::filter(!FusionName %in% FusionInNbh$FusionName) %>%
@@ -263,7 +265,7 @@ putative_driver_fusions<-fusion_calls %>% dplyr::filter(!FusionName %in% FusionI
   )
   )%>%
   ungroup() %>%
-  dplyr::select(-group) %>%
+  dplyr::select(-group_base) %>%
   unique() %>%
   mutate(
     BreakpointLocation = case_when(
