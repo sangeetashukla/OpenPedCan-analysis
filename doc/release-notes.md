@@ -5,7 +5,7 @@
 - status: available
 - overview of changes:
   - This particular release added the following datasets:
-    - 11 RNA-Seq and WXS PNOC samples (plus 2 WXS PNOC results from previous release)
+    - 11 RNA-Seq and WXS PBTA samples (plus 2 WXS PBTA results from previous release)
     - 1689 DGD targeted sequencing tumor samples
     - methylation samples
       - methylation samples: 
