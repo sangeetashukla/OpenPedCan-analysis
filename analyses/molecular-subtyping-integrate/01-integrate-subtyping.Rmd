@@ -4,8 +4,8 @@ output:
   html_notebook:
     toc: true
     toc_float: true
-author: Krutika Gaonkar for D3b
-date: 2020
+author: Krutika Gaonkar, Eric Wafula, Jo Lynne Rokita
+date: 2020, 2022
 ---
 
 The purpose of this notebook is to integrate molecular subtyping results from 
@@ -61,27 +61,11 @@ compiled_subtyping<-read_tsv(file.path("..", "molecular-subtyping-pathology", "r
 Update "Other" sample broad/short histology and harmonized_diagnosis and add to `compiled_subtyping`
 
 ```{r}
-
-Other_subtypes <- read_tsv(file.path("input","pathology_dx\ and\ pathology_free_text_diagnosis\ to\ broad_histology\ for\ subtyping\ module\ -\ other_diagnosis_rules.tsv"))
-
 compiled_subtyping_other <- base_histology %>%
-  select(
-  Kids_First_Participant_ID ,
-  sample_id,
-  Kids_First_Biospecimen_ID,
-  molecular_subtype,
-  integrated_diagnosis,
-  pathology_diagnosis,
-  pathology_free_text_diagnosis,
-  tumor_descriptor
-) %>%
-  # remove Kids_First_Biospecimen_ID which are subtypes "ETMR/Embryonal"
-  filter(!Kids_First_Biospecimen_ID %in% compiled_subtyping$Kids_First_Biospecimen_ID) %>%
-  # get pathology_diagnosis=="Other"
   filter(pathology_diagnosis=="Other") %>%
-  left_join(Other_subtypes,by=c("pathology_free_text_diagnosis")) %>%
-  mutate(Notes = "Updated by manual curation of pathology_free_text_diagnosis") %>%
-select(
+# remove Kids_First_Biospecimen_ID which are already subtyped
+  filter(!Kids_First_Biospecimen_ID %in% compiled_subtyping$Kids_First_Biospecimen_ID) %>%
+  select(
   # gather only columns needed to format as `compiled_subtyping`
   Kids_First_Participant_ID ,
   sample_id,
@@ -97,7 +81,6 @@ select(
   harmonized_diagnosis
 ) %>%
   unique()
-
 
 # combined OpenPBTA subtypes and manual "Other" subtypes
 compiled_subtyping <- compiled_subtyping_other %>%
@@ -116,7 +99,7 @@ short_histology and broad_histology will be added from base histology for sample
 ```{r}
 
 histology <- base_histology %>% 
-  select(-Notes,-molecular_subtype,-integrated_diagnosis) %>%
+  select(-Notes,-molecular_subtype,-integrated_diagnosis, -harmonized_diagnosis) %>%
   left_join(compiled_subtyping,by=c("Kids_First_Biospecimen_ID","sample_id","Kids_First_Participant_ID","tumor_descriptor"),suffix=c(".base",".subtyped")) %>%
   unique() %>%
   mutate(
@@ -177,17 +160,13 @@ histology<- histology %>%
   # update some values that come from pathology_diagnosis which are not standardized yet
   dplyr::mutate(cancer_group = case_when(
     cancer_group == "Brainstem glioma- Diffuse intrinsic pontine glioma" ~ "Diffuse intrinsic pontine glioma",
-    cancer_group == "Anaplastic (malignant) meningioma" ~ "Meningioma",
-    cancer_group == "Atypical meningioma" ~ "Meningioma",
     cancer_group == "Neurofibroma/Plexiform;Other" ~ "Neurofibroma/Plexiform",
     cancer_group == "Non-germinomatous germ cell tumor;Teratoma" ~ "Teratoma",
-    cancer_group %in% c("Meningothelial meningioma", "Clear cell meningioma") ~ "Meningioma",
+    cancer_group %in% c("Meningothelial meningioma", "Clear cell meningioma", "Atypical meningioma", "Anaplastic (malignant) meningioma") ~ "Meningioma",
     cancer_group == "Embryonal Tumor with Multilayered Rosettes" ~ "Embryonal tumor with multilayer rosettes",
     cancer_group == "Adamantinomatous craniopharyngioma" ~ "Craniopharyngioma",
     sample_id == "7316-2577" ~ "Embryonal tumor with multilayer rosettes",
     cancer_group %in% c("Benign tumor","Dysplasia/Gliosis","Other","Dysplasia/Gliosis-Glial-neuronal tumor NOS") ~ NA_character_,
-    cancer_group == "Ganglioneuroblastoma" ~ "Neuroblastoma",
-    cancer_group == "Ganglioneuroma" ~ "Neuroblastoma",
     cancer_group == "Kidney Rhabdoid Tumor" ~ "Rhabdoid tumor",
     cancer_group == "Kidney Wilms Tumor" ~ "Wilms tumor",
     cancer_group == "Testicular Germ Cell Tumor" ~ "Testicular Germ Cell tumor",
