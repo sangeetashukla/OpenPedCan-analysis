@@ -35,6 +35,7 @@ In adddition, for samples that where pathology_diagnosis is "Other" we also upda
 ## Set up
 
 ```{r}
+
 library(tidyverse)
 data_dir <- "../../data/"
 
@@ -155,7 +156,8 @@ Provides a narrower grouping for samples that can be used in generating figures
 
 histology<- histology %>%
   # remove subtype details
-  dplyr::mutate(cancer_group = str_extract(harmonized_diagnosis, "[^,]*")) %>%
+  dplyr::mutate(cancer_group = case_when(broad_histology %in% c("Benign tumor", "Other", "Non-tumor") ~ NA_character_, 
+                                          TRUE ~ str_extract(harmonized_diagnosis, "[^,]*"))) %>%
   
   # update some values that come from pathology_diagnosis which are not standardized yet
   dplyr::mutate(cancer_group = case_when(
@@ -163,13 +165,15 @@ histology<- histology %>%
     cancer_group == "Neurofibroma/Plexiform;Other" ~ "Neurofibroma/Plexiform",
     cancer_group == "Non-germinomatous germ cell tumor;Teratoma" ~ "Teratoma",
     cancer_group %in% c("Meningothelial meningioma", "Clear cell meningioma", "Atypical meningioma", "Anaplastic (malignant) meningioma") ~ "Meningioma",
-    cancer_group == "Embryonal Tumor with Multilayered Rosettes" ~ "Embryonal tumor with multilayer rosettes",
+    cancer_group == "Embryonal Tumor with Multilayered Rosettes (ETMR)" ~ "Embryonal tumor with multilayer rosettes",
     cancer_group == "Adamantinomatous craniopharyngioma" ~ "Craniopharyngioma",
     sample_id == "7316-2577" ~ "Embryonal tumor with multilayer rosettes",
     cancer_group %in% c("Benign tumor","Dysplasia/Gliosis","Other","Dysplasia/Gliosis-Glial-neuronal tumor NOS") ~ NA_character_,
     cancer_group == "Kidney Rhabdoid Tumor" ~ "Rhabdoid tumor",
     cancer_group == "Kidney Wilms Tumor" ~ "Wilms tumor",
     cancer_group == "Testicular Germ Cell Tumor" ~ "Testicular Germ Cell tumor",
+    cancer_group == "Ependymoma;Metastatic secondary tumors" ~ "Ependymoma",
+    grepl("Ganglioglioma;Low-grade", cancer_group) ~ "Ganglioglioma",
     TRUE ~ as.character(cancer_group))
   ) %>%
   # Additional update to clean up terms that we will use in plots
@@ -178,6 +182,67 @@ histology<- histology %>%
   # remove space at the ends
   dplyr::mutate(cancer_group = gsub(" $","",cancer_group)) 
 
+```
+
+#### Write out table for `harmonized_diagnosis` -> `cancer_group` mapping
+
+To make it easier for people to examine the mapping between these two fields, we'll write out a table to `results/`.
+We'll only include a subset of the mappings in the README (those that we think require the most explanation), so we'll save a separate table for that purpose.
+
+```{r}
+# We'll save this table in order to have a table of the mappings between the 
+# harmonized dx and cancer group. It will include additional columns that 
+# explain whether or not the subtype is stripped and whether not additional 
+# modifications beyond that have been performed.
+mapping_table <- histology %>% 
+  # Consider removing this sample? -- seems to be a special case, see chunk above
+  # dplyr::filter(sample_id != "7316-2577") %>%
+  dplyr::select(cohort, harmonized_diagnosis, 
+                cancer_group) %>%
+  dplyr::distinct() %>%
+  dplyr::filter(!is.na(harmonized_diagnosis)) %>%
+  # This next step removes the subtypes from harmonized diagnosis
+  dplyr::mutate(stripped_subtype = str_extract(harmonized_diagnosis, 
+                                               "[^,]*")) %>%
+  # generate column `has_subtype_removed` to indicate whether cancer group equals 
+  # the harmonized diagnosis after stripping subtype
+  dplyr::mutate(has_subtype_removed = case_when(
+    stripped_subtype == harmonized_diagnosis ~ "No",
+    TRUE ~ "Yes"
+  )) %>%
+  # generate column `additional_modifications` to indicate whether additional 
+  # modifications were done after stripping subtype -- these go into the README!
+  dplyr::mutate(additional_modification = case_when(
+    stripped_subtype == cancer_group ~ "No",
+    TRUE ~ "Yes"
+  )) %>%
+  dplyr::arrange(cancer_group)
+# Write the whole table out for examination
+mapping_table %>%
+  # This column will mostly be used in the README (our next step) -- will drop
+  # it here to avoid confusion
+  dplyr::select(-stripped_subtype) %>%
+  readr::write_tsv("results/harmonized_diagnosis_cancer_group_table.tsv")
+
+# Add file of unique cancer groups
+mapping_table %>%
+  filter(!is.na(cancer_group)) %>%
+  select(cancer_group) %>%
+  unique() %>%
+  arrange(cancer_group) %>%
+  write_tsv("results/cancer_groups.txt", col_names = F)
+
+
+# Now specifically for the README, we'll want to display instances when 
+# additional modifications are made. We use the `stripped_subtype` column
+# because including the subtypes would muddy the picture in the README.
+mapping_table %>%
+  dplyr::filter(additional_modification == "Yes") %>%
+  dplyr::select(stripped_subtype,
+                cancer_group) %>%
+  dplyr::distinct() %>%
+  dplyr::arrange(stripped_subtype) %>%
+  readr::write_tsv("results/cancer_group_table_for_README.tsv")
 ```
 
 
