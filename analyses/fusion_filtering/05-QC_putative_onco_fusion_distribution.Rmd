@@ -143,7 +143,7 @@ putative_driver_annotated_fusions_local<-fusion_calls %>%
 # @param plot_title: for plot title per subset of fusion
 
 plotNcg<-function(standardFusionCalls,filterN,plot_title){
-  # get count of number of grouping varaible of full histology per FusionName
+  # get count of number of grouping variable of full histology per FusionName
   plotNcg<-standardFusionCalls %>% dplyr::select(FusionName,group) %>% unique() %>%
     group_by(FusionName) %>% tally(name="count")
   # get count of number of times fusion is found in dataset 
