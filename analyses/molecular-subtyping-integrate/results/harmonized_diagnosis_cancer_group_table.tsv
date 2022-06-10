@@ -12,7 +12,6 @@ DGD	Angiosarcoma	Angiosarcoma	No	No
 PBTA	Atypical Teratoid Rhabdoid Tumor (ATRT)	Atypical Teratoid Rhabdoid Tumor	No	Yes
 DGD	Atypical Teratoid Rhabdoid Tumor (ATRT)	Atypical Teratoid Rhabdoid Tumor	No	Yes
 DGD	B Acute Lymphoblastic Leukemia/Lymphoma	B Acute Lymphoblastic Leukemia/Lymphoma	No	No
-DGD	B-lymphoblastic leukemia	B-lymphoblastic leukemia	No	No
 TCGA	Bladder Urothelial Carcinoma	Bladder Urothelial Carcinoma	No	No
 TCGA	Brain Lower Grade Glioma	Brain Lower Grade Glioma	No	No
 TCGA	Breast Invasive Carcinoma	Breast Invasive Carcinoma	No	No
@@ -187,7 +186,6 @@ DGD	Metastatic secondary tumors	Metastatic secondary tumors	No	No
 PBTA	Mixed germ cell tumor	Mixed germ cell tumor	No	No
 DGD	Mixed germ cell tumor	Mixed germ cell tumor	No	No
 DGD	Mixed Lineage Leukemia	Mixed Lineage Leukemia	No	No
-DGD	Myeloid neoplasm	Myeloid neoplasm	No	No
 PBTA	Myofibroblastic tumor	Myofibroblastic tumor	No	No
 DGD	Myofibroblastic tumor	Myofibroblastic tumor	No	No
 PBTA	Neuroblastoma	Neuroblastoma	No	No
@@ -311,6 +309,7 @@ DGD	Hamartomatous lesion	NA	No	Yes
 DGD	Atypical vascular lesion	NA	No	Yes
 DGD	Neutropenia	NA	No	Yes
 DGD	Osteoblastoma	NA	No	Yes
+DGD	Other	NA	No	Yes
 DGD	Solid pseudopapillary neoplasm of the pancreas	NA	No	Yes
 DGD	Shwachman-diamond syndrome	NA	No	Yes
 DGD	Cyst	NA	No	Yes

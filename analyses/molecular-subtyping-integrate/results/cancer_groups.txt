@@ -7,7 +7,6 @@ Anaplastic Large Cell Lymphoma
 Angiosarcoma
 Atypical Teratoid Rhabdoid Tumor
 B Acute Lymphoblastic Leukemia/Lymphoma
-B-lymphoblastic leukemia
 Bladder Urothelial Carcinoma
 Brain Lower Grade Glioma
 Breast Invasive Carcinoma
@@ -89,7 +88,6 @@ Mesothelioma
 Metastatic secondary tumors
 Mixed germ cell tumor
 Mixed Lineage Leukemia
-Myeloid neoplasm
 Myofibroblastic tumor
 Neuroblastoma
 Neurocytoma

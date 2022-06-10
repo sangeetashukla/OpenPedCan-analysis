@@ -225,7 +225,7 @@ mapping_table %>%
   readr::write_tsv("results/harmonized_diagnosis_cancer_group_table.tsv")
 
 # Add file of unique cancer groups
-mapping_table %>%
+cancer_groups <- mapping_table %>%
   filter(!is.na(cancer_group)) %>%
   select(cancer_group) %>%
   unique() %>%
