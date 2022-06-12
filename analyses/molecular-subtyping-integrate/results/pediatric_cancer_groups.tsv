@@ -50,7 +50,10 @@ Dysembryoplastic neuroepithelial tumor	Primary Tumor	2
 Dysembryoplastic neuroepithelial tumor	Progressive	15
 Dysembryoplastic neuroepithelial tumor	Recurrence	9
 Dysgerminoma	Primary Tumor	2
+Embryonal Tumor NOS	Initial CNS Tumor	12
 Embryonal Tumor NOS	Primary Tumor	2
+Embryonal Tumor NOS	Progressive	6
+Embryonal Tumor NOS	Recurrence	3
 Embryonal tumor with multilayer rosettes	Initial CNS Tumor	6
 Embryonal tumor with multilayer rosettes	Progressive	3
 Embryonal tumor with multilayer rosettes	Recurrence	2
@@ -174,9 +177,6 @@ Schwannoma	Recurrence	5
 Subependymal Giant Cell Astrocytoma	Initial CNS Tumor	25
 Subependymal Giant Cell Astrocytoma	Progressive	3
 Subependymal Giant Cell Astrocytoma	Second Malignancy	2
-Supratentorial or Spinal Cord PNET	Initial CNS Tumor	12
-Supratentorial or Spinal Cord PNET	Progressive	6
-Supratentorial or Spinal Cord PNET	Recurrence	3
 T Acute Lymphoblastic Leukemia/Lymphoma	Primary Tumor	15
 T Acute Lymphoblastic Leukemia/Lymphoma	Recurrence	4
 T Acute Lymphoblastic Leukemia/Lymphoma	Second Malignancy	2

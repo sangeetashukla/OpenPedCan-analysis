@@ -51,7 +51,9 @@ PBTA	Diffuse midline glioma, H3 K28-mutant	Diffuse midline glioma	Yes	No
 PBTA	Dysembryoplastic neuroepithelial tumor (DNET)	Dysembryoplastic neuroepithelial tumor	No	Yes
 DGD	Dysembryoplastic neuroepithelial tumor (DNET)	Dysembryoplastic neuroepithelial tumor	No	Yes
 DGD	Dysgerminoma	Dysgerminoma	No	No
+PBTA	Supratentorial or Spinal Cord PNET	Embryonal Tumor NOS	No	Yes
 DGD	Embryonal Tumor NOS	Embryonal Tumor NOS	No	No
+DGD	Supratentorial or Spinal Cord PNET	Embryonal Tumor NOS	No	Yes
 PBTA	Embryonal tumor with multilayer rosettes, C19MC-altered	Embryonal tumor with multilayer rosettes	Yes	No
 PBTA	Embryonal Tumor with Multilayered Rosettes (ETMR)	Embryonal tumor with multilayer rosettes	No	Yes
 PBTA	Ependymoma	Ependymoma	No	No
@@ -221,8 +223,6 @@ PBTA	Subependymal Giant Cell Astrocytoma, wildtype	Subependymal Giant Cell Astro
 PBTA	Subependymal Giant Cell Astrocytoma, RTK, CDKN2A/B	Subependymal Giant Cell Astrocytoma	Yes	No
 PBTA	Subependymal Giant Cell Astrocytoma (SEGA)	Subependymal Giant Cell Astrocytoma	No	Yes
 DGD	Subependymal Giant Cell Astrocytoma (SEGA)	Subependymal Giant Cell Astrocytoma	No	Yes
-PBTA	Supratentorial or Spinal Cord PNET	Supratentorial or Spinal Cord PNET	No	No
-DGD	Supratentorial or Spinal Cord PNET	Supratentorial or Spinal Cord PNET	No	No
 DGD	T Acute Lymphoblastic Leukemia/Lymphoma	T Acute Lymphoblastic Leukemia/Lymphoma	No	No
 PBTA	Teratoma	Teratoma	No	No
 DGD	Teratoma	Teratoma	No	No

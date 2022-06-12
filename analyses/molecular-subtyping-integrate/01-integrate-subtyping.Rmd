@@ -167,6 +167,7 @@ histology_cg <- histology %>%
     cancer_group == "Brainstem glioma- Diffuse intrinsic pontine glioma" ~ "Diffuse intrinsic pontine glioma",
     cancer_group == "Non-germinomatous germ cell tumor;Teratoma" ~ "Teratoma",
     cancer_group %in% c("Meningothelial meningioma", "Clear cell meningioma", "Atypical meningioma", "Anaplastic (malignant) meningioma") ~ "Meningioma",
+    cancer_group == "Supratentorial or Spinal Cord PNET" ~ "Embryonal Tumor NOS",
     cancer_group == "Embryonal Tumor with Multilayered Rosettes (ETMR)" ~ "Embryonal tumor with multilayer rosettes",
     cancer_group == "Adamantinomatous craniopharyngioma" ~ "Craniopharyngioma",
     cancer_group == "Kidney Rhabdoid Tumor" ~ "Rhabdoid tumor of the kidney",
