@@ -7,6 +7,7 @@ TCGA	Acute Myeloid Leukemia	Acute Myeloid Leukemia	No	No
 DGD	Acute Myeloid Leukemia	Acute Myeloid Leukemia	No	No
 DGD	Therapy-Related Acute Myeloid Leukemia	Acute Myeloid Leukemia	No	Yes
 DGD	Acute Promyelocytic Leukemia	Acute Myeloid Leukemia	No	Yes
+PBTA	Adamantinomatous craniopharyngioma	Adamantinomatous craniopharyngioma	No	No
 DGD	Adenocarcinoma	Adenocarcinoma	No	No
 TCGA	Adrenocortical Carcinoma	Adrenocortical Carcinoma	No	No
 DGD	Anaplastic Large Cell Lymphoma	Anaplastic Large Cell Lymphoma	No	No
@@ -35,7 +36,6 @@ PBTA	CNS Embryonal tumor, NOS	CNS Embryonal tumor	Yes	No
 PBTA	CNS Embryonal tumor, HGNET-MN1	CNS Embryonal tumor	Yes	No
 PBTA	CNS neuroblastoma	CNS neuroblastoma	No	No
 TCGA	Colon Adenocarcinoma	Colon Adenocarcinoma	No	No
-PBTA	Adamantinomatous craniopharyngioma	Craniopharyngioma	No	Yes
 PBTA	Craniopharyngioma	Craniopharyngioma	No	No
 DGD	Craniopharyngioma	Craniopharyngioma	No	No
 PBTA	Desmoplastic infantile astrocytoma and ganglioglioma, RTK	Desmoplastic infantile astrocytoma and ganglioglioma	Yes	No

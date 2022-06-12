@@ -5,6 +5,9 @@ Acute Myeloid Leukemia	Primary Tumor	517
 Acute Myeloid Leukemia	Progressive	4
 Acute Myeloid Leukemia	Recurrence	90
 Acute Myeloid Leukemia	Second Malignancy	4
+Adamantinomatous craniopharyngioma	Initial CNS Tumor	36
+Adamantinomatous craniopharyngioma	Progressive	2
+Adamantinomatous craniopharyngioma	Recurrence	7
 Adenocarcinoma	Primary Tumor	4
 Anaplastic Large Cell Lymphoma	Primary Tumor	4
 Angiosarcoma	Primary Tumor	2
@@ -31,9 +34,9 @@ CNS Embryonal tumor	Progressive	5
 CNS Embryonal tumor	Recurrence	2
 CNS neuroblastoma	Initial CNS Tumor	4
 CNS neuroblastoma	Recurrence	1
-Craniopharyngioma	Initial CNS Tumor	107
-Craniopharyngioma	Progressive	20
-Craniopharyngioma	Recurrence	12
+Craniopharyngioma	Initial CNS Tumor	71
+Craniopharyngioma	Progressive	18
+Craniopharyngioma	Recurrence	5
 Desmoplastic infantile astrocytoma and ganglioglioma	Initial CNS Tumor	2
 Desmoplastic infantile astrocytoma and ganglioglioma	Progressive	4
 Diffuse fibrillary astrocytoma	Initial CNS Tumor	8
