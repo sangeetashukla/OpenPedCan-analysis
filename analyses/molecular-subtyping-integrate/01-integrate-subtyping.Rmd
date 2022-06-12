@@ -238,7 +238,7 @@ ped_cancer_groups <- histology_cg %>%
   group_by(cancer_group, tumor_descriptor) %>%
   tally() %>%
   arrange(cancer_group, tumor_descriptor) %>%
-  write_tsv("results/pediatric_cancer_groups.txt", col_names = F)
+  write_tsv("results/pediatric_cancer_groups.txt")
 
 adult_cancer_groups <- histology_cg %>%
   filter(!is.na(pathology_diagnosis), !is.na(cancer_group), cohort == "TCGA") %>%
@@ -246,7 +246,7 @@ adult_cancer_groups <- histology_cg %>%
   group_by(cancer_group, tumor_descriptor) %>%
   tally() %>%
   arrange(cancer_group, tumor_descriptor) %>%
-  write_tsv("results/tcga_cancer_groups.txt", col_names = F)
+  write_tsv("results/tcga_cancer_groups.txt")
 
 
 # Now specifically for the README, we'll want to display instances when 

@@ -1,3 +1,4 @@
+cancer_group	tumor_descriptor	n
 Acute Lymphoblastic Leukemia	Primary Tumor	1294
 Acute Lymphoblastic Leukemia	Recurrence	109
 Acute Myeloid Leukemia	Primary Tumor	517

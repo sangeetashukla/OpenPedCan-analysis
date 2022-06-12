@@ -1,3 +1,4 @@
+cancer_group	tumor_descriptor	n
 Acute Myeloid Leukemia	Primary Tumor	147
 Adrenocortical Carcinoma	Primary Tumor	77
 Bladder Urothelial Carcinoma	Primary Tumor	413
