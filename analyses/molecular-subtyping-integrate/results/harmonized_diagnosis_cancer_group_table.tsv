@@ -101,6 +101,7 @@ TCGA	Head and Neck Squamous Cell Carcinoma	Head and Neck Squamous Cell Carcinoma
 PBTA	Hemangioblastoma	Hemangioblastoma	No	No
 DGD	Hemangioblastoma	Hemangioblastoma	No	No
 DGD	Hepatoblastoma	Hepatoblastoma	No	No
+TCGA	Liver Hepatocellular Carcinoma	Hepatocellular Carcinoma	No	Yes
 DGD	Hepatocellular Carcinoma	Hepatocellular Carcinoma	No	No
 PBTA	High-grade glioma/astrocytoma (WHO grade III/IV)	High-grade glioma/astrocytoma	No	Yes
 PBTA	High-grade glioma/astrocytoma, H3 wildtype	High-grade glioma/astrocytoma	Yes	No
@@ -113,12 +114,11 @@ DGD	Infantile Fibrosarcoma	Infantile Fibrosarcoma	No	No
 DGD	Inflammatory Myofibroblastic Tumor	Inflammatory Myofibroblastic Tumor	No	No
 DGD	Intrahepatic Cholangiocarcinoma	Intrahepatic Cholangiocarcinoma	No	No
 PBTA	Juvenile xanthogranuloma	Juvenile xanthogranuloma	No	No
-DGD	Juvenile Xanthogranuloma	Juvenile Xanthogranuloma	No	No
+DGD	Juvenile Xanthogranuloma	Juvenile xanthogranuloma	No	Yes
 TCGA	Kidney Renal Clear Cell Carcinoma	Kidney Renal Clear Cell Carcinoma	No	No
 TCGA	Kidney Renal Papillary Cell Carcinoma	Kidney Renal Papillary Cell Carcinoma	No	No
 PBTA	Langerhans Cell histiocytosis	Langerhans Cell histiocytosis	No	No
 DGD	Langerhans Cell histiocytosis	Langerhans Cell histiocytosis	No	No
-TCGA	Liver Hepatocellular Carcinoma	Liver Hepatocellular Carcinoma	No	No
 PBTA	Low-grade glioma/astrocytoma, other MAPK	Low-grade glioma/astrocytoma	Yes	No
 PBTA	Low-grade glioma/astrocytoma (WHO grade I/II)	Low-grade glioma/astrocytoma	No	Yes
 PBTA	Low-grade glioma/astrocytoma, NF1-somatic, NF1-germline	Low-grade glioma/astrocytoma	Yes	No
@@ -148,6 +148,7 @@ PBTA	Medulloblastoma	Medulloblastoma	No	No
 PBTA	Medulloblastoma, SHH-activated	Medulloblastoma	Yes	No
 PBTA	Medulloblastoma, WNT-activated	Medulloblastoma	Yes	No
 DGD	Medulloblastoma	Medulloblastoma	No	No
+TCGA	Skin Cutaneous Melanoma	Melanoma	No	Yes
 DGD	Melanoma	Melanoma	No	No
 PBTA	Meningioma	Meningioma	No	No
 PBTA	Atypical meningioma	Meningioma	No	Yes
@@ -215,7 +216,6 @@ DGD	Sarcoma	Sarcoma	No	No
 DGD	High Grade Sarcoma	Sarcoma	No	Yes
 PBTA	Schwannoma	Schwannoma	No	No
 DGD	Schwannoma	Schwannoma	No	No
-TCGA	Skin Cutaneous Melanoma	Skin Cutaneous Melanoma	No	No
 TCGA	Stomach Adenocarcinoma	Stomach Adenocarcinoma	No	No
 PBTA	Subependymal Giant Cell Astrocytoma, wildtype	Subependymal Giant Cell Astrocytoma	Yes	No
 PBTA	Subependymal Giant Cell Astrocytoma, RTK, CDKN2A/B	Subependymal Giant Cell Astrocytoma	Yes	No
