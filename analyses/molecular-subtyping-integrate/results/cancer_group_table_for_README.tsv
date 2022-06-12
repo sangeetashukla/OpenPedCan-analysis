@@ -17,6 +17,7 @@ B Acute Lymphoblastic Leukemia/Lymphoma	NA
 Benign Vascular Neoplasm	NA
 Bone marrow cellularity	NA
 Bone marrow failure	NA
+Brain Lower Grade Glioma	Low-grade glioma/astrocytoma
 Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse intrinsic pontine glioma
 Cavernoma;Ependymoma	NA
 Choroid plexus papilloma	NA
@@ -53,6 +54,7 @@ Gliosarcoma	NA
 Hamartoma	NA
 Hamartomatous lesion	NA
 Hemangioma	NA
+High Grade Sarcoma	Sarcoma
 High-grade glioma/astrocytoma (WHO grade III/IV)	High-grade glioma/astrocytoma
 Histiocytic tumor	NA
 Hypocellular bone marrow	NA
@@ -62,6 +64,9 @@ Inclusion cyst	NA
 Inflammatory lesion	NA
 Ini-1 negative tumor cells surrounded by reactive astrocytes most c/w metastatic malignant rhabdoid tumor	NA
 Juvenile xanthogranuloma	NA
+Kidney Chromophobe	Chromophobe renal cell carcinoma
+Kidney Rhabdoid Tumor	Rhabdoid tumor of the kidney
+Kidney Wilms Tumor	Wilms tumor
 Klippel-trenaunay-weber syndrome	NA
 Lipoblastoma	NA
 Lipoma	NA
@@ -73,6 +78,7 @@ Melanocytoma	NA
 Meningioangiomatosis	NA
 Meningioma;Neurofibroma/Plexiform	NA
 Meningothelial meningioma	Meningioma
+Mixed Lineage Leukemia	Acute Lymphoblastic Leukemia
 Myelodysplastic syndrome	NA
 Myeloid Neoplasm	NA
 Myofibroblastic tumor	NA
@@ -112,8 +118,10 @@ Spindle cell neoplasm	NA
 Spinocerebellar ataxia type 7	NA
 Subependymal Giant Cell Astrocytoma (SEGA)	Subependymal Giant Cell Astrocytoma
 Testicular Germ Cell Tumor	Testicular Germ Cell tumor
+Therapy-Related Acute Myeloid Leukemia	Acute Myeloid Leukemia
 Thrombocytopenia	NA
 Thrombocytosis	NA
 Type ii pleuropulmonary blastoma	NA
 Undifferentiated malignant neoplasm	NA
 Vascular malformation	NA
+Wilms Tumor	Wilms tumor

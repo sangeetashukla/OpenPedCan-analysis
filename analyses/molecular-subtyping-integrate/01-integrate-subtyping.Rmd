@@ -157,7 +157,7 @@ Provides a narrower grouping for samples that can be used in generating figures
 
 histology_cg <- histology %>%
   # remove subtype details
-  dplyr::mutate(cancer_group = case_when(broad_histology %in% c("Benign tumor", "Other", "Non-tumor") ~ NA_character_,
+  dplyr::mutate(cancer_group = case_when(broad_histology %in% c("Benign tumor", "Other", "Non-tumor", "Pre-cancerous lesion") ~ NA_character_,
                                          pathology_diagnosis == "Other" ~ NA_character_,
                                          TRUE ~ str_extract(harmonized_diagnosis, "[^,]*"))) %>%
    # update some values that come from pathology_diagnosis which are not standardized yet
@@ -171,12 +171,16 @@ histology_cg <- histology %>%
     cancer_group == "Embryonal Tumor with Multilayered Rosettes (ETMR)" ~ "Embryonal tumor with multilayer rosettes",
     cancer_group == "Adamantinomatous craniopharyngioma" ~ "Craniopharyngioma",
     sample_id == "7316-2577" ~ "Embryonal tumor with multilayer rosettes",
-    cancer_group %in% c("Benign tumor","Dysplasia/Gliosis","Other","Dysplasia/Gliosis-Glial-neuronal tumor NOS") ~ NA_character_,
-    #cancer_group == "Kidney Rhabdoid Tumor" ~ "Rhabdoid tumor",
-   # cancer_group == "Kidney Wilms Tumor" ~ "Wilms tumor",
+    #cancer_group %in% c("Benign tumor","Dysplasia/Gliosis","Other","Dysplasia/Gliosis-Glial-neuronal tumor NOS") ~ NA_character_,
+    cancer_group == "Kidney Rhabdoid Tumor" ~ "Rhabdoid tumor of the kidney",
+    cancer_group %in% c("Kidney Wilms Tumor", "Wilms Tumor") ~ "Wilms tumor",
     cancer_group == "Testicular Germ Cell Tumor" ~ "Testicular Germ Cell tumor",
     cancer_group == "Ependymoma;Metastatic secondary tumors" ~ "Ependymoma",
-    cancer_group == "Acute Promyelocytic Leukemia" ~ "Acute Myeloid Leukemia",
+    cancer_group %in% c("Acute Promyelocytic Leukemia", "Therapy-Related Acute Myeloid Leukemia") ~ "Acute Myeloid Leukemia",
+    cancer_group %in% c("Mixed Lineage Leukemia") ~ "Acute Lymphoblastic Leukemia",
+    cancer_group == "Brain Lower Grade Glioma" ~ "Low-grade glioma/astrocytoma",
+    cancer_group == "Kidney Chromophobe" ~ "Chromophobe renal cell carcinoma",
+    cancer_group == "High Grade Sarcoma" ~ "Sarcoma",
     TRUE ~ as.character(cancer_group))
   ) %>%
   # Additional update to clean up terms that we will use in plots
@@ -229,7 +233,7 @@ mapping_table %>%
 
 # Add file of unique cancer groups
 cancer_groups <- histology_cg %>%
-  filter(!is.na(pathology_diagnosis)) %>%
+  filter(!is.na(pathology_diagnosis), !is.na(cancer_group)) %>%
   select(cancer_group, tumor_descriptor) %>%
   group_by(cancer_group, tumor_descriptor) %>%
   tally() %>%

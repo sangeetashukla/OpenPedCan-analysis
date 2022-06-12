@@ -1,9 +1,9 @@
-Acute Lymphoblastic Leukemia	Primary Tumor	1290
+Acute Lymphoblastic Leukemia	Primary Tumor	1294
 Acute Lymphoblastic Leukemia	Recurrence	109
 Acute Myeloid Leukemia	Primary Tumor	664
 Acute Myeloid Leukemia	Progressive	4
 Acute Myeloid Leukemia	Recurrence	90
-Acute Myeloid Leukemia	Second Malignancy	2
+Acute Myeloid Leukemia	Second Malignancy	4
 Adenocarcinoma	Primary Tumor	4
 Adrenocortical Carcinoma	Primary Tumor	77
 Anaplastic Large Cell Lymphoma	Primary Tumor	4
@@ -16,8 +16,6 @@ B Acute Lymphoblastic Leukemia/Lymphoma	Primary Tumor	92
 B Acute Lymphoblastic Leukemia/Lymphoma	Progressive	2
 B Acute Lymphoblastic Leukemia/Lymphoma	Recurrence	80
 Bladder Urothelial Carcinoma	Primary Tumor	413
-Brain Lower Grade Glioma	Primary Tumor	507
-Brain Lower Grade Glioma	Recurrence	18
 Breast Invasive Carcinoma	Metastatic Tumor	7
 Breast Invasive Carcinoma	Primary Tumor	1099
 Burkitt Leukemia/Lymphoma	Primary Tumor	8
@@ -30,6 +28,7 @@ Chordoma	Initial CNS Tumor	13
 Chordoma	Progressive	10
 Chordoma	Recurrence	3
 Choroid plexus carcinoma	Initial CNS Tumor	19
+Chromophobe renal cell carcinoma	Primary Tumor	65
 Chronic Myelogenous Leukemia	Primary Tumor	4
 CIC-DUX4 Sarcoma	Primary Tumor	2
 Clear Cell Sarcoma of the Kidney	Primary Tumor	24
@@ -99,7 +98,6 @@ Hemangioblastoma	Initial CNS Tumor	15
 Hemangioblastoma	Progressive	5
 Hepatoblastoma	Primary Tumor	8
 Hepatocellular Carcinoma	Primary Tumor	2
-High Grade Sarcoma	Primary Tumor	2
 High-grade glioma/astrocytoma	Initial CNS Tumor	364
 High-grade glioma/astrocytoma	Primary Tumor	3
 High-grade glioma/astrocytoma	Progressive	104
@@ -116,14 +114,8 @@ Inflammatory Myofibroblastic Tumor	Recurrence	2
 Intrahepatic Cholangiocarcinoma	Primary Tumor	1
 Juvenile xanthogranuloma	Initial CNS Tumor	2
 Juvenile Xanthogranuloma	Primary Tumor	2
-Kidney Chromophobe	Primary Tumor	65
 Kidney Renal Clear Cell Carcinoma	Primary Tumor	536
 Kidney Renal Papillary Cell Carcinoma	Primary Tumor	287
-Kidney Rhabdoid Tumor	Primary Tumor	64
-Kidney Wilms Tumor	Metastatic	1
-Kidney Wilms Tumor	Metastatic Tumor	1
-Kidney Wilms Tumor	Primary Tumor	285
-Kidney Wilms Tumor	Recurrence	15
 Langerhans Cell histiocytosis	Initial CNS Tumor	22
 Langerhans Cell histiocytosis	Primary Tumor	8
 Langerhans Cell histiocytosis	Progressive	1
@@ -131,9 +123,9 @@ Langerhans Cell histiocytosis	Unavailable	1
 Liver Hepatocellular Carcinoma	Primary Tumor	369
 Liver Hepatocellular Carcinoma	Recurrence	3
 Low-grade glioma/astrocytoma	Initial CNS Tumor	585
-Low-grade glioma/astrocytoma	Primary Tumor	6
+Low-grade glioma/astrocytoma	Primary Tumor	513
 Low-grade glioma/astrocytoma	Progressive	179
-Low-grade glioma/astrocytoma	Recurrence	44
+Low-grade glioma/astrocytoma	Recurrence	62
 Low-grade glioma/astrocytoma	Second Malignancy	3
 Lung Adenocarcinoma	Primary Tumor	531
 Lung Adenocarcinoma	Recurrence	2
@@ -157,7 +149,6 @@ Metastatic secondary tumors	Initial CNS Tumor	15
 Metastatic secondary tumors	Progressive	2
 Mixed germ cell tumor	Initial CNS Tumor	2
 Mixed germ cell tumor	Progressive	5
-Mixed Lineage Leukemia	Primary Tumor	4
 Neuroblastoma	Initial CNS Tumor	12
 Neuroblastoma	Metastatic Tumor	2
 Neuroblastoma	Primary Tumor	1488
@@ -200,6 +191,7 @@ Prostate Adenocarcinoma	Primary Tumor	497
 Rectum Adenocarcinoma	Primary Tumor	92
 Rectum Adenocarcinoma	Recurrence	1
 Retinoblastoma	Recurrence	2
+Rhabdoid tumor of the kidney	Primary Tumor	64
 Rhabdomyosarcoma	Initial CNS Tumor	8
 Rhabdomyosarcoma	Primary Tumor	33
 Rhabdomyosarcoma	Progressive	10
@@ -207,7 +199,7 @@ Rhabdomyosarcoma	Recurrence	2
 Rosette-forming glioneuronal tumor	Recurrence	2
 Sarcoma	Initial CNS Tumor	14
 Sarcoma	Metastatic Tumor	1
-Sarcoma	Primary Tumor	262
+Sarcoma	Primary Tumor	264
 Sarcoma	Progressive	4
 Sarcoma	Recurrence	9
 Sarcoma	Second Malignancy	2
@@ -231,7 +223,6 @@ Teratoma	Initial CNS Tumor	14
 Teratoma	Primary Tumor	4
 Teratoma	Progressive	12
 Testicular Germ Cell tumor	Primary Tumor	154
-Therapy-Related Acute Myeloid Leukemia	Second Malignancy	2
 Thymoma	Primary Tumor	118
 Thyroid Carcinoma	Metastatic Tumor	8
 Thyroid Carcinoma	Primary Tumor	501
@@ -243,12 +234,7 @@ Uterine Carcinosarcoma	Primary Tumor	56
 Uterine Corpus Endometrial Carcinoma	Primary Tumor	182
 Uterine Corpus Endometrial Carcinoma	Recurrence	1
 Uveal Melanoma	Primary Tumor	79
-Wilms Tumor	Primary Tumor	13
-NA	Initial CNS Tumor	240
-NA	Primary Tumor	49
-NA	Progressive	34
-NA	Recurrence	20
-NA	Recurrence;Second Malignancy	3
-NA	Second Malignancy	9
-NA	Unavailable	27
-NA	NA	4
+Wilms tumor	Metastatic	1
+Wilms tumor	Metastatic Tumor	1
+Wilms tumor	Primary Tumor	298
+Wilms tumor	Recurrence	15
