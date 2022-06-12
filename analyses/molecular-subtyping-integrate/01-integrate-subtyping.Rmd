@@ -79,8 +79,7 @@ compiled_subtyping_other <- base_histology %>%
   Notes,
   # adding harmonized_diagnosis from manual review 
   # for pathology_diagnosis=="Other"
-  harmonized_diagnosis
-) %>%
+  harmonized_diagnosis) %>%
   unique()
 
 # combined OpenPBTA subtypes and manual "Other" subtypes
@@ -100,7 +99,7 @@ short_histology and broad_histology will be added from base histology for sample
 ```{r}
 
 histology <- base_histology %>% 
-  select(-Notes,-molecular_subtype,-integrated_diagnosis, -harmonized_diagnosis) %>%
+  select(-Notes,-molecular_subtype,-integrated_diagnosis, -harmonized_diagnosis ) %>%
   left_join(compiled_subtyping,by=c("Kids_First_Biospecimen_ID","sample_id","Kids_First_Participant_ID","tumor_descriptor"),suffix=c(".base",".subtyped")) %>%
   unique() %>%
   mutate(
@@ -117,7 +116,10 @@ histology <- base_histology %>%
                 is.na(integrated_diagnosis) & 
                   is.na(harmonized_diagnosis) &
                   !is.na(pathology_diagnosis) ~ pathology_diagnosis
-    )) 
+    )) %>%
+  # Harmonize some harmonized diagnoses which will become cancer groups
+  mutate(harmonized_diagnosis = case_when(harmonized_diagnosis %in% c("Ewings sarcoma", "Ewings Sarcoma") ~ "Ewing sarcoma",
+                                          TRUE ~ as.character(harmonized_diagnosis)))
 ```
 
 
@@ -140,8 +142,7 @@ Are there NA in broad_histology, short_histology or harmonized_diagnosis
 histology %>% 
   filter(sample_type=="Tumor",
          (is.na(broad_histology)| is.na(short_histology)| is.na(harmonized_diagnosis))) %>%
-  tally()
-
+  tally() 
 ```
 
 No NAs in broad_histology, short_histology or harmonized_diagnosis
@@ -154,13 +155,15 @@ This means no evidence was provided/available for these samples so we are not ab
 Provides a narrower grouping for samples that can be used in generating figures
 ```{r}
 
-histology<- histology %>%
+histology_cg <- histology %>%
   # remove subtype details
-  dplyr::mutate(cancer_group = case_when(broad_histology %in% c("Benign tumor", "Other", "Non-tumor") ~ NA_character_, 
-                                          TRUE ~ str_extract(harmonized_diagnosis, "[^,]*"))) %>%
-  
-  # update some values that come from pathology_diagnosis which are not standardized yet
+  dplyr::mutate(cancer_group = case_when(broad_histology %in% c("Benign tumor", "Other", "Non-tumor") ~ NA_character_,
+                                         pathology_diagnosis == "Other" ~ NA_character_,
+                                         TRUE ~ str_extract(harmonized_diagnosis, "[^,]*"))) %>%
+   # update some values that come from pathology_diagnosis which are not standardized yet
   dplyr::mutate(cancer_group = case_when(
+    # if multiple cancers, make NA unless otherwise specified below
+    grepl(";", cancer_group) ~ NA_character_,
     cancer_group == "Brainstem glioma- Diffuse intrinsic pontine glioma" ~ "Diffuse intrinsic pontine glioma",
     cancer_group == "Neurofibroma/Plexiform;Other" ~ "Neurofibroma/Plexiform",
     cancer_group == "Non-germinomatous germ cell tumor;Teratoma" ~ "Teratoma",
@@ -169,11 +172,11 @@ histology<- histology %>%
     cancer_group == "Adamantinomatous craniopharyngioma" ~ "Craniopharyngioma",
     sample_id == "7316-2577" ~ "Embryonal tumor with multilayer rosettes",
     cancer_group %in% c("Benign tumor","Dysplasia/Gliosis","Other","Dysplasia/Gliosis-Glial-neuronal tumor NOS") ~ NA_character_,
-    cancer_group == "Kidney Rhabdoid Tumor" ~ "Rhabdoid tumor",
-    cancer_group == "Kidney Wilms Tumor" ~ "Wilms tumor",
+    #cancer_group == "Kidney Rhabdoid Tumor" ~ "Rhabdoid tumor",
+   # cancer_group == "Kidney Wilms Tumor" ~ "Wilms tumor",
     cancer_group == "Testicular Germ Cell Tumor" ~ "Testicular Germ Cell tumor",
     cancer_group == "Ependymoma;Metastatic secondary tumors" ~ "Ependymoma",
-    grepl("Ganglioglioma;Low-grade", cancer_group) ~ "Ganglioglioma",
+    cancer_group == "Acute Promyelocytic Leukemia" ~ "Acute Myeloid Leukemia",
     TRUE ~ as.character(cancer_group))
   ) %>%
   # Additional update to clean up terms that we will use in plots
@@ -194,7 +197,7 @@ We'll only include a subset of the mappings in the README (those that we think r
 # harmonized dx and cancer group. It will include additional columns that 
 # explain whether or not the subtype is stripped and whether not additional 
 # modifications beyond that have been performed.
-mapping_table <- histology %>% 
+mapping_table <- histology_cg %>% 
   # Consider removing this sample? -- seems to be a special case, see chunk above
   # dplyr::filter(sample_id != "7316-2577") %>%
   dplyr::select(cohort, harmonized_diagnosis, 
@@ -225,11 +228,12 @@ mapping_table %>%
   readr::write_tsv("results/harmonized_diagnosis_cancer_group_table.tsv")
 
 # Add file of unique cancer groups
-cancer_groups <- mapping_table %>%
-  filter(!is.na(cancer_group)) %>%
-  select(cancer_group) %>%
-  unique() %>%
-  arrange(cancer_group) %>%
+cancer_groups <- histology_cg %>%
+  filter(!is.na(pathology_diagnosis)) %>%
+  select(cancer_group, tumor_descriptor) %>%
+  group_by(cancer_group, tumor_descriptor) %>%
+  tally() %>%
+  arrange(cancer_group, tumor_descriptor) %>%
   write_tsv("results/cancer_groups.txt", col_names = F)
 
 
