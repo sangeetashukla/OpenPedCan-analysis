@@ -6,7 +6,7 @@
 - overview of changes:
   - This particular release added the following datasets:
     - 11 RNA-Seq and WXS PBTA samples (plus 2 WXS PBTA results from previous release)
-    - 1689 DGD targeted sequencing tumor samples
+    - 1799 DGD tumor samples (929 DNA, 870 RNA)
     - methylation samples
       - methylation samples: 
         - 5 PBTA samples
