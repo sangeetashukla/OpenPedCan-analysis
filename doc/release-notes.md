@@ -6,15 +6,13 @@
 - overview of changes:
   - This particular release added the following datasets:
     - 11 RNA-Seq and WXS PBTA samples (plus 2 WXS PBTA results from previous release)
-    - 1689 DGD targeted sequencing tumor samples
+    - 1799 DGD tumor samples (929 DNA, 870 RNA)
     - methylation samples
-      - methylation samples: 
+      - methylation normal samples: 
         - 5 PBTA samples
         - 12 TARGET samples
-      - methylation sample type not reported
-        - 3 PBTA 
       - methylation tumor samples
-        - 1143 PBTA samples
+        - 1146 PBTA samples
         - 751 TARGET samples
       - RNA isoform merged TPM samples
   - Update TCGA RNA-Seq data with GENCODE v36 GDC
