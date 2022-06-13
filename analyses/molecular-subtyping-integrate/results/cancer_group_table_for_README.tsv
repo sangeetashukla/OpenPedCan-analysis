@@ -1,6 +1,7 @@
 stripped_subtype	cancer_group
 Abdominal inflammatory myofibroblastic tumor	NA
 Acute Promyelocytic Leukemia	Acute Myeloid Leukemia
+Adamantinomatous craniopharyngioma	Adamantinomatous Craniopharyngioma
 Adenoma	NA
 Adrenal mass	NA
 Anaplastic (malignant) meningioma	Meningioma
@@ -23,6 +24,7 @@ Choroid plexus papilloma	NA
 Choroid plexus tumor	NA
 Chronic myeloid leukemia pathway	NA
 Clear cell meningioma	Meningioma
+Clear Cell Sarcoma of the Kidney	Clear cell sarcoma of the kidney
 CNS Embryonal tumor	NA
 CNS Melanoma	NA
 congenital malignant brain tumor	NA
@@ -48,6 +50,7 @@ Fibrous dysplasia	NA
 Ganglioglioma;Low-grade glioma/astrocytoma (WHO grade I/II)	NA
 Ganglioneuroma	NA
 Glioblastoma Multiforme Pathway	NA
+Gliomatosis cerebri	Gliomatosis Cerebri
 Glioneuronal tumor	NA
 Gliosarcoma	NA
 Hamartoma	NA
@@ -65,8 +68,6 @@ Ini-1 negative tumor cells surrounded by reactive astrocytes most c/w metastatic
 Juvenile xanthogranuloma	NA
 Juvenile Xanthogranuloma	Juvenile xanthogranuloma
 Kidney Chromophobe	Chromophobe renal cell carcinoma
-Kidney Rhabdoid Tumor	Rhabdoid tumor of the kidney
-Kidney Wilms Tumor	Wilms tumor
 Klippel-trenaunay-weber syndrome	NA
 Lipoblastoma	NA
 Lipoma	NA
@@ -112,15 +113,13 @@ Rathke cleft cyst	NA
 Reactive connective tissue	NA
 Recurrent primary mediastinal (thymic) large b-cell lymphoma	NA
 Retinal neuroblastoma	NA
-Rosai-dorfman	NA
+Rosai-dorfman	Rosai-Dorfman disease
 Shwachman-diamond syndrome	NA
-Skin Cutaneous Melanoma	Melanoma
 Solid pseudopapillary neoplasm of the pancreas	NA
 Spindle cell neoplasm	NA
 Spinocerebellar ataxia type 7	NA
 Subependymal Giant Cell Astrocytoma (SEGA)	Subependymal Giant Cell Astrocytoma
-Supratentorial or Spinal Cord PNET	Embryonal Tumor NOS
-Testicular Germ Cell Tumor	Testicular Germ Cell tumor
+Supratentorial or Spinal Cord PNET	CNS Embryonal tumor
 Therapy-Related Acute Myeloid Leukemia	Acute Myeloid Leukemia
 Thrombocytopenia	NA
 Thrombocytosis	NA

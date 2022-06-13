@@ -7,7 +7,7 @@ TCGA	Acute Myeloid Leukemia	Acute Myeloid Leukemia	No	No
 DGD	Acute Myeloid Leukemia	Acute Myeloid Leukemia	No	No
 DGD	Therapy-Related Acute Myeloid Leukemia	Acute Myeloid Leukemia	No	Yes
 DGD	Acute Promyelocytic Leukemia	Acute Myeloid Leukemia	No	Yes
-PBTA	Adamantinomatous craniopharyngioma	Adamantinomatous craniopharyngioma	No	No
+PBTA	Adamantinomatous craniopharyngioma	Adamantinomatous Craniopharyngioma	No	Yes
 DGD	Adenocarcinoma	Adenocarcinoma	No	No
 TCGA	Adrenocortical Carcinoma	Adrenocortical Carcinoma	No	No
 DGD	Anaplastic Large Cell Lymphoma	Anaplastic Large Cell Lymphoma	No	No
@@ -30,10 +30,12 @@ DGD	Choroid plexus carcinoma	Choroid plexus carcinoma	No	No
 TCGA	Kidney Chromophobe	Chromophobe renal cell carcinoma	No	Yes
 DGD	Chronic Myelogenous Leukemia	Chronic Myelogenous Leukemia	No	No
 DGD	CIC-DUX4 Sarcoma	CIC-DUX4 Sarcoma	No	No
-TARGET	Clear Cell Sarcoma of the Kidney	Clear Cell Sarcoma of the Kidney	No	No
+TARGET	Clear Cell Sarcoma of the Kidney	Clear cell sarcoma of the kidney	No	Yes
 PBTA	CNS Burkitt's lymphoma	CNS Burkitt's lymphoma	No	No
 PBTA	CNS Embryonal tumor, NOS	CNS Embryonal tumor	Yes	No
+PBTA	Supratentorial or Spinal Cord PNET	CNS Embryonal tumor	No	Yes
 PBTA	CNS Embryonal tumor, HGNET-MN1	CNS Embryonal tumor	Yes	No
+DGD	Supratentorial or Spinal Cord PNET	CNS Embryonal tumor	No	Yes
 PBTA	CNS neuroblastoma	CNS neuroblastoma	No	No
 TCGA	Colon Adenocarcinoma	Colon Adenocarcinoma	No	No
 PBTA	Craniopharyngioma	Craniopharyngioma	No	No
@@ -51,9 +53,7 @@ PBTA	Diffuse midline glioma, H3 K28-mutant	Diffuse midline glioma	Yes	No
 PBTA	Dysembryoplastic neuroepithelial tumor (DNET)	Dysembryoplastic neuroepithelial tumor	No	Yes
 DGD	Dysembryoplastic neuroepithelial tumor (DNET)	Dysembryoplastic neuroepithelial tumor	No	Yes
 DGD	Dysgerminoma	Dysgerminoma	No	No
-PBTA	Supratentorial or Spinal Cord PNET	Embryonal Tumor NOS	No	Yes
 DGD	Embryonal Tumor NOS	Embryonal Tumor NOS	No	No
-DGD	Supratentorial or Spinal Cord PNET	Embryonal Tumor NOS	No	Yes
 PBTA	Embryonal tumor with multilayer rosettes, C19MC-altered	Embryonal tumor with multilayer rosettes	Yes	No
 PBTA	Embryonal Tumor with Multilayered Rosettes (ETMR)	Embryonal tumor with multilayer rosettes	No	Yes
 PBTA	Ependymoma	Ependymoma	No	No
@@ -97,7 +97,7 @@ PBTA	Glial-neuronal tumor NOS,  KIAA1549-BRAF	Glial-neuronal tumor NOS	Yes	No
 PBTA	Glial-neuronal tumor NOS,  other MAPK	Glial-neuronal tumor NOS	Yes	No
 DGD	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	No	No
 TCGA	Glioblastoma Multiforme	Glioblastoma Multiforme	No	No
-PBTA	Gliomatosis cerebri, IDH	Gliomatosis cerebri	Yes	No
+PBTA	Gliomatosis cerebri, IDH	Gliomatosis Cerebri	Yes	Yes
 PBTA	Gliomatosis Cerebri	Gliomatosis Cerebri	No	No
 TCGA	Head and Neck Squamous Cell Carcinoma	Head and Neck Squamous Cell Carcinoma	No	No
 PBTA	Hemangioblastoma	Hemangioblastoma	No	No
@@ -150,7 +150,6 @@ PBTA	Medulloblastoma	Medulloblastoma	No	No
 PBTA	Medulloblastoma, SHH-activated	Medulloblastoma	Yes	No
 PBTA	Medulloblastoma, WNT-activated	Medulloblastoma	Yes	No
 DGD	Medulloblastoma	Medulloblastoma	No	No
-TCGA	Skin Cutaneous Melanoma	Melanoma	No	Yes
 DGD	Melanoma	Melanoma	No	No
 PBTA	Meningioma	Meningioma	No	No
 PBTA	Atypical meningioma	Meningioma	No	Yes
@@ -208,9 +207,10 @@ PBTA	Primary CNS lymphoma	Primary CNS lymphoma	No	No
 TCGA	Prostate Adenocarcinoma	Prostate Adenocarcinoma	No	No
 TCGA	Rectum Adenocarcinoma	Rectum Adenocarcinoma	No	No
 DGD	Retinoblastoma	Retinoblastoma	No	No
-TARGET	Kidney Rhabdoid Tumor	Rhabdoid tumor of the kidney	No	Yes
+TARGET	Rhabdoid tumor of the kidney	Rhabdoid tumor of the kidney	No	No
 PBTA	Rhabdomyosarcoma	Rhabdomyosarcoma	No	No
 DGD	Rhabdomyosarcoma	Rhabdomyosarcoma	No	No
+PBTA	Rosai-dorfman	Rosai-Dorfman disease	No	Yes
 PBTA	Rosette-forming glioneuronal tumor,  other MAPK, FGFR	Rosette-forming glioneuronal tumor	Yes	No
 PBTA	Sarcoma	Sarcoma	No	No
 TCGA	Sarcoma	Sarcoma	No	No
@@ -218,6 +218,7 @@ DGD	Sarcoma	Sarcoma	No	No
 DGD	High Grade Sarcoma	Sarcoma	No	Yes
 PBTA	Schwannoma	Schwannoma	No	No
 DGD	Schwannoma	Schwannoma	No	No
+TCGA	Skin Cutaneous Melanoma	Skin Cutaneous Melanoma	No	No
 TCGA	Stomach Adenocarcinoma	Stomach Adenocarcinoma	No	No
 PBTA	Subependymal Giant Cell Astrocytoma, wildtype	Subependymal Giant Cell Astrocytoma	Yes	No
 PBTA	Subependymal Giant Cell Astrocytoma, RTK, CDKN2A/B	Subependymal Giant Cell Astrocytoma	Yes	No
@@ -226,7 +227,7 @@ DGD	Subependymal Giant Cell Astrocytoma (SEGA)	Subependymal Giant Cell Astrocyto
 DGD	T Acute Lymphoblastic Leukemia/Lymphoma	T Acute Lymphoblastic Leukemia/Lymphoma	No	No
 PBTA	Teratoma	Teratoma	No	No
 DGD	Teratoma	Teratoma	No	No
-TCGA	Testicular Germ Cell Tumor	Testicular Germ Cell tumor	No	Yes
+TCGA	Testicular Germ Cell Tumor	Testicular Germ Cell Tumor	No	No
 TCGA	Thymoma	Thymoma	No	No
 TCGA	Thyroid Carcinoma	Thyroid Carcinoma	No	No
 DGD	Thyroid Gland Follicular Carcinoma	Thyroid Gland Follicular Carcinoma	No	No
@@ -234,7 +235,7 @@ DGD	Thyroid Gland Papillary Carcinoma	Thyroid Gland Papillary Carcinoma	No	No
 TCGA	Uterine Carcinosarcoma	Uterine Carcinosarcoma	No	No
 TCGA	Uterine Corpus Endometrial Carcinoma	Uterine Corpus Endometrial Carcinoma	No	No
 TCGA	Uveal Melanoma	Uveal Melanoma	No	No
-TARGET	Kidney Wilms Tumor	Wilms tumor	No	Yes
+TARGET	Wilms tumor	Wilms tumor	No	No
 DGD	Wilms Tumor	Wilms tumor	No	Yes
 PBTA	Dysplasia/Gliosis	NA	No	Yes
 PBTA	Choroid plexus papilloma	NA	No	Yes
@@ -259,7 +260,6 @@ DGD	Glioblastoma Multiforme Pathway	NA	No	Yes
 DGD	Dysplasia/Gliosis	NA	No	Yes
 DGD	Neurocytoma	NA	No	Yes
 DGD	Benign Vascular Neoplasm	NA	No	Yes
-PBTA	Rosai-dorfman	NA	No	Yes
 PBTA	Osteoblastoma	NA	No	Yes
 PBTA	Embryonal tumor with multilayer rosettes, NOS	NA	Yes	Yes
 PBTA	Fibromixoid lesion	NA	No	Yes

@@ -27,8 +27,6 @@ Lung Adenocarcinoma	Primary Tumor	531
 Lung Adenocarcinoma	Recurrence	2
 Lung Squamous Cell Carcinoma	Primary Tumor	499
 Lymphoid Neoplasm Diffuse Large B-cell Lymphoma	Primary Tumor	47
-Melanoma	Metastatic Tumor	366
-Melanoma	Primary Tumor	102
 Mesothelioma	Primary Tumor	86
 Ovarian Serous Cystadenocarcinoma	Primary Tumor	373
 Ovarian Serous Cystadenocarcinoma	Recurrence	5
@@ -43,8 +41,10 @@ Rectum Adenocarcinoma	Recurrence	1
 Sarcoma	Metastatic Tumor	1
 Sarcoma	Primary Tumor	258
 Sarcoma	Recurrence	3
+Skin Cutaneous Melanoma	Metastatic Tumor	366
+Skin Cutaneous Melanoma	Primary Tumor	102
 Stomach Adenocarcinoma	Primary Tumor	373
-Testicular Germ Cell tumor	Primary Tumor	154
+Testicular Germ Cell Tumor	Primary Tumor	154
 Thymoma	Primary Tumor	118
 Thyroid Carcinoma	Metastatic Tumor	8
 Thyroid Carcinoma	Primary Tumor	501
