@@ -8,7 +8,7 @@
     - 11 RNA-Seq and WXS PBTA samples (plus 2 WXS PBTA results from previous release)
     - 1799 DGD tumor samples (929 DNA, 870 RNA)
     - methylation samples
-      - methylation samples: 
+      - methylation normal samples: 
         - 5 PBTA samples
         - 12 TARGET samples
       - methylation tumor samples
