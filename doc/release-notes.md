@@ -12,7 +12,7 @@
         - 5 PBTA samples
         - 12 TARGET samples
       - methylation tumor samples
-        - 1143 PBTA samples
+        - 1146 PBTA samples
         - 751 TARGET samples
       - RNA isoform merged TPM samples
   - Update TCGA RNA-Seq data with GENCODE v36 GDC
