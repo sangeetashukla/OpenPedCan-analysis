@@ -11,8 +11,6 @@
       - methylation samples: 
         - 5 PBTA samples
         - 12 TARGET samples
-      - methylation sample type not reported
-        - 3 PBTA 
       - methylation tumor samples
         - 1143 PBTA samples
         - 751 TARGET samples
