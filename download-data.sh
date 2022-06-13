@@ -54,6 +54,7 @@ then
   echo "Downloading ${GENCODE27##*/}"
   curl -O $GENCODE27
 fi
+
 cd ../
 
 GENCODE38="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_38/gencode.v38.primary_assembly.annotation.gtf.gz"
@@ -63,6 +64,7 @@ then
   echo "Downloading ${GENCODE38##*/}"
   curl -O $GENCODE38
 fi
+
 
 # if in CI, then we want to generate the reference FASTA from the BSgenome.Hsapiens.UCSC.hg38 R package
 # because it is considerably faster to do so
