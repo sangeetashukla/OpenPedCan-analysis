@@ -308,3 +308,27 @@ histology_final <- histology %>%
   arrange(Kids_First_Biospecimen_ID) %>%
   write_tsv("results/histologies.tsv")
 ```
+
+### What do we need for EFO/MONDO/NCIT?
+```{r efo mondo update}
+all_cg  <- ped_cancer_groups %>%
+  bind_rows(adult_cancer_groups) %>%
+  select(cancer_group) %>%
+  unique() 
+
+efo_mondo <- read_tsv(file.path(data_dir, "efo-mondo-map.tsv"))
+
+efo_v11 <- all_cg %>%
+  full_join(efo_mondo) %>%
+  # remove mixed/not needed anymore
+  filter(cancer_group != "Germinoma;Teratoma", cancer_group != "Rhabdoid tumor") %>%
+  unique() %>%
+  arrange(cancer_group) %>%
+  write_tsv(file.path("..", "..", "analyses", "efo-mondo-mapping", "results", "efo-mondo--map-prefill.tsv"))
+
+```
+
+
+```{r session info}
+sessionInfo()
+```
