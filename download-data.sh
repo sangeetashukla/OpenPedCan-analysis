@@ -64,6 +64,7 @@ then
   curl -O $GENCODE38
 fi
 
+
 # if in CI, then we want to generate the reference FASTA from the BSgenome.Hsapiens.UCSC.hg38 R package
 # because it is considerably faster to do so
 
