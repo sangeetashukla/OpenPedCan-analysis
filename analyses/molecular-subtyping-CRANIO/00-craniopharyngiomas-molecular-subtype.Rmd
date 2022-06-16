@@ -180,6 +180,7 @@ meta_subtype <-
                # Add this to combine and fix subtypes if subtyped as ADAM + To be classified
                molecular_subtype = str_c(unique(molecular_subtype), collapse=";")) %>%
   dplyr::mutate(molecular_subtype = case_when(molecular_subtype == "CRANIO, To be classified;CRANIO, ADAM" ~ "CRANIO, ADAM",
+                                              molecular_subtype == "CRANIO, ADAM;CRANIO, To be classified" ~ "CRANIO, ADAM",
                                               TRUE ~ as.character(molecular_subtype))) %>%
   dplyr::arrange(Kids_First_Participant_ID, sample_id)
 ```
