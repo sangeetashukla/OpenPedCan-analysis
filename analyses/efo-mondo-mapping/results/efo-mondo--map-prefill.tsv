@@ -20,15 +20,18 @@ Chordoma	Orphanet_178	MONDO_0008978
 Choroid plexus carcinoma	MONDO_0016718	MONDO_0016718
 Choroid plexus cyst	MONDO_0016717	MONDO_0016717
 Choroid plexus papilloma	EFO_1000177	MONDO_0009837
+Choroid plexus tumor	NA	NA
 Chromophobe renal cell carcinoma	NA	NA
 Chronic Myelogenous Leukemia	NA	NA
 CIC-DUX4 Sarcoma	NA	NA
 Clear cell sarcoma of the kidney	EFO_0000350	MONDO_0005006
 CNS Burkitt's lymphoma	NA	NA
 CNS Embryonal tumor	EFO_0005784	MONDO_0018843
+CNS Melanoma	NA	NA
 CNS neuroblastoma	EFO_0000621	MONDO_0006130
 Colon Adenocarcinoma	NA	NA
 Craniopharyngioma	EFO_1000209	MONDO_0002787
+Desmoid-type fibromatosis	NA	NA
 Desmoplastic infantile astrocytoma and ganglioglioma	NA	NA
 Diffuse fibrillary astrocytoma	NA	NA
 Diffuse intrinsic pontine glioma	EFO_1000026	MONDO_0006033
@@ -36,6 +39,7 @@ Diffuse leptomeningeal glioneuronal tumor	NA	NA
 Diffuse midline glioma	MONDO_0003869	MONDO_0006033
 Dysembryoplastic neuroepithelial tumor	EFO_0005551	MONDO_0005505
 Dysgerminoma	NA	NA
+Embryonal tumor	NA	NA
 Embryonal Tumor NOS	NA	NA
 Embryonal tumor with multilayer rosettes	MONDO_0016715	MONDO_0016715
 Ependymoma	EFO_1000028	MONDO_0016698
@@ -51,12 +55,13 @@ Germinoma	EFO_0000514	MONDO_0005040
 Glial-neuronal tumor NOS	MONDO_0016729	MONDO_0016729
 Glioblastoma Multiforme	NA	NA
 Gliomatosis Cerebri	NA	NA
+Gliosarcoma	NA	NA
 Head and Neck Squamous Cell Carcinoma	NA	NA
 Hemangioblastoma	MONDO_0016748	MONDO_0016748
 Hepatoblastoma	NA	NA
 Hepatocellular Carcinoma	NA	NA
 High-grade glioma/astrocytoma	MONDO_0016680	MONDO_0100342
-Histiocytic Tumor	NA	NA
+Histiocytic tumor	NA	NA
 Hodgkin's lymphoma	NA	NA
 Infantile Fibrosarcoma	NA	NA
 Inflammatory Myofibroblastic Tumor	NA	NA
@@ -78,10 +83,13 @@ Mesothelioma	NA	NA
 Metastatic secondary tumors	EFO_0009812	MONDO_0024883
 Metastatic secondary tumors;Neuroblastoma	EFO_0000621	MONDO_0005072
 Mixed germ cell tumor	NA	NA
+Myeloid Neoplasm	NA	NA
+Myofibroblastic tumor	NA	NA
 Myofibroblastoma	MONDO_0040675	MONDO_0040675
 Myxoid spindle cell tumor	EFO_0000705	MONDO_0020664
 Neuroblastoma	EFO_0000621	MONDO_0005072
 Neurocytoma	NA	NA
+Neuroepithelial neoplasm	NA	NA
 Neurofibroma/Plexiform	EFO_0000658	MONDO_0003304
 Non-Hodgkin Lymphoma	NA	NA
 Oligodendroglioma	EFO_0000632	NA
@@ -90,7 +98,9 @@ Ovarian Serous Cystadenocarcinoma	NA	NA
 Pancreatic Adenocarcinoma	NA	NA
 Pheochromocytoma and Paraganglioma	NA	NA
 Pilocytic astrocytoma	NA	NA
+Pineal tumor	NA	NA
 Pineoblastoma	EFO_1000475	MONDO_0016722
+Pineocytoma	NA	NA
 Pleomorphic xanthoastrocytoma	NA	NA
 Primary CNS lymphoma	EFO_1000157	MONDO_0002571
 Prostate Adenocarcinoma	NA	NA
