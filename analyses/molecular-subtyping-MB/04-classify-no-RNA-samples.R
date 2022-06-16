@@ -16,7 +16,7 @@ dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 # read medulloblastoma samples from histology
 mb_samples <- file.path(root_dir, "data", "histologies-base.tsv") %>%
   read_tsv() %>%
-  filter(short_histology == "Medulloblastoma",
+  filter(pathology_diagnosis == "Medulloblastoma",
          sample_type == "Tumor")
 
 # samples where no RNA-Seq data is available
