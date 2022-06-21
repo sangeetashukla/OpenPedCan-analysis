@@ -34,17 +34,17 @@ rnaseq_primary_plus_all <- independent_samples(rnaseq_samples, tumor_types = "pr
 
 
 # save output for all cohorts
-rnaseq_primary_all_file <- file.path(out_dir, "independent-specimens.rnaseq.primary-release.tsv")
+rnaseq_primary_all_file <- file.path(out_dir, "independent-specimens.rnaseq.primary-pre-release.tsv")
 message(paste(nrow(rnaseq_primary_all), "RNA-Seq primary specimens for all cohorts"))
 rnaseq_primary_all %>% 
   readr::write_tsv(rnaseq_primary_all_file)
 
-rnaseq_relapse_all_file <- file.path(out_dir, "independent-specimens.rnaseq.relapse-release.tsv")
+rnaseq_relapse_all_file <- file.path(out_dir, "independent-specimens.rnaseq.relapse-pre-release.tsv")
 message(paste(nrow(rnaseq_relapse_all), "RNA-Seq relapse specimens for all cohorts"))
 rnaseq_relapse_all %>% 
   readr::write_tsv(rnaseq_relapse_all_file)
 
-rnaseq_primplus_all_file <- file.path(out_dir, "independent-specimens.rnaseq.primary-plus-release.tsv")
+rnaseq_primplus_all_file <- file.path(out_dir, "independent-specimens.rnaseq.primary-plus-pre-release.tsv")
 message(paste(nrow(rnaseq_primary_plus_all), "RNA-Seq specimens (including non-primary) for all cohorts"))
 rnaseq_primary_plus_all %>% 
   readr::write_tsv(rnaseq_primplus_all_file)
