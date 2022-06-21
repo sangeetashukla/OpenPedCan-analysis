@@ -27,7 +27,7 @@ rnaseq_samples <- histology_df %>%
                 experimental_strategy == "RNA-Seq")
 
 print(nrow(rnaseq_samples))
-# generate WGS independent samples for all cohorts
+# generate release RNA-Seq independent samples for all cohorts
 rnaseq_primary_all <- independent_samples(rnaseq_samples, tumor_types = "primary", independent_level = "all-cohorts-release", seed = 2020)
 rnaseq_relapse_all <- independent_samples(rnaseq_samples, tumor_types = "relapse", independent_level = "all-cohorts-release", seed = 2020)
 rnaseq_primary_plus_all <- independent_samples(rnaseq_samples, tumor_types = "prefer_primary", independent_level = "all-cohorts-release", seed = 2020)
