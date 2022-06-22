@@ -1,5 +1,5 @@
 # K. S. Gaonkar 2019
-# Identify recurrent fusion and genes per cancer group
+# Identify recurrent fusion and genes per broad histology
 # 
 # Sample selection criteria : removed cell-lines to only keep tumor samples 
 
@@ -84,7 +84,7 @@ rec_fusions <- standardFusionCalls %>%
 #find rec fusions per PATIENT per broad_histology
 rec_fusions<-rec_fusions[rec_fusions$count>3,]
 rec_fusions<-rec_fusions[order(rec_fusions$count,decreasing = TRUE),]
-write.table(rec_fusions,file.path(outputfolder,"fusion-recurrent-fusion-bycancergroup.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
+write.table(rec_fusions,file.path(outputfolder,"fusion-recurrent-fusion-bybroadhist.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 # binary matrix for recurrent fusions found in SAMPLE per broad_histology
 rec_fusions_mat<-rec_fusions %>% 
@@ -123,7 +123,7 @@ rec_gene<-rbind(rec_gene1A,rec_gene1B) %>%
 #find rec fused genes per PATIENT per broad_histology
 rec_gene<-rec_gene[rec_gene$count>3,]
 rec_gene<-rec_gene[order(rec_gene$count,decreasing = TRUE),]
-write.table(rec_gene,file.path(outputfolder,"fusion-recurrently-fused-genes-bycancergroup.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
+write.table(rec_gene,file.path(outputfolder,"fusion-recurrently-fused-genes-bybroadhist.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 # binary matrix for recurrently fused genes found in SAMPLE per broad_histology
 rec_geneA_mat<-rec_gene %>% 
