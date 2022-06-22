@@ -83,7 +83,7 @@ rec_fusions <- standardFusionCalls %>%
 
 #find rec fusions per PATIENT per broad_histology
 rec_fusions<-rec_fusions[rec_fusions$count>3,]
-rec_fusions<-rec_fusions[order(rec_fusions$broad_histology,decreasing = FALSE),]
+rec_fusions<-rec_fusions[order(rec_fusions$FusionName,decreasing = FALSE),]
 write.table(rec_fusions,file.path(outputfolder,"fusion-recurrent-fusion-bygroup.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 # binary matrix for recurrent fusions found in SAMPLE per broad_histology
@@ -123,7 +123,7 @@ rec_gene<-rbind(rec_gene1A,rec_gene1B) %>%
 
 #find rec fused genes per PATIENT per broad_histology
 rec_gene<-rec_gene[rec_gene$count>3,]
-rec_gene<-rec_gene[order(rec_gene$broad_histology,decreasing = FALSE),]
+rec_gene<-rec_gene[order(rec_gene$Gene,decreasing = FALSE),]
 write.table(rec_gene,file.path(outputfolder,"fusion-recurrently-fused-genes-bygroup.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 # binary matrix for recurrently fused genes found in SAMPLE per broad_histology
