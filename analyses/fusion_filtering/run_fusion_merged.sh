@@ -75,49 +75,49 @@ putative_oncogenic_fusion="${results_path}/fusion-putative-oncogenic.tsv"
 #                                        --outputFile $normal_expression_brain
 
 
-# Run Fusion standardization for arriba caller
-Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
-                                    --caller "arriba" \
-                                    --outputFile $standard_arriba_file
-
-
-# Run Fusion standardization for starfusion caller
-Rscript 01-fusion-standardization.R --fusionfile $starfusion_file \
-                                    --caller "starfusion" \
-                                    --outputFile $standard_starfusion_file
-
-# Run Fusion general filtering for combined expression file
-Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$standard_arriba_file  \
-                              --expressionMatrix $rna_expression_file \
-                              --clinicalFile $histologies_file \
-                              --cohortInterest "PBTA,GMKF,TARGET" \
-                              --artifactFilter $artifact_filter  \
-                              --spanningFragCountFilter $spanningFragCountFilter \
-                              --readingFrameFilter $reading_frame_filter \
-                              --referenceFolder $references_path \
-                              --outputFile "${scratch_path}/standardFusionExp" \
-                              --readthroughFilter
-
-
-# # Fusion zscore annotation for filtered fusion for the combined RNA expression file
-# Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standardFusionExp_QC_expression_filtered_annotated.RDS" \
-#                                   --expressionMatrix $rna_expression_file \
-#                                   --clinicalFile $histologies_file \
-#                                   --cohortInterest "PBTA,GMKF" \
-#                                   --normalExpressionMatrix $normal_expression_brain,$normal_expression_adrenal_gland \
-#                                   --outputFile "${scratch_path}/standardFusionExp_QC_expression"
-
-# Project specific filtering
-Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
-
-# QC filter putative oncogene found in more than 4 histologies
-Rscript -e "rmarkdown::render('05-QC_putative_onco_fusion_distribution.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
+# # Run Fusion standardization for arriba caller
+# Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
+#                                     --caller "arriba" \
+#                                     --outputFile $standard_arriba_file
+# 
+# 
+# # Run Fusion standardization for starfusion caller
+# Rscript 01-fusion-standardization.R --fusionfile $starfusion_file \
+#                                     --caller "starfusion" \
+#                                     --outputFile $standard_starfusion_file
+# 
+# # Run Fusion general filtering for combined expression file
+# Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$standard_arriba_file  \
+#                               --expressionMatrix $rna_expression_file \
+#                               --clinicalFile $histologies_file \
+#                               --cohortInterest "PBTA,GMKF,TARGET" \
+#                               --artifactFilter $artifact_filter  \
+#                               --spanningFragCountFilter $spanningFragCountFilter \
+#                               --readingFrameFilter $reading_frame_filter \
+#                               --referenceFolder $references_path \
+#                               --outputFile "${scratch_path}/standardFusionExp" \
+#                               --readthroughFilter
+# 
+# 
+# # # Fusion zscore annotation for filtered fusion for the combined RNA expression file
+# # Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standardFusionExp_QC_expression_filtered_annotated.RDS" \
+# #                                   --expressionMatrix $rna_expression_file \
+# #                                   --clinicalFile $histologies_file \
+# #                                   --cohortInterest "PBTA,GMKF" \
+# #                                   --normalExpressionMatrix $normal_expression_brain,$normal_expression_adrenal_gland \
+# #                                   --outputFile "${scratch_path}/standardFusionExp_QC_expression"
+# 
+# # Project specific filtering
+# Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
+# 
+# # QC filter putative oncogene found in more than 4 histologies
+# Rscript -e "rmarkdown::render('05-QC_putative_onco_fusion_distribution.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
 # Recurrent fusion/fused genes
-Rscript 06-recurrent-fusions-per-cancer-group.R --standardFusionCalls $putative_oncogenic_fusion \
-                                                --clinicalFile $histologies_file \
-                                                --cohortInterest "PBTA,GMKF,TARGET" \
-                                                --outputfolder $results_path \
-                                                --independentPrimary $independent_RNA_primary \
-                                                --independentRelapse $independent_RNA_relapse
+Rscript 06-recurrent-fusions-per-broad-hist.R --standardFusionCalls $putative_oncogenic_fusion \
+                                              --clinicalFile $histologies_file \
+                                              --cohortInterest "PBTA,GMKF,TARGET" \
+                                              --outputfolder $results_path \
+                                              --independentPrimary $independent_RNA_primary \
+                                              --independentRelapse $independent_RNA_relapse
 

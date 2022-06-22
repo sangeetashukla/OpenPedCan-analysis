@@ -52,11 +52,11 @@ rnaseq_relapse_all_file <- read_tsv(independentRelapse)
 clinical_rna<-rbind(rnaseq_primary_all_file,rnaseq_relapse_all_file) %>% unique()
 clinical_rna<-clinical_rna %>% left_join(clinical,by=c("Kids_First_Participant_ID","Kids_First_Biospecimen_ID"))
 
-# Putative Driver Fusions annotated with cancer_group
+# Putative Driver Fusions annotated with broad histology
 standardFusionCalls<-standardFusionCalls %>% 
   dplyr::filter( Sample%in% clinical_rna$Kids_First_Biospecimen_ID) %>%
   left_join(clinical,by=c("Sample"="Kids_First_Biospecimen_ID","Kids_First_Participant_ID")) %>% 
-  dplyr::filter(!is.na(cancer_group)) %>% as.data.frame()
+  dplyr::filter(!is.na(broad_histology)) %>% as.data.frame()
 
 # keep only inframe fusions 
 standardFusionCalls <- standardFusionCalls %>%
@@ -74,25 +74,25 @@ standardFusionCalls<-standardFusionCalls %>%
   # get rid of removal column
   dplyr::select(-removal)
 
-# gather recurrent fusion per patient per cancer_group
+# gather recurrent fusion per patient per broad_histology
 rec_fusions <- standardFusionCalls %>% 
-  dplyr::select("FusionName","cancer_group","Kids_First_Participant_ID")%>%
+  dplyr::select("FusionName","broad_histology","Kids_First_Participant_ID")%>%
   unique() %>%
-  dplyr::group_by(FusionName, cancer_group) %>% 
+  dplyr::group_by(FusionName, broad_histology) %>% 
   dplyr::summarize(count = n())
 
-#find rec fusions per PATIENT per cancer_group
+#find rec fusions per PATIENT per broad_histology
 rec_fusions<-rec_fusions[rec_fusions$count>3,]
 rec_fusions<-rec_fusions[order(rec_fusions$count,decreasing = TRUE),]
 write.table(rec_fusions,file.path(outputfolder,"fusion-recurrent-fusion-bycancergroup.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
-# binary matrix for recurrent fusions found in SAMPLE per cancer_group
+# binary matrix for recurrent fusions found in SAMPLE per broad_histology
 rec_fusions_mat<-rec_fusions %>% 
   # to add sample with rec fusion
-  left_join(standardFusionCalls, by=c("FusionName","cancer_group")) %>%
-  select("FusionName","cancer_group","Sample") %>% 
+  left_join(standardFusionCalls, by=c("FusionName","broad_histology")) %>%
+  select("FusionName","broad_histology","Sample") %>% 
   # to add all rna Sample for binary matrix
-  full_join(clinical_rna,by=c("Sample"="Kids_First_Biospecimen_ID","cancer_group"="cancer_group")) 
+  full_join(clinical_rna,by=c("Sample"="Kids_First_Biospecimen_ID","broad_histology"="broad_histology")) 
 
 # adding a full join to recurrent fusion adds NAs to FusionName column that don't have recurrent fusions. Changing NA to No_rec_fusions so in matrix format it columns specifies that instead of NA
 rec_fusions_mat[is.na(rec_fusions_mat$FusionName),"FusionName"]<-"No_rec_fusion"
@@ -104,43 +104,43 @@ write.table(rec_fusions_mat,file.path(outputfolder,"fusion-recurrent-fusion-bysa
 
 # gene1A recurrent
 rec_gene1A <- standardFusionCalls %>% 
-  dplyr::select("Gene1A","cancer_group","Kids_First_Participant_ID")%>%
+  dplyr::select("Gene1A","broad_histology","Kids_First_Participant_ID")%>%
   unique() %>%
   dplyr::rename("Gene"="Gene1A")
 
 # gene1B recurrent
 rec_gene1B <- standardFusionCalls %>% 
-  dplyr::select("Gene1B","cancer_group","Kids_First_Participant_ID")%>%
+  dplyr::select("Gene1B","broad_histology","Kids_First_Participant_ID")%>%
   unique() %>%
   dplyr::rename("Gene"="Gene1B")
 
 # merge and then summarize
 rec_gene<-rbind(rec_gene1A,rec_gene1B) %>% 
   unique() %>%
-  dplyr::group_by(Gene,cancer_group) %>% 
+  dplyr::group_by(Gene,broad_histology) %>% 
   dplyr::summarize(count = n()) 
 
-#find rec fused genes per PATIENT per cancer_group
+#find rec fused genes per PATIENT per broad_histology
 rec_gene<-rec_gene[rec_gene$count>3,]
 rec_gene<-rec_gene[order(rec_gene$count,decreasing = TRUE),]
 write.table(rec_gene,file.path(outputfolder,"fusion-recurrently-fused-genes-bycancergroup.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
-# binary matrix for recurrently fused genes found in SAMPLE per cancer_group
+# binary matrix for recurrently fused genes found in SAMPLE per broad_histology
 rec_geneA_mat<-rec_gene %>% 
   # to add sample with rec fusion gene A (5' gene)
-  left_join(standardFusionCalls, by=c("Gene"="Gene1A","cancer_group")) %>%
-  select("Gene","cancer_group","Sample") %>%
+  left_join(standardFusionCalls, by=c("Gene"="Gene1A","broad_histology")) %>%
+  select("Gene","broad_histology","Sample") %>%
   filter(!is.na(Sample))
 
 rec_geneB_mat<-rec_gene %>% 
   # to add sample with rec fusion gene B (3' gene)
-  left_join(standardFusionCalls, by=c("Gene"="Gene1B","cancer_group")) %>%
-  select("Gene","cancer_group","Sample") %>%
+  left_join(standardFusionCalls, by=c("Gene"="Gene1B","broad_histology")) %>%
+  select("Gene","broad_histology","Sample") %>%
   filter(!is.na(Sample))
 
 rec_gene_mat<-rbind(rec_geneA_mat,rec_geneB_mat) %>% unique() %>%
   # to add all rna Sample for binary matrix
-  full_join(clinical_rna,by=c("Sample"="Kids_First_Biospecimen_ID","cancer_group"="cancer_group")) %>%
+  full_join(clinical_rna,by=c("Sample"="Kids_First_Biospecimen_ID","broad_histology"="broad_histology")) %>%
   unique()
 rec_gene_mat[is.na(rec_gene_mat$Gene),"Gene"]<-"No_rec_fused_gene"
 

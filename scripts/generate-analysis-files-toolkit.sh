@@ -31,7 +31,7 @@ OPENPBTA_BASE_SUBTYPING=1 ../analyses/independent-samples/run-independent-sample
 
 # Fusion filtering
 echo "Create fusion filtered list"
-OPENPBTA_BASE_RELEASE=1 bash ${analyses_dir}/fusion_filtering/run_fusion_merged.sh
+OPENPBTA_BASE_SUBTYPING=1 bash ${analyses_dir}/fusion_filtering/run_fusion_merged.sh
 
 # Copy over fusions lists
 cp ${analyses_dir}/fusion_filtering/results/fusion-putative-oncogenic.tsv ${compiled_dir}
@@ -57,7 +57,7 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
   
   # Run step that generates "most focal CN" files (annotation) using the *BASE* histology file
   echo "Run focal CN file preparation"
-  OPENPBTA_BASE_RELEASE=1 bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh
+  OPENPBTA_BASE_SUBTYPING=1 bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn-OpenTarget.sh
   
   # Copy over focal CN
   cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz ${compiled_dir}

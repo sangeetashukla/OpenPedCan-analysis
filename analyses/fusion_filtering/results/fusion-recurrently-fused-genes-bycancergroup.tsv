@@ -1,286 +1,322 @@
-Gene	cancer_group	count
-BRAF	Low-grade glioma/astrocytoma	113
-KIAA1549	Low-grade glioma/astrocytoma	108
-SLC7A5	Acute Lymphoblastic Leukemia	102
-CBFA2T3	Acute Lymphoblastic Leukemia	82
-MAD1L1	Acute Lymphoblastic Leukemia	71
-PTMA	Acute Lymphoblastic Leukemia	62
-TTYH3	Acute Lymphoblastic Leukemia	60
-TRAC	Acute Lymphoblastic Leukemia	57
-TRDV2	Acute Lymphoblastic Leukemia	57
-CXCR4	Acute Lymphoblastic Leukemia	52
-RBM38	Acute Lymphoblastic Leukemia	51
-PTBP1	Acute Myeloid Leukemia	50
-TCF3	Acute Lymphoblastic Leukemia	48
-GSE1	Acute Lymphoblastic Leukemia	44
-BANP	Acute Lymphoblastic Leukemia	43
-MKNK2	Acute Lymphoblastic Leukemia	41
-PIM3	Acute Lymphoblastic Leukemia	39
-PTBP1	Acute Lymphoblastic Leukemia	39
-RNF126	Acute Myeloid Leukemia	38
-BRD1	Acute Lymphoblastic Leukemia	37
-FOXK2	Acute Lymphoblastic Leukemia	33
-SLC7A5	Acute Myeloid Leukemia	31
-GSE1	Acute Myeloid Leukemia	30
-NCOR2	Acute Lymphoblastic Leukemia	29
-NFATC1	Acute Lymphoblastic Leukemia	29
-C11orf95	Ependymoma	28
-ETV6	Acute Lymphoblastic Leukemia	28
-KMT2A	Acute Myeloid Leukemia	28
-PQLC1	Acute Lymphoblastic Leukemia	28
-RNF126	Acute Lymphoblastic Leukemia	26
-RELA	Ependymoma	25
-ZFPM1	Acute Lymphoblastic Leukemia	25
-ZNF292	Acute Lymphoblastic Leukemia	25
-DOT1L	Acute Lymphoblastic Leukemia	23
-MAD1L1	Acute Myeloid Leukemia	23
-PTMA	Acute Myeloid Leukemia	23
-RUNX1	Acute Lymphoblastic Leukemia	23
-RUNX1	Acute Myeloid Leukemia	23
-CBFA2T3	Acute Myeloid Leukemia	22
-FBRSL1	Acute Lymphoblastic Leukemia	22
-ZNF384	Acute Lymphoblastic Leukemia	22
-CBFB	Acute Myeloid Leukemia	21
-KMT2A	Acute Lymphoblastic Leukemia	21
-MYH11	Acute Myeloid Leukemia	21
-NFATC1	Acute Myeloid Leukemia	21
-RUNX1T1	Acute Myeloid Leukemia	21
-SYNCRIP	Acute Lymphoblastic Leukemia	21
-CXCR4	Acute Myeloid Leukemia	20
-PAX5	Acute Lymphoblastic Leukemia	20
-RALGDS	Acute Lymphoblastic Leukemia	20
-GPSM1	Acute Lymphoblastic Leukemia	19
-SEPT9	Acute Lymphoblastic Leukemia	19
-COPE	Acute Lymphoblastic Leukemia	18
-PQLC1	Acute Myeloid Leukemia	18
-CSNK1D	Acute Lymphoblastic Leukemia	17
-ABL1	Acute Lymphoblastic Leukemia	16
-H3F3B	Neuroblastoma	16
-HIST1H3J	Neuroblastoma	16
-LFNG	Acute Lymphoblastic Leukemia	16
-ZFPM1	Acute Myeloid Leukemia	16
-CD81	Acute Lymphoblastic Leukemia	15
-CDK2AP1	Acute Lymphoblastic Leukemia	15
-COL1A1	Osteosarcoma	15
-MLLT10	Acute Lymphoblastic Leukemia	15
-NOTCH1	Acute Lymphoblastic Leukemia	15
-NR4A1	Acute Lymphoblastic Leukemia	15
-TTYH3	Acute Myeloid Leukemia	15
-EIF4A1	Acute Lymphoblastic Leukemia	14
-ELL	Acute Lymphoblastic Leukemia	14
-IRX2	Acute Lymphoblastic Leukemia	14
-METRNL	Acute Lymphoblastic Leukemia	14
-NOL4L	Acute Lymphoblastic Leukemia	14
-NUP98	Acute Myeloid Leukemia	14
-SENP3-EIF4A1	Acute Lymphoblastic Leukemia	14
-TAF4	Acute Lymphoblastic Leukemia	14
-ZNF292	Acute Myeloid Leukemia	14
-CDK2AP1	Acute Myeloid Leukemia	13
-DOT1L	Acute Myeloid Leukemia	13
-PBX1	Acute Lymphoblastic Leukemia	13
-CRTC1	Acute Lymphoblastic Leukemia	12
-EIF4A1	Acute Myeloid Leukemia	12
-GAK	Acute Lymphoblastic Leukemia	12
-MLLT3	Acute Myeloid Leukemia	12
-NCOR2	Acute Myeloid Leukemia	12
-ULK1	Acute Lymphoblastic Leukemia	12
-ANKRD11	Acute Lymphoblastic Leukemia	11
-BCL7A	Acute Lymphoblastic Leukemia	11
-FUS	Acute Myeloid Leukemia	11
-KDM4B	Acute Lymphoblastic Leukemia	11
-MLLT10	Acute Myeloid Leukemia	11
-PDGFA	Acute Lymphoblastic Leukemia	11
-SLC12A7	Acute Lymphoblastic Leukemia	11
-B2M	Acute Lymphoblastic Leukemia	10
-BCR	Acute Lymphoblastic Leukemia	10
-C7orf50	Acute Myeloid Leukemia	10
-MAFK	Acute Lymphoblastic Leukemia	10
-NUP214	Acute Lymphoblastic Leukemia	10
-PMEPA1	Acute Lymphoblastic Leukemia	10
-SBF1	Acute Lymphoblastic Leukemia	10
-ACSF3	Acute Lymphoblastic Leukemia	9
-COX19	Acute Myeloid Leukemia	9
-DAZAP1	Acute Myeloid Leukemia	9
-DDX5	Acute Myeloid Leukemia	9
-ING1	Acute Myeloid Leukemia	9
-INSR	Acute Lymphoblastic Leukemia	9
-MAEA	Acute Lymphoblastic Leukemia	9
-MTA1	Acute Lymphoblastic Leukemia	9
-NBAS	Neuroblastoma	9
-PER1	Acute Myeloid Leukemia	9
-SKI	Acute Myeloid Leukemia	9
-SYNCRIP	Acute Myeloid Leukemia	9
-TBCD	Acute Lymphoblastic Leukemia	9
-AC008878.3	Acute Lymphoblastic Leukemia	8
-CSNK1G2	Acute Lymphoblastic Leukemia	8
-EIF5A	Acute Myeloid Leukemia	8
-EP300	Acute Lymphoblastic Leukemia	8
-GNAS	Acute Myeloid Leukemia	8
-KDM5A	Acute Myeloid Leukemia	8
-KLF16	Acute Lymphoblastic Leukemia	8
-KLF2	Acute Myeloid Leukemia	8
-LDLRAD4	Acute Lymphoblastic Leukemia	8
-LEF1	Acute Lymphoblastic Leukemia	8
-MLLT1	Acute Lymphoblastic Leukemia	8
-MNT	Acute Lymphoblastic Leukemia	8
-PHACTR3	Acute Lymphoblastic Leukemia	8
-PICALM	Acute Lymphoblastic Leukemia	8
-SBNO2	Acute Myeloid Leukemia	8
-SUN1	Acute Lymphoblastic Leukemia	8
-TCF25	Acute Myeloid Leukemia	8
-TFRC	Acute Lymphoblastic Leukemia	8
-AC005258.1	Acute Myeloid Leukemia	7
-ASXL1	Acute Lymphoblastic Leukemia	7
-BAHCC1	Acute Lymphoblastic Leukemia	7
-BANP	Acute Myeloid Leukemia	7
-BRF1	Acute Lymphoblastic Leukemia	7
-C7orf50	Acute Lymphoblastic Leukemia	7
-FBRSL1	Acute Myeloid Leukemia	7
-GNAS	Acute Lymphoblastic Leukemia	7
-GRK2	Acute Lymphoblastic Leukemia	7
-HDAC4	Acute Lymphoblastic Leukemia	7
-MAEA	Acute Myeloid Leukemia	7
-RASA3	Acute Myeloid Leukemia	7
-ASPSCR1	Acute Myeloid Leukemia	6
-BRAF	Ganglioglioma	6
-BRD1	Acute Myeloid Leukemia	6
-BRD3	Acute Lymphoblastic Leukemia	6
-CSNK1D	Acute Myeloid Leukemia	6
-EIF5A	Acute Lymphoblastic Leukemia	6
-FAM19A5	Acute Lymphoblastic Leukemia	6
-FAM20C	Acute Myeloid Leukemia	6
-FAM49A	Neuroblastoma	6
-FOXK2	Acute Myeloid Leukemia	6
-GAK	Acute Myeloid Leukemia	6
-GET4	Acute Lymphoblastic Leukemia	6
-LMNB2	Acute Lymphoblastic Leukemia	6
-LRP1	Osteosarcoma	6
-MET	Diffuse midline glioma	6
-MYO18B	Acute Lymphoblastic Leukemia	6
-NSD1	Acute Myeloid Leukemia	6
-PER1	Acute Lymphoblastic Leukemia	6
-PFKL	Acute Lymphoblastic Leukemia	6
-PIM3	Acute Myeloid Leukemia	6
-PPP1R37	Acute Lymphoblastic Leukemia	6
-RNF168	Acute Lymphoblastic Leukemia	6
-RXRA	Acute Myeloid Leukemia	6
-SBNO2	Acute Lymphoblastic Leukemia	6
-SF1	Acute Myeloid Leukemia	6
-SLC19A1	Acute Lymphoblastic Leukemia	6
-SUMO3	Acute Lymphoblastic Leukemia	6
-TGIF1	Acute Lymphoblastic Leukemia	6
-TPM4	Acute Myeloid Leukemia	6
-UHRF2	Acute Lymphoblastic Leukemia	6
-VAV2	Acute Lymphoblastic Leukemia	6
-ZBTB7A	Acute Lymphoblastic Leukemia	6
-AFDN	Acute Myeloid Leukemia	5
-AFF1	Acute Lymphoblastic Leukemia	5
-B2M	Acute Myeloid Leukemia	5
-BAZ2B	Acute Myeloid Leukemia	5
-BCL11B	Acute Lymphoblastic Leukemia	5
-CREBBP	Acute Lymphoblastic Leukemia	5
-DDX1	Neuroblastoma	5
-DDX3X	Acute Lymphoblastic Leukemia	5
-EEF1D	Acute Lymphoblastic Leukemia	5
-EWSR1	Ewing sarcoma	5
-FAM53B	Acute Lymphoblastic Leukemia	5
-FLI1	Ewing sarcoma	5
-FOSB	Acute Myeloid Leukemia	5
-GRK2	Acute Myeloid Leukemia	5
-HIPK1	Acute Lymphoblastic Leukemia	5
-INPP5A	Acute Lymphoblastic Leukemia	5
-KDM4C	Acute Lymphoblastic Leukemia	5
-KIAA1549	Ganglioglioma	5
-MAD1L1	Neuroblastoma	5
-MDK	Acute Myeloid Leukemia	5
-MEF2D	Acute Lymphoblastic Leukemia	5
-METRNL	Acute Myeloid Leukemia	5
-MRM2	Acute Lymphoblastic Leukemia	5
-NUP98	Acute Lymphoblastic Leukemia	5
-OAZ1	Acute Lymphoblastic Leukemia	5
-OAZ1	Acute Myeloid Leukemia	5
-PLEKHO1	Acute Myeloid Leukemia	5
-PNRC1	Acute Myeloid Leukemia	5
-PPP4R3B	Acute Myeloid Leukemia	5
-PTTG1IP	Acute Lymphoblastic Leukemia	5
-RASA3	Acute Lymphoblastic Leukemia	5
-RASSF1	Acute Myeloid Leukemia	5
-RBBP6	Acute Myeloid Leukemia	5
-REXO1	Acute Myeloid Leukemia	5
-RXRA	Acute Lymphoblastic Leukemia	5
-SKI	Acute Lymphoblastic Leukemia	5
-SSBP2	Acute Lymphoblastic Leukemia	5
-STK24	Acute Lymphoblastic Leukemia	5
-STK32C	Acute Lymphoblastic Leukemia	5
-TACC3	Acute Lymphoblastic Leukemia	5
-UBC	Acute Myeloid Leukemia	5
-ULK1	Acute Myeloid Leukemia	5
-ZEB2	Acute Lymphoblastic Leukemia	5
-ZNF131	Acute Myeloid Leukemia	5
-AC005258.1	Acute Lymphoblastic Leukemia	4
-AC244472.3	Acute Lymphoblastic Leukemia	4
-ACTR1A	Acute Lymphoblastic Leukemia	4
-ADAP1	Acute Lymphoblastic Leukemia	4
-ADRM1	Acute Myeloid Leukemia	4
-AKT1	Acute Lymphoblastic Leukemia	4
-ANKRD11	Acute Myeloid Leukemia	4
-ANP32E	Acute Myeloid Leukemia	4
-ARHGEF2	Acute Myeloid Leukemia	4
-ARID5A	Acute Lymphoblastic Leukemia	4
-BAZ1A	Acute Myeloid Leukemia	4
-BCL11A	Acute Lymphoblastic Leukemia	4
-BCL11A	Acute Myeloid Leukemia	4
-BPTF	Acute Lymphoblastic Leukemia	4
-BRAF	Glial-neuronal tumor NOS	4
-BRD4	Acute Myeloid Leukemia	4
-CHD2	Acute Myeloid Leukemia	4
-CLK1	Acute Lymphoblastic Leukemia	4
-CLK3	Acute Myeloid Leukemia	4
-COL1A2	Osteosarcoma	4
-CPSF6	Acute Myeloid Leukemia	4
-CSNK1G2	Acute Myeloid Leukemia	4
-DAZAP1	Acute Lymphoblastic Leukemia	4
-ELF2	Acute Lymphoblastic Leukemia	4
-ELL	Acute Myeloid Leukemia	4
-EPB41	Acute Lymphoblastic Leukemia	4
-EPS15	Acute Lymphoblastic Leukemia	4
-FAM172A	Acute Myeloid Leukemia	4
-FAM20C	Acute Lymphoblastic Leukemia	4
-FLT3	Acute Lymphoblastic Leukemia	4
-FOSL1	Acute Myeloid Leukemia	4
-FYN	Diffuse midline glioma	4
-GNA11	Acute Lymphoblastic Leukemia	4
-HNRNPU	Acute Lymphoblastic Leukemia	4
-ING1	Acute Lymphoblastic Leukemia	4
-JAK2	Acute Lymphoblastic Leukemia	4
-KLF10	Acute Myeloid Leukemia	4
-KLF16	Acute Myeloid Leukemia	4
-LFNG	Acute Myeloid Leukemia	4
-LPCAT1	Acute Lymphoblastic Leukemia	4
-MAD1L1	Wilms tumor	4
-MKNK2	Acute Myeloid Leukemia	4
-NACC2	Acute Myeloid Leukemia	4
-NFKBIA	Acute Myeloid Leukemia	4
-NR4A1	Acute Myeloid Leukemia	4
-NTRK2	Low-grade glioma/astrocytoma	4
-PLEKHO1	Acute Lymphoblastic Leukemia	4
-PLXNB2	Acute Lymphoblastic Leukemia	4
-PPRC1	Acute Lymphoblastic Leukemia	4
-PRDM16	Acute Myeloid Leukemia	4
-PTTG1IP	Acute Myeloid Leukemia	4
-RAF1	Low-grade glioma/astrocytoma	4
-REV3L	Diffuse midline glioma	4
-REXO1	Acute Lymphoblastic Leukemia	4
-RNH1	Acute Myeloid Leukemia	4
-ROS1	High-grade glioma/astrocytoma	4
-SAP25	Acute Myeloid Leukemia	4
-SH3TC1	Acute Lymphoblastic Leukemia	4
-TAOK3	Acute Myeloid Leukemia	4
-TCF25	Acute Lymphoblastic Leukemia	4
-TCF7	Acute Lymphoblastic Leukemia	4
-TIMP2	Acute Lymphoblastic Leukemia	4
-TPD52L2	Acute Lymphoblastic Leukemia	4
-TRBC2	Acute Lymphoblastic Leukemia	4
-TSC2	Acute Lymphoblastic Leukemia	4
-UHRF2	Acute Myeloid Leukemia	4
-ZMYM2	Acute Lymphoblastic Leukemia	4
+Gene	broad_histology	count
+SLC7A5	Hematologic malignancy	154
+BRAF	Low-grade astrocytic tumor	121
+CBFA2T3	Hematologic malignancy	119
+KIAA1549	Low-grade astrocytic tumor	114
+MAD1L1	Hematologic malignancy	107
+PTMA	Hematologic malignancy	104
+PTBP1	Hematologic malignancy	103
+CXCR4	Hematologic malignancy	88
+TTYH3	Hematologic malignancy	87
+RNF126	Hematologic malignancy	86
+GSE1	Hematologic malignancy	80
+PQLC1	Hematologic malignancy	75
+OAZ1	Hematologic malignancy	72
+TRAC	Hematologic malignancy	71
+TRDV2	Hematologic malignancy	71
+BRD1	Hematologic malignancy	66
+RBM38	Hematologic malignancy	62
+TCF3	Hematologic malignancy	62
+KMT2A	Hematologic malignancy	59
+NFATC1	Hematologic malignancy	59
+PIM3	Hematologic malignancy	59
+BANP	Hematologic malignancy	58
+RUNX1	Hematologic malignancy	53
+ZNF292	Hematologic malignancy	51
+MKNK2	Hematologic malignancy	49
+AC005258.1	Hematologic malignancy	46
+NCOR2	Hematologic malignancy	46
+ZFPM1	Hematologic malignancy	42
+DOT1L	Hematologic malignancy	40
+EIF4A1	Hematologic malignancy	40
+FOXK2	Hematologic malignancy	40
+RPS15	Hematologic malignancy	40
+SUMO3	Hematologic malignancy	40
+SYNCRIP	Hematologic malignancy	40
+CD81	Hematologic malignancy	35
+ETV6	Hematologic malignancy	32
+ANKRD11	Hematologic malignancy	31
+CDK2AP1	Hematologic malignancy	31
+FBRSL1	Hematologic malignancy	31
+MLLT10	Hematologic malignancy	30
+CTDP1	Hematologic malignancy	29
+SENP3-EIF4A1	Hematologic malignancy	29
+C11orf95	Ependymal tumor	28
+CBFB	Hematologic malignancy	28
+MYH11	Hematologic malignancy	28
+PAX5	Hematologic malignancy	27
+RUNX1T1	Hematologic malignancy	27
+GPSM1	Hematologic malignancy	26
+TRPM2	Hematologic malignancy	26
+ZNF384	Hematologic malignancy	26
+AGO2	Hematologic malignancy	25
+CSNK1D	Hematologic malignancy	25
+RELA	Ependymal tumor	25
+C7orf50	Hematologic malignancy	24
+METRNL	Hematologic malignancy	24
+COPE	Hematologic malignancy	23
+LFNG	Hematologic malignancy	23
+NOTCH1	Hematologic malignancy	23
+PER1	Hematologic malignancy	23
+RALGDS	Hematologic malignancy	23
+SEPT9	Hematologic malignancy	23
+DAZAP1	Hematologic malignancy	22
+NUP98	Hematologic malignancy	22
+SBNO2	Hematologic malignancy	22
+B2M	Hematologic malignancy	21
+EIF5A	Hematologic malignancy	21
+GAK	Hematologic malignancy	21
+NOL4L	Hematologic malignancy	21
+PBX1	Hematologic malignancy	21
+ELL	Hematologic malignancy	20
+NR4A1	Hematologic malignancy	20
+SAP25	Hematologic malignancy	20
+TCF25	Hematologic malignancy	20
+ZC3H3	Hematologic malignancy	20
+ABL1	Hematologic malignancy	19
+TAF4	Hematologic malignancy	19
+IRX2	Hematologic malignancy	18
+SKI	Hematologic malignancy	18
+CRTC1	Hematologic malignancy	17
+GNAS	Hematologic malignancy	17
+PFKL	Hematologic malignancy	17
+ULK1	Hematologic malignancy	17
+BCL7A	Hematologic malignancy	16
+H3F3B	Embryonal tumor	16
+HIST1H3J	Embryonal tumor	16
+KDM4B	Hematologic malignancy	16
+MAEA	Hematologic malignancy	16
+SBF1	Hematologic malignancy	16
+SLC12A7	Hematologic malignancy	16
+COL1A1	Mesenchymal non-meningothelial tumor	15
+CSNK1G2	Hematologic malignancy	15
+MLLT3	Hematologic malignancy	15
+ACSF3	Hematologic malignancy	14
+GRAMD4	Hematologic malignancy	14
+KLF16	Hematologic malignancy	14
+MAFK	Hematologic malignancy	14
+PMEPA1	Hematologic malignancy	14
+RASA3	Hematologic malignancy	14
+ADAP1	Hematologic malignancy	13
+ING1	Hematologic malignancy	13
+OSBPL5	Hematologic malignancy	13
+PDGFA	Hematologic malignancy	13
+REXO1	Hematologic malignancy	13
+ASXL1	Hematologic malignancy	12
+ATP6V0C	Hematologic malignancy	12
+BCR	Hematologic malignancy	12
+DDX5	Hematologic malignancy	12
+DENND3	Hematologic malignancy	12
+FUS	Hematologic malignancy	12
+GRK2	Hematologic malignancy	12
+NUP214	Hematologic malignancy	12
+PICALM	Hematologic malignancy	12
+COX19	Hematologic malignancy	11
+CTBP1	Hematologic malignancy	11
+EP300	Hematologic malignancy	11
+FAM20C	Hematologic malignancy	11
+KLF2	Hematologic malignancy	11
+MLLT1	Hematologic malignancy	11
+PLEKHO1	Hematologic malignancy	11
+SUN1	Hematologic malignancy	11
+ASPSCR1	Hematologic malignancy	10
+BCL11A	Hematologic malignancy	10
+INSR	Hematologic malignancy	10
+KDM5A	Hematologic malignancy	10
+LDLRAD4	Hematologic malignancy	10
+MNT	Hematologic malignancy	10
+MTA1	Hematologic malignancy	10
+PHACTR3	Hematologic malignancy	10
+PNRC1	Hematologic malignancy	10
+RXRA	Hematologic malignancy	10
+TBCD	Hematologic malignancy	10
+TPM4	Hematologic malignancy	10
+UBC	Hematologic malignancy	10
+UHRF2	Hematologic malignancy	10
+AC008878.3	Hematologic malignancy	9
+AFF1	Hematologic malignancy	9
+BRF1	Hematologic malignancy	9
+FGFRL1	Hematologic malignancy	9
+GET4	Hematologic malignancy	9
+LEF1	Hematologic malignancy	9
+MET	Diffuse astrocytic and oligodendroglial tumor	9
+NBAS	Embryonal tumor	9
+PPP6R2	Hematologic malignancy	9
+SLC19A1	Hematologic malignancy	9
+STK24	Hematologic malignancy	9
+TFRC	Hematologic malignancy	9
+TGIF1	Hematologic malignancy	9
+ZEB2	Hematologic malignancy	9
+AKT1	Hematologic malignancy	8
+ARHGEF2	Hematologic malignancy	8
+BAZ2B	Hematologic malignancy	8
+CLK1	Hematologic malignancy	8
+EDF1	Hematologic malignancy	8
+HDAC4	Hematologic malignancy	8
+INPP5A	Hematologic malignancy	8
+PTTG1IP	Hematologic malignancy	8
+VAV2	Hematologic malignancy	8
+BAHCC1	Hematologic malignancy	7
+BAZ1A	Hematologic malignancy	7
+BRD3	Hematologic malignancy	7
+CHD2	Hematologic malignancy	7
+CREBBP	Hematologic malignancy	7
+EPB41	Hematologic malignancy	7
+FAM19A5	Hematologic malignancy	7
+FOSB	Hematologic malignancy	7
+KDM4C	Hematologic malignancy	7
+KLF10	Hematologic malignancy	7
+LMNB2	Hematologic malignancy	7
+NSD1	Hematologic malignancy	7
+PLEC	Hematologic malignancy	7
+PLXNB2	Hematologic malignancy	7
+PPP1R37	Hematologic malignancy	7
+SSBP2	Hematologic malignancy	7
+STK11	Hematologic malignancy	7
+ZBTB7A	Hematologic malignancy	7
+ZNF511	Hematologic malignancy	7
+AFDN	Hematologic malignancy	6
+ANP32E	Hematologic malignancy	6
+ARID3A	Hematologic malignancy	6
+ARID5A	Hematologic malignancy	6
+BID	Hematologic malignancy	6
+BPTF	Hematologic malignancy	6
+BRD4	Hematologic malignancy	6
+C19orf24	Hematologic malignancy	6
+CLPTM1L	Hematologic malignancy	6
+DDX3X	Hematologic malignancy	6
+ERG	Hematologic malignancy	6
+EWSR1	Mesenchymal non-meningothelial tumor	6
+EZR	Hematologic malignancy	6
+FLI1	Mesenchymal non-meningothelial tumor	6
+GALNS	Hematologic malignancy	6
+HIPK1	Hematologic malignancy	6
+KMT2C	Hematologic malignancy	6
+LRP1	Mesenchymal non-meningothelial tumor	6
+MDK	Hematologic malignancy	6
+MEF2D	Hematologic malignancy	6
+MRM2	Hematologic malignancy	6
+MYO18B	Hematologic malignancy	6
+PPP4R3B	Hematologic malignancy	6
+RASSF1	Hematologic malignancy	6
+RNF168	Hematologic malignancy	6
+SELENOO	Hematologic malignancy	6
+SHANK3	Hematologic malignancy	6
+SRSF4	Hematologic malignancy	6
+STK32C	Hematologic malignancy	6
+TACC3	Hematologic malignancy	6
+TSC2	Hematologic malignancy	6
+ZNF131	Hematologic malignancy	6
+ACTR1A	Hematologic malignancy	5
+ARHGAP15	Embryonal tumor	5
+ARHGEF7	Hematologic malignancy	5
+AUTS2	Hematologic malignancy	5
+BCL11B	Hematologic malignancy	5
+BSG	Hematologic malignancy	5
+CIC	Hematologic malignancy	5
+COG8	Hematologic malignancy	5
+CPSF6	Hematologic malignancy	5
+CYBA	Hematologic malignancy	5
+ELF1	Hematologic malignancy	5
+EPS15	Hematologic malignancy	5
+FAM49A	Embryonal tumor	5
+FAM53B	Hematologic malignancy	5
+FLT3	Hematologic malignancy	5
+FYN	Diffuse astrocytic and oligodendroglial tumor	5
+GNA15	Hematologic malignancy	5
+HNRNPH1	Hematologic malignancy	5
+HNRNPU	Hematologic malignancy	5
+IKZF1	Hematologic malignancy	5
+JAK2	Hematologic malignancy	5
+KMT5A	Hematologic malignancy	5
+MAD1L1	Embryonal tumor	5
+MAML3	Hematologic malignancy	5
+MGRN1	Hematologic malignancy	5
+NFIC	Hematologic malignancy	5
+NTRK2	Low-grade astrocytic tumor	5
+PDCD6	Hematologic malignancy	5
+PDF	Hematologic malignancy	5
+PPRC1	Hematologic malignancy	5
+PRDM16	Hematologic malignancy	5
+RBBP6	Hematologic malignancy	5
+RER1	Hematologic malignancy	5
+REV3L	Diffuse astrocytic and oligodendroglial tumor	5
+RNH1	Hematologic malignancy	5
+SARAF	Hematologic malignancy	5
+SEC24B	Hematologic malignancy	5
+SF1	Hematologic malignancy	5
+SH3TC1	Hematologic malignancy	5
+SMARCA2	Hematologic malignancy	5
+SS18L1	Hematologic malignancy	5
+TRABD	Hematologic malignancy	5
+TUBGCP6	Hematologic malignancy	5
+YWHAE	Hematologic malignancy	5
+ZEB2	Embryonal tumor	5
+ZNF516	Hematologic malignancy	5
+ABR	Hematologic malignancy	4
+AC244472.3	Hematologic malignancy	4
+ARHGAP15	Hematologic malignancy	4
+ARID1B	Hematologic malignancy	4
+BCL9	Hematologic malignancy	4
+BRD9	Hematologic malignancy	4
+C19orf25	Hematologic malignancy	4
+CHST11	Hematologic malignancy	4
+CLK3	Hematologic malignancy	4
+CNN2	Hematologic malignancy	4
+COL1A2	Mesenchymal non-meningothelial tumor	4
+DDX1	Embryonal tumor	4
+DHX9	Hematologic malignancy	4
+DNAJC1	Hematologic malignancy	4
+EEF1D	Hematologic malignancy	4
+EHMT1	Hematologic malignancy	4
+ELF2	Hematologic malignancy	4
+FAM172A	Hematologic malignancy	4
+FAM69B	Hematologic malignancy	4
+FNBP1	Hematologic malignancy	4
+FOSL1	Hematologic malignancy	4
+GLIS2	Hematologic malignancy	4
+GNA11	Hematologic malignancy	4
+HIF1A	Hematologic malignancy	4
+HOXA9	Hematologic malignancy	4
+ING5	Hematologic malignancy	4
+ITM2C	Hematologic malignancy	4
+KDM2B	Hematologic malignancy	4
+KLF13	Hematologic malignancy	4
+KLF6	Hematologic malignancy	4
+LEPROTL1	Hematologic malignancy	4
+LPCAT1	Hematologic malignancy	4
+MACF1	Hematologic malignancy	4
+MAD1L1	Renal tumor	4
+MBP	Hematologic malignancy	4
+N4BP2L1	Hematologic malignancy	4
+NACC2	Hematologic malignancy	4
+NFAT5	Hematologic malignancy	4
+NFKBIA	Hematologic malignancy	4
+NPM1	Hematologic malignancy	4
+PIAS1	Hematologic malignancy	4
+PTDSS2	Hematologic malignancy	4
+PTPN2	Hematologic malignancy	4
+RAB35	Hematologic malignancy	4
+RAF1	Low-grade astrocytic tumor	4
+RANBP2	Hematologic malignancy	4
+RBM14	Hematologic malignancy	4
+RNF220	Hematologic malignancy	4
+ROS1	Diffuse astrocytic and oligodendroglial tumor	4
+SCFD2	Diffuse astrocytic and oligodendroglial tumor	4
+SET	Hematologic malignancy	4
+SFPQ	Hematologic malignancy	4
+SMG6	Hematologic malignancy	4
+SOCS2	Hematologic malignancy	4
+SON	Hematologic malignancy	4
+TAOK3	Hematologic malignancy	4
+TCF7	Hematologic malignancy	4
+TIMP2	Hematologic malignancy	4
+TMEM259	Hematologic malignancy	4
+TRBC2	Hematologic malignancy	4
+UBAC2	Hematologic malignancy	4
+USP12	Hematologic malignancy	4
+USP15	Hematologic malignancy	4
+WNK1	Hematologic malignancy	4
+ZBTB18	Hematologic malignancy	4
+ZFP36	Hematologic malignancy	4
+ZMYM2	Hematologic malignancy	4
