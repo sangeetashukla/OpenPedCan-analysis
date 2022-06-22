@@ -37,7 +37,6 @@ bash ${analyses_dir}/fusion-summary/run-new-analysis.sh
 
 # Copy over independent specimen lists
 cp ${analyses_dir}/independent-samples/results/independent-specimens.*  ${compiled_dir}
-rm ${compiled_dir}/*pre-release.tsv
 
 # Copy over fusion summary
 cp ${analyses_dir}/fusion-summary/results/* ${compiled_dir}

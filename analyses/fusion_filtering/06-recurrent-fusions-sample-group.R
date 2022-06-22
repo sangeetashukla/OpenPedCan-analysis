@@ -83,8 +83,8 @@ rec_fusions <- standardFusionCalls %>%
 
 #find rec fusions per PATIENT per broad_histology
 rec_fusions<-rec_fusions[rec_fusions$count>3,]
-rec_fusions<-rec_fusions[order(rec_fusions$count,decreasing = TRUE),]
-write.table(rec_fusions,file.path(outputfolder,"fusion-recurrent-fusion-bybroadhist.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
+rec_fusions<-rec_fusions[order(rec_fusions$broad_histology,decreasing = FALSE),]
+write.table(rec_fusions,file.path(outputfolder,"fusion-recurrent-fusion-bygroup.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 # binary matrix for recurrent fusions found in SAMPLE per broad_histology
 rec_fusions_mat<-rec_fusions %>% 
@@ -99,6 +99,7 @@ rec_fusions_mat[is.na(rec_fusions_mat$FusionName),"FusionName"]<-"No_rec_fusion"
 
 # binary matrix
 rec_fusions_mat<-dcast(rec_fusions_mat,Sample~FusionName,value.var = "Sample",fun.aggregate = function(x){as.integer(length(x) > 0)},drop = FALSE) 
+rec_fusions_mat<-rec_fusions_mat[order(rec_fusions_mat$Sample,decreasing = FALSE),]
 write.table(rec_fusions_mat,file.path(outputfolder,"fusion-recurrent-fusion-bysample.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 
@@ -122,8 +123,8 @@ rec_gene<-rbind(rec_gene1A,rec_gene1B) %>%
 
 #find rec fused genes per PATIENT per broad_histology
 rec_gene<-rec_gene[rec_gene$count>3,]
-rec_gene<-rec_gene[order(rec_gene$count,decreasing = TRUE),]
-write.table(rec_gene,file.path(outputfolder,"fusion-recurrently-fused-genes-bybroadhist.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
+rec_gene<-rec_gene[order(rec_gene$broad_histology,decreasing = FALSE),]
+write.table(rec_gene,file.path(outputfolder,"fusion-recurrently-fused-genes-bygroup.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 # binary matrix for recurrently fused genes found in SAMPLE per broad_histology
 rec_geneA_mat<-rec_gene %>% 
@@ -146,6 +147,7 @@ rec_gene_mat[is.na(rec_gene_mat$Gene),"Gene"]<-"No_rec_fused_gene"
 
 # binary matrix
 rec_gene_mat<-dcast(rec_gene_mat,Sample~Gene,value.var = "Sample",fun.aggregate = function(x){as.integer(length(x) > 0)},drop = FALSE)
+rec_gene_mat<-rec_gene_mat[order(rec_gene_mat$Sample,decreasing = FALSE),]
 write.table(rec_gene_mat,file.path(outputfolder,"fusion-recurrently-fused-genes-bysample.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 
