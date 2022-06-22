@@ -90,13 +90,18 @@ required_cols <- c(
   "Match_Norm_Seq_Allele1",
   "Match_Norm_Seq_Allele2",
   "Tumor_Sample_Barcode",
-  "Variant_Classification"
+  "Variant_Classification",
+  "t_depth",
+  "t_alt_count",
+  "t_ref_count"
 )
+
 # read consensus maf file
 consensus_maf_df <- 
   data.table::fread(consensus_maf_file, skip=1, select = required_cols, 
                     showProgress = FALSE) %>% 
-  tibble()
+  tibble() %>% 
+  dplyr::mutate(vaf = (t_alt_count / (t_ref_count + t_alt_count)))
 
 message("Spliting MNV calls and merging with SNV calls...\n")
 
@@ -122,6 +127,11 @@ focr_nonsynonymous <- c(
   "In_Frame_Del"
 )
 
+# variant filters
+vaf_cutoff = 0.05
+var_count = 3
+tumor_depth = 25
+
 # filter create the consensus MAF for SNV calls (non-MNV)
 snv_maf_df <- consensus_maf_df %>%  
   dplyr::filter(!Variant_Type %in% c("DNP", "TNP", "ONP"))
@@ -138,14 +148,20 @@ snv_mnv_maf_df <- rbind(snv_maf_df, split_mnv_maf_df) %>%
 # If the maftools non-synonymous filter is on, filter out synonymous mutations
 if (nonsynfilter_maf) {
   snv_mnv_maf_df <- snv_mnv_maf_df %>%
-    dplyr::filter(Variant_Classification %in% maf_nonsynonymous)
+    dplyr::filter(Variant_Classification %in% maf_nonsynonymous,
+                  t_depth >= tumor_depth,
+                  vaf >= vaf_cutoff,
+                  t_alt_count >= var_count)
 }
 
 # If the FoCR non-synonymous filter is on, filter out synonymous mutations 
 # according to that definition
 if (nonsynfilter_focr) {
   snv_mnv_maf_df <- snv_mnv_maf_df %>%
-    dplyr::filter(Variant_Classification %in% focr_nonsynonymous)
+    dplyr::filter(Variant_Classification %in% focr_nonsynonymous,
+                  t_depth >= tumor_depth,
+                  vaf >= vaf_cutoff,
+                  t_alt_count >= var_count)
 }
 
 ########################### Set up metadata columns ############################
@@ -187,10 +203,10 @@ metadata_df <- metadata_df %>% dplyr::filter(
       dplyr::recode(target_bed,
                     "intersect_strelka_mutect2_vardict_WGS.bed" = 
                       file.path(root_dir, "scratch/intersect_strelka_mutect2_vardict_WGS.bed"),
-                    .default = file.path(input_dir, target_bed)))
+                    .default = file.path(data_dir, target_bed)))
 
 # exclude samples in that are in the mutation dataset and not the metadata
-# ideally the should not happen but is currently the case in the v10 
+# ideally this should not happen but is currently the case in the v10 
 # mutation dataset
 snv_mnv_maf_df <- snv_mnv_maf_df %>%
   dplyr::filter(Tumor_Sample_Barcode %in% metadata_df$Tumor_Sample_Barcode)
