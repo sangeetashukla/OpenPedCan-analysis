@@ -25,6 +25,9 @@ scratch_dir="$BASEDIR/scratch"
 compiled_dir=${scratch_dir}/analysis_files_for_release
 mkdir -p ${compiled_dir}
 
+# Create the independent sample list using the *base* histology file (i.e. - histologies-base.tsv)
+echo "Create independent sample list for fusion filtering module"
+OPENPBTA_BASE_SUBTYPING=1 ../analyses/independent-samples/run-independent-samples.sh
 
 # Fusion filtering
 echo "Create fusion filtered list"

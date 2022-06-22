@@ -21,6 +21,7 @@ cd "$script_directory" || exit
 
 # Set up paths to data files consumed by analysis, and path to result output
 data_path="../../data"
+indep_path="../independent-samples/results"
 scratch_path="../../scratch"
 references_path="references"
 results_path="results/"
@@ -46,8 +47,8 @@ normal_expression_adrenal_gland="${references_path}/gtex_adrenal_gland_TPM_hg38.
 normal_expression_brain="${references_path}/gtex_brain_TPM_hg38.rds"
 
 # independent sample list
-independent_RNA_primary="${data_path}/independent-specimens.rnaseq.primary.tsv"
-independent_RNA_relapse="${data_path}/independent-specimens.rnaseq.relapse.tsv"
+independent_RNA_primary="${indep_path}/independent-specimens.rnaseq.primary-pre-release.tsv"
+independent_RNA_relapse="${indep_path}/independent-specimens.rnaseq.relapse-pre-release.tsv"
    
 # metadata files
 if [[ "$RUN_FOR_SUBTYPING" -eq "0" ]]
@@ -113,12 +114,10 @@ Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(ba
 Rscript -e "rmarkdown::render('05-QC_putative_onco_fusion_distribution.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
 # Recurrent fusion/fused genes
-if [[ "$RUN_FOR_SUBTYPING" -eq "0" ]]
-then
-   Rscript 06-recurrent-fusions-per-cancer-group.R --standardFusionCalls $putative_oncogenic_fusion \
-                                                   --clinicalFile $histologies_file \
-                                                   --cohortInterest "PBTA,GMKF,TARGET" \
-                                                   --outputfolder $results_path \
-                                                   --independentPrimary $independent_RNA_primary \
-                                                   --independentRelapse $independent_RNA_relapse
-fi
+Rscript 06-recurrent-fusions-per-cancer-group.R --standardFusionCalls $putative_oncogenic_fusion \
+                                                --clinicalFile $histologies_file \
+                                                --cohortInterest "PBTA,GMKF,TARGET" \
+                                                --outputfolder $results_path \
+                                                --independentPrimary $independent_RNA_primary \
+                                                --independentRelapse $independent_RNA_relapse
+
