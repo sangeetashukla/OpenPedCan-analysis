@@ -27,7 +27,7 @@ variant_file="${data_dir}/snv-consensus-plus-hotspots.maf.tsv.gz"
 mapping_file="${input_dir}/biospecimen_id_to_bed_map.tsv"
 
 # Histology file
-histology_file="${data_dir}/histologies.tsv"
+histology_file="${data_dir}/histologies-base.tsv"
 
 
 ############# Create intersection BED files for TMB calculations ###############

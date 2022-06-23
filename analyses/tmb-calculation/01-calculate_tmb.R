@@ -10,6 +10,7 @@
 suppressPackageStartupMessages(library(optparse))
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(data.table))
+suppressPackageStartupMessages(library(GenomicRanges))
 
 # set up optparse options
 option_list <- list(
@@ -185,8 +186,7 @@ metadata_df <- bed_df %>%
   dplyr::inner_join(hist_df %>% 
                       dplyr::select(
                         Kids_First_Biospecimen_ID, 
-                        experimental_strategy, 
-                        cancer_group), 
+                        experimental_strategy), 
                     by = "Kids_First_Biospecimen_ID") %>% 
   dplyr::rename(
     Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
@@ -217,7 +217,6 @@ snv_mnv_maf_df <- snv_mnv_maf_df %>%
                       dplyr::select(
                         Tumor_Sample_Barcode,
                         experimental_strategy,
-                        cancer_group,
                         target_bed,
                         target_bed_path
                       ),
