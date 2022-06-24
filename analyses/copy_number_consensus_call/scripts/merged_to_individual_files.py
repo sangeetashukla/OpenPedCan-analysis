@@ -14,11 +14,11 @@ import numpy as np
 import pandas as pd
 
 ## Define the callers and the extension to give the intermediate files
-extensions = {"manta": ".manta", "cnvkit": ".cnvkit", "freec": ".freec"}
+extensions = {"gatk": ".gatk", "cnvkit": ".cnvkit", "freec": ".freec"}
 
 # Define the column headers for IDs
 id_headers = {
-    "manta": "Kids.First.Biospecimen.ID.Tumor",
+    "gatk": "Kids.First.Biospecimen.ID.Tumor",
     "cnvkit": "ID",
     "freec": "Kids_First_Biospecimen_ID",
 }
@@ -29,7 +29,7 @@ parser = argparse.ArgumentParser(
                                                 prints a snakemake config file
                                                 to the specified filename."""
 )
-parser.add_argument("--manta", required=True, help="path to the manta file")
+parser.add_argument("--gatk", required=True, help="path to the gatk file")
 parser.add_argument("--cnvkit", required=True, help="path to the cnvkit file")
 parser.add_argument("--freec", required=True, help="path to the freec file")
 parser.add_argument("--histologies", required=True, help="path to the histology file")
