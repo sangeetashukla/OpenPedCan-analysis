@@ -20,7 +20,7 @@ mkdir -p results
 ## Each directory with individual sample files.
 
 python3 scripts/merged_to_individual_files.py \
-    --gatk ../../data/sv-manta.tsv.gz \
+    --gatk ../../data/sv-gatk.tsv.gz \
     --cnvkit ../../data/cnv-cnvkit.seg.gz \
     --freec ../../data/cnv-controlfreec.tsv.gz \
     --histologies ../../data/histologies.tsv \
