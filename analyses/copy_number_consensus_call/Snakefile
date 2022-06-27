@@ -92,16 +92,19 @@ rule gatk_filter:
         ## The awk command line is to filter out the raw file.
         ## The end result has 8 columns
         ## | chr# | start | end | CNV_length | copy_numbers | pval | seg.mean | CNV type |
-        ## The first awk looks at column 6 to filter out for loss/gain (DEL/DUP).
+        ## The first awk looks at column 7 to filter out for loss/gain (-/+).
         ## Then it prints out all 8 of the columns above.
         ## It writes NA for both p-value and copy number since gatk results don't have these values.
-        ## the first awk also filters out for CNV length
+        ## The first awk command also changes -/+ to DEL/DUP to match the other callers formatting
+        ## The second awk filters the CNV length, and add in the CNV type
         ## The sort command sorts the first digit of chromosome number numerically
         ## The last pipe is to introduce tab into the file and output file name.
-        """awk '$6~/DEL/ {{if ($5 > {params.SIZE_CUTOFF} && $11 == 'PASS') {{print "chr"$2,$3,$4,$5,"NA","NA","NA",$6}}}}' {input} """
+        """awk '$7~/\-/ {{print $2,$3,$4,($4-$3 + 1),"NA","NA","$6","DEL"}}' {input} """
+        """ | awk '{{if ($4 > {params.SIZE_CUTOFF}){{print}}}}' """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.gatk_del} && """
-        """awk '$6~/DUP/ {{if ($5 > {params.SIZE_CUTOFF}  && $11 == 'PASS') {{print "chr"$2,$3,$4,$5,"NA","NA","NA",$6}}}}' {input} """
+        """awk '$7~/\+/ {{print $2,$3,$4,($4-$3 + 1),"NA","NA","$6","DUP"}}' {input} """
+        """ | awk '{{if ($4 > {params.SIZE_CUTOFF}){{print}}}}' """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.gatk_dup}"""
 
