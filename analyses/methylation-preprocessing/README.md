@@ -34,7 +34,7 @@ The [Children's Brain Tumor Network (CBTN)](https://cbtn.org/) `Infinium HumanMe
 
 
 #### `run-preprocess-illumina-arrays.sh`
-This is a bash script wrapper for setting input file paths for the main analysis script, `01-preprocess-illumina-arrays.R` All file paths set in this script relative to the module directory. Therefore, this script should always run as if it were being called from the directory it lives in, the module directory (`OpenPedCan-analysis/analyses/methylation-analysis`).
+This is a bash script wrapper for setting input file paths for the main analysis script, `01-preprocess-illumina-arrays.R` All file paths set in this script relative to the module directory. Therefore, this script should always run as if it were being called from the directory it lives in, the module directory (`OpenPedCan-analysis/analyses/methylation-preprocessing`).
 
 ```
 bash run-preprocess-illumina-arrays.sh
@@ -85,7 +85,7 @@ Options:
 		Show this help message and exit
 ```
 
-#### `002-compare-cancers-tsne-and-umap-plots.R`
+#### `02-compare-cancers-tsne-and-umap-plots.R`
 Creates comparison methylation profiles t-SNE and UMAP plots of selected cancer genes for cancer types preprocessed from Illumina Infinium HumanMethylation450 BeadArrays. Utilizes a list of cancer gene symbols (`metadata/TARGET_Methylation_GeneList.txt`) that are present in the array annotation design reported in the methylation M-values result tables (in the `results` folder) produced by the `01-preprocess-illumina-arrays.R` script.
 
 ```
@@ -109,7 +109,7 @@ Rscript --vanilla 04-get-array-gencode-annotations.R
 ## Input datasets
 
 #### `Methylation arrays:`
-Methylation array datasets are avaliable on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/data/`). Please contact `Avin Farrel (@afarrel)` for access. 
+Methylation array datasets are avaliable on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-preprocessing/data/`). Please contact `Avin Farrel (@afarrel)` for access. 
 - `data/Normal/*.idat` - Normal TARGET sample array
 - `data/NBL/*.idat` - Neuroblastoma (NBL) TARGET tumor sample arrays
 - `data/OS/*.idat` - Osteosarcoma (OS) TARGET tumor sample arrays
@@ -144,7 +144,7 @@ Methylation array datasets are avaliable on the CHOP HPC `Isilon` sever (locatio
 - `metadata/gencode.v19.annotation.gtf.gz` [GENCODE evidence-based annotation of the human genome (GRCh37), version 19 (Ensembl 74)](http://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/)
 
 ## Results
-Summary result files of methylation `beta-values` and `M-values` are too large to upload to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/results/`). Please contact `Avin Farrel (@afarrel)` for access. Only the median `beta-values` and `M-values` are uploaded to this repository.
+Summary result files of methylation `beta-values` and `M-values` are too large to upload to this repository and available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-preprocessing/results/`). Please contact `Avin Farrel (@afarrel)` for access. Only the median `beta-values` and `M-values` are uploaded to this repository.
 - `results/Normal-beta-values-methylation.tsv.gz`
 - `results/Normal-m-values-methylation.tsv.gz`
 - `results/NBL-beta-values-methylation.tsv.gz`
@@ -166,7 +166,7 @@ Summary result files of methylation `beta-values` and `M-values` are too large t
 - `results/methylation-array-gencode.annotations.tsv.gz`
 
 ## Plots
-Comparison methylation t-SNE and UMAP plots among cancer types for selected genes expressed in a subset of the tumor type. `Plots` and `M-values` gene matrices are available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-analysis/plots/`). Please contact `Avin Ferrel (@afarrel)` for access.
+Comparison methylation t-SNE and UMAP plots among cancer types for selected genes expressed in a subset of the tumor type. `Plots` and `M-values` gene matrices are available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-preprocessing/plots/`). Please contact `Avin Ferrel (@afarrel)` for access.
 - `plots/<GeneSymbol>-m-values.csv` - M-values gene matrices 
 - `plots/<GeneSymbol>-plot.png` - gene t-SNE plots
 - `plots/<GeneSymbol>-plot.png` - gene UMAP plot
