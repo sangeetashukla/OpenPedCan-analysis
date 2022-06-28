@@ -89,7 +89,6 @@ dgd_fusion <- readr::read_tsv(file.path(dataDir, "fusion-dgd.tsv.gz"))
 
 # organize column
 dgd_fusion <- dgd_fusion %>%
-  dplyr::filter(!Tumor_Sample_Barcode %in%  c("BS_WQN6CS9Q", "BS_YKEK4YWT")) %>%
   dplyr::rename("Sample" = "Tumor_Sample_Barcode") %>%
   dplyr::mutate(FusionName = gsub("-", "--", Fusion)) %>%
   tidyr::separate(Fusion, c("Gene1A", "Gene1B"), sep = "-") %>%
