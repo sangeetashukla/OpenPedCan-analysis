@@ -78,9 +78,4 @@ Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd',p
 # evaluate classifer scores for stranded data
 python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/gene-expression-rsem-tpm-collapsed_classifier_scores.tsv -c ${histology_file} -r "PBTA"
 
-# Skip poly-A steps in CI
-if [ "$POLYA" -gt "0" ]; then
-  python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/gene-expression-rsem-tpm-collapsed_classifier_scores.tsv -c ${histology_file} -r "PBTA"
-fi
-
 
