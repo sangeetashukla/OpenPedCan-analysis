@@ -27,10 +27,27 @@ samples_ids_no_rnaseq <- mb_samples %>%
 
 # format data
 samples_ids_no_rnaseq <- samples_ids_no_rnaseq %>%
-  dplyr::mutate(Kids_First_Biospecimen_ID_DNA = ifelse(is.na(RNA_library), Kids_First_Biospecimen_ID, NA),
-                Kids_First_Biospecimen_ID_RNA = ifelse(RNA_library == "exome_capture", Kids_First_Biospecimen_ID, NA),
+  filter(!sample_id %in% sample_ids_with_rnaseq$sample_id) %>% 
+  dplyr::mutate(temp = ifelse(is.na(RNA_library), 
+                              'Kids_First_Biospecimen_ID_DNA',
+                              'Kids_First_Biospecimen_ID_RNA'),
                 molecular_subtype = "MB, To be classified") %>%
-  dplyr::select(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, molecular_subtype)
+  dplyr::select(Kids_First_Participant_ID, sample_id, temp, Kids_First_Biospecimen_ID,
+                molecular_subtype) 
+# do the DNA 
+dna_df <- samples_ids_no_rnaseq %>%
+  dplyr::filter(temp == "Kids_First_Biospecimen_ID_DNA") %>%
+  dplyr::mutate(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID) %>%
+  dplyr::select(-c("temp", "Kids_First_Biospecimen_ID")) %>% distinct()
+
+# do the RNA 
+rna_df <- samples_ids_no_rnaseq %>%
+  dplyr::filter(temp == "Kids_First_Biospecimen_ID_RNA") %>%
+  dplyr::mutate(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>%
+  dplyr::select(-c("temp", "Kids_First_Biospecimen_ID")) %>% distinct()
+
+# combine them into one 
+samples_ids_no_rnaseq <- left_join(dna_df, rna_df)
 
 # read RNA-based results, append samples with no RNA and write out
 result_file <- file.path(root_dir, "analyses", "molecular-subtyping-MB", "results", "MB_molecular_subtype.tsv")
