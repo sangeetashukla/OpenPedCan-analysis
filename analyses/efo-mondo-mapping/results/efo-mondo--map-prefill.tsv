@@ -31,6 +31,7 @@ CNS Melanoma	NA	NA
 CNS neuroblastoma	EFO_0000621	MONDO_0006130
 Colon Adenocarcinoma	NA	NA
 Craniopharyngioma	EFO_1000209	MONDO_0002787
+Cutaneous Melanoma	NA	NA
 Desmoid-type fibromatosis	NA	NA
 Desmoplastic infantile astrocytoma and ganglioglioma	NA	NA
 Diffuse fibrillary astrocytoma	NA	NA
@@ -112,7 +113,6 @@ Rosai-Dorfman disease	MONDO_0006412	MONDO_0006412
 Rosette-forming glioneuronal tumor	NA	NA
 Sarcoma	EFO_0000691	MONDO_0005089
 Schwannoma	EFO_0000693	MONDO_0002546
-Skin Cutaneous Melanoma	NA	NA
 Stomach Adenocarcinoma	NA	NA
 Subependymal Giant Cell Astrocytoma	MONDO_0016693	MONDO_0016693
 T Acute Lymphoblastic Leukemia/Lymphoma	NA	NA

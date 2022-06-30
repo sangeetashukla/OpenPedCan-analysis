@@ -1,9 +1,9 @@
 cancer_group	tumor_descriptor	n
 Acute Lymphoblastic Leukemia	Primary Tumor	1294
 Acute Lymphoblastic Leukemia	Recurrence	109
-Acute Myeloid Leukemia	Primary Tumor	517
+Acute Myeloid Leukemia	Primary Tumor	322
 Acute Myeloid Leukemia	Progressive	4
-Acute Myeloid Leukemia	Recurrence	90
+Acute Myeloid Leukemia	Recurrence	151
 Acute Myeloid Leukemia	Second Malignancy	4
 Adamantinomatous Craniopharyngioma	Initial CNS Tumor	36
 Adamantinomatous Craniopharyngioma	Progressive	2
@@ -93,7 +93,7 @@ Hemangioblastoma	Initial CNS Tumor	15
 Hemangioblastoma	Progressive	5
 Hepatoblastoma	Primary Tumor	8
 Hepatocellular Carcinoma	Primary Tumor	2
-High-grade glioma/astrocytoma	Initial CNS Tumor	364
+High-grade glioma/astrocytoma	Initial CNS Tumor	366
 High-grade glioma/astrocytoma	Primary Tumor	3
 High-grade glioma/astrocytoma	Progressive	106
 High-grade glioma/astrocytoma	Progressive Disease Post-Mortem	2
@@ -119,7 +119,7 @@ Low-grade glioma/astrocytoma	Primary Tumor	6
 Low-grade glioma/astrocytoma	Progressive	179
 Low-grade glioma/astrocytoma	Recurrence	44
 Low-grade glioma/astrocytoma	Second Malignancy	3
-Malignant peripheral nerve sheath tumor	Initial CNS Tumor	8
+Malignant peripheral nerve sheath tumor	Initial CNS Tumor	5
 Malignant peripheral nerve sheath tumor	Primary Tumor	5
 Malignant peripheral nerve sheath tumor	Progressive	1
 Malignant peripheral nerve sheath tumor	Recurrence	3
@@ -129,7 +129,7 @@ Medulloblastoma	Progressive	27
 Medulloblastoma	Recurrence	12
 Melanocytic tumor	Initial CNS Tumor	3
 Melanoma	Progressive	2
-Meningioma	Initial CNS Tumor	60
+Meningioma	Initial CNS Tumor	58
 Meningioma	Progressive	20
 Meningioma	Recurrence	14
 Meningioma	Second Malignancy	18
@@ -141,10 +141,10 @@ Myeloid Neoplasm	Primary Tumor	1
 Myofibroblastic tumor	Initial CNS Tumor	3
 Myofibroblastic tumor	Progressive	3
 Neuroblastoma	Initial CNS Tumor	12
-Neuroblastoma	Metastatic Tumor	2
-Neuroblastoma	Primary Tumor	1489
+Neuroblastoma	Metastatic	2
+Neuroblastoma	Primary Tumor	1480
 Neuroblastoma	Progressive	20
-Neuroblastoma	Recurrence	17
+Neuroblastoma	Recurrence	26
 Neurocytoma	Initial CNS Tumor	4
 Neurocytoma	Progressive	2
 Neuroepithelial neoplasm	Recurrence	3
@@ -203,7 +203,6 @@ Thyroid Gland Follicular Carcinoma	Primary Tumor	2
 Thyroid Gland Papillary Carcinoma	Primary Tumor	43
 Thyroid Gland Papillary Carcinoma	Progressive	7
 Thyroid Gland Papillary Carcinoma	Second Malignancy	2
-Wilms tumor	Metastatic	1
-Wilms tumor	Metastatic Tumor	1
+Wilms tumor	Metastatic	2
 Wilms tumor	Primary Tumor	298
 Wilms tumor	Recurrence	15

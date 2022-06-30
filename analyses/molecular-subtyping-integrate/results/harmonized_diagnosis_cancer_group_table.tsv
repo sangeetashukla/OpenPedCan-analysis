@@ -42,6 +42,7 @@ PBTA	CNS neuroblastoma	CNS neuroblastoma	No	No
 TCGA	Colon Adenocarcinoma	Colon Adenocarcinoma	No	No
 PBTA	Craniopharyngioma	Craniopharyngioma	No	No
 DGD	Craniopharyngioma	Craniopharyngioma	No	No
+TCGA	Cutaneous Melanoma	Cutaneous Melanoma	No	No
 DGD	Desmoid-type fibromatosis	Desmoid-type fibromatosis	No	No
 PBTA	Desmoplastic infantile astrocytoma and ganglioglioma, RTK	Desmoplastic infantile astrocytoma and ganglioglioma	Yes	No
 PBTA	Desmoplastic infantile astrocytoma and ganglioglioma, BRAF V600E	Desmoplastic infantile astrocytoma and ganglioglioma	Yes	No
@@ -116,7 +117,7 @@ TCGA	Head and Neck Squamous Cell Carcinoma	Head and Neck Squamous Cell Carcinoma
 PBTA	Hemangioblastoma	Hemangioblastoma	No	No
 DGD	Hemangioblastoma	Hemangioblastoma	No	No
 DGD	Hepatoblastoma	Hepatoblastoma	No	No
-TCGA	Liver Hepatocellular Carcinoma	Hepatocellular Carcinoma	No	Yes
+TCGA	Hepatocellular Carcinoma	Hepatocellular Carcinoma	No	No
 DGD	Hepatocellular Carcinoma	Hepatocellular Carcinoma	No	No
 PBTA	High-grade glioma/astrocytoma (WHO grade III/IV)	High-grade glioma/astrocytoma	No	Yes
 PBTA	High-grade glioma/astrocytoma, H3 wildtype	High-grade glioma/astrocytoma	Yes	No
@@ -242,7 +243,6 @@ DGD	Sarcoma	Sarcoma	No	No
 DGD	High Grade Sarcoma	Sarcoma	No	Yes
 PBTA	Schwannoma	Schwannoma	No	No
 DGD	Schwannoma	Schwannoma	No	No
-TCGA	Skin Cutaneous Melanoma	Skin Cutaneous Melanoma	No	No
 TCGA	Stomach Adenocarcinoma	Stomach Adenocarcinoma	No	No
 PBTA	Subependymal Giant Cell Astrocytoma, wildtype	Subependymal Giant Cell Astrocytoma	Yes	No
 PBTA	Subependymal Giant Cell Astrocytoma, RTK, CDKN2A/B	Subependymal Giant Cell Astrocytoma	Yes	No
@@ -267,6 +267,7 @@ PBTA	Adenoma	NA	No	Yes
 PBTA	Atypical choroid plexus papilloma	NA	No	Yes
 PBTA	Ependymoma;Metastatic secondary tumors	NA	No	Yes
 PBTA	Dysembryoplastic neuroepithelial tumor (DNET);Ganglioglioma	NA	No	Yes
+PBTA	Malignant peripheral nerve sheath tumor (MPNST);Neurofibroma/Plexiform	NA	No	Yes
 PBTA	Ganglioglioma;Low-grade glioma/astrocytoma (WHO grade I/II)	NA	No	Yes
 PBTA	Dysembryoplastic neuroepithelial tumor (DNET);Dysplasia/Gliosis;Ganglioglioma	NA	No	Yes
 PBTA	Neurocytoma	NA	No	Yes
