@@ -21,8 +21,8 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 dataDir <- file.path(root_dir, "data")
 
 # histology file
-clinical <- readr::read_tsv(file.path(dataDir, "histologies-base-adapt.tsv"),
-                            guess_max = 10000) %>%
+clinical <- readr::read_tsv(file.path(dataDir, "histologies-base.tsv"),
+                            guess_max = 100000) %>%
   select(Kids_First_Biospecimen_ID,
          Kids_First_Participant_ID, 
          experimental_strategy, 
@@ -33,9 +33,7 @@ clinical <- readr::read_tsv(file.path(dataDir, "histologies-base-adapt.tsv"),
 # get ewings fusion calls from fusion-summary results file
 ewings_foi_bsids <- readr::read_tsv(
   file.path(root_dir, 
-            "analyses",
-            "fusion-summary",
-            "results",
+            "data",
             "fusion_summary_ewings_foi.tsv")
   ) 
 
