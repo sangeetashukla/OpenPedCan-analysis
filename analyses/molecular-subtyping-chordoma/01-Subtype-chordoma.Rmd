@@ -251,6 +251,7 @@ Write the table to file.
 ```{r}
 chordoma_smarcb1_df %>%
   arrange(Kids_First_Participant_ID, sample_id) %>%
+  distinct() %>% 
   write_tsv(output_file)
 ```
 
