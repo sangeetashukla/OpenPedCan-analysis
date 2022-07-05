@@ -40,7 +40,8 @@ rnaseq_collapsed <-
                      "gene-expression-rsem-tpm-collapsed.rds"))
 
 # structural variant for BCOR tandem duplications
-manta_sv_df <- read_tsv(file.path(data_dir, "sv-manta.tsv.gz"))
+manta_sv_df <- read_tsv(file.path(data_dir, "sv-manta.tsv.gz"), 
+                        guess_max = 100000000)
 
 #### Filter and process expression data ----------------------------------------
 
