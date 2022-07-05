@@ -217,9 +217,14 @@ all_biospecimen_ids <-
 Write to file.
 
 ```{r}
-data.frame(Kids_First_Biospecimen_ID = all_biospecimen_ids) %>%
-  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+histologies_df %>% 
+  dplyr::filter(Kids_First_Biospecimen_ID %in% all_biospecimen_ids) %>%
+  dplyr::filter(experimental_strategy %in% c("WGS", "WXS"),
+                sample_type == "Tumor",
+                composition == "Solid Tissue") %>%
+  dplyr::select(Kids_First_Biospecimen_ID) %>%
   write_tsv(output_file)
+
 ```
 
 ## Session Info
