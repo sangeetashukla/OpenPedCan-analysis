@@ -28,7 +28,8 @@ clinical <- readr::read_tsv(file.path(dataDir, "histologies-base.tsv"),
          experimental_strategy, 
          pathology_diagnosis,
          sample_id,
-         sample_type)
+         sample_type,
+         cohort)
 
 # get ewings fusion calls from fusion-summary results file
 ewings_foi_bsids <- readr::read_tsv(
@@ -70,6 +71,7 @@ ews_rnaseq <- clinical %>%
            # OR sample_id associated with the RNA sample with hallmark fusion
          sample_id %in% has_ews_fusion_sampleid,
          experimental_strategy == "RNA-Seq") %>%
+  filter(!cohort %in% c("TARGET", "GMKR")) %>% 
   select(Kids_First_Biospecimen_ID, 
          Kids_First_Participant_ID, 
          sample_id) 
@@ -87,6 +89,7 @@ ews_wgs <- clinical %>%
          # filter to Tumor since we have Normal WGS as well
          sample_type == "Tumor",
          experimental_strategy == "WGS") %>%
+  filter(!cohort %in% c("TARGET", "GMKR")) %>% 
   select(Kids_First_Biospecimen_ID, 
          Kids_First_Participant_ID, 
          sample_id) 
