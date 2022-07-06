@@ -29,7 +29,7 @@ mkdir -p ${compiled_dir}
 
 # Create the independent sample list using the *FULL* histology file
 echo "Create independent sample list"
-OPENPBTA_BASE_SUBTYPING=0 ${analyses_dir}/independent-samples/run-independent-samples.sh
+bash ${analyses_dir}/independent-samples/run-independent-samples.sh
 
 # Fusion summary
 echo "Run fusion summary for subtypes"
