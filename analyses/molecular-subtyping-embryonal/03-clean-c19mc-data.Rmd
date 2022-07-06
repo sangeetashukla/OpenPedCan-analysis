@@ -107,7 +107,6 @@ histologies_df <- read_tsv(histologies_file,
                            ))
 
 # copy number consensus file (analysis file)
-# TODO: get this from data download
 cn_consensus_seg <- file.path(data_dir,
                               "cnv-consensus.seg.gz")
 # file that contains the biospecimen IDs that met criteria for subtyping
