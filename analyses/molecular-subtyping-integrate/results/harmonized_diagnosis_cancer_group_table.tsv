@@ -134,8 +134,6 @@ DGD	Intrahepatic Cholangiocarcinoma	Intrahepatic Cholangiocarcinoma	No	No
 PBTA	Juvenile xanthogranuloma	Juvenile xanthogranuloma	No	No
 DGD	Juvenile Xanthogranuloma	Juvenile xanthogranuloma	No	Yes
 DGD	Juvenile xanthogranuloma	Juvenile xanthogranuloma	No	No
-TCGA	Kidney Renal Clear Cell Carcinoma	Kidney Renal Clear Cell Carcinoma	No	No
-TCGA	Kidney Renal Papillary Cell Carcinoma	Kidney Renal Papillary Cell Carcinoma	No	No
 PBTA	Langerhans Cell histiocytosis	Langerhans Cell histiocytosis	No	No
 DGD	Langerhans Cell histiocytosis	Langerhans Cell histiocytosis	No	No
 PBTA	Low-grade glioma/astrocytoma, other MAPK	Low-grade glioma/astrocytoma	Yes	No
@@ -231,6 +229,8 @@ DGD	Pleomorphic xanthoastrocytoma	Pleomorphic xanthoastrocytoma	No	No
 PBTA	Primary CNS lymphoma	Primary CNS lymphoma	No	No
 TCGA	Prostate Adenocarcinoma	Prostate Adenocarcinoma	No	No
 TCGA	Rectum Adenocarcinoma	Rectum Adenocarcinoma	No	No
+TCGA	Kidney Renal Clear Cell Carcinoma	Renal Clear Cell Carcinoma	No	Yes
+TCGA	Kidney Renal Papillary Cell Carcinoma	Renal Papillary Cell Carcinoma	No	Yes
 DGD	Retinoblastoma	Retinoblastoma	No	No
 TARGET	Rhabdoid tumor of the kidney	Rhabdoid tumor of the kidney	No	No
 PBTA	Rhabdomyosarcoma	Rhabdomyosarcoma	No	No

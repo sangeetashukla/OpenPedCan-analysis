@@ -21,8 +21,6 @@ Head and Neck Squamous Cell Carcinoma	Metastatic	2
 Head and Neck Squamous Cell Carcinoma	Primary Tumor	498
 Hepatocellular Carcinoma	Primary Tumor	369
 Hepatocellular Carcinoma	Recurrence	3
-Kidney Renal Clear Cell Carcinoma	Primary Tumor	536
-Kidney Renal Papillary Cell Carcinoma	Primary Tumor	287
 Low-grade glioma/astrocytoma	Primary Tumor	507
 Low-grade glioma/astrocytoma	Recurrence	18
 Lung Adenocarcinoma	Primary Tumor	531
@@ -40,6 +38,8 @@ Prostate Adenocarcinoma	Metastatic	1
 Prostate Adenocarcinoma	Primary Tumor	497
 Rectum Adenocarcinoma	Primary Tumor	92
 Rectum Adenocarcinoma	Recurrence	1
+Renal Clear Cell Carcinoma	Primary Tumor	536
+Renal Papillary Cell Carcinoma	Primary Tumor	287
 Sarcoma	Metastatic	1
 Sarcoma	Primary Tumor	258
 Sarcoma	Recurrence	3

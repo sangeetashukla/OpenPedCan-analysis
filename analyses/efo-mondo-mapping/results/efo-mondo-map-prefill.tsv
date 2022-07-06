@@ -63,8 +63,6 @@ Infantile Fibrosarcoma	NA	NA
 Inflammatory Myofibroblastic Tumor	NA	NA
 Intrahepatic Cholangiocarcinoma	NA	NA
 Juvenile xanthogranuloma	NA	NA
-Kidney Renal Clear Cell Carcinoma	NA	NA
-Kidney Renal Papillary Cell Carcinoma	NA	NA
 Langerhans Cell histiocytosis	EFO_1000318	MONDO_0009519
 Low-grade glioma/astrocytoma	MONDO_0016685	MONDO_0016685
 Lung Adenocarcinoma	NA	NA
@@ -98,6 +96,8 @@ Pleomorphic xanthoastrocytoma	NA	NA
 Primary CNS lymphoma	EFO_1000157	MONDO_0002571
 Prostate Adenocarcinoma	NA	NA
 Rectum Adenocarcinoma	NA	NA
+Renal Clear Cell Carcinoma	NA	NA
+Renal Papillary Cell Carcinoma	NA	NA
 Retinoblastoma	NA	NA
 Rhabdoid tumor of the kidney	NA	NA
 Rhabdomyosarcoma	EFO_0002918	MONDO_0002847
