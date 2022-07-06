@@ -172,6 +172,7 @@ histology_cg <- histology %>%
     cancer_group == "Embryonal Tumor with Multilayered Rosettes (ETMR)" ~ "Embryonal tumor with multilayer rosettes",
     cancer_group %in% c("Wilms Tumor", "Juvenile Xanthogranuloma", "Clear Cell Sarcoma of the Kidney") ~ stringr::str_to_sentence(cancer_group),
     cancer_group == "Ependymoma;Metastatic secondary tumors" ~ "Ependymoma",
+    cancer_group == "Ependymoma;Metastatic secondary tumors" ~ "Ependymoma",
     cancer_group %in% c("Acute Promyelocytic Leukemia", "Therapy-Related Acute Myeloid Leukemia") ~ "Acute Myeloid Leukemia",
     cancer_group %in% c("Mixed Lineage Leukemia") ~ "Acute Lymphoblastic Leukemia",
     cancer_group == "Brain Lower Grade Glioma" ~ "Low-grade glioma/astrocytoma",
@@ -325,13 +326,10 @@ all_cg  <- ped_cancer_groups %>%
 efo_mondo <- read_tsv(file.path(data_dir, "efo-mondo-map.tsv"))
 
 efo_v11 <- all_cg %>%
-  full_join(efo_mondo) %>%
-  # remove mixed/not needed anymore
-  filter(cancer_group != "Germinoma;Teratoma", cancer_group != "Rhabdoid tumor") %>%
+  left_join(efo_mondo) %>%
   unique() %>%
   arrange(cancer_group) %>%
-  write_tsv(file.path("..", "..", "analyses", "efo-mondo-mapping", "results", "efo-mondo--map-prefill.tsv"))
-
+  write_tsv(file.path("..", "..", "analyses", "efo-mondo-mapping", "results", "efo-mondo-map-prefill.tsv"))
 ```
 
 
