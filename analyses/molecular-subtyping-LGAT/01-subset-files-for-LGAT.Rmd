@@ -69,7 +69,7 @@ path_dx_list <- jsonlite::fromJSON(
 # clinical file
 clinical <- read_tsv(file.path(root_dir, 
                                "data",
-                               "histologies.tsv"), 
+                               "histologies-base.tsv"), 
                      guess_max = 100000)
 ```
 
