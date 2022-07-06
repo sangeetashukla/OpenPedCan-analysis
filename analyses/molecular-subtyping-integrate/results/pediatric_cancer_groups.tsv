@@ -5,9 +5,9 @@ Acute Myeloid Leukemia	Primary Tumor	322
 Acute Myeloid Leukemia	Progressive	4
 Acute Myeloid Leukemia	Recurrence	151
 Acute Myeloid Leukemia	Second Malignancy	4
-Adamantinomatous Craniopharyngioma	Initial CNS Tumor	36
-Adamantinomatous Craniopharyngioma	Progressive	2
-Adamantinomatous Craniopharyngioma	Recurrence	7
+Adamantinomatous Craniopharyngioma	Initial CNS Tumor	54
+Adamantinomatous Craniopharyngioma	Progressive	8
+Adamantinomatous Craniopharyngioma	Recurrence	9
 Adenocarcinoma	Primary Tumor	4
 Anaplastic Large Cell Lymphoma	Primary Tumor	4
 Angiosarcoma	Primary Tumor	2
@@ -30,27 +30,27 @@ Choroid plexus tumor	Initial CNS Tumor	6
 Chronic Myelogenous Leukemia	Primary Tumor	4
 CIC-DUX4 Sarcoma	Primary Tumor	2
 Clear cell sarcoma of the kidney	Primary Tumor	24
-CNS Burkitt's lymphoma	Initial CNS Tumor	2
-CNS Embryonal tumor	Initial CNS Tumor	30
+CNS Burkitt's lymphoma	Initial CNS Tumor	3
+CNS Embryonal tumor	Initial CNS Tumor	29
 CNS Embryonal tumor	Progressive	11
 CNS Embryonal tumor	Recurrence	5
 CNS Melanoma	Initial CNS Tumor	2
 CNS neuroblastoma	Initial CNS Tumor	4
 CNS neuroblastoma	Recurrence	1
-Craniopharyngioma	Initial CNS Tumor	71
-Craniopharyngioma	Progressive	18
-Craniopharyngioma	Recurrence	5
+Craniopharyngioma	Initial CNS Tumor	55
+Craniopharyngioma	Progressive	12
+Craniopharyngioma	Recurrence	3
 Desmoid-type fibromatosis	Progressive	1
 Desmoplastic infantile astrocytoma and ganglioglioma	Initial CNS Tumor	2
 Desmoplastic infantile astrocytoma and ganglioglioma	Progressive	4
-Diffuse fibrillary astrocytoma	Initial CNS Tumor	8
+Diffuse fibrillary astrocytoma	Initial CNS Tumor	13
 Diffuse fibrillary astrocytoma	Recurrence	2
-Diffuse intrinsic pontine glioma	Initial CNS Tumor	53
+Diffuse intrinsic pontine glioma	Initial CNS Tumor	22
 Diffuse intrinsic pontine glioma	Progressive	19
 Diffuse leptomeningeal glioneuronal tumor	Progressive	2
-Diffuse midline glioma	Initial CNS Tumor	131
+Diffuse midline glioma	Initial CNS Tumor	186
 Diffuse midline glioma	Progressive	27
-Diffuse midline glioma	Progressive Disease Post-Mortem	11
+Diffuse midline glioma	Progressive Disease Post-Mortem	12
 Diffuse midline glioma	Recurrence	2
 Dysembryoplastic neuroepithelial tumor	Initial CNS Tumor	79
 Dysembryoplastic neuroepithelial tumor	Primary Tumor	2
@@ -59,7 +59,7 @@ Dysembryoplastic neuroepithelial tumor	Recurrence	9
 Dysgerminoma	Primary Tumor	2
 Embryonal tumor	Initial CNS Tumor	4
 Embryonal Tumor NOS	Primary Tumor	2
-Embryonal tumor with multilayer rosettes	Initial CNS Tumor	7
+Embryonal tumor with multilayer rosettes	Initial CNS Tumor	6
 Embryonal tumor with multilayer rosettes	Progressive	3
 Embryonal tumor with multilayer rosettes	Recurrence	2
 Ependymoma	Initial CNS Tumor	347
@@ -67,7 +67,7 @@ Ependymoma	Progressive	77
 Ependymoma	Recurrence	79
 Ependymoma	Second Malignancy	1
 Ependymoma	Unavailable	2
-Ewing sarcoma	Initial CNS Tumor	28
+Ewing sarcoma	Initial CNS Tumor	30
 Ewing sarcoma	Primary Tumor	6
 Ewing sarcoma	Progressive	10
 Ewing sarcoma	Recurrence	6
@@ -93,10 +93,10 @@ Hemangioblastoma	Initial CNS Tumor	15
 Hemangioblastoma	Progressive	5
 Hepatoblastoma	Primary Tumor	8
 Hepatocellular Carcinoma	Primary Tumor	2
-High-grade glioma/astrocytoma	Initial CNS Tumor	366
+High-grade glioma/astrocytoma	Initial CNS Tumor	342
 High-grade glioma/astrocytoma	Primary Tumor	3
 High-grade glioma/astrocytoma	Progressive	106
-High-grade glioma/astrocytoma	Progressive Disease Post-Mortem	2
+High-grade glioma/astrocytoma	Progressive Disease Post-Mortem	1
 High-grade glioma/astrocytoma	Recurrence	54
 High-grade glioma/astrocytoma	Second Malignancy	15
 Histiocytic tumor	Initial CNS Tumor	3
@@ -108,16 +108,16 @@ Inflammatory Myofibroblastic Tumor	Primary Tumor	8
 Inflammatory Myofibroblastic Tumor	Progressive	2
 Inflammatory Myofibroblastic Tumor	Recurrence	2
 Intrahepatic Cholangiocarcinoma	Primary Tumor	1
-Juvenile xanthogranuloma	Initial CNS Tumor	6
+Juvenile xanthogranuloma	Initial CNS Tumor	4
 Juvenile xanthogranuloma	Primary Tumor	2
 Langerhans Cell histiocytosis	Initial CNS Tumor	22
 Langerhans Cell histiocytosis	Primary Tumor	8
 Langerhans Cell histiocytosis	Progressive	1
 Langerhans Cell histiocytosis	Unavailable	1
-Low-grade glioma/astrocytoma	Initial CNS Tumor	585
+Low-grade glioma/astrocytoma	Initial CNS Tumor	578
 Low-grade glioma/astrocytoma	Primary Tumor	6
 Low-grade glioma/astrocytoma	Progressive	179
-Low-grade glioma/astrocytoma	Recurrence	44
+Low-grade glioma/astrocytoma	Recurrence	43
 Low-grade glioma/astrocytoma	Second Malignancy	3
 Malignant peripheral nerve sheath tumor	Initial CNS Tumor	5
 Malignant peripheral nerve sheath tumor	Primary Tumor	5
@@ -145,8 +145,8 @@ Neuroblastoma	Metastatic	2
 Neuroblastoma	Primary Tumor	1480
 Neuroblastoma	Progressive	20
 Neuroblastoma	Recurrence	26
-Neurocytoma	Initial CNS Tumor	4
-Neurocytoma	Progressive	2
+Neurocytoma	Initial CNS Tumor	7
+Neurocytoma	Progressive	3
 Neuroepithelial neoplasm	Recurrence	3
 Neurofibroma/Plexiform	Initial CNS Tumor	39
 Neurofibroma/Plexiform	Primary Tumor	4
@@ -163,7 +163,7 @@ Osteosarcoma	Recurrence	4
 Osteosarcoma	Second Malignancy	6
 Pilocytic astrocytoma	Initial CNS Tumor	216
 Pilocytic astrocytoma	Progressive	33
-Pilocytic astrocytoma	Recurrence	6
+Pilocytic astrocytoma	Recurrence	7
 Pilocytic astrocytoma	Second Malignancy	2
 Pineal tumor	Initial CNS Tumor	1
 Pineoblastoma	Initial CNS Tumor	23
@@ -172,7 +172,6 @@ Pineocytoma	Initial CNS Tumor	2
 Pleomorphic xanthoastrocytoma	Initial CNS Tumor	19
 Pleomorphic xanthoastrocytoma	Progressive	2
 Pleomorphic xanthoastrocytoma	Recurrence	4
-Primary CNS lymphoma	Initial CNS Tumor	1
 Retinoblastoma	Recurrence	2
 Rhabdoid tumor of the kidney	Primary Tumor	64
 Rhabdomyosarcoma	Initial CNS Tumor	8
@@ -190,7 +189,7 @@ Schwannoma	Initial CNS Tumor	55
 Schwannoma	Primary Tumor	4
 Schwannoma	Progressive	7
 Schwannoma	Recurrence	5
-Subependymal Giant Cell Astrocytoma	Initial CNS Tumor	25
+Subependymal Giant Cell Astrocytoma	Initial CNS Tumor	27
 Subependymal Giant Cell Astrocytoma	Progressive	3
 Subependymal Giant Cell Astrocytoma	Second Malignancy	2
 T Acute Lymphoblastic Leukemia/Lymphoma	Primary Tumor	15
