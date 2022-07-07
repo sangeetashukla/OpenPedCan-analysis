@@ -131,6 +131,8 @@ DGD	Histiocytic tumor	Histiocytic tumor	No	No
 DGD	Hodgkin's lymphoma	Hodgkin's lymphoma	No	No
 DGD	Infantile Fibrosarcoma	Infantile Fibrosarcoma	No	No
 DGD	Inflammatory Myofibroblastic Tumor	Inflammatory Myofibroblastic Tumor	No	No
+PBTA	Myofibroblastic tumor	Inflammatory Myofibroblastic Tumor	No	Yes
+DGD	Myofibroblastic tumor	Inflammatory Myofibroblastic Tumor	No	Yes
 DGD	Intrahepatic Cholangiocarcinoma	Intrahepatic Cholangiocarcinoma	No	No
 DGD	Juvenile Xanthogranuloma	Juvenile xanthogranuloma	No	Yes
 PBTA	Juvenile xanthogranuloma	Juvenile xanthogranuloma	No	No
@@ -181,8 +183,6 @@ DGD	Metastatic secondary tumors	Metastatic secondary tumors	No	No
 PBTA	Mixed germ cell tumor	Mixed germ cell tumor	No	No
 DGD	Mixed germ cell tumor	Mixed germ cell tumor	No	No
 DGD	Myeloid Neoplasm	Myeloid Neoplasm	No	No
-PBTA	Myofibroblastic tumor	Myofibroblastic tumor	No	No
-DGD	Myofibroblastic tumor	Myofibroblastic tumor	No	No
 PBTA	Neuroblastoma	Neuroblastoma	No	No
 GMKF	Neuroblastoma	Neuroblastoma	No	No
 TARGET	Neuroblastoma	Neuroblastoma	No	No

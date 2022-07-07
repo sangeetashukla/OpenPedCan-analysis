@@ -104,8 +104,9 @@ Histiocytic tumor	Primary Tumor	6
 Histiocytic tumor	Progressive	4
 Hodgkin's lymphoma	Recurrence	2
 Infantile Fibrosarcoma	Primary Tumor	4
+Inflammatory Myofibroblastic Tumor	Initial CNS Tumor	3
 Inflammatory Myofibroblastic Tumor	Primary Tumor	8
-Inflammatory Myofibroblastic Tumor	Progressive	2
+Inflammatory Myofibroblastic Tumor	Progressive	5
 Inflammatory Myofibroblastic Tumor	Recurrence	2
 Intrahepatic Cholangiocarcinoma	Primary Tumor	1
 Juvenile xanthogranuloma	Initial CNS Tumor	4
@@ -138,8 +139,6 @@ Metastatic secondary tumors	Progressive	2
 Mixed germ cell tumor	Initial CNS Tumor	2
 Mixed germ cell tumor	Progressive	5
 Myeloid Neoplasm	Primary Tumor	1
-Myofibroblastic tumor	Initial CNS Tumor	3
-Myofibroblastic tumor	Progressive	3
 Neuroblastoma	Initial CNS Tumor	12
 Neuroblastoma	Metastatic	2
 Neuroblastoma	Primary Tumor	1480

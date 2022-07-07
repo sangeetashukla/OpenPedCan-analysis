@@ -187,11 +187,15 @@ histology_cg <- histology %>%
     cancer_group == "Glioneuronal tumor" ~ "Glial-neuronal tumor NOS",
     cancer_group == "Histiocytic Tumor" ~ str_to_sentence(cancer_group),
     cancer_group == "Melanocytoma" ~ "Melanocytic tumor",
+    cancer_group == "Myofibroblastic tumor" ~ "Inflammatory Myofibroblastic Tumor",
     short_histology == "LIHC" ~ "Hepatocellular Carcinoma",
     harmonized_diagnosis == "Rosai-dorfman" ~ "Rosai-Dorfman disease",
     TRUE ~ as.character(cancer_group))
   ) %>%
   # Additional update to clean up terms that we will use in plots
+  # harmonize myofibroblastic tumors - all inflammatory; take care of organ later
+    mutate(short_histology = case_when(short_histology == "Myofibroblastic tumor" ~ "Inflammatory Myofibroblastic Tumor", TRUE ~ as.character(short_histology)),
+           harmonized_diagnosis = case_when(short_histology == "Myofibroblastic tumor" ~ "Inflammatory Myofibroblastic Tumor", TRUE ~ as.character(harmonized_diagnosis))) %>%
   # remove short forms in the brackets
   dplyr::mutate(cancer_group = str_extract(cancer_group, "[^(]*")) %>%
   # remove space at the ends
