@@ -5,7 +5,7 @@ A table with brief descriptions for each data file is provided in the `data-file
 
 ## Processed Data Files
 
-Processed data files are all files derived from samples (e.g., tumors, cell lines) that are processed upstream of this repository and are not the product of any analysis code in the `AlexsLemonade/OpenPBTA-analysis` repository.
+Processed data files are all files derived from samples (e.g., tumors, cell lines) that are processed upstream of this repository and are not the product of any analysis code in the `AlexsLemonade/OpenPBTA-analysis` or `PediatricOpenTargets/OpenPedCan-analysis` repository.
 
 
 ### Somatic Single Nucleotide Variant (SNV) Data
@@ -18,7 +18,7 @@ Somatic Single Nucleotide Variant (SNV) data are provided in [Annotated MAF form
 * `snv-vardict.vep.maf.gz`
 
 ### Consensus Somatic Variant Data
-Somatic calls that are retained if they are supported by atleast 2 callers OR marked as `HotSpotAllele` because they overlap SNV/INDELs considered as [Cancer Hotspots](https://www.cancerhotspots.org/#/download) OR are TERT promoter SNVs. Please find additional information [here](https://github.com/kids-first/kf-somatic-workflow/blob/master/docs/kfdrc-consensus-calling.md) 
+Somatic calls that are retained if they are supported by atleast 2 callers OR marked as `HotSpotAllele` because they overlap SNV/INDELs considered as [Cancer Hotspots](https://www.cancerhotspots.org/#/download) OR are TERT promoter SNVs. Please find additional information [here](https://github.com/kids-first/kf-somatic-workflow/blob/master/docs/kfdrc-consensus-calling.md)
 
 * `snv-consensus-plus-hotspots.maf.tsv.gz`
 
@@ -27,8 +27,8 @@ Somatic calls that are retained if they are supported by atleast 2 callers OR ma
 Somatic Copy Number Variant (CNV) data are provided in a modified [SEG format](https://software.broadinstitute.org/software/igv/SEG) for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-copy-number-variant-calling) and denoted with the `cnv` prefix.
 **Somatic copy number data is only generated for whole genome sequencing (WGS) samples.**
 
-  * `cnv-cnvkit.seg.gz` is the the CNVkit SEG file. This file contains an additional column `copy.num` to denote copy number of each segment, derived from the CNS file output of the algorithm [described here](https://cnvkit.readthedocs.io/en/stable/fileformats.html).
-  * `cnv-controlfreec.tsv.gz` is the ControlFreeC TSV file. It is a merge of `*_CNVs` files produced from the algorithm, and columns are [described here](http://boevalab.inf.ethz.ch/FREEC/tutorial.html#OUTPUT).
+* `cnv-cnvkit.seg.gz` is the the CNVkit SEG file. This file contains an additional column `copy.num` to denote copy number of each segment, derived from the CNS file output of the algorithm [described here](https://cnvkit.readthedocs.io/en/stable/fileformats.html).
+* `cnv-controlfreec.tsv.gz` is the ControlFreeC TSV file. It is a merge of `*_CNVs` files produced from the algorithm, and columns are [described here](http://boevalab.inf.ethz.ch/FREEC/tutorial.html#OUTPUT).
   
 #### A Note on Ploidy
 
@@ -56,6 +56,7 @@ These files are denoted with the prefix `fusion`.
 * `fusion-starfusion.tsv.gz`
 
 The above gene fusions results were then filtered by the [fusion filtering module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/v10-release/analyses/fusion_filtering) to contain only putative oncogenic fusions.
+
 * `fusion-putative-oncogenic.tsv.gz`
 
 ### Structural Variant Data
@@ -73,25 +74,52 @@ provided as:
 
 ### Independent Sample List
 
-[Independent sample list](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) are released as tab separated values in the following file. 
-`wgswxspanel` indicates it includes all experimental strategy for DNA sequencing, 
-`RNA` includes all RNA samples and `primary` and `relapse` specifies which tumor type the samples are from.
+[Independent sample list](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) are released as tab separated values in the following files. 
+`wgswxspanel` indicates it includes all experimental strategies for DNA sequencing, `rnaseqpanel` indicates it includes all experimental strategies for RNA sequencing.
 `eachcohort` indicates the selection is cohort-based. 
-Additionally, `.prefer.wxs` indicates WXS samples were preferentially select when both WGS and WXS are available for a particular participant. 
-All files without `.prefer.wxs` preferentially select WGS amples were preferentially select when both WGS and WXS are available for a particular participant. 
+Additionally, `.prefer.wxs` (or `.prefer.wgs`) indicates WXS (or WGS) samples were preferentially select when both WGS and WXS are available for a particular participant. 
 
-* `independent-specimens.wgswxspanel.primary.eachcohort.tsv`
-* `independent-specimens.wgswxspanel.relapse.eachcohort.tsv`
+* `independent-specimens.methyl.primary-plus.tsv`
+* `independent-specimens.methyl.primary.tsv`
+* `independent-specimens.methyl.relapse.tsv`
+* `independent-specimens.rnaseq.primary-plus-pre-release.tsv`
+* `independent-specimens.rnaseq.primary-pre-release.tsv`
 * `independent-specimens.rnaseq.primary.eachcohort.tsv`
-* `independent-specimens.rnaseq.relapse.eachcohort.tsv`
-* `independent-specimens.wgswxspanel.primary.tsv`
-* `independent-specimens.wgswxspanel.relapse.tsv`
 * `independent-specimens.rnaseq.primary.tsv`
+* `independent-specimens.rnaseq.relapse-pre-release.tsv`
+* `independent-specimens.rnaseq.relapse.eachcohort.tsv`
 * `independent-specimens.rnaseq.relapse.tsv`
+* `independent-specimens.rnaseqpanel.primary-plus.eachcohort.tsv`
+* `independent-specimens.rnaseqpanel.primary-plus.pre-release.tsv`
+* `independent-specimens.rnaseqpanel.primary-plus.tsv`
+* `independent-specimens.rnaseqpanel.primary.eachcohort.tsv`
+* `independent-specimens.rnaseqpanel.primary.pre-release.tsv`
+* `independent-specimens.rnaseqpanel.primary.tsv`
+* `independent-specimens.rnaseqpanel.relapse.eachcohort.tsv`
+* `independent-specimens.rnaseqpanel.relapse.pre-release.tsv`
+* `independent-specimens.rnaseqpanel.relapse.tsv`
+* `independent-specimens.wgs.primary-plus.eachcohort.tsv`
+* `independent-specimens.wgs.primary-plus.tsv`
+* `independent-specimens.wgs.primary.eachcohort.tsv`
+* `independent-specimens.wgs.primary.tsv`
+* `independent-specimens.wgs.relapse.eachcohort.tsv`
+* `independent-specimens.wgs.relapse.tsv`
+* `independent-specimens.wgswxspanel.primary-plus.eachcohort.prefer.wgs.tsv`
+* `independent-specimens.wgswxspanel.primary-plus.eachcohort.prefer.wxs.tsv`
+* `independent-specimens.wgswxspanel.primary-plus.prefer.wgs.tsv`
+* `independent-specimens.wgswxspanel.primary-plus.prefer.wxs.tsv`
+* `independent-specimens.wgswxspanel.primary.eachcohort.prefer.wgs.tsv`
 * `independent-specimens.wgswxspanel.primary.eachcohort.prefer.wxs.tsv`
-* `independent-specimens.wgswxspanel.relapse.eachcohort.tprefer.wxs.sv`
+* `independent-specimens.wgswxspanel.primary.eachcohort.tsv`
+* `independent-specimens.wgswxspanel.primary.prefer.wgs.tsv`
 * `independent-specimens.wgswxspanel.primary.prefer.wxs.tsv`
+* `independent-specimens.wgswxspanel.primary.tsv`
+* `independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wgs.tsv`
+* `independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wxs.tsv`
+* `independent-specimens.wgswxspanel.relapse.eachcohort.tsv`
+* `independent-specimens.wgswxspanel.relapse.prefer.wgs.tsv`
 * `independent-specimens.wgswxspanel.relapse.prefer.wxs.tsv`
+* `independent-specimens.wgswxspanel.relapse.tsv`
 
 ## Analysis Files
 
@@ -105,6 +133,7 @@ In cases where more than one Ensembl gene identifier maps to the same gene symbo
 
 * `gene-counts-rsem-expected_count-collapsed.rds`  
 * `gene-expression-rsem-tpm-collapsed.rds`
+* `rna-isoform-expression-rsem-tpm.rds`
 
 Additionally, available TCGA gene expression files with same format are included:
 * `tcga-gene-counts-rsem-expected_count.rds`
@@ -117,6 +146,8 @@ Additionally, available TCGA gene expression files with same format are included
 Copy number consensus calls from the copy number and structural variant callers are a product of the [`analyses/copy_number_consensus_call`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/copy_number_consensus_call) analysis module. 
 
 * `cnv-consensus.seg.gz` contains consensus segments and segment means (log R ratios) from two or more callers, as described in the [analysis README](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/copy_number_consensus_call/README.md) - contains only WGS samples. 
+
+* `cnvkit_with_status.tsv` and `consensus_seg_with_status.tsv` contain CNVkit calls for WXS or CNV consensus calls for WGS with gain/loss status, respectively
 
 ##### Focal Copy Number Files
 
