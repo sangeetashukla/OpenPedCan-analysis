@@ -12,6 +12,7 @@ Bladder Urothelial Carcinoma	NA	NA
 Breast Invasive Carcinoma	NA	NA
 Burkitt Leukemia/Lymphoma	NA	NA
 Cavernoma	EFO_1000151	MONDO_0003155
+Central neurocytoma	NA	NA
 Cervical Squamous Cell Carcinoma and Endocervical Adenocarcinoma	NA	NA
 Cholangiocarcinoma	NA	NA
 Chordoma	Orphanet_178	MONDO_0008978
@@ -42,6 +43,7 @@ Embryonal tumor with multilayer rosettes	MONDO_0016715	MONDO_0016715
 Ependymoma	EFO_1000028	MONDO_0016698
 Esophageal Carcinoma	NA	NA
 Ewing sarcoma	EFO_0000174	MONDO_0012817
+Extraventricular neurocytoma	NA	NA
 Fibromyxoid lesion	MONDO_0037745	MONDO_0037745
 Ganglioglioma	EFO_0003094	MONDO_0016733
 Ganglioneuroblastoma	EFO_0000502	MONDO_0005035
@@ -78,7 +80,6 @@ Metastatic secondary tumors	EFO_0009812	MONDO_0024883
 Mixed germ cell tumor	NA	NA
 Myeloid Neoplasm	NA	NA
 Neuroblastoma	EFO_0000621	MONDO_0005072
-Neurocytoma	NA	NA
 Neuroepithelial neoplasm	NA	NA
 Neurofibroma/Plexiform	EFO_0000658	MONDO_0003304
 Non-Hodgkin Lymphoma	NA	NA

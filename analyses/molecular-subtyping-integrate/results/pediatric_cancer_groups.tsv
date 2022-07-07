@@ -22,6 +22,8 @@ B Acute Lymphoblastic Leukemia/Lymphoma	Recurrence	80
 Burkitt Leukemia/Lymphoma	Primary Tumor	8
 Cavernoma	Initial CNS Tumor	5
 Cavernoma	Second Malignancy	1
+Central neurocytoma	Initial CNS Tumor	2
+Central neurocytoma	Progressive	3
 Chordoma	Initial CNS Tumor	13
 Chordoma	Progressive	10
 Chordoma	Recurrence	3
@@ -71,6 +73,7 @@ Ewing sarcoma	Initial CNS Tumor	30
 Ewing sarcoma	Primary Tumor	6
 Ewing sarcoma	Progressive	10
 Ewing sarcoma	Recurrence	6
+Extraventricular neurocytoma	Initial CNS Tumor	5
 Fibromyxoid lesion	Second Malignancy	3
 Ganglioglioma	Initial CNS Tumor	150
 Ganglioglioma	Progressive	30
@@ -144,8 +147,6 @@ Neuroblastoma	Metastatic	2
 Neuroblastoma	Primary Tumor	1480
 Neuroblastoma	Progressive	20
 Neuroblastoma	Recurrence	26
-Neurocytoma	Initial CNS Tumor	7
-Neurocytoma	Progressive	3
 Neuroepithelial neoplasm	Recurrence	3
 Neurofibroma/Plexiform	Initial CNS Tumor	39
 Neurofibroma/Plexiform	Primary Tumor	4

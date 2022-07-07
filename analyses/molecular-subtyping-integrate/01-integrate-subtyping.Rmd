@@ -103,7 +103,7 @@ histology <- base_histology %>%
   select(-Notes,-molecular_subtype,-integrated_diagnosis, -harmonized_diagnosis ) %>%
   left_join(compiled_subtyping,by=c("Kids_First_Biospecimen_ID","sample_id","Kids_First_Participant_ID","tumor_descriptor"),suffix=c(".base",".subtyped")) %>%
   unique() %>%
-  mutate(
+  dplyr::mutate(
     broad_histology = if_else(!is.na(broad_histology.subtyped),
                               broad_histology.subtyped,
                               broad_histology.base),
@@ -119,8 +119,11 @@ histology <- base_histology %>%
                   !is.na(pathology_diagnosis) ~ pathology_diagnosis
     )) %>%
   # Harmonize some harmonized diagnoses which will become cancer groups
-  mutate(harmonized_diagnosis = case_when(harmonized_diagnosis %in% c("Ewings sarcoma", "Ewings Sarcoma") ~ "Ewing sarcoma",
-                                          TRUE ~ as.character(harmonized_diagnosis)))
+  dplyr::mutate(harmonized_diagnosis = case_when(harmonized_diagnosis %in% c("Ewings sarcoma", "Ewings Sarcoma") ~ "Ewing sarcoma",
+                                                 TRUE ~ as.character(harmonized_diagnosis))) %>%
+    dplyr::mutate(harmonized_diagnosis = case_when(molecular_subtype == "CNC" ~ "Central neurocytoma",
+                                                   molecular_subtype == "EVN" ~ "Extraventricular neurocytoma",
+                                                   TRUE ~ as.character(harmonized_diagnosis)))
 ```
 
 

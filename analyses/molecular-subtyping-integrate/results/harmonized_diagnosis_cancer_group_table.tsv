@@ -20,6 +20,7 @@ TCGA	Bladder Urothelial Carcinoma	Bladder Urothelial Carcinoma	No	No
 TCGA	Breast Invasive Carcinoma	Breast Invasive Carcinoma	No	No
 DGD	Burkitt Leukemia/Lymphoma	Burkitt Leukemia/Lymphoma	No	No
 PBTA	Cavernoma	Cavernoma	No	No
+PBTA	Central neurocytoma	Central neurocytoma	No	No
 TCGA	Cervical Squamous Cell Carcinoma and Endocervical Adenocarcinoma	Cervical Squamous Cell Carcinoma and Endocervical Adenocarcinoma	No	No
 TCGA	Cholangiocarcinoma	Cholangiocarcinoma	No	No
 PBTA	Chordoma	Chordoma	No	No
@@ -73,6 +74,8 @@ DGD	Ependymoma	Ependymoma	No	No
 TCGA	Esophageal Carcinoma	Esophageal Carcinoma	No	No
 PBTA	Ewing sarcoma	Ewing sarcoma	No	No
 DGD	Ewing sarcoma	Ewing sarcoma	No	No
+PBTA	Extraventricular neurocytoma	Extraventricular neurocytoma	No	No
+DGD	Extraventricular neurocytoma	Extraventricular neurocytoma	No	No
 PBTA	Fibromixoid lesion	Fibromyxoid lesion	No	Yes
 PBTA	Ganglioglioma, KIAA1549-BRAF	Ganglioglioma	Yes	No
 PBTA	Ganglioglioma, BRAF V600E	Ganglioglioma	Yes	No
@@ -187,8 +190,6 @@ PBTA	Neuroblastoma	Neuroblastoma	No	No
 GMKF	Neuroblastoma	Neuroblastoma	No	No
 TARGET	Neuroblastoma	Neuroblastoma	No	No
 DGD	Neuroblastoma	Neuroblastoma	No	No
-PBTA	Neurocytoma	Neurocytoma	No	No
-DGD	Neurocytoma	Neurocytoma	No	No
 PBTA	Neuroepithelial neoplasm	Neuroepithelial neoplasm	No	No
 PBTA	Neurofibroma/Plexiform	Neurofibroma/Plexiform	No	No
 DGD	Neurofibroma/Plexiform	Neurofibroma/Plexiform	No	No
