@@ -16,6 +16,8 @@ This document contains information about all data files associated with this pro
 ### current release (v11)
 | **File name** |  **File Type** | **Origin** | **File Description** |
 |---------------|----------------|------------------------|-----------------------|
+|`histologies-base.tsv` | Data file | Cohort-specific data files and databases | Clinical and sequencing metadata for each biospecimen
+|`histologies.tsv` | Modified data file | [`molecular-subtyping-integrate`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/master/analyses/molecular-subtyping-integrate) | `histologies-base.tsv` plus `molecular_subtype`, `cancer_group`, `integrated_diagnosis`, and `harmonized_diagnosis`
 |`intersect_cds_lancet_strelka_mutect_WGS.bed` | Analysis file | [`analyses/snv-callers`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/) | Intersection of `gencode.v27.primary_assembly.annotation.gtf.gz` CDS with Lancet, Strelka2, Mutect2 regions
 |`intersect_strelka_mutect_WGS.bed` | Analysis file | [`analyses/snv-callers`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/) | Intersection of `gencode.v27.primary_assembly.annotation.gtf.gz` CDS with Strelka2 and Mutect2 regions called
 |`efo-mondo-map.tsv` | Reference mapping file | [Manual collation](https://github.com/PediatricOpenTargets/ticket-tracker/issues/88) | Mapping of EFO and MONDO codes to cancer groups
