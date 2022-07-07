@@ -3,7 +3,7 @@
 ## current release
 - release date: 2022-07-07
 - status: available
-- overview of changes:
+- overview of changes (See [PR 188](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/188 for more details)):
   - This particular release added the following datasets:
     - 11 RNA-Seq and WXS PBTA samples (plus 2 WXS PBTA results from previous release)
     - 1799 DGD tumor samples (929 DNA, 870 RNA)
