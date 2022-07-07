@@ -100,15 +100,14 @@ data_dir <- file.path("..", "..", "data")
 
 ```{r message=FALSE}
 # full clinical file
-histologies_file <- file.path(data_dir, "histologies-base-adapt.tsv")
+histologies_file <- file.path(data_dir, "histologies-base.tsv")
 histologies_df <- read_tsv(histologies_file,
                            col_types = cols(
                              molecular_subtype = col_character()
                            ))
 
 # copy number consensus file (analysis file)
-# TODO: get this from data download
-cn_consensus_seg <- file.path("..", "copy_number_consensus_call", "results",
+cn_consensus_seg <- file.path(data_dir,
                               "cnv-consensus.seg.gz")
 # file that contains the biospecimen IDs that met criteria for subtyping
 biospecimen_file <- file.path(results_dir, 
@@ -219,6 +218,7 @@ Write to file.
 chr19_cn_df %>% 
   rename(Kids_First_Biospecimen_ID = ID) %>%
   distinct() %>%
+  arrange(Kids_First_Biospecimen_ID) %>%
   write_tsv(output_file)
 ```
 
