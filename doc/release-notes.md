@@ -11,11 +11,13 @@
       - methylation normal samples: 
         - 5 PBTA samples
         - 12 TARGET samples
-      - methylation tumor samples
+      - methylation tumor samples: [Ticket 278](https://github.com/PediatricOpenTargets/ticket-tracker/issues/278) and [Ticket 269](https://github.com/PediatricOpenTargets/ticket-tracker/issues/269)
         - 1146 PBTA samples
         - 751 TARGET samples
       - RNA isoform merged TPM samples
   - Update TCGA RNA-Seq data to use GENCODE v36 GDC
+    - [Ticket 285](https://github.com/PediatricOpenTargets/ticket-tracker/issues/285)
+    - [Ticket 308](https://github.com/PediatricOpenTargets/ticket-tracker/issues/308)
   - All additional changes as well as details about the above changes are as followed.
 
 - Add base histologies file to data release, see [ticket 333](https://github.com/PediatricOpenTargets/ticket-tracker/issues/333)
@@ -55,18 +57,12 @@
         - Modified EPN subtyping per [Ticket 365](https://github.com/PediatricOpenTargets/ticket-tracker/issues/365)
         - Add methylation bs_ids in neurocytoma subtyping
 
-- Update the download link to not only change the version from v10 to v11, but also change GENCODE versions: [ticket 270](https://github.com/PediatricOpenTargets/ticket-tracker/issues/270)
+- Update the download script to change from v10 to v11 and GENCODE file: [ticket 270](https://github.com/PediatricOpenTargets/ticket-tracker/issues/270)
 - Add bed files for TMB calculation and TMB results to data release 
     - [Ticket 250](https://github.com/PediatricOpenTargets/ticket-tracker/issues/250)
     - [Ticket 258](https://github.com/PediatricOpenTargets/ticket-tracker/issues/258)
-- Add methylation array data for v11 release 
-    - [Ticket 278](https://github.com/PediatricOpenTargets/ticket-tracker/issues/278)
-    - [Ticket 269](https://github.com/PediatricOpenTargets/ticket-tracker/issues/269)
-- Add TCGA with new GENCODE version to release
-    - [Ticket 285](https://github.com/PediatricOpenTargets/ticket-tracker/issues/285)
-    - [Ticket 308](https://github.com/PediatricOpenTargets/ticket-tracker/issues/308)
-- Run GISTIC module and upload zip file for data release: [ticket 302](https://github.com/PediatricOpenTargets/ticket-tracker/issues/302)
-- Merge all RNA isoform files into one for data release and downstream analyses: [ticket 341](https://github.com/PediatricOpenTargets/ticket-tracker/issues/341)
+- Run GISTIC module and upload zip file for data release: [Ticket 302](https://github.com/PediatricOpenTargets/ticket-tracker/issues/302)
+- Merge all RNA isoform files into one for data release and downstream analyses: [Ticket 341](https://github.com/PediatricOpenTargets/ticket-tracker/issues/341)
 
   
 ```
