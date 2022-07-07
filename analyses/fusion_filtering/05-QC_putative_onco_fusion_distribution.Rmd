@@ -276,7 +276,8 @@ putative_driver_fusions<-fusion_calls %>% dplyr::filter(!FusionName %in% FusionI
       TRUE ~ "Genic"
     )
   ) %>%
-  arrange(Sample, FusionName) 
+  arrange(Sample, FusionName) %>%
+  dplyr::mutate(annots = gsub("\\[], ", "", annots))
 
 write.table(putative_driver_fusions,file.path(outputfolder,"fusion-putative-oncogenic.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
