@@ -19,6 +19,7 @@ This document contains information about all data files associated with this pro
 |`intersect_cds_lancet_strelka_mutect_WGS.bed` | Analysis file | [`analyses/snv-callers`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/) | Intersection of `gencode.v27.primary_assembly.annotation.gtf.gz` CDS with Lancet, Strelka2, Mutect2 regions
 |`intersect_strelka_mutect_WGS.bed` | Analysis file | [`analyses/snv-callers`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/) | Intersection of `gencode.v27.primary_assembly.annotation.gtf.gz` CDS with Strelka2 and Mutect2 regions called
 |`efo-mondo-map.tsv` | Reference mapping file | [Manual collation](https://github.com/PediatricOpenTargets/ticket-tracker/issues/88) | Mapping of EFO and MONDO codes to cancer groups
+|`efo-mondo-map-prefill.tsv` | Modified reference mapping file | Analysis file generated in `molecular-subtyping-integrate` | Mapping of EFO and MONDO codes to cancer groups
 |`ensg-hugo-pmtl-mapping.tsv` | Reference mapping file | [Manual curation of PMTLv1.1 by FNL; RNA-Seq pipeline GTF mapping](https://github.com/PediatricOpenTargets/ticket-tracker/issues/125) | File which maps Hugo Symbols to ENSEMBL gene IDs an each ENSG to the RMTL curated by FNL
 |`*.bed` | Reference file | [Manual collation](https://github.com/PediatricOpenTargets/ticket-tracker/issues/258) | Bed files used for variant calling and are used for tmb calculation
 |`uberon-map-gtex-group.tsv` | Reference mapping file | [Manual collation](https://github.com/PediatricOpenTargets/ticket-tracker/issues/85) | Mapping of UBERON codes to tissue types in GTEx broad groups
@@ -47,6 +48,7 @@ This document contains information about all data files associated with this pro
 |`snv-consensus-plus-hotspots.maf.tsv.gz` | Processed data file | [Consensus calling method](https://github.com/kids-first/kf-somatic-workflow/blob/master/docs/kfdrc-consensus-calling.md) | Consensus (2 of 4) maf for PBTA + GMKF) |
 |`cnv-cnvkit.seg.gz` | Processed data file | [Copy number variant calling](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#somatic-copy-number-variant-calling); [Workflow](https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_combined_somatic_wgs_cnv_wf.cwl) | Somatic Copy Number Variant - CNVkit [SEG file](https://cnvkit.readthedocs.io/en/stable/fileformats.html#seg)
 |`cnv-consensus.seg.gz` | Analysis file | [CNV consensus calls for WGS](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/copy_number_consensus_call) | Somatic Copy Number Variant - WGS samples only
+|`cnvkit_with_status.tsv` <br> `consensus_seg_with_status.tsv` | Analysis files | [CNVkit calls for WXS or CNV consensus calls for WGS with gain/loss status](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/copy_number_consensus_call) | Somatic Copy Number Variant
 |`cnv-consensus-gistic.gz` | Analysis file | [Run GISTIC for WGS samples](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/run-gistic) | GISTIC results - WGS samples only
 |`cnv-controlfreec.tsv.gz` | Processed data file | [Copy number variant calling](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#somatic-copy-number-variant-calling); [Workflow](https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_combined_somatic_wgs_cnv_wf.cwl) | Somatic Copy Number Variant - TSV file that is a merge of [ControlFreeC `*_CNVs` files](http://boevalab.inf.ethz.ch/FREEC/tutorial.html#OUTPUT)
 |`consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz` | Analysis file | [Focal CNV consensus calls for WGS and CNVkit calls for WXS](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/focal-cn-file-preparation) | [TSV file](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/46cf6ccb119312ccae6122ac94c51710df01f6da/analyses/focal-cn-file-preparation#scripts-and-notebooks) containing genes with copy number changes per biospecimen; autosomes only
@@ -55,15 +57,44 @@ This document contains information about all data files associated with this pro
 |`snv-mutation-tmb-all.tsv` | Analysis file | [TMB calculation](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/tmb-calculation) | TSV file with sample names and their tumor mutation burden counting all variants
 |`snv-mutation-tmb-coding.tsv` | Analysis file | [TMB calculation](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/tmb-calculation) | TSV file with sample names and their tumor mutation burden counting all variants in coding region only
 |`sv-manta.tsv.gz`| Processed data file | [Structural variant calling](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#somatic-structural-variant-calling); [Workflow](https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_strelka2_mutect2_manta_workflow.cwl) | Somatic Structural Variant - Manta output, annotated with AnnotSV (WGS samples only)
-|`independent-specimens.wgswxspanel.primary.eachcohort.tsv` | Analysis file | [`analyses/independent-samples`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) | Independent (non-redundant) sample list of DNA samples of all sequencing method and from primary tumor in each cohort with WGS preferentially selected when available 
-|`independent-specimens.wgswxspanel.relapse.eachcohort.tsv` | Analysis file | [`analyses/independent-samples`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) | Independent (non-redundant) sample list of DNA samples of all sequencing method and from relapse tumor in each cohort with WGS preferentially selected when available 
-|`independent-specimens.rna.primary.eachcohort.tsv` | Analysis file | [`analyses/independent-samples`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) | Independent (non-redundant) sample list of RNA samples of all sequencing method and from primary tumor in each cohort with WGS preferentially selected when available 
-|`independent-specimens.rna.relapse.eachcohort.tsv` | Analysis file | [`analyses/independent-samples`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) | Independent (non-redundant) sample list of RNA samples of all sequencing method and from relapse tumor in each cohort with WGS preferentially selected when available 
-|`independent-specimens.wgswxspanel.primary.tsv` | Analysis file | [`analyses/independent-samples`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) | Independent (non-redundant) sample list of DNA samples of all sequencing method and from primary tumor in all cohorts with WGS preferentially selected when available 
-|`independent-specimens.wgswxspanel.relapse.tsv` | Analysis file | [`analyses/independent-samples`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) | Independent (non-redundant) sample list of DNA samples of all sequencing method and from relapse tumor in all cohorts with WGS preferentially selected when available 
-|`independent-specimens.rna.primary.tsv` | Analysis file | [`analyses/independent-samples`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) | Independent (non-redundant) sample list of RNA samples of all sequencing method and from primary tumor in all cohorts with WGS preferentially selected when available 
-|`independent-specimens.rna.relapse.tsv` | Analysis file | [`analyses/independent-samples`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) | Independent (non-redundant) sample list of RNA samples of all sequencing method and from relapse tumor in all cohorts with WGS preferentially selected when available 
-|`independent-specimens.wgswxspanel.primary.eachcohort.prefer.wxs.tsv` | Analysis file | [`analyses/independent-samples`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) | Independent (non-redundant) sample list of DNA samples of all sequencing method and from primary tumor in each cohort with WXS preferentially selected when available 
-|`independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wxs.tsv` | Analysis file | [`analyses/independent-samples`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) | Independent (non-redundant) sample list of DNA samples of all sequencing method and from relapse tumor in each cohort with WXS preferentially selected when available 
-|`independent-specimens.wgswxspanel.primary.prefer.wxs.tsv` | Analysis file | [`analyses/independent-samples`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) | Independent (non-redundant) sample list of DNA samples of all sequencing method and from primary tumor in all cohorts with WXS preferentially selected when available 
-|`independent-specimens.wgswxspanel.relapse.prefer.wxs.tsv` | Analysis file | [`analyses/independent-samples`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) | Independent (non-redundant) sample list of DNA samples of all sequencing method and from relapse tumor in all cohorts with WXS preferentially selected when available 
+|`independent-specimens.methyl.primary-plus.tsv` <br>
+`independent-specimens.methyl.primary.tsv` <br>
+`independent-specimens.methyl.relapse.tsv` <br>
+`independent-specimens.rnaseq.primary.eachcohort.tsv` <br>
+`independent-specimens.rnaseq.primary.tsv` <br>
+`independent-specimens.rnaseq.relapse-pre-release.tsv` <br>
+`independent-specimens.rnaseq.relapse.eachcohort.tsv` <br>
+`independent-specimens.rnaseq.relapse.tsv` <br>
+`independent-specimens.rnaseqpanel.primary-plus.eachcohort.tsv` <br>
+`independent-specimens.rnaseqpanel.primary-plus.pre-release.tsv` <br>
+`independent-specimens.rnaseqpanel.primary-plus.tsv` <br>
+`independent-specimens.rnaseqpanel.primary.eachcohort.tsv` <br>
+`independent-specimens.rnaseqpanel.primary.tsv` <br>
+`independent-specimens.rnaseqpanel.relapse.eachcohort.tsv` <br>
+`independent-specimens.rnaseqpanel.relapse.tsv` <br>
+`independent-specimens.wgs.primary-plus.eachcohort.tsv` <br>
+`independent-specimens.wgs.primary-plus.tsv` <br>
+`independent-specimens.wgs.primary.eachcohort.tsv` <br>
+`independent-specimens.wgs.primary.tsv` <br>
+`independent-specimens.wgs.relapse.eachcohort.tsv` <br>
+`independent-specimens.wgs.relapse.tsv` <br>
+`independent-specimens.wgswxspanel.primary-plus.eachcohort.prefer.wgs.tsv` <br>
+`independent-specimens.wgswxspanel.primary-plus.eachcohort.prefer.wxs.tsv` <br>
+`independent-specimens.wgswxspanel.primary-plus.prefer.wgs.tsv` <br>
+`independent-specimens.wgswxspanel.primary-plus.prefer.wxs.tsv` <br>
+`independent-specimens.wgswxspanel.primary.eachcohort.prefer.wgs.tsv` <br>
+`independent-specimens.wgswxspanel.primary.eachcohort.prefer.wxs.tsv` <br>
+`independent-specimens.wgswxspanel.primary.eachcohort.tsv` <br>
+`independent-specimens.wgswxspanel.primary.prefer.wgs.tsv` <br>
+`independent-specimens.wgswxspanel.primary.prefer.wxs.tsv` <br>
+`independent-specimens.wgswxspanel.primary.tsv` <br>
+`independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wgs.tsv` <br>
+`independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wxs.tsv` <br>
+`independent-specimens.wgswxspanel.relapse.eachcohort.tsv` <br>
+`independent-specimens.wgswxspanel.relapse.prefer.wgs.tsv` <br>
+`independent-specimens.wgswxspanel.relapse.prefer.wxs.tsv` <br>
+`independent-specimens.wgswxspanel.relapse.tsv`| Analysis files | [`analyses/independent-samples`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) | Independent (non-redundant) sample list of DNA, RNA, or methylation samples of all sequencing methods, from primary, primary-plus, or relapse tumors within each or across all cohorts
+`independent-specimens.rnaseq.primary-plus-pre-release.tsv` <br>
+`independent-specimens.rnaseq.primary-pre-release.tsv` <br>
+`independent-specimens.rnaseqpanel.primary.pre-release.tsv` <br>
+`independent-specimens.rnaseqpanel.relapse.pre-release.tsv` | Analysis files | [`analyses/independent-samples`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) | Independent (non-redundant) sample list of RNA samples of all sequencing methods, from primary, primary-plus, or relapse tumors across all cohorts for the purposes of running `fusion_filtering` pre-release
