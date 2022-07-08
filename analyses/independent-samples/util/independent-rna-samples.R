@@ -23,19 +23,20 @@
 #' independent-specimens.wgswxspanel sample set, 
 #' "independent_dna_plus_only_rna" to include samples that match the dna sample 
 #' set plus include samples where only rna samples exists
+#' "none" to include only rnaseq samples
 #' @param tumor_description_rna_only Tumor descriptors to select samples where
 #' only RNA samples are available and will have no matching id in independent_dna_sample_df
-#' Opetions are "primary" to select only primary/initial tumors. Primary tumors are defined as those designated "Initial CNS Tumor"+ "Primary Tumor".
+#' Ope=tions are "primary" to select only primary/initial tumors. Primary tumors are defined as those designated "Initial CNS Tumor"+ "Primary Tumor".
 #' "primary_plus" if you would like to select other non-initial tumor RNA-Seq sample if no 
 #' initial tumor RNA-Seq sample exists
 #' or "relapse" in select only relapse tumors. Relapse tumors are defined as those designated by "Recurrence", "Recurrent Tumor","Recurrent tumor","Progressive","Progressive Disease Post-Mortem" in `tumor_descriptor` field
 #' @param seed An optional random number seed. 
 #' 
 #' @return a data frame of Participant and Specimen IDs, each present only once.
-independent_rna_samples <- function(independent_dna_sample_df, 
+independent_rna_samples <- function(independent_dna_sample_df = NULL, 
                                 histology_df,
                                 independent_level = c("each-cohort", "all-cohorts", "all-cohorts-pre-release"),
-                                match_type = c("independent_dna", "independent_dna_plus_only_rna"),
+                                match_type = c("independent_dna", "independent_dna_plus_only_rna", "none"),
                                 tumor_description_rna_only = c("primary", "relapse", "primary_plus"),
                                 seed){
   match_type <- match.arg(match_type)
@@ -204,18 +205,45 @@ independent_rna_samples <- function(independent_dna_sample_df,
     return(independent_all)
   }
   
-  if(independent_level == "all-cohorts-pre-release"){
-    rnaseq <- sample_df %>% filter(RNA_library != "exome_capture")
-    exome_capture <- sample_df %>% filter(RNA_library == "exome_capture")
-    sample_df <- rbind(rnaseq, exome_capture)
+  if(match_type == "none" & independent_level == "all-cohorts-pre-release"){
+    if(tumor_description_rna_only %in% c("primary_plus")){
+      # find cases where non-primary is the only option
+      no_primary <- histology_df %>% 
+        dplyr::group_by(Kids_First_Participant_ID) %>%
+        dplyr::summarize(n_primary = sum(tumor_descriptor %in% primary_descs)) %>%
+        dplyr::filter(n_primary == 0) %>%
+        dplyr::pull(Kids_First_Participant_ID)
+    } else {
+      no_primary <- c()
+    }
+    
+    if(tumor_description_rna_only %in% c("primary", "primary_plus")){
+      primary_df <- histology_df %>%
+        dplyr::filter(tumor_descriptor %in% primary_descs)
+      noprimary_df <- histology_df %>%
+        dplyr::filter(Kids_First_Participant_ID %in% no_primary)
+      sample_df <- dplyr::bind_rows(primary_df, noprimary_df)
+    } 
+   
+     if(tumor_description_rna_only == "primary"){
+      sample_df <- histology_df %>%
+        dplyr::filter(tumor_descriptor %in% primary_descs)
+     } 
+    
+    if(tumor_description_rna_only == "relapse"){
+      sample_df <- histology_df %>%
+        dplyr::filter(tumor_descriptor %in% relapse_descs)
+    } 
     
     independent_all <- sample_df %>%
       dplyr::distinct(Kids_First_Participant_ID, .keep_all = TRUE) %>%
-      dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, 
-                    cohort, experimental_strategy, tumor_descriptor) %>%
+      dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, cohort, tumor_descriptor) %>%
       arrange(Kids_First_Biospecimen_ID)
     
     return(independent_all)
   }
 }
+
+
+
 

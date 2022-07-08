@@ -13,7 +13,7 @@ source(file.path(analysis_dir, "util", "independent-rna-samples.R"))
 
 
 # read histology file
-histology_df <- readr::read_tsv(file.path(root_dir, 'data/histologies-base.tsv'), guess_max=100000)
+histology_df <- readr::read_tsv(file.path(root_dir, 'data/histologies-base.tsv'), guess_max=100000, show_col_types = FALSE)
 
 # randomize rows of histology file to avoid selection bias
 set.seed(100)
@@ -28,9 +28,9 @@ rnaseq_samples <- histology_df %>%
 
 print(nrow(rnaseq_samples))
 # generate release RNA-Seq independent samples for all cohorts
-rnaseq_primary_all <- independent_rna_samples(rnaseq_samples, tumor_types = "primary", independent_level = "all-cohorts-release", seed = 2020)
-rnaseq_relapse_all <- independent_rna_samples(rnaseq_samples, tumor_types = "relapse", independent_level = "all-cohorts-release", seed = 2020)
-rnaseq_primary_plus_all <- independent_rna_samples(rnaseq_samples, tumor_types = "prefer_primary", independent_level = "all-cohorts-release", seed = 2020)
+rnaseq_primary_all <- independent_rna_samples(histology_df = rnaseq_samples, match_type = "none", tumor_description_rna_only = "primary", independent_level = "all-cohorts-pre-release", seed = 2020)
+rnaseq_relapse_all <- independent_rna_samples(histology_df = rnaseq_samples, match_type = "none", tumor_description_rna_only = "relapse", independent_level = "all-cohorts-pre-release", seed = 2020)
+rnaseq_primary_plus_all <- independent_rna_samples(histology_df = rnaseq_samples, match_type = "none", tumor_description_rna_only = "primary_plus", independent_level = "all-cohorts-pre-release", seed = 2020)
 
 
 # save output for all cohorts
