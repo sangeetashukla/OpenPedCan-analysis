@@ -7,16 +7,6 @@ A table with brief descriptions for each data file is provided in the `data-file
 
 Processed data files are all files derived from samples (e.g., tumors, cell lines) that are processed upstream of this repository and are not the product of any analysis code in the `AlexsLemonade/OpenPBTA-analysis` or `PediatricOpenTargets/OpenPedCan-analysis` repository.
 
-
-### Somatic Single Nucleotide Variant (SNV) Data
-
-Somatic Single Nucleotide Variant (SNV) data are provided in [Annotated MAF format](format/vep-maf.md) files for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-single-nucleotide-variant-calling) and denoted with the `snv` prefix. Briefly, VCFs are VEP annotated and converted to MAF format via [vcf2maf](https://github.com/mskcc/vcf2maf/blob/master/maf2vcf.pl) to produce the MAF files. 
-
-* `snv-lancet.vep.maf.gz`
-* `snv-mutect2.vep.maf.gz`
-* `snv-strelka2.vep.maf.gz`
-* `snv-vardict.vep.maf.gz`
-
 ### Consensus Somatic Variant Data
 Somatic calls that are retained if they are supported by atleast 2 callers OR marked as `HotSpotAllele` because they overlap SNV/INDELs considered as [Cancer Hotspots](https://www.cancerhotspots.org/#/download) OR are TERT promoter SNVs. Please find additional information [here](https://github.com/kids-first/kf-somatic-workflow/blob/master/docs/kfdrc-consensus-calling.md)
 
@@ -47,32 +37,35 @@ See [the data description file](data-description.md) for more information about 
 
 If your analysis requires de-duplicated gene symbols as row names, please use the collapsed matrices provided as part of the data download ([see below](#collapsed-expression-matrices)).
 
-### Gene Fusion Data
+### Derived Fusion Files
 
-Gene Fusions produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#rna-fusion-calling-and-prioritization) are provided as [Arriba TSV](format/arriba-tsv-header.md) and [STARFusion TSV](./format/starfusion-tsv-header.md) respectively.
-These files are denoted with the prefix `fusion`.
+The filtered and prioritized fusion and downstream files are a product of the [`analyses/fusion_filtering`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/fusion_filtering) analysis module. 
 
-* `fusion-arriba.tsv.gz`
-* `fusion-starfusion.tsv.gz`
+  * `fusion-putative-oncogenic.tsv` contains the filtered and prioritized fusions. 
 
-The above gene fusions results were then filtered by the [fusion filtering module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/v10-release/analyses/fusion_filtering) to contain only putative oncogenic fusions.
+Binary matrices for the presence of tumor-specific fusions across all RNA biospecimens are the product of [`fusion-summary`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/fusion-summary).
 
-* `fusion-putative-oncogenic.tsv.gz`
+  * `fusion_summary_embryonal_foi.tsv` contains a binary matrix that denotes the presence or absence of a recurrent embryonal tumor fusions of interest per individual RNA-seq specimen.
+  * `fusion_summary_ependymoma_foi.tsv` contains a binary matrix that denotes the presence or absence of a recurrent ependymal tumor fusions of interest per individual RNA-seq specimen.
+  * `fusion_summary_ewings_foi.tsv` contains a binary matrix that denotes the presence or absence of a recurrent Ewing's sarcoma tumor fusions of interest per individual RNA-seq specimen.
+  * `fusion_summary_lgat_foi.tsv` contains a binary matrix that denotes the presence or absence of a recurrent LGAT tumor fusions of interest per individual RNA-seq specimen.
+
 
 ### Structural Variant Data
 
-Structural Variants data produced by the [`MANTA` package](https://pubmed.ncbi.nlm.nih.gov/26647377/; https://github.com/Illumina/manta) is 
+Structural Variants data produced by the [`MANTA` package](https://github.com/Illumina/manta) is 
 provided as:
 
 * `sv-manta.tsv.gz`
 
 ### Harmonized Clinical Data
 
-[Harmonized clinical data](https://alexslemonade.github.io/OpenPBTA-manuscript/#clinical-data-harmonization) are released as tab separated values in the following file:
+[Harmonized clinical data](https://alexslemonade.github.io/OpenPBTA-manuscript/#clinical-data-harmonization) are released as tab separated values in the following files:
 
 * `histologies.tsv`
+* `histologies-base.tsv`
 
-### Independent Sample List
+### Independent Sample Lists
 
 [Independent sample list](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) are released as tab separated values in the following files. 
 `wgswxspanel` indicates it includes all experimental strategies for DNA sequencing, `rnaseqpanel` indicates it includes all experimental strategies for RNA sequencing.

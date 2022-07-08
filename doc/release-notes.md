@@ -3,15 +3,15 @@
 ## current release
 - release date: 2022-07-07
 - status: available
-- overview of changes (See [PR 188](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/188 for more details)):
-  - This particular release added the following datasets:
+- overview of changes (See [PR 188](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/188) for additional details):
+  - This release adds the following data:
     - 11 RNA-Seq and WXS PBTA samples (plus 2 WXS PBTA results from previous release)
     - 1799 DGD tumor samples (929 DNA, 870 RNA)
-    - methylation samples
-      - methylation normal samples: 
+    - methylation array data from
+      - normal samples: 
         - 5 PBTA samples
         - 12 TARGET samples
-      - methylation tumor samples: [Ticket 278](https://github.com/PediatricOpenTargets/ticket-tracker/issues/278) and [Ticket 269](https://github.com/PediatricOpenTargets/ticket-tracker/issues/269)
+      - tumor samples: [Ticket 278](https://github.com/PediatricOpenTargets/ticket-tracker/issues/278) and [Ticket 269](https://github.com/PediatricOpenTargets/ticket-tracker/issues/269)
         - 1146 PBTA samples
         - 751 TARGET samples
       - RNA isoform merged TPM samples
@@ -64,7 +64,12 @@
 - Run GISTIC module and upload zip file for data release: [Ticket 302](https://github.com/PediatricOpenTargets/ticket-tracker/issues/302)
 - Merge all RNA isoform files into one for data release and downstream analyses: [Ticket 341](https://github.com/PediatricOpenTargets/ticket-tracker/issues/341)
 
-  
+- Add fusion summary files required for subtyping modules [Ticket 239](https://github.com/PediatricOpenTargets/ticket-tracker/issues/239):
+  - `fusion_summary_embryonal_foi.tsv`
+  - `fusion_summary_ependymoma_foi.tsv`
+  - `fusion_summary_ewings_foi.tsv`
+  - `fusion_summary_lgat_foi.tsv`
+
 ```
 v11
 ├── ashion_exome_v2_targets_hg38_padded100.bed
