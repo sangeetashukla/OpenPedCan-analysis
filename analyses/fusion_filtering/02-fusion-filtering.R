@@ -78,6 +78,7 @@ spanningFragCountFilter<-opt$spanningFragCountFilter
 referenceFolder<-opt$referenceFolder
 readingFrameFilter<-opt$readingFrameFilter
 
+
 # standardFusioncallsSTARFusion<-readr::read_tsv(standardFusionFileSTARFusion)
 # standardFusioncallsArriba<-readr::read_tsv(standardFusionFileArriba)
 # 
