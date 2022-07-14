@@ -18,7 +18,7 @@ extensions = {"gatk": ".gatk", "cnvkit": ".cnvkit", "freec": ".freec"}
 
 # Define the column headers for IDs
 id_headers = {
-    "gatk": "Kids_First_Biospecimen_ID",
+    "gatk": "BS_ID",
     "cnvkit": "ID",
     "freec": "Kids_First_Biospecimen_ID",
 }
