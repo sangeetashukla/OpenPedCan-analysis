@@ -99,11 +99,11 @@ rule gatk_filter:
         ## The second awk filters the CNV length, and add in the CNV type
         ## The sort command sorts the first digit of chromosome number numerically
         ## The last pipe is to introduce tab into the file and output file name.
-        """awk '$7~/\-/ {{print $2,$3,$4,($4-$3 + 1),"NA","NA","$6","DEL"}}' {input} """
+        """awk '$7~/\-/ {{print $2,$3,$4,($4-$3 + 1),"NA","NA",$6,"DEL"}}' {input} """
         """ | awk '{{if ($4 > {params.SIZE_CUTOFF}){{print}}}}' """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.gatk_del} && """
-        """awk '$7~/\+/ {{print $2,$3,$4,($4-$3 + 1),"NA","NA","$6","DUP"}}' {input} """
+        """awk '$7~/\+/ {{print $2,$3,$4,($4-$3 + 1),"NA","NA",$6,"DUP"}}' {input} """
         """ | awk '{{if ($4 > {params.SIZE_CUTOFF}){{print}}}}' """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.gatk_dup}"""
