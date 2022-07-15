@@ -7,18 +7,6 @@ This directory contains various analysis modules in the OpenPedCan project. See 
 The table below is intended to help project organizers quickly get an idea of what files (and therefore types of data) are consumed by each analysis module, what the module does, and what output files it produces that can be consumed by other analysis modules. This is in service of documenting interdependent analyses. Note that *nearly all* modules use the harmonized clinical data file (`histologies.tsv`) even when it is not explicitly included in the table below.
 
 <table>
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 10%" />
-<col style="width: 10%" />
-<col style="width: 10%" />
-<col style="width: 10%" />
-<col style="width: 10%" />
-<col style="width: 10%" />
-<col style="width: 10%" />
-<col style="width: 10%" />
-<col style="width: 10%" />
-</colgroup>
 <thead>
 <tr class="header">
 <th><p>Module</p></th>
@@ -155,7 +143,7 @@ The table below is intended to help project organizers quickly get an idea of wh
 <td><p>Will set up for OT ticket in</p></td>
 </tr>
 <tr class="odd">
-<td><p>efo-mondo-mapping</p></td>
+<td><p><a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/efo-mondo-mapping"><code>efo-mondo-mapping</code></a></p></td>
 <td><p><code>histologies.tsv</code></p>
 <p><code>efo-mondo-map.tsv</code></p></td>
 <td><p>This module contains a file with EFO, MONDO, and NCIT codes for all <code>cancer_group</code> found in histologies.tsv and runs a script to qc in case any <code>cancer_group</code> is missed</p></td>
@@ -168,7 +156,7 @@ The table below is intended to help project organizers quickly get an idea of wh
 <td><p>Yes</p></td>
 </tr>
 <tr class="even">
-<td><p>filter-mutation-frequencies-tables</p></td>
+<td><p><a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/filter-mutation-frequencies-tables"><code>filter-mutation-frequencies-tables</code></a></p></td>
 <td><p><code>gencode.v38.primary_assembly.annotation.gtf.gz</code></p>
 <p><code>PMTL_v1.1.tsv</code></p>
 <p><code>histologies.tsv</code></p>
@@ -238,7 +226,7 @@ The table below is intended to help project organizers quickly get an idea of wh
 <td><p>N/A</p></td>
 </tr>
 <tr class="odd">
-<td><p>gene_match</p></td>
+<td><p><a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/gene_match"><code>gene_match</code></a></p></td>
 <td></td>
 <td></td>
 <td><p>Yes</p></td>
@@ -526,7 +514,7 @@ The table below is intended to help project organizers quickly get an idea of wh
 <td></td>
 </tr>
 <tr class="odd">
-<td><p>pedcbio-sample-name</p></td>
+<td><p><a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/pedcbio-sample-name"><code>pedcbio-sample-name</code></a></p></td>
 <td></td>
 <td></td>
 <td><p>No</p></td>
@@ -718,7 +706,7 @@ The table below is intended to help project organizers quickly get an idea of wh
 <td><p>N/A</p></td>
 </tr>
 <tr class="odd">
-<td><p>tmb-calculation</p></td>
+<td><p><a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/tmb-calculation"><code>tmb-calculation</code></a></p></td>
 <td><p><code>gencode.v27.primary_assembly.annotation.bed</code></p>
 <p><code>intersect_strelka_mutect2_vardict_WGS.bed</code></p>
 <p><code>snv-consensus-plus-hotspots.maf.tsv.gz</code></p>
@@ -785,7 +773,7 @@ The table below is intended to help project organizers quickly get an idea of wh
 <td><p>N/A</p></td>
 </tr>
 <tr class="even">
-<td><p><code>tumor-gtex-plots</code></p></td>
+<td><p><a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/tumor-gtex-plots"><code>tumor-gtex-plots</code></a></p></td>
 <td><p><code>gene-expression-rsem-tpm-collapsed.rds</code> <code>histologies.tsv</code></p></td>
 <td><p><em>In progress</em> <a href="https://github.com/PediatricOpenTargets/ticket-tracker/issues/38">PediatricOpenTargets/ticket-tracker#38</a>; tumor vs normal and tumor only expression plots</p></td>
 <td><p>No</p></td>
@@ -797,7 +785,7 @@ The table below is intended to help project organizers quickly get an idea of wh
 <td><p>N/A</p></td>
 </tr>
 <tr class="odd">
-<td><p>tumor-normal-differential-expression</p></td>
+<td><p><a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/tumor-normal-differential-expression"><code>tumor-normal-differential-expression</code></a></p></td>
 <td><p><code>histologies.tsv</code></p>
 <p><code>gene-counts-rsem-expected_count-collapsed.rds</code></p>
 <p><code>independent-specimens.rnaseq.primary.tsv</code></p>
