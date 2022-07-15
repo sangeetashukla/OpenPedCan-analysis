@@ -65,7 +65,7 @@ full_output <- plyr::dlply(.data = n_groups, .variables = "group", .fun = functi
   
   # subset input matrix to group
   expr_mat_sub <- expr_mat %>%
-    dplyr::select(all_of(kf_ids))
+    dplyr::select(kf_ids)
   
   # deconvolute using specified method
   print("Starting deconvolution...")
