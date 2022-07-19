@@ -53,6 +53,11 @@ get_cg_cs_tbl <- function(histology_df) {
     ungroup()
 
   fh_1cg_all_cs_df <- fh_df %>%
+### 2022-07-19: For now don't want to include panel data, which is the DGD cohort
+### at the moment in "All Cohorts" calculation. Preferred to filter out combos
+### with DGD in them downstream in code, but unfortunately all group combinations
+### contained DGD, so hard modifying function. Will need to be removed in future.
+    filter(cohort != 'DGD') %>%  
     group_by(cancer_group) %>%
     summarise(n_samples = n(),
               cohort_list = list(unique(cohort)),
@@ -625,7 +630,7 @@ if (!dir.exists(tables_dir)) {
 
 # Read data --------------------------------------------------------------------
 message('Read data...')
-htl_df <- read_tsv('../../data/histologies.tsv', guess_max = 100000,
+htl_df <- read_tsv('../../data/v11/histologies.tsv', guess_max = 100000,
                    col_types = cols(.default = col_guess()))
 
 htl_df <- htl_df %>%
@@ -638,7 +643,7 @@ stopifnot(identical(
   as.integer(0)))
 
 maf_df <- read_tsv(
-  '../../data/snv-consensus-plus-hotspots.maf.tsv.gz', comment = '#',
+  '../../data/v11/snv-consensus-plus-hotspots.maf.tsv.gz', comment = '#',
   col_types = cols(
     .default = col_guess(),
     CLIN_SIG = col_character(),
@@ -650,28 +655,27 @@ stopifnot(identical(sum(is.na(maf_df$Tumor_Sample_Barcode)), as.integer(0)))
 
 # primary all cohorts independent sample data frame
 primary_ac_indp_sdf <- read_tsv(
-  file.path('../..', 'data',
-            'independent-specimens.wgswxspanel.primary.prefer.wxs.tsv'),
+  file.path('../..', 'data/v11', 'independent-specimens.wgswxspanel.primary.prefer.wxs.tsv'),
   col_types = cols(
     .default = col_guess()))
 
 # primary each cohorts independent sample data frame
 primary_ec_indp_sdf <- read_tsv(
-  file.path('../..', 'data',
+  file.path('../..', 'data/v11',
             'independent-specimens.wgswxspanel.primary.eachcohort.prefer.wxs.tsv'),
   col_types = cols(
     .default = col_guess()))
 
 # relapse all cohorts independent sample data frame
 relapse_ac_indp_sdf <- read_tsv(
-  file.path('../..', 'data',
+  file.path('../..', 'data/v11',
             'independent-specimens.wgswxspanel.relapse.prefer.wxs.tsv'),
   col_types = cols(
     .default = col_guess()))
 
 # relapse each cohorts independent sample data frame
 relapse_ec_indp_sdf <- read_tsv(
-  file.path('../..', 'data',
+  file.path('../..', 'data/v11',
             'independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wxs.tsv'),
   col_types = cols(
     .default = col_guess()))
