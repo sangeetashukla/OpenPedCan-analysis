@@ -39,21 +39,25 @@ fi
 
 #### generate subset files -----------------------------------------------------
 
+mkdir –m777 ./tmp
+
 if [ "$SKIP_SUBSETTING" -lt "1" ]; then
 
   # get list of biospecimen ids for subset files
-  Rscript --vanilla 01-get_biospecimen_identifiers.R \
+  TMPDIR=./tmp Rscript --vanilla 01-get_biospecimen_identifiers.R \
       --data_directory $FULL_DIRECTORY \
       --output_file $BIOSPECIMEN_FILE \
       --num_matched $NUM_MATCHED \
       --local $RUN_LOCAL
 
   # subset the files
-  Rscript --vanilla 02-subset_files.R \
+  TMPDIR=./tmp Rscript --vanilla 02-subset_files.R \
     --biospecimen_file $BIOSPECIMEN_FILE \
     --output_directory $SUBSET_DIRECTORY
 
 fi
+
+rm -rf ./tmp
 
 #### copy files that are not being subset --------------------------------------
 
