@@ -39,7 +39,7 @@ fi
 
 #### generate subset files -----------------------------------------------------
 
-mkdir –m777 ./tmp
+mkdir -m777 ./tmp
 
 if [ "$SKIP_SUBSETTING" -lt "1" ]; then
 
