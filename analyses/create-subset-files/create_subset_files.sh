@@ -67,10 +67,10 @@ cp $FULL_DIRECTORY/histologies-base.tsv $SUBSET_DIRECTORY
 cp $FULL_DIRECTORY/uberon-map-gtex-*.tsv $SUBSET_DIRECTORY
 cp $FULL_DIRECTORY/efo-mondo-map.tsv $SUBSET_DIRECTORY
 cp $FULL_DIRECTORY/ensg-hugo-pmtl-mapping.tsv $SUBSET_DIRECTORY
-cp $FULL_DIRECTORY/gencode.*.primary_assembly.annotation.gtf.gz $SUBSET_DIRECTORY
+cp $FULL_DIRECTORY/../gencode.*.primary_assembly.annotation.gtf.gz $SUBSET_DIRECTORY
 
 # genome assembly file
-cp $FULL_DIRECTORY/GRCh38.primary_assembly.genome.fa.gz $SUBSET_DIRECTORY
+cp $FULL_DIRECTORY/../GRCh38.primary_assembly.genome.fa.gz $SUBSET_DIRECTORY
 
 # GISTIC output
 cp $FULL_DIRECTORY/cnv-consensus-gistic.zip $SUBSET_DIRECTORY
@@ -80,9 +80,6 @@ cp $FULL_DIRECTORY/*.bed $SUBSET_DIRECTORY
 
 # data file description
 cp $FULL_DIRECTORY/data-files-description.md $SUBSET_DIRECTORY
-
-# fusion summary files
-cp $FULL_DIRECTORY/fusion_summary* $SUBSET_DIRECTORY
 
 # if the md5sum.txt file already exists, get rid of it
 cd $SUBSET_DIRECTORY
