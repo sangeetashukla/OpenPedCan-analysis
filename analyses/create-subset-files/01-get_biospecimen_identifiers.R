@@ -351,9 +351,9 @@ if (running_locally) {
 # drop GISTIC zipped file from this list 
 files_to_subset <- files_to_subset[-grep("gistic.zip", files_to_subset)]
 
-# drop methylation RDS matrices. The “methylation-summary” module that produces
+# drop methylation RDS matrices. The "methylation-summary" module that produces
 # these matrices and consumes them alongside other data release files requires 
-# the super large output files produced by the “methylation-preprocessing”  
+# the super large output files produced by the "methylation-preprocessing"  
 # module that currently not part of the data release
 # Methylation modules won't be tested with CI
 files_to_subset <- files_to_subset[-grep("methyl", files_to_subset)]
