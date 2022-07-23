@@ -371,34 +371,27 @@ participant_id_list <- purrr::map(files_to_subset,
   purrr::set_names(files_to_subset)
 
 
-# list of all other files with matched participant IDs, not including 
-# cohort-specific file (TCGA and DGD)
-message("\nGetting matched participant IDs from all files, exclduing cohort-specific files ...")
-other_files_to_subset <- files_to_subset[-grep("dgd", files_to_subset)]
-other_files_to_subset <- other_files_to_subset[-grep("tcga", other_files_to_subset)]
-other_files_participant_id_list <-
-  purrr::map(other_files_to_subset, ~ get_biospecimen_ids(.x, id_mapping_df)) %>%
-  purrr::set_names(other_files_to_subset)
-other_files_participant_in_all <- purrr::reduce(other_files_participant_id_list,
+# list of matched participant IDs, not including cohort-specific 
+# file (TCGA and DGD)
+message("\nGetting matched participant IDs, exclduing cohort-specific files ...")
+other_participant_id_list <- 
+  participant_id_list[-grep("tcga|dgd", names(participant_id_list))]
+other_matched_participants <- purrr::reduce(other_participant_id_list,
                                                 intersect)
 
 # list of TCGA-specific rnaseq files and matched participant IDs for subsetting
 message("\nGetting TCGA rna-seq matched participant IDs...")
-tcga_files_to_subset <- files_to_subset[grep("tcga", files_to_subset)]
-tcga_files_participant_id_list <-
-  purrr::map(tcga_files_to_subset, ~ get_biospecimen_ids(.x, id_mapping_df)) %>%
-  purrr::set_names(tcga_files_to_subset)
-tcga_files_participant_in_all <- purrr::reduce(tcga_files_participant_id_list,
+tcga_participant_id_list <- 
+  participant_id_list[grep("tcga", names(participant_id_list))]
+tcga_matched_participants <- purrr::reduce(tcga_participant_id_list,
                                                intersect)
 
 # list of DGD-specific panel files and matched participant IDs 
 # for subsetting 
 message("\nGetting DGD panel matched participant IDs...")
-dgd_files_to_subset <- files_to_subset[grep("dgd", files_to_subset)]
-dgd_files_participant_id_list <-
-  purrr::map(dgd_files_to_subset, ~ get_biospecimen_ids(.x, id_mapping_df)) %>%
-  purrr::set_names(dgd_files_to_subset)
-dgd_files_participant_in_all <- purrr::reduce(dgd_files_participant_id_list,
+dgd_participant_id_list <- 
+  participant_id_list[grep("dgd", names(participant_id_list))]
+dgd_matched_participants <- purrr::reduce(dgd_participant_id_list,
                                               intersect)
 
 #### Selected matched participant IDs stratified by gender ---------------------
@@ -410,13 +403,13 @@ dgd_files_participant_in_all <- purrr::reduce(dgd_files_participant_id_list,
 message("\nSelecting polya rnaseq matched participant IDs...")
 polya_matched <- c(
   select_participants_ids(histology_df, "poly-A",  "PBTA",
-                          other_files_participant_in_all, 0.1, num_matched_participants),
+                          other_matched_participants, 0.1, num_matched_participants),
   select_participants_ids(histology_df, "poly-A", "TARGET",
-                          other_files_participant_in_all, 0.1, num_matched_participants),
+                          other_matched_participants, 0.1, num_matched_participants),
   select_participants_ids(histology_df, "poly-A stranded", "TARGET",
-                          other_files_participant_in_all, 0.6, num_matched_participants),
+                          other_matched_participants, 0.6, num_matched_participants),
   select_participants_ids(histology_df, "poly-A", "TCGA",
-                          tcga_files_participant_in_all, 0.9, num_matched_participants),
+                          tcga_matched_participants, 0.9, num_matched_participants),
   # GTEx Famele:Male == 0.3:0.7, other cohorts ~0.5 (balanced)
   histology_df %>% filter(cohort == "GTEx", reported_gender == "Female") %>%
     pull(Kids_First_Participant_ID) %>% unique() %>%
@@ -430,13 +423,13 @@ polya_matched <- c(
 message("\nSelecting stranded rnaseq matched participant IDs...")
 stranded_matched <- c(
   select_participants_ids(histology_df, "stranded",  "PBTA",
-                          other_files_participant_in_all, 0.9, num_matched_participants),
+                          other_matched_participants, 0.9, num_matched_participants),
   select_participants_ids(histology_df, "stranded", "TARGET",
-                          other_files_participant_in_all, 0.3, num_matched_participants),
+                          other_matched_participants, 0.3, num_matched_participants),
   select_participants_ids(histology_df, "stranded", "TCGA",
-                          tcga_files_participant_in_all, 0.1, num_matched_participants),
+                          tcga_matched_participants, 0.1, num_matched_participants),
   select_participants_ids(histology_df, "stranded", "GMKF",
-                          other_files_participant_in_all, 1.0, num_matched_participants)
+                          other_matched_participants, 1.0, num_matched_participants)
 )
 
 # other cohort-specific library types matched participant IDs, including panels 
@@ -444,7 +437,7 @@ stranded_matched <- c(
 message("\nSelecting other library types matched participant IDs...")
 other_matched <- 
   select_participants_ids(histology_df, "other", "DGD",
-                          dgd_files_participant_in_all, 1.0, num_matched_participants)
+                          dgd_matched_participants, 1.0, num_matched_participants)
 
 #### Combining selected matched and nonmatched participant IDs for subsetting---
 
