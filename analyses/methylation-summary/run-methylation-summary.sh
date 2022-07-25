@@ -32,6 +32,6 @@ python3 04-beta-tpm-correlation.py
 TMP=./tmp TMPDIR=./tmp Rscript --vanilla 05-create-methylation-summary-table.R
 
 ########################### Convert JSON to JSON Lines (JSONL) ############################
-python3 06-methyly-summary-tsv2jsonl.py
+python3 06-methly-summary-tsv2jsonl.py
 
 printf '\nAnalysis Done...\n'

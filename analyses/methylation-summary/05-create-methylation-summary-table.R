@@ -19,7 +19,6 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analyses_dir <- file.path(root_dir, "analyses")
 module_dir <- file.path(root_dir, "analyses", "methylation-summary")
-gene_match_input_dir <- file.path(analyses_dir,  "gene_match/input")
 results_dir <- file.path(module_dir, "results")
 
 # Creating Pediatric OpenTargets methylation summary table
@@ -53,10 +52,11 @@ summary_table <- data.table::fread(
 # Add PMTL disgnation corresponding to GENCODE version 38 (Ensembl 104) gene
 # symbols and Ensembl IDs
 message("Including PMTL disgnation for corresponding Ensembl IDs ...\n")
-pmtl_ensembl_ids <- readr::read_tsv(file.path(gene_match_input_dir, 
-                                              "PMTL_v1.1.tsv"),
+pmtl_ensembl_ids <- readr::read_tsv(file.path(data_dir, 
+                                              "ensg-hugo-pmtl-mapping.tsv"),
                            show_col_types = FALSE) %>% 
-  dplyr::pull(Ensembl_ID) %>% unique() 
+  dplyr::filter(pmtl == "Non-Relevant Molecular Target" | pmtl == "Relevant Molecular Target") %>% 
+  dplyr::pull(ensg_id) %>% unique() 
 summary_table <- summary_table %>% 
   dplyr::mutate(PMTL = case_when(
     targetFromSourceId %in% pmtl_ensembl_ids ~ "Relevant Molecular Target"))

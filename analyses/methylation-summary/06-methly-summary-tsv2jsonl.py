@@ -2,7 +2,7 @@
 
 
 """
-06-methyly-summary-tsv2jsonl.py
+06-methly-summary-tsv2jsonl.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Convert methylation summary TSV table to JSONL
 """
@@ -16,6 +16,7 @@ __date__ = '15 May 2022'
 import os 
 import sys
 import csv
+import git
 import gzip
 import json
 import numpy as np
@@ -24,7 +25,7 @@ from collections import OrderedDict
 
 
 # establish base dir
-root_dir = os.path.abspath("../../")
+root_dir = git.Repo('.', search_parent_directories=True).working_tree_dir
 
 # Set path to module and results directories
 module_dir = os.path.join(root_dir, "analyses", "methylation-summary")

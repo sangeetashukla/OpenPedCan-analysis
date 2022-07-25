@@ -16,13 +16,14 @@ __date__ = '15 May 2022'
 import re
 import os
 import sys
+import git
 import numpy as np
 import pandas as pd
 import pyreadr as rds
 
 
 # establish base dir
-root_dir = os.path.abspath("../../")
+root_dir = git.Repo('.', search_parent_directories=True).working_tree_dir
 
 # Set path to module and results directories
 data_dir = os.path.join(root_dir, "data")
