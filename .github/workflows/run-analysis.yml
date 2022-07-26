@@ -23,9 +23,3 @@ jobs:
         id: RUN-snv-frequencies
         with:
           args: bash analyses/snv-frequencies/run-snv-frequencies.sh
-
-      - name: Run RUN-snv-frequencies in container
-        uses: ./
-        id: RUN-snv-frequencies
-        with:
-          args: bash analyses/snv-frequencies/run-snv-frequencies.sh
