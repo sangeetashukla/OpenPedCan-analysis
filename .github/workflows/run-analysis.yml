@@ -16,7 +16,7 @@ jobs:
         uses: ./
         id: download-data
         with:
-          args: OPENPEDCAN_URL=s3://d3b-openaccess-us-east-1-prd-pbta/open-targets/ OPENPEDCAN_RELEASE=testing ./scripts/run_in_ci.sh bash download-data.sh
+          args: OPENPEDCAN_URL=s3://d3b-openaccess-us-east-1-prd-pbta/open-targets/ OPENPEDCAN_RELEASE=testing bash download-data.sh
 
       - name: Run RUN-snv-frequencies in container
         uses: ./
