@@ -19,16 +19,16 @@ histology_file=data/histologies.tsv
 cnv_file=data/consensus_wgs_plus_cnvkit_wxs.tsv.gz
 
 # All cohorts independent primary tumor samples file path
-all_cohorts_primary_tumors=data/independent-specimens.wgswxspanel.primary.tsv
+all_cohorts_primary_tumors=data/independent-specimens.wgswxspanel.primary.prefer.wgs.tsv #independent-specimens.wgswxspanel.primary.tsv 
 
 # All cohorts independent relapse tumor samples file path
-all_cohorts_relapse_tumors=data/independent-specimens.wgswxspanel.relapse.tsv
+all_cohorts_relapse_tumors=data/independent-specimens.wgswxspanel.relapse.prefer.wgs.tsv #independent-specimens.wgswxspanel.relapse.tsv
 
 # Each cohort independent primary tumor samples file path
-each_cohort_primary_tumors=data/independent-specimens.wgswxspanel.primary.eachcohort.tsv
+each_cohort_primary_tumors=data/independent-specimens.wgswxspanel.primary.eachcohort.prefer.wgs.tsv  #independent-specimens.wgswxspanel.primary.eachcohort.tsv
 
 # Each cohort independent relapse tumor samples file path
-each_cohort_relapse_tumors=data/independent-specimens.wgswxspanel.relapse.eachcohort.tsv
+each_cohort_relapse_tumors=data/independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wgs.tsv #independent-specimens.wgswxspanel.relapse.eachcohort.tsv
 
 ####### compute CNV frequencies #############
 python3 analyses/cnv-frequencies/01-cnv-frequencies.py $histology_file $cnv_file $all_cohorts_primary_tumors $all_cohorts_relapse_tumors $each_cohort_primary_tumors $each_cohort_relapse_tumors
