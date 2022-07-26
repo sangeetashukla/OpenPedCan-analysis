@@ -16,16 +16,16 @@ jobs:
         uses: ./
         id: download-data
         with:
-          args: OPENPBTA_URL=https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/data OPENPBTA_RELEASE=testing bash download-data.sh
+          args: OPENPEDCAN_URL=s3://d3b-openaccess-us-east-1-prd-pbta/open-targets/ OPENPEDCAN_RELEASE=testing ./scripts/run_in_ci.sh bash download-data.sh
 
-      - name: Run 01-create-interaction-plots in container
+      - name: Run RUN-snv-frequencies in container
         uses: ./
-        id: create-interaction-plots
+        id: RUN-snv-frequencies
         with:
-          args: OPENPBTA_ALL=0 bash analyses/interaction-plots/01-create-interaction-plots.sh
+          args: bash analyses/snv-frequencies/run-snv-frequencies.sh
 
-      - name: Run RUN-telomerase-activity-prediction in container
+      - name: Run RUN-snv-frequencies in container
         uses: ./
-        id: RUN-telomerase-activity-prediction
+        id: RUN-snv-frequencies
         with:
-          args: bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
+          args: bash analyses/snv-frequencies/run-snv-frequencies.sh

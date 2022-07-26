@@ -3,7 +3,7 @@ set -e
 set -o pipefail
 
 # Use the bucket that contains the CI data
-URL=https://open-pbta.s3.amazonaws.com/data 
+URL=s3://d3b-openaccess-us-east-1-prd-pbta/open-targets/ 
 RELEASE=testing
 
 # Remove symlinks in data
