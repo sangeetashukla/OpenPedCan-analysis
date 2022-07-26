@@ -35,10 +35,14 @@ num_to_pct_chr <- function(x, digits = 2, format = "f", ...) {
 # Args:
 # - histology_df: a tibble of histology information. Must contain the following
 # fields: Kids_First_Biospecimen_ID, cancer_group, cohort.
+# - all_cohorts: a vector of cohorts to include in the all cohorts calculation. 
+# By default uses all cohorts present in histology_df, but if cohorts need to be
+# excluded from the all cohorts calculation, for example CHOP DGD panel data,
+# a vector can be supplied of the cohorts to be INcluded. (Added 2022-07)
 #
 # Returns a tibble. For each cancer_group, create a record of each cohort and
 # a comma-separated-list of all cohorts. Combine and remove duplicates.
-get_cg_cs_tbl <- function(histology_df) {
+get_cg_cs_tbl <- function(histology_df, all_cohorts = unique(histology_df$cohort)) {
   fh_df <- histology_df %>%
     filter(!is.na(Kids_First_Biospecimen_ID),
            !is.na(cancer_group),
@@ -53,11 +57,10 @@ get_cg_cs_tbl <- function(histology_df) {
     ungroup()
 
   fh_1cg_all_cs_df <- fh_df %>%
-### 2022-07-19: For now don't want to include panel data, which is the DGD cohort
-### at the moment in "All Cohorts" calculation. Preferred to filter out combos
-### with DGD in them downstream in code, but unfortunately all group combinations
-### contained DGD, so hard modifying function. Will need to be removed in future.
-    filter(cohort != 'DGD') %>%  
+# 2022-07: Added option to filter only for the cohorts wanted as we currently
+# don't want to include the CHOP DGD Panel data. By default, all cohorts included
+# in histology_df are used (also see function description above)
+    filter(cohort %in% all_cohorts) %>%  
     group_by(cancer_group) %>%
     summarise(n_samples = n(),
               cohort_list = list(unique(cohort)),
@@ -630,7 +633,7 @@ if (!dir.exists(tables_dir)) {
 
 # Read data --------------------------------------------------------------------
 message('Read data...')
-htl_df <- read_tsv('../../data/v11/histologies.tsv', guess_max = 100000,
+htl_df <- read_tsv('../../data/histologies.tsv', guess_max = 100000,
                    col_types = cols(.default = col_guess()))
 
 htl_df <- htl_df %>%
@@ -643,7 +646,7 @@ stopifnot(identical(
   as.integer(0)))
 
 maf_df <- read_tsv(
-  '../../data/v11/snv-consensus-plus-hotspots.maf.tsv.gz', comment = '#',
+  '../../data/snv-consensus-plus-hotspots.maf.tsv.gz', comment = '#',
   col_types = cols(
     .default = col_guess(),
     CLIN_SIG = col_character(),
@@ -655,27 +658,27 @@ stopifnot(identical(sum(is.na(maf_df$Tumor_Sample_Barcode)), as.integer(0)))
 
 # primary all cohorts independent sample data frame
 primary_ac_indp_sdf <- read_tsv(
-  file.path('../..', 'data/v11', 'independent-specimens.wgswxspanel.primary.prefer.wxs.tsv'),
+  file.path('../..', 'data', 'independent-specimens.wgswxspanel.primary.prefer.wxs.tsv'),
   col_types = cols(
     .default = col_guess()))
 
 # primary each cohorts independent sample data frame
 primary_ec_indp_sdf <- read_tsv(
-  file.path('../..', 'data/v11',
+  file.path('../..', 'data',
             'independent-specimens.wgswxspanel.primary.eachcohort.prefer.wxs.tsv'),
   col_types = cols(
     .default = col_guess()))
 
 # relapse all cohorts independent sample data frame
 relapse_ac_indp_sdf <- read_tsv(
-  file.path('../..', 'data/v11',
+  file.path('../..', 'data',
             'independent-specimens.wgswxspanel.relapse.prefer.wxs.tsv'),
   col_types = cols(
     .default = col_guess()))
 
 # relapse each cohorts independent sample data frame
 relapse_ec_indp_sdf <- read_tsv(
-  file.path('../..', 'data/v11',
+  file.path('../..', 'data',
             'independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wxs.tsv'),
   col_types = cols(
     .default = col_guess()))
