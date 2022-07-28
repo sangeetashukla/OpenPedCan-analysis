@@ -97,7 +97,7 @@ jobs:
 
       - name: Run Independent Specimens pre-release
         uses: ./
-        id: RUN-independent-samples
+        id: RUN-independent-samples-pre-release
         with:
           args: RUN_FOR_SUBTYPING=1 bash analyses/independent-samples/run-independent-samples.sh
 
