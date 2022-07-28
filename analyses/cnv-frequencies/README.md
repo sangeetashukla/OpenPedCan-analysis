@@ -59,6 +59,7 @@ The merged CNV frequency table of all `cancer_group_cohort`s is output in TSV an
 - `gene-level-cnv-consensus-annotated-mut-freq.jsonl.gz`
 
 ### Analysis scripts
+NOTE: This module should be run on either `large memory server` or `an EC2 instance` and not locally on a laptop.
 
 ### `run-cnv-frequencies-analysis.sh`
 This is a bash script wrapper for setting input file paths for the main analysis script, `01-cnv-frequencies.py`.All file paths set in this script relative to the module directory. Therefore, this script should always run as if it were being called from the directory it lives in, the module directory (OpenPedCan-analysis/analyses/cnv-frequencies).
