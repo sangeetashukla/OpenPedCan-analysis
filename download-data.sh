@@ -2,7 +2,7 @@
 set -e
 set -o pipefail
 
-# Use the OpenPBTA bucket as the default.
+# Use the OpenPedCan bucket as the default.
 URL=${OPENPEDCAN_URL:-https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/open-targets}
 RELEASE=${OPENPEDCAN_RELEASE:-v11}
 PREVIOUS=${OPENPEDCAN_RELEASE:-v10}

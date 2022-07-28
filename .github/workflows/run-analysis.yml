@@ -16,10 +16,10 @@ jobs:
         uses: ./
         id: download-data
         with:
-          args: OPENPEDCAN_URL=https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/open-targets/ OPENPEDCAN_RELEASE=testing bash download-data.sh
+          args: OPENPEDCAN_URL=https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/open-targets OPENPEDCAN_RELEASE=testing bash download-data.sh
 
-      - name: Run RUN-snv-frequencies in container
+      - name: Run RUN-molecular-subtyping-integrate in container
         uses: ./
-        id: RUN-snv-frequencies
+        id: RUN-molecular-subtyping-integrate
         with:
-          args: bash analyses/snv-frequencies/run-snv-frequencies.sh
+          args: bash analyses/molecular-subtyping-integrate/run-subtyping-integrate.sh
