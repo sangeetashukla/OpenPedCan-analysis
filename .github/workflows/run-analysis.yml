@@ -160,35 +160,35 @@ jobs:
         with:
           args: analyses/long-format-table-utils/run-update-long-format-table-utils.sh
 
-      - name: Run CNV frequency tables
-        uses: ./
-        id: RUN-cnv-frequencies
-        with:
-          args: analyses/cnv-frequencies/run-cnv-frequencies-analysis.sh
+#      - name: Run CNV frequency tables
+#        uses: ./
+#        id: RUN-cnv-frequencies
+#        with:
+#          args: analyses/cnv-frequencies/run-cnv-frequencies-analysis.sh
 
-      - name: Run Fusion frequency tables
-        uses: ./
-        id: RUN-fusion-frequencies
-        with:
-          args: analyses/fusion-frequencies/run-frequencies.sh
+#      - name: Run Fusion frequency tables
+#        uses: ./
+#        id: RUN-fusion-frequencies
+#        with:
+#          args: analyses/fusion-frequencies/run-frequencies.sh
 
-      - name: Run SNV frequency tables
-        uses: ./
-        id: RUN-snv-frequencies
-        with:
-          args: analyses/snv-frequencies/run-snv-frequencies.sh
+#      - name: Run SNV frequency tables
+#        uses: ./
+#        id: RUN-snv-frequencies
+#        with:
+#          args: analyses/snv-frequencies/run-snv-frequencies.sh
 
-      - name: Run Filter MTP tables
-        uses: ./
-        id: RUN-filter-mutation-frequencies-tables
-        with:
-          args: analyses/filter-mutation-frequencies-tables/run-filter-mutation-frequencies-tables.sh
+#      - name: Run Filter MTP tables
+#        uses: ./
+#        id: RUN-filter-mutation-frequencies-tables
+#        with:
+#          args: analyses/filter-mutation-frequencies-tables/run-filter-mutation-frequencies-tables.sh
 
-      - name: Run Drop columns from MTP tables
-        uses: ./
-        id: RUN-pedot-table-column-display-order-name
-        with:
-          args: analyses/pedot-table-column-display-order-name/run-pedot-table-column-display-order-name.sh
+#      - name: Run Drop columns from MTP tables
+#        uses: ./
+#        id: RUN-pedot-table-column-display-order-name
+#        with:
+#          args: analyses/pedot-table-column-display-order-name/run-pedot-table-column-display-order-name.sh
 
 # Pedcbio-specific modules
 
