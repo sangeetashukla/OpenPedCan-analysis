@@ -19,7 +19,6 @@ cd "$script_directory" || exit
 data_dir="../../data"
 
 # Set up paths to to write result files 
-[ -d results ] || mkdir results
 results_dir="./results"
 
 # Histology file path 

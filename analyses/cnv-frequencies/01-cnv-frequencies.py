@@ -47,6 +47,9 @@ def merge_histology_and_cnv_data(histology_file, cnv_consensus_file):
      
      # load CNV consensus file
      cnv_df = pd.read_csv(cnv_consensus_file, sep="\t", dtype=str)
+     mutations = ["gain", "neutral", "loss", "deep deletion", "amplification"]
+     cnv_df = cnv_df[cnv_df['status'].isin(mutations)]
+     
      
      # merge subset of histology dataframe to CNV dataframe keeping only sample present in the CNV table (left outer join)
      merged_df = pd.merge(cnv_df, histology_df, how="left", left_on="biospecimen_id", right_on="Kids_First_Biospecimen_ID")
@@ -137,7 +140,8 @@ def compute_variant_frequencies(all_tumors_df, all_cohorts_primary_tumors_file, 
                     num_samples = df["Kids_First_Biospecimen_ID"].nunique()
                     num_patients = df["Kids_First_Participant_ID"].nunique()
                     df = df.groupby(["ensembl", "status"]).apply(func)
-                    df = df.rename_axis(["Gene_Ensembl_ID", "Variant_type"]).reset_index()
+                    #df = df.rename_axis(["Gene_Ensembl_ID", "Variant_type"]).reset_index() # doesn't work Docker (python v3.5)
+                    df = df.rename_axis(index = {"ensembl": "Gene_Ensembl_ID", "status": "Variant_type"}).reset_index()
                     df["num_patients"] = num_patients
                     for i in df.itertuples():
                          if df_name == "all_tumors":
@@ -181,7 +185,7 @@ def get_annotations(cnv_frequency_df, CNV_FILE):
      cnv_frequency_df.fillna("", inplace=True)
 
      # create module results directory
-     results_dir = "{}/results".format(os.path.dirname(__file__))
+     results_dir = "results".format(os.path.dirname(__file__))
      if not os.path.exists(results_dir):
           os.mkdir(results_dir)
 
