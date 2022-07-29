@@ -24,31 +24,31 @@ jobs:
         uses: ./
         id: RUN-molecular-subtyping-MB
         with:
-          args: analyses/molecular-subtyping-MB/run-molecular-subtyping-mb.sh
+          args: OPENPBTA_SUBSET=0 analyses/molecular-subtyping-MB/run-molecular-subtyping-mb.sh
 
       - name: Run Molecular Subtyping - CRANIO
         uses: ./
         id: RUN-molecular-subtyping-CRANIO
         with:
-          args: analyses/molecular-subtyping-CRANIO/run-molecular-subtyping-cranio.sh
+          args: OPENPBTA_SUBSET=0 analyses/molecular-subtyping-CRANIO/run-molecular-subtyping-cranio.sh
 
       - name: Run Molecular Subtyping - EPN
         uses: ./
         id: RUN-molecular-subtyping-EPN
         with:
-          args: analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
+          args: OPENPBTA_SUBSET=0 analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
 
       - name: Run Molecular Subtyping - EMBRYONAL in container
         uses: ./
         id: RUN-molecular-subtyping-embryonal
         with:
-          args: analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
+          args: OPENPBTA_SUBSET=0 analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
       - name: Run Molecular Subtyping - CHORDOMA in container
         uses: ./
         id: RUN-molecular-subtyping-chordoma
         with:
-          args: analyses/molecular-subtyping-chordoma/run-molecular-subtyping-chordoma.sh
+          args: OPENPBTA_SUBSET=0 analyses/molecular-subtyping-chordoma/run-molecular-subtyping-chordoma.sh
 
       - name: Run Molecular Subtyping - EWS in container
         uses: ./
@@ -66,13 +66,13 @@ jobs:
         uses: ./
         id: RUN-molecular-subtyping-HGG
         with:
-          args: analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
+          args: OPENPBTA_SUBSET=0 analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
 
       - name: Run Molecular Subtyping - LGG
         uses: ./
         id: RUN-molecular-subtyping-LGAT
         with:
-          args: analyses/molecular-subtyping-LGAT/run_subtyping.sh
+          args: OPENPBTA_SUBSET=0 analyses/molecular-subtyping-LGAT/run_subtyping.sh
 
       - name: Run Molecular Subtyping - PATHOLOGY/COMPILE
         uses: ./
