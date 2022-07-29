@@ -201,7 +201,7 @@ def get_annotations(cnv_frequency_df, CNV_FILE):
      log_file = "{}/annotator.log".format(results_dir)
      cnv_annot_freq_tsv = "{}/gene-level-cnv-consensus-annotated-mut-freq.tsv".format(results_dir)
      with open(log_file, "w") as log:
-          subprocess.run(["Rscript", "--vanilla", "analyses/long-format-table-utils/annotator/annotator-cli.R", "-r", "-c", "Gene_full_name,PMTL,OncoKB_cancer_gene,OncoKB_oncogene_TSG,EFO,MONDO", "-i", cnv_freq_tsv, "-o", cnv_annot_freq_tsv, "-v"], stdout=log, check=True)
+          subprocess.run(["Rscript", "--vanilla", "../long-format-table-utils/annotator/annotator-cli.R", "-r", "-c", "Gene_full_name,PMTL,OncoKB_cancer_gene,OncoKB_oncogene_TSG,EFO,MONDO", "-i", cnv_freq_tsv, "-o", cnv_annot_freq_tsv, "-v"], stdout=log, check=True)
 
      # columns changes proposed by the FNL:
      cnv_annot_freq_df = pd.read_csv(cnv_annot_freq_tsv, sep="\t", na_filter=False, dtype=str)
