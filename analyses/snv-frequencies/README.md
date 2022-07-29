@@ -27,6 +27,7 @@ Issues addressed:
 - <https://github.com/PediatricOpenTargets/ticket-tracker/issues/8>. This issue is no longer compatible with the purpose of this module. This module intends to compute mutation frequencies for each variant, but this issue intents to compute the mutation frequencies for each gene. This issue is listed here for future reference.
 - Change independent sample lists used in snv-frequencies: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/137>.
 - Change biospecimen filtering procedure: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/287>.
+- Updated analysis: update snv-frequencies for v11 data release: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/361> This issue updates the tables after the OpenPedCan-analysis v11 data release and also excludes CHOP DGD samples from inclusion in "All Cohorts"
 
 ### Methods
 
