@@ -358,11 +358,6 @@ files_to_subset <- files_to_subset[-grep("gistic.zip", files_to_subset)]
 # Methylation modules won't be tested with CI
 files_to_subset <- files_to_subset[-grep("methyl", files_to_subset)]
 
-# drop cnvkit autosomes and x_and_y chromosomes consensus files
-# only the merged file is utilized
-files_to_subset <- files_to_subset[-grep("cnvkit_wxs_autosomes", files_to_subset)]
-files_to_subset <- files_to_subset[-grep("cnvkit_wxs_x_and_y", files_to_subset)]
-
 # for each file, extract the participant ID list by first obtaining the
 # biospecimen IDs and then mapping back to participant ID
 message("\nGetting participant IDs from all files...")
