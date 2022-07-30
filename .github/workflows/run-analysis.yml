@@ -105,7 +105,7 @@ jobs:
         uses: ./
         id: RUN-tp53_nf1_score
         with:
-          args: analyses/tp53_nf1_score/run_classifier.sh
+          args: OPENPBTA_POLYAPLOT=0 analyses/tp53_nf1_score/run_classifier.sh
 
       - name: Run Fusion filtering
         uses: ./
@@ -131,7 +131,7 @@ jobs:
         uses: ./
         id: RUN-focal-cn-file-preparation
         with:
-          args: OPENPBTA_BASE_SUBTYPING=1 analyses/focal-cn-file-preparation/run-prepare-cn-OpenTarget.sh
+          args: OPENPBTA_TESTING=1 analyses/focal-cn-file-preparation/run-prepare-cn-OpenTarget.sh
 
       - name: Run TMB calculation
         uses: ./
