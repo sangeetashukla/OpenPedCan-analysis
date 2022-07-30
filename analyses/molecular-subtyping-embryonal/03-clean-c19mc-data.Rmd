@@ -7,7 +7,7 @@ output:
 author: Jo Lynne Rokita, Stephanie J. Spielman, and Jaclyn N. Taroni
 date: 2020
 params:
-  is_ci: FALSE
+  is_ci: TRUE
 editor_options: 
   chunk_output_type: inline
 ---
