@@ -42,7 +42,7 @@ jobs:
         uses: ./
         id: RUN-molecular-subtyping-embryonal
         with:
-          args: OPENPBTA_SUBSET=0 analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
+          args: OPENPBTA_TESTING=1 OPENPBTA_SUBSET=0 analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
       - name: Run Molecular Subtyping - CHORDOMA in container
         uses: ./
@@ -78,7 +78,7 @@ jobs:
         uses: ./
         id: RUN-molecular-subtyping-pathology
         with:
-          args: analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
+          args: OPENPBTA_TESTING=1 analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
 
       - name: Run Molecular Subtyping - INTEGRATE (+ add cancer groups)
         uses: ./
