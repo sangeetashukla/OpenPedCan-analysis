@@ -68,6 +68,7 @@ clinical_df = pd.read_table(clinical, low_memory=False)
 clinical_df = clinical_df[clinical_df['cohort'].isin(cohort_list)]
 clinical_df = clinical_df[clinical_df.cohort != "TCGA"]
 clinical_df = clinical_df[clinical_df.cohort != "GTEx"]
+clinical_df = clinical_df[clinical_df.cohort != "DGD"]
 clinical_df = clinical_df[clinical_df['RNA_library'].notnull()]
 
 # Obtain a binary status matrix

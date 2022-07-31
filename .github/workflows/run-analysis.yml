@@ -105,7 +105,7 @@ jobs:
         uses: ./
         id: RUN-tp53_nf1_score
         with:
-          args: OPENPBTA_POLYAPLOT=0 analyses/tp53_nf1_score/run_classifier.sh
+          args: OPENPEDCAN_POLYA_STRAND=0 analyses/tp53_nf1_score/run_classifier.sh
 
       - name: Run Fusion filtering
         uses: ./
