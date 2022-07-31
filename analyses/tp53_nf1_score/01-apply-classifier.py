@@ -82,6 +82,7 @@ histology = pd.read_csv(histology, sep="\t")
 histology = histology[histology['cohort'].isin(cohort_list)]
 histology = histology[histology.cohort != "TCGA"]
 histology = histology[histology.cohort != "GTEx"]
+histology = histology[histology.cohort != "DGD"]
 cohort_list = list(histology['cohort'].unique())
 
 exprs_scaled_df = pd.DataFrame()
