@@ -55,14 +55,14 @@ gunzip -c ${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz \
   > $cds_file
 
 # Prep the SNV consensus data for evaluation downstream
-Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
-  --snvConsensus ${snvconsensus_file} \
-  --cnvConsensus ${cnvconsensus_file} \
-  --histologyFile ${histology_file} \
-  --outputFolder ${analysis_dir}/results \
-  --cohort "PBTA","TARGET","GMKF" \
-  --gencode ${cds_file} \
-  --expr ${collapsed_rna_file}
+#Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
+#  --snvConsensus ${snvconsensus_file} \
+#  --cnvConsensus ${cnvconsensus_file} \
+#  --histologyFile ${histology_file} \
+#  --outputFolder ${analysis_dir}/results \
+#  --cohort "PBTA","TARGET","GMKF" \
+#  --gencode ${cds_file} \
+#  --expr ${collapsed_rna_file}
 
 # Define RNA library files, which result from the script above
 collapsed_stranded="${scratch_dir}/gene-expression-rsem-tpm-collapsed-stranded.rds"
@@ -71,8 +71,8 @@ collapsed_polya_stranded="${scratch_dir}/gene-expression-rsem-tpm-collapsed-poly
 
 # Run classifier and ROC plotting for RNA data - currently, we have 3 types of RNA libraries. 
 # We should add to this if we get more types.
-python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded}
-python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_polya}
+#python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded}
+#python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_polya}
 
 # Skip poly-A stranded steps in CI
 if [ "$POLYA_STRAND" -gt "0" ]; then
@@ -92,6 +92,10 @@ fi
 #Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
 # evaluate classifer scores for stranded data
-#python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/gene-expression-rsem-tpm-collapsed_classifier_scores.tsv -c ${histology_file} -r "PBTA"
+#python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/gene-expression-rsem-tpm-collapsed-stranded_classifier_scores.tsv -c ${histology_file} -r "PBTA","TARGET","GMKF" -l "stranded" -o stranded
+python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/gene-expression-rsem-tpm-collapsed-stranded_classifier_scores.tsv -c ${histology_file} -o stranded
 
-
+# Skip poly-A and/or poly-A stranded steps in CI
+if [ "$POLYA_STRAND" -gt "0" ]; then
+  python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/gene-expression-rsem-tpm-collapsed-poly-A_classifier_scores.tsv -c ${histology_file} -o polya
+fi

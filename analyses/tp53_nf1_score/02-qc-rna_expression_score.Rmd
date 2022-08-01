@@ -36,13 +36,22 @@ if ( params$base_run ==0 ){
  Read in scores from tp53-nf1-classifier 
 ```{r}
 
-score_df <- read_tsv(file.path(results_dir, "gene-expression-rsem-tpm-collapsed_classifier_scores.tsv")) %>%
-  dplyr::select(
-    "tp53_score",
-    "sample_id"
-  ) %>%
-  as.data.frame()
+classifier_files <- list.files(path = file.path(results_dir), pattern="*classifier_scores.tsv")
 
+score_df <- data.frame()
+
+if(length(classifier_files)<2)
+  stop("there are not two or more files to combine")
+
+for (file in classifier_files) {
+ df <- read_tsv(file.path(results_dir, file)) %>%
+                dplyr::select(sample_id, tp53_score, tp53_shuffle) %>%
+   as.data.frame()
+score_df <- bind_rows(score_df, df)
+} 
+
+score_df %>%
+  write_tsv(file.path(results_dir, "combined_scores.tsv"))
 ```
 
 
@@ -55,10 +64,9 @@ Read in expression matrices and filter expression matrices to only contain cohor
 exp_file <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
 expressionMatrix<-readRDS(exp_file) 
 
-clinical_filtered <- clinical %>% dplyr::filter(sample_type == "Tumor") %>%
-  dplyr::filter(experimental_strategy == "RNA-Seq") %>% 
-  dplyr::filter(cohort =="PBTA") %>%
-  dplyr::filter(!is.na(RNA_library))
+clinical_filtered <- clinical %>% 
+  filter(Kids_First_Biospecimen_ID %in% score_df$sample_id)
+
 
 # Generate RNA library list that can be used to iterate 
 rna_library_list <- clinical_filtered %>% pull(RNA_library) %>% unique()
@@ -126,7 +134,7 @@ for (i in 1:length(scores_exp_list)){
   score_plot <- ggplot(scores_file,aes(expression_value,tp53_score))+
   geom_point() +
   geom_smooth(method='lm') +
-  ggtitle(paste0(library_name, "RNA-Seq expression v/s score correlation"))
+  ggtitle(paste0(library_name, " RNA-Seq expression v/s score correlation"))
   
   print(score_plot)
 }
@@ -179,7 +187,7 @@ sample_id_multi_library <- clinical %>%
   filter(counts > 1)
 
 sample_id_multi_library %>% 
-  dplyr::filter(!sample_id %in% c("01", "03", "04", "09")) %>%
+  dplyr::filter(!sample_id %in% c("01", "02", "03", "04", "06", "09", "11", "40")) %>%
   knitr::kable()
 
 ```
