@@ -63,6 +63,10 @@ scores_file = options.filename
 clinical = options.clinical
 outputfilename = options.outputfile
 
+# create module plots directory
+plots_dir = "plots".format(os.path.dirname(__file__))
+if not os.path.exists(plots_dir):
+    os.mkdir(plots_dir)
 
 np.random.seed(123)
 
@@ -136,7 +140,8 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
     lower_gene = gene.lower()
     scores_df = scores_df.rename(str.lower, axis="columns")
     # Obtain Metrics
-    sample_status = scores_df.loc[:, "{}_status".format(lower_gene)]
+    scores_df = scores_df[-scores_df.tp53_status.isnull()]
+    sample_status = scores_df.loc[:, "{}_status".format(lower_gene)].astype(int)
     sample_score = scores_df.loc[:, "{}_score".format(lower_gene)]
     shuffle_score = scores_df.loc[:, "{}_shuffle".format(lower_gene)]
     print(sample_status.head())
