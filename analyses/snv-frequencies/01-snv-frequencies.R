@@ -778,6 +778,20 @@ td_htl_dfs <- list(
   overall_htl_df = maf_sample_htl_df
 )
 
+# assert that all samples are in independent samples lists
+stopifnot(all(
+  unique(c(td_htl_dfs$primary_ac_htl_df$Kids_First_Participant_ID,
+           td_htl_dfs$relapse_ac_htl_df$Kids_First_Participant_ID)) %in%
+    unique(c(primary_ac_indp_sdf$Kids_First_Participant_ID,
+             relapse_ac_indp_sdf$Kids_First_Participant_ID))
+))
+
+stopifnot(all(
+  unique(c(td_htl_dfs$primary_ec_htl_df$Kids_First_Participant_ID,
+           td_htl_dfs$relapse_ec_htl_df$Kids_First_Participant_ID)) %in%
+    unique(c(primary_ec_indp_sdf$Kids_First_Participant_ID,
+             relapse_ec_indp_sdf$Kids_First_Participant_ID))
+))
 
 
 # Keep only non-synonymous variants in MAF data frame --------------------------
