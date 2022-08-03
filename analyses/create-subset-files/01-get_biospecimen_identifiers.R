@@ -156,14 +156,16 @@ select_participants_ids <-
       selected_participants <-  histology_df %>%
         dplyr::filter(RNA_library != "poly-A" | 
                         RNA_library != "stranded" | 
-                        RNA_library != "poly-A stranded", 
+                        RNA_library != "poly-A stranded" |
+                        RNA_library != "exome_capture",
                       cohort == study,
                       Kids_First_Participant_ID %in% participants)
       if (length(selected_participants$Kids_First_Participant_ID) == 0) {
         selected_participants <-  histology_df %>%
           dplyr::filter(RNA_library != "poly-A" | 
                           RNA_library != "stranded" |
-                          RNA_library != "poly-A stranded",
+                          RNA_library != "poly-A stranded" |
+                          RNA_library != "exome_capture",
                         cohort == study)
         female <- selected_participants %>% 
           filter(reported_gender == "Female") %>% 
@@ -194,7 +196,7 @@ select_participants_ids <-
         selected_participants <- c(female, male)
       }
       return(selected_participants)
-    } else { # library == "poly-A" | library == "stranded" | library == "poly-A stranded"
+    } else { # library == "poly-A" | library == "stranded" | library == "poly-A stranded" | library == "exome_capture"
       selected_participants <-  histology_df %>%
         dplyr::filter(RNA_library == library, cohort == study,
                       Kids_First_Participant_ID %in% participants) 
@@ -418,13 +420,20 @@ polya_matched <- c(
 message("\nSelecting stranded rnaseq matched participant IDs...")
 stranded_matched <- c(
   select_participants_ids(histology_df, "stranded",  "PBTA",
-                          other_matched_participants, 0.9, num_matched_participants),
+                          other_matched_participants, 0.89, num_matched_participants),
   select_participants_ids(histology_df, "stranded", "TARGET",
                           other_matched_participants, 0.3, num_matched_participants),
   select_participants_ids(histology_df, "stranded", "TCGA",
                           tcga_matched_participants, 0.1, num_matched_participants),
   select_participants_ids(histology_df, "stranded", "GMKF",
                           other_matched_participants, 1.0, num_matched_participants)
+)
+
+# exome_capture rnaseq matched participant IDs
+message("\nSelecting exome capture rnaseq matched participant IDs...")
+exome_capture_matched <- c(
+  select_participants_ids(histology_df, "exome_capture",  "PBTA",
+                          other_matched_participants, 0.01, num_matched_participants)
 )
 
 # other cohort-specific library types matched participant IDs, including panels 
@@ -439,7 +448,7 @@ other_matched <-
 message("\nCombining selected matched and nonmatched participant IDs...")
 # combine all matched participant IDs for subsetting
 matched_participants_ids <- 
-  unique(c(polya_matched, stranded_matched, other_matched))
+  unique(c(polya_matched, stranded_matched, exome_capture, other_matched))
 
 matched_participant_id_list <- purrr::map(
   participant_id_list, 
