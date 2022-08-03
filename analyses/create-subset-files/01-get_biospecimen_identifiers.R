@@ -171,13 +171,13 @@ select_participants_ids <-
           filter(reported_gender == "Female") %>% 
           dplyr::pull(Kids_First_Participant_ID) %>% unique()
         if (length(female) > ceiling(match_ratio * match_value)){
-          female <- female %>% sample(ceiling(0.5 * match_value)) 
+          female <- female %>% sample(ceiling(0.5 * match_ratio * match_value)) 
         }
         male <- selected_participants %>% 
           filter(reported_gender == "Male") %>% 
           dplyr::pull(Kids_First_Participant_ID) %>% unique()
         if (length(male) > ceiling(match_ratio * match_value)){
-          male <- male %>% sample(ceiling(0.5 * match_value)) 
+          male <- male %>% sample(ceiling(0.5 * match_ratio * match_value)) 
         }
         selected_participants <- c(female, male)
       } else {
@@ -185,13 +185,13 @@ select_participants_ids <-
           filter(reported_gender == "Female") %>% 
           dplyr::pull(Kids_First_Participant_ID) %>% unique()
         if (length(female) > ceiling(match_ratio * match_value)){
-          female <- female %>% sample(ceiling(0.5 * match_value)) 
+          female <- female %>% sample(ceiling(0.5 * match_ratio * match_value)) 
         }
         male <- selected_participants %>% 
           filter(reported_gender == "Male") %>% 
           dplyr::pull(Kids_First_Participant_ID) %>% unique()
         if (length(male) > ceiling(match_ratio * match_value)){
-          male <- male %>% sample(ceiling(0.5 * match_value)) 
+          male <- male %>% sample(ceiling(0.5 * match_ratio * match_value)) 
         }
         selected_participants <- c(female, male)
       }
@@ -207,13 +207,13 @@ select_participants_ids <-
           filter(reported_gender == "Female") %>% 
           dplyr::pull(Kids_First_Participant_ID) %>% unique()
         if (length(female) > ceiling(match_ratio * match_value)){
-          female <- female %>% sample(ceiling(0.5 * match_value)) 
+          female <- female %>% sample(ceiling(0.5 * match_ratio *  match_value)) 
         }
         male <- selected_participants %>% 
           filter(reported_gender == "Male") %>% 
           dplyr::pull(Kids_First_Participant_ID) %>% unique()
         if (length(male) > ceiling(match_ratio * match_value)){
-          male <- male %>%sample(ceiling(0.5 * match_value)) 
+          male <- male %>%sample(ceiling(0.5 * match_ratio * match_value)) 
         }
         selected_participants <- c(female, male)
       } else {
@@ -221,13 +221,13 @@ select_participants_ids <-
           filter(reported_gender == "Female") %>% 
           dplyr::pull(Kids_First_Participant_ID) %>% unique()
         if (length(female) > ceiling(match_ratio * match_value)){
-          female <- female %>% sample(ceiling(0.5 * match_value)) 
+          female <- female %>% sample(ceiling(0.5 * match_ratio * match_value)) 
         }
         male <- selected_participants %>% 
           filter(reported_gender == "Male") %>% 
           dplyr::pull(Kids_First_Participant_ID) %>% unique()
         if (length(male) > ceiling(match_ratio * match_value)){
-          male <- male %>% sample(ceiling(0.5 * match_value)) 
+          male <- male %>% sample(ceiling(0.5 * match_ratio * match_value)) 
         }
         selected_participants <- c(female, male)
       }
@@ -448,7 +448,7 @@ other_matched <-
 message("\nCombining selected matched and nonmatched participant IDs...")
 # combine all matched participant IDs for subsetting
 matched_participants_ids <- 
-  unique(c(polya_matched, stranded_matched, exome_capture, other_matched))
+  unique(c(polya_matched, stranded_matched, exome_capture_matched, other_matched))
 
 matched_participant_id_list <- purrr::map(
   participant_id_list, 

@@ -39,7 +39,12 @@ fi
 
 #### generate subset files -----------------------------------------------------
 
-mkdir -m777 ./tmp
+# overide system /tmp directory and create ./tmp directory for the R script
+# in some case system /tmp directory is too small
+RTMP_DIRECTORY=./tmp
+if [ ! -d ${RTMP_DIRECTORY} ]; then
+    mkdir -m777 ${RTMP_DIRECTORY}
+fi
 
 if [ "$SKIP_SUBSETTING" -lt "1" ]; then
 
@@ -57,7 +62,7 @@ if [ "$SKIP_SUBSETTING" -lt "1" ]; then
 
 fi
 
-rm -rf ./tmp
+rm -rf $RTMP_DIRECTORY
 
 #### copy files that are not being subset --------------------------------------
 
