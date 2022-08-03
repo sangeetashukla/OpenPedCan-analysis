@@ -686,7 +686,7 @@ relapse_ec_indp_sdf <- read_tsv(
 # pcb = PedcBioPortal
 # pot = Pediatric Open Targets
 pcb_pot_case_set_list <- jsonlite::read_json(
-  'input/ped_opentargets_2021_pedcbio_case_set_ids.json')
+  'input/ped_opentargets_v11_pedcbio_case_set_ids.json')
 
 pcb_pot_case_set_id_vec <- vapply(
   pcb_pot_case_set_list,
