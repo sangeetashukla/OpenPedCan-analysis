@@ -49,7 +49,7 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
     if(diff_type == "deseq2"){
       # W_i corresponds to the factors of "unwanted variation"
       # factor for unwanted variation comes first for deseq2
-      design <- model.matrix(as.formula(paste0('~0 + W_', i, '+' , design_variable)), data = pData(ruvg_set))
+      design <- model.matrix(as.formula(paste0('~ W_', i, '+' , design_variable)), data = pData(ruvg_set))
       ruv_dds <- DESeq2::DESeqDataSetFromMatrix(countData = counts(ruvg_set), colData = pData(ruvg_set), design = design)
       ruv_dds <- DESeq2::DESeq(ruv_dds)
       
@@ -59,10 +59,12 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
         as.data.frame() %>% 
         rownames_to_column('gene') %>%
         arrange(padj) 
+      
+      readr::write_tsv(x = dge_output, file = file.path(output_dir, paste0('_DESeq2_', i, '_ruvseq_dge.tsv')))
     } else if(diff_type == "edger") {
       # W corresponds to the factors of "unwanted variation"
       # factor for unwanted variation comes last for edgeR
-      design <- model.matrix(as.formula(paste0('~0 +', design_variable, '+', 'W_', i)), data = pData(ruvg_set))
+      design <- model.matrix(as.formula(paste0('~', design_variable, '+', 'W_', i)), data = pData(ruvg_set))
       y <- DGEList(counts = counts(ruvg_set))
       y <- calcNormFactors(y, method = "upperquartile")
       y <- estimateGLMCommonDisp(y, design)

@@ -32,7 +32,7 @@ dir.create(output_dir, showWarnings = F, recursive = T)
 dataset = 'target_nbl'
 cancer_group_value <- 'Neuroblastoma'
 cohort_value <- 'TARGET'
-k_value <- 2
+k_value <- 5
 
 # source functions 
 source('util/deseq2_pvals_histogram.R') # DESeq2 pval histograms
@@ -42,16 +42,15 @@ source('util/ruvg_test.R') # function to run RUVg
 source('util/ruvr_test.R') # function to run RUVr (only works with edgeR)
 
 # read histology
-htl_df <- readr::read_tsv('../../data/histologies.tsv')
+htl_df <- readr::read_tsv('../../data/v10/histologies.tsv')
 
 # read expected counts
-cnt_df <- readRDS('../../data/gene-counts-rsem-expected_count-collapsed.rds')
+cnt_df <- readRDS('../../data/v10/gene-counts-rsem-expected_count-collapsed.rds')
 
 # filter histology
 selected_htl_df <- htl_df %>%
   filter(experimental_strategy == "RNA-Seq",
          sample_type == "Tumor",
-         cohort %in% cohort_value,
          cancer_group %in% cancer_group_value,
          !is.na(molecular_subtype)) 
 
@@ -63,16 +62,17 @@ cnt_df <- cnt_df[rowSums(cnt_df) > 0,]
 # filter by expression and convert to DGElist
 bs_id <- gsub('TARGET-[0-9]{2}-', '', selected_htl_df$Kids_First_Biospecimen_ID) # shorten bs ids for TARGET samples
 molecular_subtype <- factor(as.character(selected_htl_df$molecular_subtype))
-design <- model.matrix(~ 0 + molecular_subtype)
+RNA_library <- factor(as.character(selected_htl_df$RNA_library))
+design <- model.matrix(~molecular_subtype)
 counts_object <- edgeR::DGEList(counts = cnt_df, group = molecular_subtype)
 counts_object_filtered <- edgeR::filterByExpr(counts_object, group = molecular_subtype)
 counts_object <- counts_object[counts_object_filtered, , keep.lib.sizes = FALSE]
 
 # create new expression set
-seq_expr_set <- EDASeq::newSeqExpressionSet(counts = round(counts_object$counts), phenoData = data.frame(bs_id, molecular_subtype, row.names = colnames(round(counts_object$counts))))
-pca_p <- edaseq_plot(object = seq_expr_set, title = "Before normalization", type = "PCA", color_var = "molecular_subtype", shape_var = "molecular_subtype")
-umap_p <- edaseq_plot(object = seq_expr_set, title = "Before normalization", type = "UMAP", color_var = "molecular_subtype", shape_var = "molecular_subtype")
-boxplot_p <- box_plots(object = seq_expr_set, title = "Before normalization", facet_var = "molecular_subtype", color_var = "molecular_subtype")
+seq_expr_set <- EDASeq::newSeqExpressionSet(counts = round(counts_object$counts), phenoData = data.frame(bs_id, molecular_subtype, RNA_library, row.names = colnames(round(counts_object$counts))))
+pca_p <- edaseq_plot(object = seq_expr_set, title = "Before normalization", type = "PCA", color_var = "RNA_library", shape_var = "RNA_library")
+umap_p <- edaseq_plot(object = seq_expr_set, title = "Before normalization", type = "UMAP", color_var = "RNA_library", shape_var = "RNA_library")
+boxplot_p <- box_plots(object = seq_expr_set, title = "Before normalization", facet_var = "RNA_library", color_var = "RNA_library")
 
 # from https://support.bioconductor.org/p/95805/#95808
 # The "betweenLaneNormalization" is just a poorly named function that perform between-sample normalization, 
@@ -80,18 +80,18 @@ boxplot_p <- box_plots(object = seq_expr_set, title = "Before normalization", fa
 # It is used in RUVSeq just to make sure that the factors of unwanted variation don't capture the difference in library size that should be captured by the size factors. 
 # normalize the data using upper-quartile (UQ) normalization
 seq_expr_set <- EDASeq::betweenLaneNormalization(seq_expr_set, which = "upper")
-pca_p_norm <- edaseq_plot(object = seq_expr_set, title = "After UQ normalization", type = "PCA", color_var = "molecular_subtype", shape_var = "molecular_subtype")
-umap_p_norm <- edaseq_plot(object = seq_expr_set, title = "After UQ normalization", type = "UMAP", color_var = "molecular_subtype", shape_var = "molecular_subtype")
-boxplot_p_norm <- box_plots(object = seq_expr_set, title = "After UQ normalization", facet_var = "molecular_subtype", color_var = "molecular_subtype")
+pca_p_norm <- edaseq_plot(object = seq_expr_set, title = "After UQ normalization", type = "PCA", color_var = "RNA_library", shape_var = "RNA_library")
+umap_p_norm <- edaseq_plot(object = seq_expr_set, title = "After UQ normalization", type = "UMAP", color_var = "RNA_library", shape_var = "RNA_library")
+boxplot_p_norm <- box_plots(object = seq_expr_set, title = "After UQ normalization", facet_var = "RNA_library", color_var = "RNA_library")
 
 # save both UMAP and PCA in a single file
 p <- ggpubr::ggarrange(pca_p, pca_p_norm, umap_p, umap_p_norm, common.legend = T, legend = "bottom")
-fname <- file.path(output_dir, 'clustering_with_and_without_norm.pdf')
+fname <- file.path(output_dir, 'clustering_with_and_without_norm_rna_lib.pdf')
 ggsave(filename = fname, plot = p, width = 6, height = 6, device = "pdf", bg = "white")
 
 # save boxplots in a single file
 p <- ggpubr::ggarrange(boxplot_p, boxplot_p_norm, nrow = 2, common.legend = T, legend = "bottom")
-fname <- file.path(output_dir, 'boxplots_with_and_without_norm.pdf')
+fname <- file.path(output_dir, 'boxplots_with_and_without_norm_rna_lib.pdf')
 ggsave(filename = fname, plot = p, width = 12, height = 6, device = "pdf", bg = "white")
 
 ########################################### DESeq2 analysis ##############################################################
@@ -103,7 +103,7 @@ ruvg_test(seq_expr_set = seq_expr_set, k_val = 1:k_value,
           diff_type = "deseq2", 
           output_dir = output_dir,
           design_variable = "molecular_subtype",
-          color_var = "molecular_subtype", shape_var = "molecular_subtype")
+          color_var = "RNA_library", shape_var = "RNA_library")
 
 # 1.2. RUVg using hk genes in normals only (full HRT atlas)
 emp_neg_ctrl_genes_normals <- readRDS('input/hk_genes_normals.rds')
@@ -112,7 +112,7 @@ ruvg_test(seq_expr_set = seq_expr_set, k_val = 1:k_value,
           diff_type = "deseq2", 
           output_dir = output_dir,
           design_variable = "molecular_subtype",
-          color_var = "molecular_subtype", shape_var = "molecular_subtype")
+          color_var = "RNA_library", shape_var = "RNA_library")
 
 # 1.3. RUVg using empirical control genes (dge from DESeq2 analysis)
 # From DESeq2 documentation:
