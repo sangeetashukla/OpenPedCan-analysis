@@ -99,9 +99,8 @@ required_cols <- c(
 
 # read consensus maf file
 consensus_maf_df <- 
-  data.table::fread(consensus_maf_file, skip=1, select = required_cols, 
-                    showProgress = FALSE) %>% 
-  tibble() %>% 
+  readr::read_table(consensus_maf_file, comment = "#") %>%
+  select(required_cols) %>%
   dplyr::mutate(vaf = (t_alt_count / (t_ref_count + t_alt_count)))
 
 message("Spliting MNV calls and merging with SNV calls...\n")
