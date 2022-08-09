@@ -47,7 +47,7 @@ This script deconvolutes immune cell types using the method of choice, either `x
 results/{deconv_method}_output.rds
 ```
 
-For `xCell`, the results in the rds file are predicted immune scores per cell type per input sample. These scores are not actual cell fractions but arbitrary scores representing enrichment of the cell types which can be compared across various cancer/gtex groups. The `quanTIseq` results, in contrast, provide an absolute score that can be interpreted as a cell fraction and the results in the rds file are the asbsolute scores per cell type per input sample. Depending on the user requirements, the output can also be used to create various visualizations. 
+For `xCell`, the results in the rds file are predicted immune scores per cell type per input sample. These scores are not actual cell fractions but arbitrary scores representing enrichment of the cell types which can be compared across various cancer/gtex groups. The `quanTIseq` results, in contrast, provide an absolute score that can be interpreted as a cell fraction and the results in the rds file are the absolute scores per cell type per input sample. Depending on the user requirements, the output can also be used to create various visualizations. 
 
 #### 02-summary-plots.R 
 
