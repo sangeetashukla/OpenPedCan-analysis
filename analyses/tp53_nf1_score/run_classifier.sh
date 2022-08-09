@@ -68,19 +68,21 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
 collapsed_stranded="${scratch_dir}/gene-expression-rsem-tpm-collapsed-stranded.rds"
 collapsed_polya="${scratch_dir}/gene-expression-rsem-tpm-collapsed-poly-A.rds"
 collapsed_polya_stranded="${scratch_dir}/gene-expression-rsem-tpm-collapsed-poly-A-stranded.rds"
+collapsed_exome_capture="${scratch_dir}/gene-expression-rsem-tpm-collapsed-exome_capture.rds"
 
-# Run classifier and ROC plotting for RNA data - currently, we have 3 types of RNA libraries. 
+# Run classifier and ROC plotting for RNA data - currently, we have 4 types of RNA libraries. 
 # We should add to this if we get more types.
 python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded}
 python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_polya}
 
-# Skip poly-A stranded steps in CI
+# Skip poly-A stranded and exome capture steps in CI because too few samples
 if [ "$POLYA_STRAND" -gt "0" ]; then
   python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_polya_stranded}
+  python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_exome_capture}
 fi
 
 # check correlation expression and scores
-Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
+Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING, ci_run = $POLYA_STRAND))"
 
 # subset cnv where tp53 is lost
 Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
@@ -92,10 +94,11 @@ Rscript -e "rmarkdown::render('${analysis_dir}/04-tp53-sv-loss.Rmd',params=list(
 Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
 # evaluate classifer scores for stranded data
-#python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/gene-expression-rsem-tpm-collapsed-stranded_classifier_scores.tsv -c ${histology_file} -r "PBTA","TARGET","GMKF" -l "stranded" -o stranded
 python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/gene-expression-rsem-tpm-collapsed-stranded_classifier_scores.tsv -c ${histology_file} -o stranded
 
-# Skip poly-A and/or poly-A stranded steps in CI
+# Skip poly-A, poly-A stranded, exome capture steps in CI
 if [ "$POLYA_STRAND" -gt "0" ]; then
+  python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/gene-expression-rsem-tpm-collapsed-poly-A-stranded_classifier_scores.tsv -c ${histology_file} -o polya_stranded
+  python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/gene-expression-rsem-tpm-collapsed-exome_capture_classifier_scores.tsv -c ${histology_file} -o exome_capture
   python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/gene-expression-rsem-tpm-collapsed-poly-A_classifier_scores.tsv -c ${histology_file} -o polya
 fi

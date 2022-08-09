@@ -7,6 +7,10 @@ params:
     label: "1/0 to run with base histology"
     value: 0
     input: integer
+  ci_run:
+    label: "1/0 to run in CI"
+    value: 1
+    input: integer
 ---
     
 In this notebook we will find correlation between RNA-Seq and classifier score
@@ -65,11 +69,15 @@ exp_file <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
 expressionMatrix<-readRDS(exp_file) 
 
 clinical_filtered <- clinical %>% 
-  filter(Kids_First_Biospecimen_ID %in% score_df$sample_id)
+  filter(Kids_First_Biospecimen_ID %in% names(expressionMatrix))
 
-
+if ( params$ci_run == 1 ){
 # Generate RNA library list that can be used to iterate 
 rna_library_list <- clinical_filtered %>% pull(RNA_library) %>% unique()
+
+} else{
+rna_library_list <- c("stranded", "poly-A")
+}
 
 # filter to samples of a particular RNA library type
 expression_matrix_list <- lapply(rna_library_list, function(x){
