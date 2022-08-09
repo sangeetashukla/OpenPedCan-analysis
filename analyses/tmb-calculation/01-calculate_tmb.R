@@ -98,8 +98,7 @@ required_cols <- c(
 )
 
 # read consensus maf file
-consensus_maf_df <- 
-  readr::read_table(consensus_maf_file, comment = "#") %>%
+consensus_maf_df <- readr::read_delim(consensus_maf_file, comment = "#", delim = "\t") %>%
   select(required_cols) %>%
   dplyr::mutate(vaf = (t_alt_count / (t_ref_count + t_alt_count)))
 
@@ -168,7 +167,7 @@ if (nonsynfilter_focr) {
 message("Setting up metadata...\n")
 
 # load samples to target BED mapping file 
-bed_df <- readr::read_tsv(bed_files, show_col_types = FALSE)
+bed_df <- readr::read_tsv(bed_files)
 # assert all sample ids are not NA
 stopifnot(identical(sum(is.na(bed_df$Kids_First_Biospecimen_ID)), 
                     as.integer(0)))
@@ -176,8 +175,7 @@ stopifnot(identical(sum(is.na(bed_df$Kids_First_Biospecimen_ID)),
 stopifnot(identical(length(bed_df$Kids_First_Biospecimen_ID), 
                     length(unique(bed_df$Kids_First_Biospecimen_ID))))
 # load histologies file  
-hist_df <- readr::read_tsv(histologies_file, guess_max = 10000, 
-                           show_col_types = FALSE)
+hist_df <- readr::read_tsv(histologies_file, guess_max = 10000)
 
 # merge samples to target BED mapping file with select metadata from
 # histologies file
@@ -242,7 +240,7 @@ bed_ranges_list <- lapply(bed_file_paths, function(bed_file) {
 
   # Read in BED file as data.frame
   bed_df <- readr::read_tsv(bed_file,
-    col_names = c("chr", "start", "end"), show_col_types = FALSE)
+    col_names = c("chr", "start", "end"))
 
   # Make into a GenomicRanges object
   bed_ranges <- GenomicRanges::GRanges(
@@ -260,7 +258,7 @@ message("Setting up coding regions BED ranges...\n")
 
 # Read in the coding regions BED file
 coding_regions_df <- readr::read_tsv(coding_regions,
-  col_names = c("chr", "start", "end"), show_col_types = FALSE)
+  col_names = c("chr", "start", "end"))
 
 # Make into a GenomicRanges object
 coding_ranges <- GenomicRanges::GRanges(
