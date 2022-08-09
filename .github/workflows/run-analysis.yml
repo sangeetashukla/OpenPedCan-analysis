@@ -139,6 +139,12 @@ jobs:
         with:
           args: analyses/tmb-calculation/run_tmb_calculation.sh
 
+#      - name: Run Immune Deconvolution
+#        uses: ./
+#        id: RUN-immune-Deconvolution
+#        with:
+#          args: analyses/immune-deconv/run-immune-deconv.sh
+
 
 # MTP-specific modules
 
@@ -192,11 +198,12 @@ jobs:
 
 # Pedcbio-specific modules
 
-      - name: Run Prepare CNV for pedcbio
-        uses: ./
-        id: RUN-pedcbio-cnv-prepare
-        with:
-          args: analyses/pedcbio-cnv-prepare/run-cnv-pedcbio.sh
+# This needs some update/revamp/is in PR
+#      - name: Run Prepare CNV for pedcbio
+#        uses: ./
+#        id: RUN-pedcbio-cnv-prepare
+#        with:
+#          args: analyses/pedcbio-cnv-prepare/run-cnv-pedcbio.sh
 
 # This will not pass now that we removed parental_aliquot_id
 #      - name: Run Create pedcbio sample file
