@@ -1,4 +1,4 @@
-# Author: Komal S. Rathim updated, 2020-07 Kelsey Keith
+# Author: Komal S. Rathi updated, 2020-07 Kelsey Keith
 # script to perform immune characterization using R package immunedeconv
 
 # load libraries
