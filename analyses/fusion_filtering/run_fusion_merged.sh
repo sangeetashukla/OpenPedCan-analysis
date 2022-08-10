@@ -46,8 +46,8 @@ normal_expression_adrenal_gland="${references_path}/gtex_adrenal_gland_TPM_hg38.
 normal_expression_brain="${references_path}/gtex_brain_TPM_hg38.rds"
 
 # independent sample list
-independent_RNA_primary="${data_path}/independent-specimens.rnaseq.primary-pre-release.tsv"
-independent_RNA_relapse="${data_path}/independent-specimens.rnaseq.relapse-pre-release.tsv"
+independent_RNA_primary="${data_path}/independent-specimens.rnaseqpanel.primary.pre-release.tsv"
+independent_RNA_relapse="${data_path}/independent-specimens.rnaseqpanel.relapse.pre-release.tsv"
    
 # metadata files
 if [[ "$RUN_FOR_SUBTYPING" -eq "0" ]]
