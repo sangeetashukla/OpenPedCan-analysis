@@ -172,11 +172,11 @@ jobs:
 #        with:
 #          args: analyses/cnv-frequencies/run-cnv-frequencies-analysis.sh
 
-#      - name: Run Fusion frequency tables
-#        uses: ./
-#        id: RUN-fusion-frequencies
-#        with:
-#          args: analyses/fusion-frequencies/run-frequencies.sh
+      - name: Run Fusion frequency tables
+        uses: ./
+        id: RUN-fusion-frequencies
+        with:
+          args: analyses/fusion-frequencies/run-frequencies.sh
 
 #      - name: Run SNV frequency tables
 #        uses: ./
