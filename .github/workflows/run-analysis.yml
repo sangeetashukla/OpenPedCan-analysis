@@ -117,7 +117,7 @@ jobs:
         uses: ./
         id: RUN-fusion-summary
         with:
-          args: analyses/fusion-summary/run-new-analysis.sh
+          args: OPENPBTA_SUBSET=0 analyses/fusion-summary/run-new-analysis.sh
 
 # Come back to this - current results not in repo, does not use data folder
 #      - name: Run GISTIC
