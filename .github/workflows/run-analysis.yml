@@ -25,11 +25,13 @@ jobs:
             ${{ runner.os }}-buildx-
 
       # Build docker container and download testing data
-      - name: Build container and download data
-        uses: ./
-        id: download-data
+      - name: Build container
+        uses: docker/build-push-action@v2
+        id: build-container
         with:
-          args: OPENPEDCAN_URL=https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/open-targets OPENPEDCAN_RELEASE=testing bash download-data.sh
+          context: .
+          push: false
+          file: ./Dockerfile
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
@@ -37,6 +39,13 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      # Molecular subtyping modules
+      - name: Download Data
+        uses: ./
+        id: download-data
+        with:
+          args: OPENPEDCAN_URL=https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/open-targets OPENPEDCAN_RELEASE=testing bash download-data.sh
 
       # Molecular subtyping modules
       - name: Run Molecular Subtyping - MB
