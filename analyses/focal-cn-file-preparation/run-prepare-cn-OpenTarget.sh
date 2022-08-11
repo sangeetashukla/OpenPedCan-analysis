@@ -26,14 +26,14 @@ data_dir=../../data
 results_dir=../../analyses/focal-cn-file-preparation/results
 gtf_file=${data_dir}/gencode.v38.primary_assembly.annotation.gtf.gz
 goi_file=../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt
-independent_specimens_file=${data_dir}/independent-specimens.wgswxs.primary.tsv
+independent_specimens_file=${data_dir}/independent-specimens.wgswxspanel.primary.prefer.wgs.tsv
 
 if [[ "$RUN_FOR_SUBTYPING" -eq "1" ]]
 then
   histologies_file=${data_dir}/histologies-base.tsv
 else
   histologies_file=${data_dir}/histologies.tsv
-ti
+fi
 
 # Prep the consensus SEG file data
 Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
@@ -49,7 +49,8 @@ Rscript --vanilla 04-prepare-cn-file.R \
 
 # if we want to process the CNV data from the original callers
 # (e.g., CNVkit, ControlFreeC)
-if [ "$RUN_ORIGINAL" -gt "0" ]; then
+if [ "$RUN_ORIGINAL" -gt "0" ]
+then
 
 # Prep the CNVkit data
 Rscript --vanilla -e "rmarkdown::render('01-add-ploidy-cnvkit.Rmd', clean = TRUE)"
@@ -94,4 +95,5 @@ Rscript --vanilla 07-consensus-annotated-merge.R \
 #         --filename_lead ${filename}_${chromosome_type}
 #   done
 # done
+
 fi
