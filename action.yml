@@ -2,5 +2,5 @@ name: "Run OpenPedCan Analysis"
 description: "Run analysis workflow"
 runs:
   using: "docker"
-  image: "Dockerfile"
+  image: "openpedcan/analysis:latest"
   entrypoint: "scripts/run-analysis.sh"
