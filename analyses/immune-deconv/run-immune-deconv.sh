@@ -18,8 +18,8 @@ cd "$script_directory" || exit
 # generate deconvolution output
 echo "Deconvolution xCell..."
 Rscript --vanilla 01-immune-deconv.R \
---expr_mat '../../data/v11/gene-expression-rsem-tpm-collapsed.rds' \
---clin_file '../../data/v11/histologies.tsv' \
+--expr_mat '../../data/gene-expression-rsem-tpm-collapsed.rds' \
+--clin_file '../../data/histologies.tsv' \
 --deconv_method 'xcell' \
 --output_dir 'results'
 
@@ -33,8 +33,8 @@ Rscript --vanilla 02-summary-plots.R \
 # generate deconvolution output
 echo "Deconvolution quanTIseq..."
 Rscript --vanilla 01-immune-deconv.R \
---expr_mat '../../data/v11/gene-expression-rsem-tpm-collapsed.rds' \
---clin_file '../../data/v11/histologies.tsv' \
+--expr_mat '../../data/gene-expression-rsem-tpm-collapsed.rds' \
+--clin_file '../../data/histologies.tsv' \
 --deconv_method 'quantiseq' \
 --output_dir 'results'
 
