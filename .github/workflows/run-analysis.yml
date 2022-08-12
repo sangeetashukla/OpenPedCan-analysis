@@ -20,7 +20,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-${{ env.GITHUB_SHA }}
           restore-keys: |
             ${{ runner.os }}-buildx-
 
@@ -30,7 +30,7 @@ jobs:
         id: build-container
         with:
           push: false
-          tags: PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+          tags: PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
           file: ./Dockerfile
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
@@ -42,7 +42,7 @@ jobs:
 
       # Molecular subtyping modules
       - name: Download Data
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: download-data
         with:
           entrypoint: "scripts/run-analysis.sh"
@@ -50,77 +50,77 @@ jobs:
 
       # Molecular subtyping modules
       - name: Run Molecular Subtyping - MB
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-molecular-subtyping-MB
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: OPENPBTA_SUBSET=0 analyses/molecular-subtyping-MB/run-molecular-subtyping-mb.sh
 
       - name: Run Molecular Subtyping - CRANIO
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-molecular-subtyping-CRANIO
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: OPENPBTA_SUBSET=0 analyses/molecular-subtyping-CRANIO/run-molecular-subtyping-cranio.sh
 
       - name: Run Molecular Subtyping - EPN
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-molecular-subtyping-EPN
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: OPENPBTA_SUBSET=0 analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
 
       - name: Run Molecular Subtyping - EMBRYONAL in container
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-molecular-subtyping-embryonal
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: OPENPBTA_TESTING=1 OPENPBTA_SUBSET=0 analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
       - name: Run Molecular Subtyping - CHORDOMA in container
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-molecular-subtyping-chordoma
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: OPENPBTA_SUBSET=0 analyses/molecular-subtyping-chordoma/run-molecular-subtyping-chordoma.sh
 
       - name: Run Molecular Subtyping - EWS in container
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-molecular-subtyping-EWS
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: analyses/molecular-subtyping-EWS/run_subtyping.sh
 
       - name: Run Molecular Subtyping - NEUROCYTOMA in container
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-molecular-subtyping-neurocytoma
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: analyses/molecular-subtyping-neurocytoma/run_subtyping.sh
 
       - name: Run Molecular Subtyping - HGG
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-molecular-subtyping-HGG
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: OPENPBTA_SUBSET=0 analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
 
       - name: Run Molecular Subtyping - LGG
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-molecular-subtyping-LGAT
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: OPENPBTA_SUBSET=0 analyses/molecular-subtyping-LGAT/run_subtyping.sh
 
       - name: Run Molecular Subtyping - PATHOLOGY/COMPILE
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-molecular-subtyping-pathology
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: OPENPBTA_TESTING=1 analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
 
       - name: Run Molecular Subtyping - INTEGRATE (+ add cancer groups)
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-molecular-subtyping-integrate
         with:
           entrypoint: "scripts/run-analysis.sh"
@@ -129,35 +129,35 @@ jobs:
       # Analysis modules
 
       - name: Run Independent Specimens
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-independent-samples
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: analyses/independent-samples/run-independent-samples.sh
 
       - name: Run Independent Specimens pre-release
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-independent-samples-pre-release
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: RUN_FOR_SUBTYPING=1 analyses/independent-samples/run-independent-samples.sh
 
       - name: Run TP53/NF1 scores
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-tp53_nf1_score
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: OPENPEDCAN_POLYA_STRAND=0 analyses/tp53_nf1_score/run_classifier.sh
 
       - name: Run Fusion filtering
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-fusion_filtering
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: analyses/fusion_filtering/run_fusion_merged.sh
 
       - name: Run Fusion summary
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-fusion-summary
         with:
           entrypoint: "scripts/run-analysis.sh"
@@ -165,27 +165,27 @@ jobs:
 
       # Come back to this - current results not in repo, does not use data folder
       #      - name: Run GISTIC
-      #        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+      #        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
       #        id: RUN-run-gistic
       #        with:
       #          args: analyses/run-gistic/scripts/run-gistic-opentargets.sh
 
       - name: Run Consensus CN
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-focal-cn-file-preparation
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: OPENPBTA_TESTING=1 analyses/focal-cn-file-preparation/run-prepare-cn-OpenTarget.sh
 
       - name: Run TMB calculation
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-tmb-calculation
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: analyses/tmb-calculation/run_tmb_calculation.sh
 
       #      - name: Run Immune Deconvolution
-      #        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+      #        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
       #        id: RUN-immune-Deconvolution
       #        with:
       #          args: analyses/immune-deconv/run-immune-deconv.sh
@@ -193,51 +193,51 @@ jobs:
       # MTP-specific modules
 
       - name: Run EFO/MONDO annotation
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-efo-mondo-mapping
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: analyses/efo-mondo-mapping/run_qc.sh
 
       - name: Run ENSEMBL Gene matching
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-gene_match
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: analyses/gene_match/run-gene-mapping.sh
 
       - name: Run Update table annotation data
-        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         id: RUN-long-format-table-utils
         with:
           entrypoint: "scripts/run-analysis.sh"
           args: analyses/long-format-table-utils/run-update-long-format-table-utils.sh
 #      - name: Run CNV frequency tables
-#        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+#        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
 #        id: RUN-cnv-frequencies
 #        with:
 #          args: analyses/cnv-frequencies/run-cnv-frequencies-analysis.sh
 
 #      - name: Run Fusion frequency tables
-#        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+#        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
 #        id: RUN-fusion-frequencies
 #        with:
 #          args: analyses/fusion-frequencies/run-frequencies.sh
 
 #      - name: Run SNV frequency tables
-#        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+#        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
 #        id: RUN-snv-frequencies
 #        with:
 #          args: analyses/snv-frequencies/run-snv-frequencies.sh
 
 #      - name: Run Filter MTP tables
-#        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+#        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
 #        id: RUN-filter-mutation-frequencies-tables
 #        with:
 #          args: analyses/filter-mutation-frequencies-tables/run-filter-mutation-frequencies-tables.sh
 
 #      - name: Run Drop columns from MTP tables
-#        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+#        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
 #        id: RUN-pedot-table-column-display-order-name
 #        with:
 #          args: analyses/pedot-table-column-display-order-name/run-pedot-table-column-display-order-name.sh
@@ -246,14 +246,14 @@ jobs:
 
 # This needs some update/revamp/is in PR
 #      - name: Run Prepare CNV for pedcbio
-#        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+#        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
 #        id: RUN-pedcbio-cnv-prepare
 #        with:
 #          args: analyses/pedcbio-cnv-prepare/run-cnv-pedcbio.sh
 
 # This will not pass now that we removed parental_aliquot_id
 #      - name: Run Create pedcbio sample file
-#        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+#        uses: docker://PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
 #        id: RUN-pedcbio-sample-name
 #        with:
 #          args: analyses/pedcbio-sample-name/run_add_name.sh
