@@ -171,14 +171,13 @@ jobs:
         with:
           args: analyses/tmb-calculation/run_tmb_calculation.sh
 
-      #      - name: Run Immune Deconvolution
-      #        uses: ./
-      #        id: RUN-immune-Deconvolution
-      #        with:
-      #          args: analyses/immune-deconv/run-immune-deconv.sh
-
+      - name: Run Immune Deconvolution
+        uses: ./
+        id: RUN-immune-Deconvolution
+        with:
+          args: analyses/immune-deconv/run-immune-deconv.sh
+          
       # MTP-specific modules
-
       - name: Run EFO/MONDO annotation
         uses: ./
         id: RUN-efo-mondo-mapping
