@@ -7,19 +7,53 @@ on:
 
 jobs:
   build_and_run:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v3
         name: Checkout repo
 
-# Build docker container and download testing data
-      - name: Build container and download data
+      # Setup Docker buildx layer cache
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          registry: pgc-images.sbgenomics.com
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      # Build docker container and download testing data
+      - name: Build container
+        uses: docker/build-push-action@v2
+        id: build-container
+        with:
+          push: true
+          tags: pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:analysisjob
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      # Molecular subtyping modules
+      - name: Download Data
         uses: ./
         id: download-data
         with:
           args: OPENPEDCAN_URL=https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/open-targets OPENPEDCAN_RELEASE=testing bash download-data.sh
 
-# Molecular subtyping modules
+      # Molecular subtyping modules
       - name: Run Molecular Subtyping - MB
         uses: ./
         id: RUN-molecular-subtyping-MB
@@ -86,8 +120,7 @@ jobs:
         with:
           args: analyses/molecular-subtyping-integrate/run-subtyping-integrate.sh
 
-
-# Analysis modules
+      # Analysis modules
 
       - name: Run Independent Specimens
         uses: ./
@@ -119,13 +152,12 @@ jobs:
         with:
           args: OPENPBTA_SUBSET=0 analyses/fusion-summary/run-new-analysis.sh
 
-# Come back to this - current results not in repo, does not use data folder
-#      - name: Run GISTIC
-#        uses: ./
-#        id: RUN-run-gistic
-#        with:
-#          args: analyses/run-gistic/scripts/run-gistic-opentargets.sh
-
+      # Come back to this - current results not in repo, does not use data folder
+      #      - name: Run GISTIC
+      #        uses: ./
+      #        id: RUN-run-gistic
+      #        with:
+      #          args: analyses/run-gistic/scripts/run-gistic-opentargets.sh
 
       - name: Run Consensus CN
         uses: ./
@@ -139,15 +171,13 @@ jobs:
         with:
           args: analyses/tmb-calculation/run_tmb_calculation.sh
 
-#      - name: Run Immune Deconvolution
-#        uses: ./
-#        id: RUN-immune-Deconvolution
-#        with:
-#          args: analyses/immune-deconv/run-immune-deconv.sh
-
-
-# MTP-specific modules
-
+      - name: Run Immune Deconvolution
+        uses: ./
+        id: RUN-immune-Deconvolution
+        with:
+          args: analyses/immune-deconv/run-immune-deconv.sh
+          
+      # MTP-specific modules
       - name: Run EFO/MONDO annotation
         uses: ./
         id: RUN-efo-mondo-mapping
@@ -165,12 +195,20 @@ jobs:
         id: RUN-long-format-table-utils
         with:
           args: analyses/long-format-table-utils/run-update-long-format-table-utils.sh
+<<<<<<< HEAD
 
       - name: Run CNV frequency tables
         uses: ./
         id: RUN-cnv-frequencies
         with:
           args: analyses/cnv-frequencies/run-cnv-frequencies-analysis.sh
+=======
+#      - name: Run CNV frequency tables
+#        uses: ./
+#        id: RUN-cnv-frequencies
+#        with:
+#          args: analyses/cnv-frequencies/run-cnv-frequencies-analysis.sh
+>>>>>>> origin
 
 #      - name: Run Fusion frequency tables
 #        uses: ./
