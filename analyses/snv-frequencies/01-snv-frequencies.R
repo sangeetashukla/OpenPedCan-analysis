@@ -663,13 +663,13 @@ maf_df <- read_tsv(
     CLIN_SIG = col_character(),
     PUBMED = col_character()))
 maf_df <- read_tsv(
-  '../../data/v11/snv-consensus-plus-hotspots.maf.tsv.gz', comment = '#',
+  '../../data/snv-consensus-plus-hotspots.maf.tsv.gz', comment = '#',
   col_types = cols(
     .default = col_guess(),
     CLIN_SIG = col_character(),
     PUBMED = col_character())) %>%
   bind_rows(read_tsv(
-    '../../data/v11/snv-dgd.maf.tsv.gz', comment = '#',
+    '../../data/snv-dgd.maf.tsv.gz', comment = '#',
     col_types = cols(
       .default = col_guess(),
       CLIN_SIG = col_character(),
