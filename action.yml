@@ -23,17 +23,18 @@ runs:
       with:
         context: .
         push: false
-        tags: openpedcan/analysis:${{ github.sha }}
+        tags: openpedcan/analysis:analysisrun
         file: ./Dockerfile
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new
 
     - name: Move cache
+      shell: bash
       run: |
         rm -rf /tmp/.buildx-cache
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: Run Analysis
-      uses: docker://openpedcan/analysis:${{ github.sha }}
+      uses: docker://openpedcan/analysis:analysisrun
       with:
         entrypoint: "scripts/run-analysis.sh"
