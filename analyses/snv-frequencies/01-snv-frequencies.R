@@ -60,7 +60,8 @@ get_cg_cs_tbl <- function(histology_df, all_cohorts = unique(histology_df$cohort
 # 2022-07: Added option to filter only for the cohorts wanted as we currently
 # don't want to include the CHOP DGD Panel data. By default, all cohorts included
 # in histology_df are used (also see function description above)
-    filter(cohort %in% all_cohorts) %>%  
+    filter(cohort %in% all_cohorts, 
+           experimental_strategy != 'Targeted Sequencing') %>%  
     group_by(cancer_group) %>%
     summarise(n_samples = n(),
               cohort_list = list(unique(cohort)),
