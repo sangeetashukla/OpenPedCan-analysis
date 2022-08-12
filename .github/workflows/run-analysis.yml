@@ -37,7 +37,7 @@ jobs:
         id: build-container
         with:
           push: true
-          tags: pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:${{ github.sha }}
+          tags: pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:analysisjob
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
