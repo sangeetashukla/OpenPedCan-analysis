@@ -2,5 +2,5 @@ name: "Run OpenPedCan Analysis"
 description: "Run analysis workflow"
 runs:
   using: "docker"
-  image: "pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:${{ github.sha }}"
+  image: "pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:${{ env.GITHUB_SHA }}"
   entrypoint: "scripts/run-analysis.sh"
