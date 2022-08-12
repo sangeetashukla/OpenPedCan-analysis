@@ -23,7 +23,6 @@ runs:
       with:
         context: .
         push: false
-        tags: openpedcan/analysis:analysisrun
         file: ./Dockerfile
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new
@@ -35,6 +34,6 @@ runs:
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: Run Analysis
-      uses: docker://openpedcan/analysis:analysisrun
+      uses: docker://
       with:
         entrypoint: "scripts/run-analysis.sh"
