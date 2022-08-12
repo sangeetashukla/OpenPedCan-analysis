@@ -23,6 +23,7 @@ runs:
       with:
         context: .
         push: false
+        tags: analysisrun
         file: ./Dockerfile
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new
@@ -34,6 +35,6 @@ runs:
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: Run Analysis
-      uses: docker://
+      uses: docker://analysisrun
       with:
         entrypoint: "scripts/run-analysis.sh"
