@@ -12,14 +12,14 @@ runs:
       uses: docker/login-action@v2
       with:
         registry: ghcr.io
-        username: ${{ github.repository_owner }}
+        username: ${{ env.GITHUB_REPOSITORY_OWNER }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Cache Docker layers
       uses: actions/cache@v2
       with:
         path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        key: ${{ runner.os }}-buildx-${{ env.GITHUB_SHA }}
         restore-keys: |
           ${{ runner.os }}-buildx-
 
@@ -30,7 +30,7 @@ runs:
       with:
         context: .
         push: true
-        tags: ghcr.io/PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+        tags: ghcr.io/PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
         file: ./Dockerfile
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new
@@ -42,6 +42,6 @@ runs:
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: Run Analysis
-      uses: docker://ghcr.io/PediacticOpenTargets/openpedcan-analysis:${{ github.sha }}
+      uses: docker://ghcr.io/PediacticOpenTargets/openpedcan-analysis:${{ env.GITHUB_SHA }}
       with:
         entrypoint: "scripts/run-analysis.sh"
