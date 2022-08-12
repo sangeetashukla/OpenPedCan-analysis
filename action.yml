@@ -1,6 +1,8 @@
 name: "Run OpenPedCan Analysis"
 description: "Run analysis workflow"
 runs:
+  env:
+    DOCKER_BUILDKIT: "1"
   using: "docker"
   image: "openpedcan/analysis:latest"
   entrypoint: "scripts/run-analysis.sh"
