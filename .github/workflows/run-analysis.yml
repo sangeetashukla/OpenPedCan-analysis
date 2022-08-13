@@ -195,26 +195,19 @@ jobs:
         id: RUN-long-format-table-utils
         with:
           args: analyses/long-format-table-utils/run-update-long-format-table-utils.sh
-<<<<<<< HEAD
 
       - name: Run CNV frequency tables
         uses: ./
         id: RUN-cnv-frequencies
         with:
           args: analyses/cnv-frequencies/run-cnv-frequencies-analysis.sh
-=======
-#      - name: Run CNV frequency tables
-#        uses: ./
-#        id: RUN-cnv-frequencies
-#        with:
-#          args: analyses/cnv-frequencies/run-cnv-frequencies-analysis.sh
->>>>>>> origin
 
-      - name: Run Fusion frequency tables
-        uses: ./
-        id: RUN-fusion-frequencies
-        with:
-          args: analyses/fusion-frequencies/run-frequencies.sh
+
+#      - name: Run Fusion frequency tables
+#        uses: ./
+#        id: RUN-fusion-frequencies
+#        with:
+#          args: analyses/fusion-frequencies/run-frequencies.sh
 
 #      - name: Run SNV frequency tables
 #        uses: ./
