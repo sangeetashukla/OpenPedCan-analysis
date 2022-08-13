@@ -447,6 +447,10 @@ RUN pip3 install \
 RUN ./install_bioc.r \
     ids
 
+# R package creating .xlsx
+RUN ./install_bioc.r \
+    openxlsx
+
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 

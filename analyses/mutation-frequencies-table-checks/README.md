@@ -26,7 +26,7 @@ Rscript -e "rmarkdown::render(
 ```
 
 ## Analysis input files
-Input mutation frequencies file are not uploaded to GitHub repository
+Current and previous input mutation frequencies input files
 - `current/gene-level-cnv-consensus-annotated-mut-freq.tsv.gz`
 - `previous/gene-level-cnv-consensus-annotated-mut-freq.tsv.gz`
 - `current/gene-level-snv-consensus-annotated-mut-freq.tsv.gz`

@@ -110,25 +110,25 @@ get_num_samples <- function(freq_df) {
 
 # changes in common columns among MPT mutation frequencies  between 
 # current and previous tables
-changes_in_columns <- function(current_tables, previous_table, column) {
+changes_in_columns <- function(current_tables, previous_table, column_name) {
   # values specific to current table
   specific_to_current <- current_table %>% 
-  dplyr::select(Dataset, column) %>% 
+  dplyr::select(Dataset, column_name) %>% 
   dplyr::distinct() %>% 
-    setdiff(previous_table %>% dplyr::select(Dataset, column) %>%
+    setdiff(previous_table %>% dplyr::select(Dataset, column_name) %>%
               dplyr::distinct()) %>% 
     dplyr::rename(current_dataset = Dataset)
   # values specific to previous table
   specific_to_previous <- previous_table %>% 
-    dplyr::select(Dataset, column) %>% 
+    dplyr::select(Dataset, column_name) %>% 
     dplyr::distinct() %>% 
-    setdiff(current_table %>% dplyr::select(Dataset, column) %>%
+    setdiff(current_table %>% dplyr::select(Dataset, column_name) %>%
               dplyr::distinct()) %>% 
     dplyr::rename(previous_dataset = Dataset)
   # combine differences 
   changes_in_columns <- specific_to_current %>%
-    dplyr::full_join(specific_to_previous, by = column) %>% 
-    dplyr::select(column, current_dataset, previous_dataset)
+    dplyr::full_join(specific_to_previous, by = column_name) %>% 
+    dplyr::select(column_name, current_dataset, previous_dataset)
   return(changes_in_columns)
 }
 ```
