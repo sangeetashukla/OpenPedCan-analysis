@@ -130,10 +130,10 @@ def compute_variant_frequencies(all_tumors_df, all_cohorts_primary_tumors_file, 
                for df_name, tumor_df in tumor_dfs.items():
                     df = pd.DataFrame()
                     if row.cohort == "all_cohorts":
-                         if df_name == "all_cohorts_primary_tumors" or df_name == "all_cohorts_relapse_tumors" or "all_tumors":
+                         if df_name == "all_cohorts_primary_tumors" or df_name == "all_cohorts_relapse_tumors" or  df_name == "all_tumors":
                               df = tumor_df[(tumor_df["cancer_group"] == row.cancer_group)]
                     else:
-                         if df_name == "each_cohort_primary_tumors" or df_name == "each_cohort_relapse_tumors" or "all_tumors":
+                         if df_name == "each_cohort_primary_tumors" or df_name == "each_cohort_relapse_tumors" or  df_name == "all_tumors":
                               df = tumor_df[(tumor_df["cancer_group"] == row.cancer_group) & (tumor_df["cohort"] == row.cohort)]
                     if df.empty:
                          continue
