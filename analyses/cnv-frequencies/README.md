@@ -103,12 +103,12 @@ optional arguments:
 ```
 
 Input:
-- `../data/histologies.tsv`
-- `../data/consensus_wgs_plus_cnvkit_wxs.tsv.gz`
-- `../data/independent-specimens.wgswxspanel.primary.prefer.wgs.tsv`
-- `../data/independent-specimens.wgswxspanel.relapse.prefer.wgs.tsv`
-- `../data/independent-specimens.wgswxspanel.primary.eachcohort.prefer.wgs.tsv`
-- `../data/independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wgs.tsv`
+- `../../data/histologies.tsv`
+- `../../data/consensus_wgs_plus_cnvkit_wxs.tsv.gz`
+- `../../data/independent-specimens.wgswxspanel.primary.prefer.wgs.tsv`
+- `../../data/independent-specimens.wgswxspanel.relapse.prefer.wgs.tsv`
+- `../../data/independent-specimens.wgswxspanel.primary.eachcohort.prefer.wgs.tsv`
+- `../../data/independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wgs.tsv`
 
 Output:
 - `results/gene-level-cnv-consensus-annotated-mut-freq.tsv.gz`
