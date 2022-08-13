@@ -3,10 +3,12 @@
 Adapted from [snv-frequencies](https://github.com/logstar/OpenPedCan-analysis/tree/snv-freq/analyses/snv-frequencies)
 **Module author:** Yuanchao Zhang ([@logstar](https://github.com/logstar))
 
-Adapted by Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6)) 
+Adapted by Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6)) and Jo Lynne Rokita (@jharenza)[https://github.com/jharenza]
 
 ### Purpose
-Uses `fusion-putative-oncogenic.tsv` and a `Alt_ID` for each `FusionName` and `Fusion_Type` concatenated by "_" OR Fused Gene to count occurence in  each cancer_group in a given dataset, primary or relapse cohorts.
+Uses `fusion-putative-oncogenic.tsv` and `fusion-dgd.tsv.gz`, a `Alt_ID` for each `FusionName` and `Fusion_Type` concatenated by `"_"` OR Fused Gene to count occurence in  each `cancer_group` in a given dataset, primary or relapse cohorts.
+
+Note: DGD cohort is fusion panel data and is currently not included in "All cohorts" calculations.
 
 Each gene invloved in the fusion is annotated by a Gene_Position, for example:
  - In a genic fusion where both breakpoints are within gene body the Gene_Position `Gene1A` will be the 5' gene and Gene1B will be 3' gene
