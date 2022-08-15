@@ -47,9 +47,7 @@ if(!dir.exists(output_dir)){
 # source functions 
 source('util/deseq2_pvals_histogram.R') # DESeq2 pval histograms
 source('util/edaseq_plot.R') # PCA and UMAP clustering
-source('util/box_plots.R') # boxplots for samples
 source('util/ruvg_test.R') # function to run RUVg
-source('util/ruvr_test.R') # function to run RUVr (only works with edgeR)
 
 # read histology
 message("Reading in histologies file")
@@ -102,7 +100,7 @@ message("Batch correction DGE complete")
 # - estimation of dispersion: estimateDispersions
 # - Negative Binomial GLM fitting and Wald statistics: nbinomWaldTest
 message("Running non-batch corrected DESeq2 analysis")
-dds <- DESeq2::DESeqDataSetFromMatrix(countData = round(cnt_df), colData =  data.frame(bs_id, molecular_subtype), design = design)
+dds <- DESeq2::DESeqDataSetFromMatrix(countData = round(counts_object$counts), colData =  data.frame(bs_id, molecular_subtype), design = design)
 dds <- DESeq2::DESeq(dds)
 dge_output <- DESeq2::results(dds, cooksCutoff = FALSE, pAdjustMethod = 'BH')
 dge_output <- dge_output %>% 
@@ -119,7 +117,7 @@ message("Saving p-value histogram")
 p <- deseq2_pvals_histogram(res_df = dge_output,
                             xlab = 'DGE RLE nbinomWaldTest p-value',
                             ylab = 'Gene count', title = paste0('Histogram of DESeq2 nbinomWaldTest p-values'))
-filename <- file.path(plots_dir, 'deseq2_analysis', 'dge_deseq2_histogram.pdf')
+filename <- file.path(plots_dir, 'dge_deseq2_histogram.pdf')
 ggsave(filename = filename, plot = p, width = 8, height = 7, bg = "white")
 
 

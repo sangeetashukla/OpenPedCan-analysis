@@ -32,7 +32,11 @@ option_list <- list(
               help = "path to file of negative control genes")
 )
 
+# set up opt
+opt <- parse_args(OptionParser(option_list = option_list))
+
 # base dir
+dataset <- opt$dataset
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, 'analyses', 'rnaseq-batch-correct')
 plots_dir <- file.path(analysis_dir, 'plots', dataset)
@@ -41,8 +45,6 @@ if(!dir.exists(plots_dir)){
 }
 
 # parse args and set location of ruvg files
-opt <- parse_args(OptionParser(option_list = option_list))
-dataset <- opt$dataset
 cancer_group_value <- unlist(stringr::str_split(opt$cancer_group_value, ','))
 cohort_value <- opt$cohort
 neg_ctrl_genes.f <- opt$neg_c
@@ -151,7 +153,7 @@ ggsave(filename = fname, plot = p, width = 6, height = 6, device = "pdf", bg = "
 p <- deseq2_pvals_histogram(res_df = ruvg.dge,
                             xlab = 'DGE optimal RUVseq nbinomWaldTest p-value',
                             ylab = 'Gene count', title = paste0('Histogram of DESeq2 nbinomWaldTest p-values post RUVseq'))
-filename <- file.path(plots_dir, 'deseq2_analysis', 'dge_deseq2_ruvseq_optimal_histogram.pdf')
+filename <- file.path(plots_dir, 'dge_deseq2_ruvseq_optimal_histogram.pdf')
 ggsave(filename = filename, plot = p, width = 8, height = 7, bg = "white")
 
 # Return normalized counts
