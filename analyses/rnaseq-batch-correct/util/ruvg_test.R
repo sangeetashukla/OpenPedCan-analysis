@@ -1,5 +1,7 @@
 # function to evaluate RUVg: Estimating the factors of unwanted variation using control genes
 # uses negative control genes, assumed to have constant expression across samples
+# Authors: Komal Rathi, updated by Adam Kraya
+
 ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, diff_type = c("deseq2", "edger"), output_dir, design_variable, color_var, shape_var){
   
   # create output directory
@@ -39,6 +41,7 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
     
     # run RUVg assuming there are k_val factors of unwanted variation
     ruvg_set <- RUVg(x = seq_expr_set, cIdx = emp_neg_ctrl_genes, k = k_val[i])
+    readr::write_rds(x = ruvg_set, file = file.path(output_dir, paste0('normCounts_', i, '_ruvseq_output.rds')))
     
     # pca and umap after ruvg
     ruvg_pca <- edaseq_plot(object = ruvg_set, title = paste0("PCA: RUVg output (k = ", i, ")"), type = "PCA", color_var = color_var, shape_var = shape_var)
@@ -60,7 +63,9 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
         rownames_to_column('gene') %>%
         arrange(padj) 
       
-      readr::write_tsv(x = dge_output, file = file.path(output_dir, paste0('_DESeq2_', i, '_ruvseq_dge.tsv')))
+      readr::write_tsv(x = dge_output, file = file.path(output_dir, paste0('DESeq2_', i, '_ruvseq_dge.tsv')))
+      readr::write_rds(x = ruv_dds, file = file.path(output_dir, paste0('DESeq2_', i, '_ruvseq_dge.rds')))
+      
     } else if(diff_type == "edger") {
       # W corresponds to the factors of "unwanted variation"
       # factor for unwanted variation comes last for edgeR
