@@ -151,7 +151,7 @@ ggsave(filename = fname, plot = p, width = 6, height = 6, device = "pdf", bg = "
 p <- deseq2_pvals_histogram(res_df = ruvg.dge,
                             xlab = 'DGE optimal RUVseq nbinomWaldTest p-value',
                             ylab = 'Gene count', title = paste0('Histogram of DESeq2 nbinomWaldTest p-values post RUVseq'))
-filename <- file.path(plots_dir, 'deseq2_analysis', 'dge_deseq2_ruvseq_histogram.pdf')
+filename <- file.path(plots_dir, 'deseq2_analysis', 'dge_deseq2_ruvseq_optimal_histogram.pdf')
 ggsave(filename = filename, plot = p, width = 8, height = 7, bg = "white")
 
 # Return normalized counts
