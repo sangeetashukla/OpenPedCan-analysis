@@ -2,7 +2,7 @@
 # uses negative control genes, assumed to have constant expression across samples
 # Authors: Komal Rathi, updated by Adam Kraya
 
-ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, diff_type = c("deseq2", "edger"), output_dir, design_variable, color_var, shape_var){
+ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, diff_type = c("deseq2", "edger"), output_dir, plot_dir, design_variable, color_var, shape_var){
   
   # create output directory
   if(diff_type == "edger"){
@@ -111,17 +111,17 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
   
   # save the plots for all k values in a multi-page pdf file
   # clustering output (PCA/UMAP)
-  pdf(file = file.path(output_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_clustering.pdf')), width = 6, height = 4)
+  pdf(file = file.path(plot_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_clustering.pdf')), width = 6, height = 4)
   print(cluster_plot)
   dev.off()
 
   # p-value histogram (full transcriptome)
-  pdf(file = file.path(output_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_histogram_full_transcriptome.pdf')), width = 8, height = 7)
+  pdf(file = file.path(plot_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_histogram_full_transcriptome.pdf')), width = 8, height = 7)
   print(pval_hist_plot)
   dev.off()
   
   # p-value histogram (neg control genes)
-  pdf(file = file.path(output_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_histogram_controls.pdf')), width = 8, height = 7)
+  pdf(file = file.path(plot_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_histogram_controls.pdf')), width = 8, height = 7)
   print(pval_hist_plot_subset)
   dev.off()
   

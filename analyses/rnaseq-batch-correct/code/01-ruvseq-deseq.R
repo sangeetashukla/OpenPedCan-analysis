@@ -92,6 +92,7 @@ ruvg_test(seq_expr_set = seq_expr_set, k_val = 1:k_value,
           emp_neg_ctrl_genes = emp_neg_ctrl_genes_normals, prefix = "hk_genes_normals", 
           diff_type = "deseq2", 
           output_dir = output_dir,
+          plot_dir = plots_dir,
           design_variable = "molecular_subtype",
           color_var = "RNA_library", shape_var = "RNA_library")
 
