@@ -1,7 +1,6 @@
 Rplots.pdf
 
 # archive code and output need to revisit
-archive/
 util/clustering_plots.R
 util/density_plots.R
 
