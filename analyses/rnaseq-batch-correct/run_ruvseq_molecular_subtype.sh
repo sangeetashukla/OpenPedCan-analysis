@@ -22,3 +22,18 @@ Rscript code/06-ruvseq-summarization.R \
 --ruvg_dir 'deseq2_analysis' \
 --pos_c '12915_2022_1324_MOESM4_ESM.rds' \
 --neg_c 'hk_genes_normals.rds'
+
+Rscript code/05-ruvseq-deseq.R \
+--dataset 'target_nbl' \
+--cohort_value 'TARGET' \
+--cancer_group_value 'Neuroblastoma' \
+--k_value 5
+
+
+Rscript code/06-ruvseq-summarization.R \
+--dataset 'target_nbl' \
+--cohort_value 'TARGET' \
+--cancer_group_value 'Neuroblastoma' \
+--ruvg_dir 'deseq2_analysis' \
+--pos_c 'MYCN_targets_M2919_M18532.rds' \
+--neg_c 'hk_genes_normals.rds'
