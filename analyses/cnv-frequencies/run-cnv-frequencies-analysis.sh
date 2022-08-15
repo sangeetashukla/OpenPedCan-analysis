@@ -39,7 +39,11 @@ each_cohort_primary_tumors="${data_dir}/independent-specimens.wgswxspanel.primar
 # Each cohort independent relapse tumor samples file path
 each_cohort_relapse_tumors="${data_dir}/independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wgs.tsv"
 
-####### compute CNV frequencies #############
+####### remove previous results if they exsist ##########################
+rm -f ${results_dir}/gene-level-cnv-consensus-annotated-mut-freq.jsonl.gz
+rm -f ${results_dir}/gene-level-cnv-consensus-annotated-mut-freq.tsv.gz
+
+####### compute CNV frequencies #########################################
 python3 01-cnv-frequencies.py \
 	$histology_file \
 	$cnv_file \
@@ -48,9 +52,9 @@ python3 01-cnv-frequencies.py \
 	$each_cohort_primary_tumors \
 	$each_cohort_relapse_tumors
 
-####### compress the result files ######################
+####### compress the result files #######################################
 gzip ${results_dir}/gene-level-cnv-consensus-annotated-mut-freq*
 
-####### remove intermediate temporary and log files ######################
+####### remove intermediate temporary and log files #####################
 rm -f ${results_dir}/annotator.log
 rm -f ${results_dir}/gene-level-cnv-consensus-mut-freq.tsv
