@@ -94,8 +94,10 @@ neg.ctrl.counts <- sapply(dfs, function(x){
 
 scores <- c()
 for(i in seq_along(pos.ctrl.counts)){
-  #scores[i] <- exp(mean(log(c(pos.ctrl.counts[i], neg.ctrl.counts[i]))))
-  scores[i] = mean(c(pos.ctrl.counts[i], neg.ctrl.counts[i]))
+  ratios <- neg.ctrl.counts/pos.ctrl.counts
+  if(any(ratios < 0.01) | any(ratios > 100)){    
+    scores[i] <- exp(mean(log(c(pos.ctrl.counts[i], neg.ctrl.counts[i]))))
+  } else(scores[i] = mean(c(pos.ctrl.counts[i], neg.ctrl.counts[i])))
 }
 
 # Retrieve index of max score and corresponding ruvg analysis
