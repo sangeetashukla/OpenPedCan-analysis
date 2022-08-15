@@ -34,6 +34,10 @@ k_value <- as.numeric(opt$k_value)
 # establish directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, 'analyses', 'rnaseq-batch-correct')
+plots_dir <- file.path(analysis_dir, 'plots', dataset)
+if(!dir.exists(plots_dir)){
+  dir.create(plots_dir, recursive=TRUE)
+}
 
 output_dir <- file.path(analysis_dir, 'output', dataset)
 if(!dir.exists(output_dir)){
@@ -114,7 +118,7 @@ message("Saving p-value histogram")
 p <- deseq2_pvals_histogram(res_df = dge_output,
                             xlab = 'DGE RLE nbinomWaldTest p-value',
                             ylab = 'Gene count', title = paste0('Histogram of DESeq2 nbinomWaldTest p-values'))
-filename <- file.path(output_dir, 'deseq2_analysis', 'dge_deseq2_histogram.pdf')
+filename <- file.path(plots_dir, 'deseq2_analysis', 'dge_deseq2_histogram.pdf')
 ggsave(filename = filename, plot = p, width = 8, height = 7, bg = "white")
 
 

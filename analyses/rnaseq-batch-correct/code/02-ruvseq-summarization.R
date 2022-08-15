@@ -35,6 +35,10 @@ option_list <- list(
 # base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, 'analyses', 'rnaseq-batch-correct')
+plots_dir <- file.path(analysis_dir, 'plots', dataset)
+if(!dir.exists(plots_dir)){
+  dir.create(plots_dir, recursive=TRUE)
+}
 
 # parse args and set location of ruvg files
 opt <- parse_args(OptionParser(option_list = option_list))
@@ -140,14 +144,14 @@ umap_norm_subtype <- edaseq_plot(object = seq_expr_set_norm, title = "After RUVg
 
 # save both UMAPs in a single file
 p <- ggpubr::ggarrange(umap_raw, umap_norm, umap_raw_subtype, umap_norm_subtype, common.legend = F, legend = "bottom")
-fname <- file.path(output_dir, 'final_clustering_with_and_without_norm_rna_lib.pdf')
+fname <- file.path(plots_dir, 'final_clustering_with_and_without_norm_rna_lib.pdf')
 ggsave(filename = fname, plot = p, width = 6, height = 6, device = "pdf", bg = "white")
 
 # plot and save p-value histogram for optimal ruvseq result
 p <- deseq2_pvals_histogram(res_df = ruvg.dge,
                             xlab = 'DGE optimal RUVseq nbinomWaldTest p-value',
                             ylab = 'Gene count', title = paste0('Histogram of DESeq2 nbinomWaldTest p-values post RUVseq'))
-filename <- file.path(output_dir, 'deseq2_analysis', 'dge_deseq2_ruvseq_histogram.pdf')
+filename <- file.path(plots_dir, 'deseq2_analysis', 'dge_deseq2_ruvseq_histogram.pdf')
 ggsave(filename = filename, plot = p, width = 8, height = 7, bg = "white")
 
 # Return normalized counts
