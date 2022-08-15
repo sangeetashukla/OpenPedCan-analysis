@@ -15,6 +15,9 @@ cd "$script_directory" || exit
 
 mkdir -p results
 
+# if results directory already exists, remove gzip files
+rm results/*.gz
+
 Rscript --vanilla '01-snv-frequencies.R'
 
 # Convert JSON to JSON Lines (JSONL) format with jq
