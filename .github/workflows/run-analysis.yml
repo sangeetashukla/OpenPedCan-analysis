@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_and_run:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
         name: Checkout repo
@@ -176,7 +176,7 @@ jobs:
         id: RUN-immune-Deconvolution
         with:
           args: analyses/immune-deconv/run-immune-deconv.sh
-          
+
       # MTP-specific modules
       - name: Run EFO/MONDO annotation
         uses: ./
