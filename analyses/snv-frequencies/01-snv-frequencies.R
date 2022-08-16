@@ -388,6 +388,10 @@ get_pcb_pot_plot_url <- function(gene_symbol_vec, ss_case_set_id, plot_type, can
 #   necessary to construct the URL correctly
 # - valid_url_case_set_ids: a vector of character values that are valid
 #   case_set_ids for generating PedcBio PedOT oncoprint and mutations plot URLs.
+# - pedcbio_cohort_matches: two column tibble that gives the cohort name for
+#   OpenPedCan in one column and the matching PedcBio cohort name in another;
+#   names may or may not match and this table allows the PedcBio cohort names to
+#   be used when fetching the PedcBio URLs
 #
 # Returns a mutation frequency tibble with additional
 # PedcBio_PedOT_oncoprint_plot_URL and PedcBio_PedOT_mutations_plot_URL columns
@@ -395,7 +399,8 @@ add_cg_ch_pedcbio_pedot_plot_urls <- function(mut_freq_tbl,
                                               ss_cancer_group,
                                               ss_cohorts,
                                               cancer_study,
-                                              valid_url_case_set_ids) {
+                                              valid_url_case_set_ids,
+                                              pedcbio_cohort_matches) {
   # check input parameters
   stopifnot(is.character(ss_cancer_group))
   stopifnot(identical(length(ss_cancer_group), as.integer(1)))
@@ -409,8 +414,15 @@ add_cg_ch_pedcbio_pedot_plot_urls <- function(mut_freq_tbl,
   
   stopifnot(is.character(valid_url_case_set_ids))
   
+  # Fix cohorts so they match 
+  ss_cohorts %>%
+    enframe(name = NULL, value = 'cohort') %>%
+    left_join(pedcbio_cohort_matches, by = 'cohort') %>%
+    select(pedcbio_cohort) %>%
+    deframe() -> adj_cohorts
+  
   # a = annotated
-  ss_case_set_id <- get_pcb_pot_csi(ss_cancer_group, ss_cohorts, cancer_study)
+  ss_case_set_id <- get_pcb_pot_csi(ss_cancer_group, adj_cohorts, cancer_study)
   if (ss_case_set_id %in% valid_url_case_set_ids) {
     a_mut_freq_tbl <- mut_freq_tbl %>%
       mutate(PedcBio_PedOT_oncoprint_plot_URL = get_pcb_pot_plot_url(
@@ -563,13 +575,18 @@ get_cg_ch_var_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
 #   necessary to construct the URL correctly
 # - valid_url_case_set_ids: a vector of character values that are valid
 #   case_set_ids for generating PedcBio PedOT oncoprint and mutations plot URLs.
+# - pedcbio_cohort_matches: two column tibble that gives the cohort name for
+#   OpenPedCan in one column and the matching PedcBio cohort name in another;
+#   names may or may not match and this table allows the PedcBio cohort names to
+#   be used when fetching the PedcBio URLs
 #
 # Returns a MAF tibble with additional frequency columns.
 get_cg_ch_gene_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
                                               primary_histology_df,
                                               relapse_histology_df,
                                               ss_cancer_group, ss_cohorts, cancer_study,
-                                              valid_url_case_set_ids) {
+                                              valid_url_case_set_ids,
+                                              pedcbio_cohort_matches) {
   # check input parameters
   stopifnot(is.character(ss_cancer_group))
   stopifnot(identical(length(ss_cancer_group), as.integer(1)))
@@ -625,7 +642,8 @@ get_cg_ch_gene_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
     mutate_all(function(x) replace_na(x, replace = ''))
   
   output_var_df <- add_cg_ch_pedcbio_pedot_plot_urls(
-    output_var_df, ss_cancer_group, ss_cohorts, cancer_study, valid_url_case_set_ids)
+    output_var_df, ss_cancer_group, ss_cohorts, cancer_study, 
+    valid_url_case_set_ids, pedcbio_cohort_matches)
   stopifnot(identical(sum(is.na(output_var_df)), as.integer(0)))
   
   return(output_var_df)
@@ -648,7 +666,27 @@ htl_df <- read_tsv('../../data/histologies.tsv', guess_max = 100000,
                    col_types = cols(.default = col_guess()))
 
 htl_df <- htl_df %>%
-  filter(!experimental_strategy == "Methylation")
+  filter(!experimental_strategy == "Methylation") %>%
+  # want panel data to be a distinct cohort from whole genome or whole exome data,
+  # so changing the cohort column to include "panel" for panel data
+  # rename(cohort_hist = cohort)
+  mutate(cohort = case_when(cohort == 'TARGET' & 
+                              experimental_strategy == 'Targeted Sequencing' ~
+                              'TARGET panel',
+                            cohort == 'DGD' & 
+                              experimental_strategy == 'Targeted Sequencing' ~ 
+                              'CHOP P30 panel',
+                            TRUE ~ cohort))
+
+# The cohort names we want to display on the MTP website do not match the 
+# PedcBio cohort names, so need a 2-column table matching them up with 2 columns:
+# - cohort: the cohort we want displayed on MTP
+# - pedcbio_cohort: the name of that cohort on PedcBio
+htl_df %>%
+  distinct(cohort) %>%
+  mutate(pedcbio_cohort = case_when(cohort == 'TARGET panel' ~ 'TARGET',
+                                    cohort == 'CHOP P30 panel' ~ 'DGD',
+                                    TRUE ~ cohort)) -> pedcbio_cohorts
 
 # assert no Kids_First_Biospecimen_ID or Kids_First_Participant_ID is NA
 stopifnot(identical(
@@ -849,12 +887,12 @@ mut_freq_tbl_list <- lapply(
     stopifnot(identical(nrow(cgcs_row), as.integer(1)))
     stopifnot(identical(length(cgcs_row$cohort_list), as.integer(1)))
     stopifnot(is.character(cgcs_row$cohort_list[[1]]))
-
+    
     c_cancer_group <- cgcs_row$cancer_group
     c_cohorts <- cgcs_row$cohort_list[[1]]
     stopifnot(identical(paste(c_cohorts, collapse = '&'), cgcs_row$cohort))
     message(paste(c_cancer_group, cgcs_row$cohort))
-
+    
     if(str_detect(cgcs_row$cohort, '&')) {
       # Call function for variant level all cohorts that have the cancer_group
       var_level_tbl <- get_cg_ch_var_level_mut_freq_tbl(
@@ -865,7 +903,7 @@ mut_freq_tbl_list <- lapply(
       gene_level_tbl <- get_cg_ch_gene_level_mut_freq_tbl(
         maf_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_ac_htl_df,
         td_htl_dfs$relapse_ac_htl_df, c_cancer_group, c_cohorts, pcb_cancer_study,
-        pcb_pot_case_set_id_vec)
+        pcb_pot_case_set_id_vec, pedcbio_cohorts)
     }else{
       # Call function for variant level each cohort and cancer_group
       var_level_tbl <- get_cg_ch_var_level_mut_freq_tbl(
@@ -876,9 +914,9 @@ mut_freq_tbl_list <- lapply(
       gene_level_tbl <- get_cg_ch_gene_level_mut_freq_tbl(
         maf_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_ec_htl_df,
         td_htl_dfs$relapse_ec_htl_df, c_cancer_group, c_cohorts, pcb_cancer_study,
-        pcb_pot_case_set_id_vec)
+        pcb_pot_case_set_id_vec, pedcbio_cohorts)
     }
-
+    
     res_list <- list(var_level_tbl = var_level_tbl,
                      gene_level_tbl = gene_level_tbl)
     return(res_list)
