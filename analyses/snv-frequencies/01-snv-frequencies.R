@@ -693,18 +693,24 @@ stopifnot(identical(
                    Kids_First_Participant_ID))),
   as.integer(0)))
 
+# read in WGS/WXS MAF
 maf_df <- read_tsv(
   '../../data/snv-consensus-plus-hotspots.maf.tsv.gz', comment = '#',
   col_types = cols(
     .default = col_guess(),
     CLIN_SIG = col_character(),
-    PUBMED = col_character())) %>%
-  bind_rows(read_tsv(
-    '../../data/snv-dgd.maf.tsv.gz', comment = '#',
-    col_types = cols(
-      .default = col_guess(),
-      CLIN_SIG = col_character(),
-      PUBMED = col_character())))
+    PUBMED = col_character()))
+# read in DGD MAF; has a slightly different format than the MAF above
+maf_df_dgd <- read_tsv('../../data/snv-dgd.maf.tsv.gz', 
+                       comment = '#', 
+                       col_types = cols(.default = col_guess(), 
+                                        CLIN_SIG = col_character(), 
+                                        PUBMED = col_character()))
+# combine MAFs by binding rows since the DGD MAF is missing a couple columns
+maf_df <- bind_rows(maf_df, maf_df_dgd)
+# remove DGD MAF as it's no longer needed and doesn't need to be in memory
+rm(maf_df_dgd)
+
 # assert all NCBI_Build values are GRCh38
 stopifnot(all(maf_df$NCBI_Build == 'GRCh38'))
 # assert all records have tumor sample barcode
