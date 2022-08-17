@@ -33,7 +33,9 @@ dgd_fusions <- read_tsv(file.path(input_dir, "fusion-dgd-tiers-FusionAnnotator.t
          Tier = case_when(is.na(Tier) ~ "Unknown",
                           TRUE ~ Tier)) %>%
   # remove tier 4 as benign or likely benign variants
-  filter(Tier != "Fusion Tier 4")
+  filter(Tier != "Fusion Tier 4",
+         # also remove by fusion name since there are NAs in Tier for this fusion
+         FusionName != "TFG--GPR128")
 
 # gene reference file
 geneListReferenceDataTab<-read.delim(file.path(ref_dir,"genelistreference.txt"),stringsAsFactors = FALSE)
