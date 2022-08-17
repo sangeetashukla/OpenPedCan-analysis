@@ -27,7 +27,13 @@ if (!dir.exists(results_dir)) {
 
 ```{r read files}
 # DGD fusions
-dgd_fusions <- read_tsv(file.path(input_dir, "fusion-dgd-FusionAnnotator.annotated.tsv.gz"))
+dgd_fusions <- read_tsv(file.path(input_dir, "fusion-dgd-tiers-FusionAnnotator.tsv.gz")) %>%
+  # remove non-annots
+  mutate(annots = sub("\\[]", NA, annots),
+         Tier = case_when(is.na(Tier) ~ "Unknown",
+                          TRUE ~ Tier)) %>%
+  # remove tier 4 as benign or likely benign variants
+  filter(Tier != "Fusion Tier 4")
 
 # gene reference file
 geneListReferenceDataTab<-read.delim(file.path(ref_dir,"genelistreference.txt"),stringsAsFactors = FALSE)
