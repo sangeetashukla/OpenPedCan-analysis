@@ -121,7 +121,7 @@ Methylation `beta-values` and `M-values` ar available on the CHOP HPC `Isilon` s
 - `../../data/efo-mondo-map.tsv`
 - `../../data/histologies.tsv` (v11 release) 
 - `../../data/ensg-hugo-pmtl-mapping.tsv.tsv`
-- `input/UCSC_hg19-GRCh37_Ensembl2RefSeq.tsv`
+- `input/UCSC_hg19-GRCh37_Ensembl2RefSeq.tsv` (Downloaded from UCSC Table Browser: https://genome.ucsc.edu/cgi-bin/hgTables)
 
 
 ## Results
