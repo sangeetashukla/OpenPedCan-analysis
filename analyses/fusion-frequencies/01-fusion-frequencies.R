@@ -84,17 +84,7 @@ fusion_df <- read_tsv(fusion_file, guess_max = 100000)
 # assert all records have Sample
 stopifnot(identical(sum(is.na(fusion_df$Sample)), as.integer(0)))
 
-fusion_dgd_df <- read_tsv(fusion_file_dgd, guess_max = 5000) %>%
-  select(-Hugo_Symbol) %>%
-  unique() %>%
-  dplyr::rename(FusionName = Fusion,
-                Sample = Tumor_Sample_Barcode) %>%
-  # add another hyphen in fusion name for consistency with putative oncogenic
-  mutate(FusionName = sub("\\-", "\\--", FusionName),
-         Fusion_Type = "Not available") %>%
-  separate(FusionName, c("Gene1A", "Gene1B"), remove = F) %>%
-  select(Sample, FusionName, Fusion_Type, Gene1A, Gene1B)
-
+fusion_dgd_df <- read_tsv(fusion_file_dgd, guess_max = 5000)
 # assert all records have Sample
 stopifnot(identical(sum(is.na(fusion_dgd_df$Sample)), as.integer(0)))
 
@@ -267,8 +257,8 @@ if (identical(alt_id, c("FusionName", "Fusion_Type"))) {
 
 rm(tumor_kfbids)
 
-# Compute mutation frequencies -------------------------------------------------
-message('Compute mutation frequencies...')
+# Compute fusion frequencies -------------------------------------------------
+message('Compute fusion frequencies...')
 cancer_group_cohort_summary_df <- get_cg_cs_tbl(td_htl_dfs$overall_htl_df)
 
 # nf = n_samples filtered
