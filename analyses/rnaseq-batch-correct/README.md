@@ -1,104 +1,163 @@
 ## Batch Correction of RNA-seq expression matrices
 
-**Module authors:** Komal Rathi ([@komalsrathi](https://github.com/komalsrathi))
+**Module authors:** Komal Rathi ([@komalsrathi](https://github.com/komalsrathi)), Adam Kraya (@aadamk)
 
 ### Description
 
-The goal of this analysis is to identify and correct the source of technical variation in RNA-seq datasets. 
+This module uses HRT Gene Atlas housekeeping genes to correct for batch effects for tumor-only and tumor-normal comparisons. 
+Batch correction is performed as follows: 
+1. Input genes from the HRT Atlas v1.0 (PMID: 32663312) are assumed to be non-differentially expressed between tumor subtypes and across tumor vs normal.
+Differences in housekeeping genes are assumed to be the result of technical rather than true biological variation.  
+(e.g. tumors are not expected to use housekeeping genes for a growth or proliferative advantage).
+2. DESeq2 analysis is run without batch correction as a baseline. 
+3. [RUVg](https://bioconductor.org/packages/devel/bioc/vignettes/RUVSeq/inst/doc/RUVSeq.pdf), which uses negative control genes for correcting batch effects, is run using multiple possible factors (`k`)
+4. Diagnostic plots showing p-value distributions and clustering before and after batch correction are generated. 
+5. The module then selects the `k` with the maximum sensitivity/specificity balance by considering changes in p-values
+in positive and negative control gene sets.
+6. DESeq2 results of the optimal method from 5 are provided and normalized counts are generated
+as standard output for use in downstream visualizations. 
 
 ### Analysis scripts
 
-#### Identify housekeeping genes
+#### Run tumor-only RUVg analysis 
 
-The goal of this section is to generate a list of house keeping genes identified collectively in tumors as well as normal samples using the HRT Atlas protocol: https://housekeeping.unicamp.br/Housekeeping_GenesHuman.csv 
+The script below runs a tumor-only analysis for a specific cancer_group, using molecular subtype
+as the default design variable. 
 
 
 Example run:
 
 ```sh
-Rscript 00-tumor_specific_hk_genes.R
+Rscript code/01-ruvseq-deseq.R \
+--dataset 'target_nbl' \
+--cohort_value 'TARGET' \
+--cancer_group_value 'Neuroblastoma' \
+--k_value 5
 ```
 
-Output files in .rds format are generated under `input` folder:
+Output files containing normalized counts, RUVg objects, and dge results are in the `output/[dataset]/deseq2-analysis/` folder
 
 ```sh
-input
-├── hk_genes_normals.rds # downloaded from HRT atlas
-└── hk_genes_tumor_normals.rds # output of 00-tumor_specific_hk_genes.R
+output/[dataset]/deseq2-analysis
+├──*dge.rds # RUVg output object
+└── *dge.tsv # DESeq2 DGE results
+└── *pvalues.tsv # p-value results
+└── *output.rds # normalized counts at all k's
 ```
 
 #### Initial QC plots using PCA and UMAP
 
-Here the goal is to create initial QC clustering plots using PCA and UMAP with the most variable genes (> 90% quantile) as well as housekeeping genes. We are using three datasets for testing:
+Here the goal is to create QC clustering plots using PCA and UMAP with the most variable genes (> 90% quantile) as well as housekeeping genes.
 
-1. Tumor + Normal samples
-2. Tumor samples only
-3. Matched tumor samples i.e. patients with samples sequenced with different `RNA_library` protocol.
+p-value histograms, PCA, and UMAP plots (.pdf):
+
+```sh
+# PCA, UMAP
+plots/[dataset]/
+├── *histogram.pdf # p-value histogram at all k's and for optimal k
+├── *clustering.pdf # PCA and UMAP clustering results for all k and for optimal k
+├── *controls.pdf # p-value histogram of negative control genes
+└── *transcriptome.pdf # p-value histogram of full transcriptome
+```
+#### Run tumor-normal RUVg analysis 
+
+The script below runs a tumor-normal analysis for cancer groups (comma-separated) versus gtex subgroups (comma-separated)
+creating a tumor-normal comparison in the design. A key parameter is `drop`, which is a user-specifiable
+parameter which drops the initial n factors of variation to guard against removing true biological variation
+across tumor and normal.  
+
 
 Example run:
 
 ```sh
-# compute PCA and UMAP from count data
-Rscript 01-full_dataset_compute_pca_umap_counts.R
-
-# create PCA plots 
-Rscript 02-full_dataset_plot_pca_counts.R
-
-# create UMAP plots
-Rscript 02-full_dataset_plot_umap_counts.R
-
-# full run script
-bash run_pca_umap_clustering.sh
+Rscript code/02-ruvseq-deseq-tn.R \
+--dataset 'HGG-DMG_TN' \
+--cohort_values 'PBTA,GTEx' \
+--cancer_group_values 'Diffuse midline glioma,High-grade glioma/astrocytoma' \
+--gtex_subgroups 'Brain - Cortex,Brain - Cerebellum' \
+--k_value 5 \
+--drop 2
 ```
 
-Output files of PCA and UMAP output (.rds) as well as plots (.pdf):
+Output files containing normalized counts, RUVg objects, and dge results are in the `output/[dataset]/deseq2-analysis/` folder
 
 ```sh
-# PCA
-# tumor + normal samples across all cohorts
-output/QC_clustering
-├── pca_output_tumors_normals.rds # most variable genes > 90% quantile 
-├── pca_output_tumors_normals_hk.rds # housekeeping genes
-├── pca_output_tumors_normals_composition_combined.pdf # combined plot with composition type
-└── pca_output_tumors_normals_library_combined.pdf # combined plot with RNA library type
-
-# tumor samples across all cohorts
-output/QC_clustering
-├── pca_output_tumors.rds # most variable genes > 90% quantile 
-├── pca_output_tumors_hk.rds # housekeeping genes
-├── pca_output_tumors_composition_combined.pdf # combined plot with composition type 
-└── pca_output_tumors_library_combined.pdf # combined plot with RNA library type
-
-# matched samples from PBTA and TARGET
-output/QC_clustering
-├── pca_output_matched_samples.rds # most variable genes > 90% quantile
-├── pca_output_matched_samples_hk.rds # housekeeping genes
-├── pca_output_matched_samples_composition_combined.pdf # combined plot with composition type 
-└── pca_output_matched_samples_library_combined.pdf # combined plot with RNA library type
-
-# UMAP
-# tumor + normal samples across all cohorts
-output/QC_clustering
-├── umap_output_tumors_normals.rds
-├── umap_output_tumors_normals_hk.rds
-├── umap_output_tumors_normals_composition_combined.pdf
-└── umap_output_tumors_normals_library_combined.pdf
-
-# tumor samples across all cohorts
-output/QC_clustering
-├── umap_output_tumors.rds
-├── umap_output_tumors_hk.rds
-├── umap_output_tumors_composition_combined.pdf
-└── umap_output_tumors_library_combined.pdf
-
-# matched samples from PBTA and TARGET
-output/QC_clustering
-├── umap_output_matched_samples.rds
-├── umap_output_matched_samples_hk.rds
-├── umap_output_matched_samples_composition_combined.pdf
-└── umap_output_matched_samples_library_combined.pdf
+output/[dataset]/deseq2-analysis
+├──*dge.rds # RUVg output object
+└── *dge.tsv # DESeq2 DGE results
+└── *pvalues.tsv # p-value results
+└── *output.rds # normalized counts at all k's
 ```
 
+#### Initial QC plots using PCA and UMAP
+
+Here the goal is to create QC clustering plots using PCA and UMAP with the most variable genes (> 90% quantile) as well as housekeeping genes.
+
+p-value histograms, PCA, and UMAP plots (.pdf):
+
+```sh
+# PCA, UMAP
+plots/[dataset]/
+├── *histogram.pdf # p-value histogram at all k's and for optimal k
+├── *clustering.pdf # PCA and UMAP clustering results for all k and for optimal k
+├── *controls.pdf # p-value histogram of negative control genes
+└── *transcriptome.pdf # p-value histogram of full transcriptome
+```
+
+
+#### Select optimal results 
+
+This script evaluates DESeq2-RUVg results by pulling in all analysis results across all k's, 
+evaluating changes in p-value for negative control genes (HRT Atlas genes) and positive control genes
+that are analysis-specific. The script looks for k's that maximize sensitivity and specificity by
+selecting the k that resulted in the most p-values increasing for negative control genes and decreasing
+for positive control genes when correcting for batch effects. 
+
+
+Example run tumor-normal:
+
+```sh
+Rscript code/03-ruvseq-summarization.R \
+--dataset 'HGG-DMG_TN' \
+--cohort_values 'PBTA,GTEx' \
+--cancer_group_values 'Diffuse midline glioma,High-grade glioma/astrocytoma' \
+--ruvg_dir 'deseq2_analysis' \
+--pos_c 'reactome_cell_cycle_msigdb_v7.5.1.rds' \
+--neg_c 'hk_genes_normals.rds' \
+--analysis_type 'tumor-normal' \
+--gtex_subgroups 'Brain - Cortex,Brain - Cerebellum'
+```
+
+Example run tumor-only:
+
+```sh
+Rscript code/03-ruvseq-summarization.R \
+--dataset 'hgg_dmg' \
+--cohort_values 'PBTA' \
+--cancer_group_values 'High-grade glioma/astrocytoma,Diffuse midline glioma' \
+--ruvg_dir 'deseq2_analysis' \
+--pos_c '12915_2022_1324_MOESM4_ESM.rds' \
+--neg_c 'hk_genes_normals.rds'
+--analysis_type 'tumor-only'
+```
+
+Output files containing normalized counts, RUVg objects, and dge results are in the `output/[dataset]/deseq2-analysis/` folder
+
+```sh
+output/[dataset]/deseq2-analysis
+├── /normalized_counts/*normalized_counts.rds # RUVg output object
+```
+
+Plots corresponding to the optimal `k` are as follows: 
+
+```sh
+# PCA, UMAP
+plots/[dataset]/
+├── *optimal_histogram.pdf # p-value histogram  and for optimal k
+├── final_clustering*.pdf # PCA and UMAP clustering results for optimal k
+```
+
+###Archive
 #### RUVSeq analysis 
 
 The goal of this section is to identify and remove factors of unwanted variation. We evaluate the following methods: 
