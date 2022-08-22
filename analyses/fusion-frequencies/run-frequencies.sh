@@ -21,12 +21,14 @@ isl_relapse_each="${data_path}/independent-specimens.rnaseqpanel.relapse.eachcoh
 isl_primary_all="${data_path}/independent-specimens.rnaseqpanel.primary.tsv"
 isl_relapse_all="${data_path}/independent-specimens.rnaseqpanel.relapse.tsv"
 
-# Filtered Fusion file 
+# Filtered Fusion files 
 fusion_file="${data_path}/fusion-putative-oncogenic.tsv"
-fusion_file_dgd="${data_path}/fusion-dgd.tsv.gz"
+fusion_file_dgd="results/fusion-dgd-annotated.tsv"
 
 # Histology file
 histology_file="${data_path}/histologies.tsv"
+
+Rscript -e "rmarkdown::render('00-annotate-panel-fusions.Rmd')"
 
 # gather frequencies at FusionName and Fusion_Type level
 Rscript 01-fusion-frequencies.R --fusion_file $fusion_file \
