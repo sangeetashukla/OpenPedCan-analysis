@@ -17,7 +17,7 @@ mkdir -p results
 
 # if results directory already exists, remove gzip files
 # if not, will print message saying files do not exist and then continue
-rm results/*.gz || true
+rm -f results/*.gz || true
 
 Rscript --vanilla '01-snv-frequencies.R'
 
