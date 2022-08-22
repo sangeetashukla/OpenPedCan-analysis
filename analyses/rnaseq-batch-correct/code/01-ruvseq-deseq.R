@@ -18,7 +18,7 @@ option_list <- list(
               help = "Give any name to the dataset to create output folder"),
   make_option(opt_str = "--cancer_group_values", type = "character",
               help = "cancer group value"),
-  make_option(opt_str = "--cohort_value", type = "character",
+  make_option(opt_str = "--cohort_values", type = "character",
               help = "cohort value"),
   make_option(opt_str = "--k_value", type = "character",
               help = "number of K values to evaluate")
@@ -28,7 +28,7 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list = option_list))
 dataset <- opt$dataset
 cancer_group_values <- unlist(stringr::str_split(opt$cancer_group_values, ','))
-cohort_value <- opt$cohort
+cohort_values <- opt$cohort_values
 k_value <- as.numeric(opt$k_value)
 
 # establish directories
