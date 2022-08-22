@@ -40,7 +40,7 @@ edaseq_plot <- function(object, isLog = F, title = "", type = c("PCA", "UMAP"), 
     d <- data.frame(PC1=s$u[,1], PC2=s$u[,2], object@phenoData@data)
     p <- ggplot(data=d, aes_string(x="PC1", y="PC2", color = color_var, shape = shape_var)) + 
       geom_point(size = 3) + 
-      geom_text(label = bs_id, size = 1, color = "black") +
+      #geom_text(label = bs_id, size = 1, color = "black") +
       ggpubr::theme_pubr(base_size = 8) +
       xlab(paste0("PC1: ",round(percent[1]),"% variance")) +
       ylab(paste0("PC2: ",round(percent[2]),"% variance")) +
@@ -52,7 +52,7 @@ edaseq_plot <- function(object, isLog = F, title = "", type = c("PCA", "UMAP"), 
     d <- data.frame(UMAP1=umap_out[,1], UMAP2=umap_out[,2], object@phenoData@data)
     p <- ggplot(data = d, aes_string(x="UMAP1", y="UMAP2", color = color_var, shape = shape_var)) + 
       geom_point(size = 3) + 
-      geom_text(label = bs_id, size = 1, color = "black") +
+      #geom_text(label = bs_id, size = 1, color = "black") +
       ggpubr::theme_pubr(base_size = 8) +
       ggtitle(title) + theme(legend.position = "bottom") +
       guides(color = "none")

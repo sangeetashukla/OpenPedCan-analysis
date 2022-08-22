@@ -2,7 +2,7 @@
 # uses negative control genes, assumed to have constant expression across samples
 # Authors: Komal Rathi, updated by Adam Kraya
 
-ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, diff_type = c("deseq2", "edger"), output_dir, plot_dir, design_variable, color_var, shape_var){
+ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, diff_type = c("deseq2", "edger"), output_dir, plot_dir, design_variable, color_var, shape_var, drop = 0){
   
   # create output directory
   if(diff_type == "edger"){
@@ -28,6 +28,15 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
     k_val <- c(1:length(emp_neg_ctrl_genes))
   }
   
+  # pca and umap before ruvg
+  ruvg_pca <- edaseq_plot(object = seq_expr_set, title = paste0("PCA: Expected counts prior to RUVg", "(d=", drop, ")"), type = "PCA", color_var = color_var, shape_var = shape_var)
+  ruvg_umap <- edaseq_plot(object = seq_expr_set, title = paste0("UMAP: Expected counts prior to RUVg", "(d=", drop, ")"), type = "UMAP", color_var = color_var, shape_var = shape_var)
+  cluster_plot <- ggpubr::ggarrange(ruvg_pca, ruvg_umap, common.legend = T, legend = "bottom")
+  # clustering output (PCA/UMAP)
+  pdf(file = file.path(plot_dir, paste0(prefix, '_preRUVg_', diff_type ,'_', drop, '_clustering.pdf')), width = 6, height = 4)
+  print(cluster_plot)
+  dev.off()
+  
   # loop through all Ks
   cluster_plot <- list()
   pval_hist_plot <- list()
@@ -40,12 +49,12 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
     print(paste0('Run RUVg...'))
     
     # run RUVg assuming there are k_val factors of unwanted variation
-    ruvg_set <- RUVg(x = seq_expr_set, cIdx = emp_neg_ctrl_genes, k = k_val[i])
-    readr::write_rds(x = ruvg_set, file = file.path(output_dir, paste0('normCounts_', i, '_ruvseq_output.rds')))
+    ruvg_set <- RUVg(x = seq_expr_set, cIdx = emp_neg_ctrl_genes, k = k_val[i], drop = drop)
+    readr::write_rds(x = ruvg_set, file = file.path(output_dir, paste0('normCounts_', i,'_d', drop, '_ruvseq_output.rds')))
     
     # pca and umap after ruvg
-    ruvg_pca <- edaseq_plot(object = ruvg_set, title = paste0("PCA: RUVg output (k = ", i, ")"), type = "PCA", color_var = color_var, shape_var = shape_var)
-    ruvg_umap <- edaseq_plot(object = ruvg_set, title = paste0("UMAP: RUVg output (k = ", i, ")"), type = "UMAP", color_var = color_var, shape_var = shape_var)
+    ruvg_pca <- edaseq_plot(object = ruvg_set, title = paste0("PCA: RUVg output (k = ", i, ", d=", drop, ")"), type = "PCA", color_var = color_var, shape_var = shape_var)
+    ruvg_umap <- edaseq_plot(object = ruvg_set, title = paste0("UMAP: RUVg output (k = ", i,", d=", drop,")"), type = "UMAP", color_var = color_var, shape_var = shape_var)
     cluster_plot[[i]] <- ggpubr::ggarrange(ruvg_pca, ruvg_umap, common.legend = T, legend = "bottom")
     
     # differential expression after RUVg
@@ -63,8 +72,8 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
         rownames_to_column('gene') %>%
         arrange(padj) 
       
-      readr::write_tsv(x = dge_output, file = file.path(output_dir, paste0('DESeq2_', i, '_ruvseq_dge.tsv')))
-      readr::write_rds(x = ruv_dds, file = file.path(output_dir, paste0('DESeq2_', i, '_ruvseq_dge.rds')))
+      readr::write_tsv(x = dge_output, file = file.path(output_dir, paste0('DESeq2_', i, '_d', drop,  '_ruvseq_dge.tsv')))
+      readr::write_rds(x = ruv_dds, file = file.path(output_dir, paste0('DESeq2_', i, '_d', drop, '_ruvseq_dge.rds')))
       
     } else if(diff_type == "edger") {
       # W corresponds to the factors of "unwanted variation"
@@ -84,9 +93,9 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
     # plot and save p-value histogram
     # evaluate the distribution of p-values for full transcriptome
     pval_hist_plot[[i]] <- deseq2_pvals_histogram(res_df = dge_output,
-                                xlab = 'RUVg p-value (full transcriptome)',
-                                ylab = 'Gene count',
-                                title = paste0('Histogram (k = ', i, ')'))
+                                                  xlab = 'RUVg p-value (full transcriptome)',
+                                                  ylab = 'Gene count',
+                                                  title = paste0('Histogram (k = ', i, ', d=', drop,')'))
     
     # test for uniformity (negative control genes only)
     dge_output_neg_control_genes[[i]] <- dge_output %>%
@@ -96,7 +105,7 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
     pval_hist_plot_subset[[i]] <- deseq2_pvals_histogram(res_df = dge_output_neg_control_genes[[i]],
                                                          xlab = 'RUVr p-value (negative control genes)',
                                                          ylab = 'Gene count',
-                                                         title = paste0('Histogram (k = ', i, ')'))
+                                                         title = paste0('Histogram (k = ', i,', d=', drop, ')'))
     
     # chisq test for p-values 
     chisq_out[[i]] <- chisq.test(x = dge_output_neg_control_genes[[i]]$pvalue)
@@ -111,25 +120,25 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
   
   # save the plots for all k values in a multi-page pdf file
   # clustering output (PCA/UMAP)
-  pdf(file = file.path(plot_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_clustering.pdf')), width = 6, height = 4)
+  pdf(file = file.path(plot_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_d', drop, '_clustering.pdf')), width = 6, height = 4)
   print(cluster_plot)
   dev.off()
-
+  
   # p-value histogram (full transcriptome)
-  pdf(file = file.path(plot_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_histogram_full_transcriptome.pdf')), width = 8, height = 7)
+  pdf(file = file.path(plot_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_d', drop, '_histogram_full_transcriptome.pdf')), width = 8, height = 7)
   print(pval_hist_plot)
   dev.off()
   
   # p-value histogram (neg control genes)
-  pdf(file = file.path(plot_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_histogram_controls.pdf')), width = 8, height = 7)
+  pdf(file = file.path(plot_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_d', drop, '_histogram_controls.pdf')), width = 8, height = 7)
   print(pval_hist_plot_subset)
   dev.off()
   
   # rbind and save chisq values
   data.table::rbindlist(chisq_out) %>%
-    write_tsv(file = file.path(output_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_chisq_pvalues.tsv')))
+    write_tsv(file = file.path(output_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_d', drop, '_chisq_pvalues.tsv')))
   
   # rbind and save ks values
   data.table::rbindlist(ks_out) %>%
-    write_tsv(file = file.path(output_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_ks_pvalues.tsv')))
+    write_tsv(file = file.path(output_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_d', drop, '_ks_pvalues.tsv')))
 }
