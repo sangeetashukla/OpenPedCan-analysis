@@ -16,7 +16,7 @@ suppressPackageStartupMessages({
 option_list <- list(
   make_option(opt_str = "--dataset", type = "character",
               help = "Give any name to the dataset to create output folder"),
-  make_option(opt_str = "--cancer_group_value", type = "character",
+  make_option(opt_str = "--cancer_group_values", type = "character",
               help = "cancer group value"),
   make_option(opt_str = "--cohort_value", type = "character",
               help = "cohort value"),
@@ -27,7 +27,7 @@ option_list <- list(
 # extract parameters
 opt <- parse_args(OptionParser(option_list = option_list))
 dataset <- opt$dataset
-cancer_group_value <- unlist(stringr::str_split(opt$cancer_group, ','))
+cancer_group_values <- unlist(stringr::str_split(opt$cancer_group_values, ','))
 cohort_value <- opt$cohort
 k_value <- as.numeric(opt$k_value)
 
@@ -61,7 +61,7 @@ cnt_df <- readRDS('../../data/v10/gene-counts-rsem-expected_count-collapsed.rds'
 selected_htl_df <- htl_df %>%
   filter(experimental_strategy == "RNA-Seq",
          sample_type == "Tumor",
-         cancer_group %in% cancer_group_value,
+         cancer_group %in% cancer_group_values,
          !is.na(molecular_subtype)) 
 
 # filter expression
