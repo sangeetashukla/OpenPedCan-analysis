@@ -32,13 +32,13 @@ OpenPedCan project includes 17382 GTEx RNA-Seq samples from GTEx v8 release, whi
 The Cancer Genome Atlas Program [(TCGA)](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga)
 TCGA is a landmark cancer genomics program that molecularly characterized over 20,000 primary cancer and matched normal samples spanning 33 cancer types. 
 It is a joint effort between NCI and the National Human Genome Research Institute.
-OpenPedCan project includes 10414 TCGA RNA-Seq samples (716 normal and 9698 tumor) from 33 cancer types in the v10 release.
+OpenPedCan project includes 10414 TCGA RNA-Seq samples (716 normal and 9698 tumor) from [33 cancer types](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/0a5c14705a385c99a6a16e34e932e94009b7a11c/analyses/molecular-subtyping-integrate/results/tcga_cancer_groups.tsv) in the v11 release.
 
 DGD [(CHOP P30 Panel)](https://www.chop.edu/cancer-panels)
 CHOP's [Division of Genome Diagnostics](https://www.chop.edu/centers-programs/division-genomic-diagnostics) has partnered with CCDI to add somatic panel sequencing data to OpenPedCan and the Molecular Targets Platform. 
 
 The OpenPedCan operates on a pull request model to accept contributions from community participants.
-The maintainers have set up continuous integration software to confirm the reproducibility of analyses within the project’s Docker container.
+The maintainers have set up continuous integration software via GitHub Actions to confirm the reproducibility of analyses within the project’s Docker container.
 
 The project maintainers include scientists from [Department of Biomedical and Health Informatics at the Children's Hospital of Philadelphia ](https://www.research.chop.edu/department-of-biomedical-and-health-informatics) and the [Center for Data-Driven Discovery in Biomedicine at the Children's Hospital of Philadelphia](https://d3b.center/).
 We invite researchers to join OpenPedCan to help rigorously characterize the genomic landscape of these diseases to enable more rapid discovery of additional mechanisms contributing to the pathogenesis of pediatric brain and spinal cord tumors and overall accelerate clinical translation on behalf of patients.
