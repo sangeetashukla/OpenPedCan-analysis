@@ -1,6 +1,6 @@
 #!/bin/bash
-# PediatricOpenTargets 2021
-# Yuanchao Zhang
+# PediatricOpenTargets 2021, 2022
+# Yuanchao Zhang, Jo Lynne Rokita
 set -e
 set -o pipefail
 
@@ -46,7 +46,7 @@ jq --compact-output '.[]' \
   results/putative-oncogene-fusion-freq.json \
   > results/putative-oncogene-fusion-freq.jsonl
 
-rm results/putative-oncogene-fusion-freq.json
+rm -f results/putative-oncogene-fusion-freq.json
 
 # gather frequencies at Fused Gene level
 Rscript 01-fusion-frequencies.R --fusion_file $fusion_file \
@@ -64,6 +64,6 @@ jq --compact-output '.[]' \
   results/putative-oncogene-fused-gene-freq.json \
   > results/putative-oncogene-fused-gene-freq.jsonl
 
-rm results/putative-oncogene-fused-gene-freq.json
-rm results/*gz
+rm -f results/putative-oncogene-fused-gene-freq.json
+rm -f results/*gz
 gzip -f results/putative-oncogene*        
