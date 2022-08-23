@@ -209,11 +209,11 @@ jobs:
 #        with:
 #          args: analyses/fusion-frequencies/run-frequencies.sh
 
-#      - name: Run SNV frequency tables
-#        uses: ./
-#        id: RUN-snv-frequencies
-#        with:
-#          args: analyses/snv-frequencies/run-snv-frequencies.sh
+      - name: Run SNV frequency tables
+        uses: ./
+        id: RUN-snv-frequencies
+        with:
+          args: analyses/snv-frequencies/run-snv-frequencies.sh
 
 #      - name: Run Filter MTP tables
 #        uses: ./
