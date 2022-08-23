@@ -8,7 +8,7 @@ set -o pipefail
 printf "Start generating mtp tables...\n\n"
 
 # Use the bucket that contains mtp files
-URL="https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/open-targets"
+URL="s3://d3b-openaccess-us-east-1-prd-pbta/open-targets"
 RELEASE="mtp-tables"
 
 # This script should always run as if it were being called from
