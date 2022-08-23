@@ -1,19 +1,19 @@
 # OpenPedCan-analysis
 
-Pediatric brain tumors are the most common solid tumors and the leading cause of cancer-related death in children.
-Our ability to understand and successfully treat these diseases is hindered by small sample sizes due to the overall rarity of unique molecular subtypes and tainted grouped analyses resulting from misclassification.
-
-The Open Pediatric Cancer (OpenPedCan) project at the Children’s Hospital of Philadelphia is an open analysis effort that harmonizes pediatric cancer data from multiple sources. 
+The Open Pediatric Cancer (OpenPedCan) project at the Children’s Hospital of Philadelphia is an open analysis effort that harmonizes pediatric cancer data from multiple sources, performs downstream cancer analyses on these data, provides them on PedcBioPortal, and the NCI's Molecular Targets Platform (MTP). 
 The OpenPedCan analyses currently include the following datasets, described more fully below:
 - TARGET
 - Kids First Neuroblastoma
 - OpenPBTA
 - GTEx
 - TCGA
+- DGD (CHOP P30 Panel)
 
 Open Pediatric Brain Tumor Atlas (OpenPBTA)
 In September of 2018, the [Children's Brain Tumor Network (CBTN)](https://cbtn.org/) released the [Pediatric Brain Tumor Atlas (PBTA)](https://cbtn.org/pediatric-brain-tumor-atlas/), a genomic dataset (whole genome sequencing, whole exome sequencing, RNA sequencing, proteomic, and clinical data) for nearly 1,000 tumors, available from the [Gabriella Miller Kids First Portal](https://kidsfirstdrc.org/).
-The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is a global open science initiative to comprehensively define the molecular landscape of tumors of 943 patients from the CBTN and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/) through real-time, collaborative analyses and [collaborative manuscript writing](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) on GitHub.
+In September of 2019, the Open Pediatric Brain Tumor Atlas (OpenPBTA) Project was launched.
+OpenPBTA was a global open science initiative to comprehensively define the molecular landscape of tumors of 943 patients from the CBTN and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/) through real-time, collaborative analyses and [collaborative manuscript writing](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) on GitHub.
+Additional PBTA data has been, and will be continually added to OpenPedCan.
 
 Therapeutically Applicable Research to Generate Effective Treatments [(TARGET)](https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000218.v23.p8)
 The Therapeutically Applicable Research to Generate Effective Treatments (TARGET) Initiative is an NCI-funded collection of disease-specific projects that seeks to identify the genomic changes of pediatric cancers. 'The overall goal is to collect genomic data to accelerate the development of more effective therapies. 
@@ -27,12 +27,15 @@ OpenPedCan analyses include Neuroblastoma data from the Kids First project.
 The Genotype-Tissue Expression [(GTEx)](https://gtexportal.org/home/)
 GTEx project is an ongoing effort to build a comprehensive public data resource and tissue bank to study tissue-specific gene expression, regulation and their relationship with genetic variants.
 Samples were collected from 54 non-diseased tissue sites across nearly 1000 individuals, primarily for molecular assays including WGS, WES, and RNA-Seq.
-OpenPedCan project includes 17382 GTEx RNA-Seq samples from GTEx v8 release, which span across 31 GTEx groups in the v10 release. 
+OpenPedCan project includes 17382 GTEx RNA-Seq samples from GTEx v8 release, which span across 31 GTEx groups in the v11 release. 
 
 The Cancer Genome Atlas Program [(TCGA)](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga)
 TCGA is a landmark cancer genomics program that molecularly characterized over 20,000 primary cancer and matched normal samples spanning 33 cancer types. 
 It is a joint effort between NCI and the National Human Genome Research Institute.
 OpenPedCan project includes 10414 TCGA RNA-Seq samples (716 normal and 9698 tumor) from 33 cancer types in the v10 release.
+
+DGD [(CHOP P30 Panel)](https://www.chop.edu/cancer-panels)
+CHOP's [Division of Genome Diagnostics](https://www.chop.edu/centers-programs/division-genomic-diagnostics) has partnered with CCDI to add somatic panel sequencing data to OpenPedCan and the Molecular Targets Platform. 
 
 The OpenPedCan operates on a pull request model to accept contributions from community participants.
 The maintainers have set up continuous integration software to confirm the reproducibility of analyses within the project’s Docker container.
@@ -88,95 +91,20 @@ We invite researchers to join OpenPedCan to help rigorously characterize the gen
 
 ## Data Description
 
-The OpenPedCan dataset includes gene expression, fusion, as well as somatic mutation, copy number, structural and variant results in combined tsv or matrix format.
+The OpenPedCan dataset includes methylation array, gene expression, fusion, as well as somatic mutation, copy number, structural and variant results in combined tsv or matrix format.
 
-Below is a summary of biospecimens by sequencing strategy in v10 release:
+Below is a summary of biospecimens by sequencing strategy in v11 release:
 
 
 | Experimental Strategy | Normal | Tumor |
 |-----------------------|--------|-------|
-| Targeted DNA Panel | 500 | 500 |
-| RNA-Seq | 18110 | 12299 |
-| WGS | 1137 | 1300 |
-| WXS | 1133 | 1171 |
+| Methylation | 151 | 1763 |
+| Targeted Sequencing | 500 | 2299 |
+| RNA-Seq | 18110 | 12310 |
+| WGS | 1137 | 1305 |
+| WXS | 1133 | 1184 |
 
-Below is a detailed table of for the 12299 RNA-Seq biospecimens in v10 release:
-
-
-| Broad Histology | N |
-|-----------------------------------------------|-----|
-| Acute Myeloid Leukemia | 147 |
-| Adrenocortical Carcinoma | 77 |
-| Benign tumor | 33 |
-| Bladder Urothelial Carcinoma | 413 |
-| Brain Lower Grade Glioma | 525 |
-| Breast Invasive Carcinoma | 1106 |
-| Cervical Squamous Cell Carcinoma and Endocervical Adenocarcinoma | 306 |
-| Cholangiocarcinoma | 36 |
-| Chordoma | 6 |
-| Choroid plexus tumor | 5 |
-| Colon Adenocarcinoma | 307 |
-| Diffuse astrocytic and oligodendroglial tumor | 231 |
-| Embryonal tumor | 547 |
-| Ependymal tumor | 93 |
-| Esophageal Carcinoma | 159 |
-| Germ cell tumor | 13 |
-| Glioblastoma Multiforme | 167 |
-| Head and Neck Squamous Cell Carcinoma | 500 |
-| Hematologic malignancy | 866 |
-| Histiocytic tumor | 7 |
-| Kidney Chromophobe | 65 |
-| Kidney Renal Clear Cell Carcinoma | 536 |
-| Kidney Renal Papillary Cell Carcinoma | 287 |
-| Liver Hepatocellular Carcinoma | 372 |
-| Low-grade astrocytic tumor | 298|
-| Lung Adenocarcinoma | 533 |
-| Lung Squamous Cell Carcinoma | 499 |
-| Lymphoid Neoplasm Diffuse Large B-cell Lymphoma | 47 |
-| Lymphoma | 1 |
-| Melanocytic tumor | 1 |
-| Meningioma | 29 |
-| Mesenchymal non-meningothelial tumor | 112 |
-| Mesothelioma | 86 |
-| Metastatic tumors | 7 |
-| Neuronal and mixed neuronal-glial tumor | 42 |
-| Non-CNS tumor | 1 |
-| Non-tumor | 3 |
-| Other astrocytic tumor | 3 |
-| Other tumor | 1 |
-| Ovarian Serous Cystadenocarcinoma | 378 |
-| Pancreatic Adenocarcinoma | 178 |
-| Pheochromocytoma and Paraganglioma | 181 |
-| Pre-cancerous lesion | 14 |
-| Prostate Adenocarcinoma | 498 |
-| Rectum Adenocarcinoma | 93 |
-| Renal tumor | 207 |
-| Sarcoma | 262 |
-| Skin Cutaneous Melanoma | 468 |
-| Stomach Adenocarcinoma | 373 |
-| Testicular Germ Cell Tumors | 154 |
-| Thymoma | 118 |
-| Thyroid Carcinoma | 509 |
-| Tumor of cranial and paraspinal nerves | 44 |
-| Tumor of pineal region | 5 |
-| Tumors of sellar region | 35 |
-| Uterine Carcinosarcoma | 56 |
-| Uterine Corpus Endometrial Carcinoma | 183 |
-| Uveal Melanoma | 79 |
-
-Below is a table of number of tumor biospecimens by phase of therapy (DNA and RNA) in v10 release:
-
-
-| Phase of Therapy | N |
-|---------------------------------|------|
-| Initial CNS Tumor | 1622 |
-| Metastatic Tumor | 395 |
-| Primary Tumor | 12545 |
-| Progressive | 299 |
-| Progressive Disease Post-Mortem | 13 |
-| Recurrence | 356 |
-| Second Malignancy | 37 |
-| Unavailable | 2 |
+[Here](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/bbbcdea63a03a48d2847140efb104e159590fd21/analyses/molecular-subtyping-integrate/results/pediatric_cancer_groups.tsv) is a detailed table of pediatric cancer groups in the v11 release.
 
 
 ## How to Obtain OpenPedCan Data
@@ -326,7 +254,7 @@ See the [continuous integration instructions for adding analyses with multiple s
 
 ### Output Expectations
 
-The CI system that we use will generate, as artifacts, the contents of the `analyses` directory applied over a small test dataset.
+The GA system that we use will generate, as artifacts, the contents of the `analyses` directory applied over a small test dataset.
 Our goal is to capture all of the outputs that produce final results as artifacts.
 Files that are primarily graphic should be placed in a `plots` subdirectory of the analysis's folder.
 Plots should use the specified color palettes for this project.
@@ -358,7 +286,7 @@ If you are new user download Docker from [here](https://docs.docker.com/get-dock
 
 The most recent version of the project Docker image, which is pushed to Docker Hub after a pull request gets merged into the master branch, can be obtained via the command line with:
 
-```
+```bash
 docker pull pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:latest
 ```
 
@@ -374,19 +302,20 @@ This will significantly facilitate the following tasks that are constantly perfo
 You will likely need to increase this limit for local development.**
 [[Mac documentation](https://docs.docker.com/docker-for-mac/#resources), [Windows documentation](https://docs.docker.com/docker-for-windows/#advanced)]
 
-##### RStudio
+##### RStudio - Local
 
 Using `rocker/tidyverse:3.6.0` as our base image allows for development via RStudio in the project Docker container.
 If you'd like to develop in this manner, you may do so by running the following and changing `<password>` to a password of you choosing at the command line:
 
-```
+```bash
 docker run -e PASSWORD=<password> -p 8787:8787 pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:latest
 ```
 
 You can change the volume that the Docker container points to either via the [Kitematic GUI](https://docs.docker.com/kitematic/userguide/) or the [`--volume` flag](https://docs.docker.com/storage/volumes/) to `docker run`.
+For example, from your cloned `OpenPedCan-analysis` folder, run the command below:
 
-```
-docker run --name <CONTAINER_NAME> -d -e PASSWORD=pass -p 8787:8787 -v “$PWD”:/home/rstudio/OpenTARGET pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:latest
+```bash
+docker run --name <CONTAINER_NAME> -d -e PASSWORD=pass -p 8787:8787 -v $PWD:/home/rstudio/OpenPedCan-analysis pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:latest
 ```
 
 Once you've set the volume, you can navigate to `localhost:8787` in your browser if you are a Linux or Mac OS X user.
@@ -396,59 +325,60 @@ If you are a new user, you may find [these instructions](https://github.com/Alex
 
 You can also run the analysis on the terminal once you have a docker container running locally by running `docker exec` helpful information [here](https://buildvirtual.net/docker-exec-what-does-it-do/) 
 ```
-docker exec -ti <CONTAINER_NAME> bash -c "echo a && echo b"
+docker exec -ti <CONTAINER_NAME> bash
 ```
+If you set the `PWD:/home/rstudio/OpenPedCan-analysis` above, then you can navigate to `home/rstudio/OpenPedCan-analysis` and begin.
+
+### Development using Amazon EC2
+
+Many analyses will require Amazon EC2 for development.
+For this, we have created a template image in `Mgmt-Console-Dev-chopd3bprod`. 
+Navigate to the Service Catalog and select `openpedcan-instance`.
+The standard mount comes with a default 100 GB root volume and can be expanded at launch.
+Below are the instance names, hourly rates, vCPUs, and memory.
+
+| Instance name | Hourly rate | vCPU | Memory |
+|---------------|-------------|------|--------|
+| m6i.large     | $0.096      | 2    | 8 GB   |
+| m6i.xlarge    | $0.192      | 4    | 16 GB  |
+| m6i.2xlarge   | $0.384      | 8    | 32 GB  |
+| m6i.4xlarge   | $0.768      | 16   | 64 GB  |
+
+#### RStudio - EC2
+
+To use RStudio from EC2, run docker using the following command:
+
+```bash
+docker run --name <CONTAINER_NAME> -d -e PASSWORD=pass -p 80:8787 -v $PWD:/home/rstudio/OpenPedCan-analysis pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:latest
+```
+
+Then, paste the instance IP address into your browser to start RStudio.
 
 ### Local Development
 
 While we encourage development within the Docker container, it is also possible to conduct analysis without Docker if that is desired.
 In  this case, it is important to ensure that local or personal settings such as file paths or installed packages and libraries are not assumed in the analysis.
 
-### Continuous Integration (CI)
+### GitHub Actions (GA)
 
-We use continuous integration (CI) to ensure that the project Docker image will build if there are any changes introduced to the [`Dockerfile`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/Dockerfile) and that all analysis code will execute.
+We use GitHub Actions (GA) to ensure that the project Docker image will build if there are any changes introduced to the [`Dockerfile`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/Dockerfile) and that all analysis code will execute.
 
-We have put together data files specifically for the purpose of CI that contain all of the features of the full data files for only a small subset of samples.
+We have put together data files specifically for the purpose of GA that contain all of the features of the full data files for only a small subset of samples.
 You can see how this was done by viewing [this module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/create-subset-files).
 We use the subset files to cut down on the computational resources and time required for testing.
 
-Provided that your analytical code points to the symlinks in the `data/` directory per [the instructions above](#how-to-add-an-analysis), adding the analysis to the CI (see below) will run your analysis on this subset of the data.
+Provided that your analytical code points to the symlinks in the `data/` directory per [the instructions above](#how-to-add-an-analysis), adding the analysis to the GA (see below) will run your analysis on this subset of the data.
 Do not hardcode sample names in your analytical code: there is no guarantee that those samples will be present in the subset files.
 
-#### Working with the subset files used in CI locally
+#### Working with the subset files used in GA locally
 
-If you would like to work with the files used in CI locally, e.g., for debugging, you can obtain them from AWS by running the following in the root directory of the project:
+If you would like to work with the files used in GA locally, e.g., for debugging, you can obtain them from AWS by running the following in the root directory of the project:
 
 ```
-bash scripts/download-ci-files.sh
+bash scripts/download-testing-files.sh
 ```
 
 Running this will change the symlinks in `data` to point to the files in `data/testing`.
-
-#### Adding Analyses to Circle CI
-
-For an analysis to be run in CI, it must be added to the Circle CI configuration file, [`.circleci/config.yml`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/.circleci/config.yml).
-A new analysis should be added as the last step of the `run_analyses` section.
-
-Here is an example analysis that simply lists the contents of the data directory that contains the files for the test:
-
-```
-      - run:
-          name: List Data Directory Contents
-          command: ./scripts/run_in_ci.sh ls data/testing
-```
-
-Using `./scripts/run_in_ci.sh` allows you to run your analyses in the project Docker container.
-
-If you wanted to add running an Rscript called `cluster-samples.R` that was in an analysis folder called `gene-expression-clustering`, you would add this script to continuous integration with:
-
-```
-      - run:
-          name: Cluster Samples
-          command: ./scripts/run_in_ci.sh Rscript analyses/gene-expression-clustering/cluster-samples.R
-```
-
-This would run the `cluster-samples.R` on the subset files that are specifically designed to be used for CI.
 
 #### Adding Analyses to Github Actions workflow
 
@@ -487,37 +417,41 @@ To add a new analysis job, take the template below and value each missing prompt
 
 #### Adding Analyses with Multiple Steps
 
-There is a different procedure for adding an analysis comprised of multiple scripts or notebooks to CI.
+There is a different procedure for adding an analysis comprised of multiple scripts or notebooks to GA.
 Per [the contribution guidelines](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/CONTRIBUTING.md#size-and-composition-of-pull-requests), each script or notebook should be added via a separate pull request.
-For each of these pull requests, the individual script or notebook should be added as its own run in the `.circleci/config.yml` file.
+For each of these pull requests, the individual script or notebook should be added as its own run in the `.github/run-analysis.yml` file.
 This validates that the code being added can be executed at the time of review.
 
 Once all code for an analysis has been reviewed and merged, a final pull request for the analysis that is comprised of the following changes should be filed:
 
 * A shell script that will run all script and/or notebooks in the analysis module.
-* The multiple runs from the module that are in the `config.yml` file are replaced with a single run that runs the shell script.
+* The multiple runs from the module that are in the `run-analysis.yml` file are replaced with a single run that runs the shell script.
 
-If the `gene-expression-clustering` analysis above instead required two scripts run sequentially (`01-filter-samples.R` and `02-cluster-heatmap.R`), we would follow the procedure below.
+If the `gene-expression-clustering` analysis instead required two scripts run sequentially (`01-filter-samples.R` and `02-cluster-heatmap.R`), we would follow the procedure below.
 
 ##### 1. File and merge a pull request for adding `01-filter-samples.R` to the repository.
 
-In this pull request, we would add the following change to `.circleci/config.yml`.
+In this pull request, we would add the following change to `.github/run-analysis.yml`.
 
-```
-      - run:
-          name: Filter Samples
-          command: ./scripts/run_in_ci.sh Rscript analyses/gene-expression-clustering/01-filter-samples.R
+```yaml
+      - name: Run Filter Samples
+        uses: ./
+        id: <Name of run>
+        with:
+          args: Rscript analyses/gene-expression-clustering/01-filter-samples.R
 ```
 
 ##### 2. File and merge a pull request for adding `02-cluster-heatmap.R` to the repository.
 
-In this pull request, we would add the following change to `.circleci/config.yml`.
+In this pull request, we would add the following change to `.github/run-analysis.yml`.
 This would be added _below_ the `Filter Samples` run.
 
-```
-      - run:
-          name: Cluster Samples and Plot Heatmap
-          command: ./scripts/run_in_ci.sh Rscript analyses/gene-expression-clustering/02-cluster-heatmap.R
+```yaml
+      - name: Cluster samples and plot heatmap
+        uses: ./
+        id: <Name of run>
+        with:
+          args: Rscript analyses/gene-expression-clustering/02-cluster-heatmap.R
 ```
 
 ##### 3. File and merge a pull request for the shell script that runs the entirety of `gene-expression-clustering`.
@@ -539,26 +473,28 @@ Rscript --vanilla analyses/gene-expression-clustering/01-filter-samples.R
 Rscript --vanilla analyses/gene-expression-clustering/02-cluster-heatmap.R
 ```
 
-We would remove the runs `Filter Samples` and `Cluster Samples and Plot Heatmap` from `.circleci/config.yml` and instead replace them with a single run:
+We would remove the runs `Filter Samples` and `Cluster Samples and Plot Heatmap` from `.github/run-analysis.yml` and instead replace them with a single run:
 
+```yaml
+      - name: Cluster samples and plot heatmap
+        uses: ./
+        id: <Name of run>
+        with:
+          args: bash analyses/gene-expression-clustering/run-gene-expression-clustering.sh
 ```
-      - run:
-          name: Cluster Samples and Plot Heatmap
-          command: ./scripts/run_in_ci.sh bash analyses/gene-expression-clustering/run-gene-expression-clustering.sh
-```
 
-#### Passing variables only in CI
+#### Passing variables only in GA
 
-The analyses run in CI use only a small portion of the data so that tests can be run quickly.
+The analyses run in GA use only a small portion of the data so that tests can be run quickly.
 For some analyses, there will not be enough samples to fully test code without altering certain parameters passed to methods.
 The preferred way to handle these is to run these analyses through a shell script that specifies default parameters using environment variables.
 The default parameters should be the ones that are most appropriate for the full set of data.
-In CI, these will be replaced.
+In GA, these will be replaced.
 
-We might decide that it makes the most sense to run an analysis using a more permissive statistical significance threshold in CI so that some "significant" pathways still appear and subsequent code that examines them can be tested.
+We might decide that it makes the most sense to run an analysis using a more permissive statistical significance threshold in GA so that some "significant" pathways still appear and subsequent code that examines them can be tested.
 We'd first write code capable of taking command line parameters.
 In R, we could use `optparse` to specify these in a script - imagine it's called `pathway_sig.R` and it contains an option list:
-```
+```R
 option_list <- list(
   optparse::make_option(
     c("-a", "--alpha"),
@@ -570,19 +506,21 @@ option_list <- list(
 
 Then we would create a shell script (perhaps `run_pathway_sig.sh`) that uses a default environment variable. If `OPENPBTA_PATHSIG` is defined, it will be used. Otherwise, a value of 0.05 is used.
 Note: the `-` before the `0.05` below is necessary notation for a default parameter and *not* designating a negative 0.05.
-```
+```bash
 PATHSIG=${OPENPBTA_PATHSIG:-0.05}
 
 Rscript analyses/my-path/pathway_sig.R --alpha $PATHSIG
 ```
 
-We can override this by passing environment variables in `.circleci/config.yml`.
+We can override this by passing environment variables in `.github/run-analysis.yml`.
 For testing, we might want to use an alpha level of 0.75 so that at least some "significant" pathways appear, which allows testing subsequent code that depends on them.
-The run command in the `.circleci/config.yml` is used to specify these parameters.
-```
-- run:
-    name: run pathway significance tests
-    command: OPENPBTA_PATHSIG=0.75 ./scripts/run_in_ci.sh bash analyses/my-path/run_pathway_sig.sh
+The name command in the `.github/run-analysis.yml` is used to specify these parameters.
+```yaml
+      - name: Run pathway significance tests
+        uses: ./
+        id: <Name of run>
+        with:
+          args: OPENPBTA_PATHSIG=0.75 bash analyses/my-path/run_pathway_sig.sh
 ```
 
 In this example `OPENPBTA_PATHSIG=0.75` species an environment variable `OPENPBTA_PATHSIG` that is set to 0.75.
@@ -604,7 +542,7 @@ If you would like to identify molecular subtype membership for new RNA-seq PBTA 
 
 <!--TODO: Add WGS/WXS summarization modules.-->   
 
-```
+```bash
 bash scripts/run-for-subtyping.sh
 ```
 
@@ -618,7 +556,7 @@ Please set BASE_SUBTYPING=1 as a condition to run code with `histologies-base.ts
 
 Here is an example:
 
-```
+```bash
 BASE_SUBTYPING=1 analyses/gene-set-enrichment-analysis/run-gsea.sh
 
 ```
