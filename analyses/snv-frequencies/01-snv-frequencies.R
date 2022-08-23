@@ -671,10 +671,10 @@ htl_df <- htl_df %>%
   # rename(cohort_hist = cohort)
   mutate(cohort = case_when(cohort == 'TARGET' & 
                               experimental_strategy == 'Targeted Sequencing' ~
-                              'TARGET panel',
+                              'TARGET Panel',
                             cohort == 'DGD' & 
                               experimental_strategy == 'Targeted Sequencing' ~ 
-                              'CHOP P30 panel',
+                              'CHOP P30 Panel',
                             TRUE ~ cohort))
 
 # The cohort names we want to display on the MTP website do not match the 
@@ -683,8 +683,8 @@ htl_df <- htl_df %>%
 # - pedcbio_cohort: the name of that cohort on PedcBio
 htl_df %>%
   distinct(cohort) %>%
-  mutate(pedcbio_cohort = case_when(cohort == 'TARGET panel' ~ 'TARGET',
-                                    cohort == 'CHOP P30 panel' ~ 'DGD',
+  mutate(pedcbio_cohort = case_when(cohort == 'TARGET Panel' ~ 'TARGET',
+                                    cohort == 'CHOP P30 Panel' ~ 'DGD',
                                     TRUE ~ cohort)) -> pedcbio_cohorts
 
 # assert no Kids_First_Biospecimen_ID or Kids_First_Participant_ID is NA
