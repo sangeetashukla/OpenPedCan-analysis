@@ -447,6 +447,13 @@ RUN pip3 install \
 RUN ./install_bioc.r \
     ids
 
+WORKDIR /home/rstudio/
+# AWS sCLI installation
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    sudo ./aws/install && \
+    rm -rf aws*
+
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 
