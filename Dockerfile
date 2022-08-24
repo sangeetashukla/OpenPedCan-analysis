@@ -2,6 +2,9 @@ FROM rocker/tidyverse:3.6.0
 MAINTAINER ccdl@alexslemonade.org
 WORKDIR /rocker-build/
 
+RUN RSPM="https://packagemanager.rstudio.com/cran/2019-07-07" \
+  && echo "options(repos = c(CRAN='$RSPM'), download.file.method = 'libcurl')" >> /usr/local/lib/R/etc/Rprofile.site
+
 COPY scripts/install_bioc.r .
 
 ### Install apt-getable packages to start
@@ -39,6 +42,11 @@ RUN pip3 install \
 # Install java
 RUN apt-get -y --no-install-recommends install \
    default-jdk
+
+
+# Required for running matplotlib in Python in an interactive session
+RUN apt-get -y --no-install-recommends install \
+    python3-tk
 
 # Standalone tools and libraries
 ################################
@@ -436,6 +444,17 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 # Package for python pandas to read and write xlsx files
 RUN pip3 install \
     "openpyxl==2.6.4"
+
+# Package for generating UUIDs
+RUN ./install_bioc.r \
+    ids
+
+WORKDIR /home/rstudio/
+# AWS sCLI installation
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    sudo ./aws/install && \
+    rm -rf aws*
 
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for

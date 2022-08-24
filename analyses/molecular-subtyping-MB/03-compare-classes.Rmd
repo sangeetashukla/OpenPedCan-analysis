@@ -20,10 +20,12 @@ getOption(x = 'DT.warn.size', default = FALSE)
 <details><summary>Load libraries</summary>
 ```{r load_packages, echo = TRUE}
 # load libraries
-suppressPackageStartupMessages(library(tidyverse))
-suppressPackageStartupMessages(library(knitr))
-suppressPackageStartupMessages(library(DT))
-suppressPackageStartupMessages(library(plyr))
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(knitr)
+  library(DT)
+  library(plyr)
+})
 ```
 </details>
 

@@ -46,7 +46,7 @@ option_list <- list(
 opts <- parse_args(OptionParser(option_list = option_list))
 
 # read in files
-histologies <- readr::read_tsv(opts$histology, guess_max = 10000)
+histologies <- readr::read_tsv(opts$histology, guess_max = 100000)
 expression <- readr::read_rds(opts$expression)
 
 
@@ -56,6 +56,7 @@ epn_samples <- histologies %>%
          # pathology_free_text_diagnosis adds no additional samples
          pathology_diagnosis == "Ependymoma") %>%
   pull(Kids_First_Biospecimen_ID)
+epn_samples <- intersect(epn_samples, colnames(expression))
 
 # Subsetting expression columns with column names/BSIDs that are in the list of ependymoma samples
 epn_expression <- expression %>%

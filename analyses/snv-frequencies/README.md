@@ -25,8 +25,11 @@ Issues addressed:
 - Variant-level mutation frequencies: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/64>
 - Gene-level mutation frequencies: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/91>
 - <https://github.com/PediatricOpenTargets/ticket-tracker/issues/8>. This issue is no longer compatible with the purpose of this module. This module intends to compute mutation frequencies for each variant, but this issue intents to compute the mutation frequencies for each gene. This issue is listed here for future reference.
-- Change independent sample lists used in snv-frequencies: https://github.com/PediatricOpenTargets/ticket-tracker/issues/137
-- Rerun snv-frequencies module for v9 data release: https://github.com/PediatricOpenTargets/ticket-tracker/issues/173
+- Change independent sample lists used in snv-frequencies: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/137>.
+- Change biospecimen filtering procedure: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/287>.
+- Updated analysis: update snv-frequencies for v11 data release: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/361> This issue updates the tables after the OpenPedCan-analysis v11 data release and also excludes CHOP DGD samples from inclusion in "All Cohorts"
+- Assert compatibility between histology and independent specimen lists: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/293>
+- Updated analysis: rerun snv-frequencies with updated v11 pedcbio case IDs <https://github.com/PediatricOpenTargets/ticket-tracker/issues/386>
 
 ### Methods
 
@@ -34,7 +37,7 @@ Issues addressed:
 
 Subset `snv-consensus-plus-hotspots.maf.tsv.gz` to keep only samples with `sample_type == 'Tumor'` and non-NA `cancer_group` and `cohort` values in `histologies.tsv`.
 
-Subset `histologies.tsv`, `../../data/independent-specimens.wgswxspanel.primary.prefer.wxs.tsv` and `../../data/independent-specimens.wgswxspanel.relapse.prefer.wxs.tsv` for `all cohorts` independent samples, and ../../data/independent-specimens.wgswxspanel.primary.eachcohort.prefer.wxs.tsv` and `../../data/independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wxs.tsv` for each cohort independent samples to keep only samples that are in the `snv-consensus-plus-hotspots.maf.tsv.gz` subset.
+Subset `histologies.tsv`, `../../data/independent-specimens.wgswxspanel.primary.prefer.wxs.tsv` and `../../data/independent-specimens.wgswxspanel.relapse.prefer.wxs.tsv` for `all cohorts` independent samples, and `../../data/independent-specimens.wgswxspanel.primary.eachcohort.prefer.wxs.tsv` and `../../data/independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wxs.tsv` for each cohort independent samples to keep only samples that are in the `snv-consensus-plus-hotspots.maf.tsv.gz` subset.
 
 #### Subset non-synonymous variants
 
@@ -72,7 +75,7 @@ For each `cancer_group`, get each cohort and all cohorts. Call each `cancer_grou
 | Neuroblastoma | TARGET           | 889       |
 | Neuroblastoma | CBTN&GMKF&TARGET | 1432      |
 
-For each `cancer_group_cohort` with `n_samples` >= 5, compute `Frequency_in_overall_dataset`, `Frequency_in_primary_tumors`, and `Frequency_in_relapse_tumors` as following:
+For each `cancer_group_cohort` with `n_samples` >= 3, compute `Frequency_in_overall_dataset`, `Frequency_in_primary_tumors`, and `Frequency_in_relapse_tumors` as following:
 
 - `Frequency_in_overall_dataset`:
   - For each unique variant/gene, count the number of patients (identified by `Kids_First_Participant_ID`) that have mutations at the variant/gene, and call this number `Total_mutations`.
@@ -107,25 +110,28 @@ Add the following annotation columns to variant-level and gene-level tables usin
 
 Add `Gene_type`, `PedcBio_PedOT_oncoprint_plot_URL` and `PedcBio_PedOT_mutations_plot_URL` annotation columns to gene-level tables.
 
-The PedcBioPortal `case_set_id`s in the URLs are obtained from [the `sample-lists` PedcBioPortal web API](https://pedcbioportal.kidsfirstdrc.org/api/swagger-ui.html#/Sample_Lists), with the following command:
+The PedcBioPortal `case_set_id`s in the URLs are obtained from [the `sample-lists` PedcBioPortal web API](https://pedcbioportal.kidsfirstdrc.org/api/swagger-ui.html#/Sample_Lists), with the following command, where you have to specify the PedcBio STUDY_NAME, ex: `openpedcan_v11`, and your API-ACCESS-TOKEN:
 
 ```bash
-curl -X GET "https://pedcbioportal.kidsfirstdrc.org/api/studies/ped_opentargets_2021/sample-lists" -H "accept: application/json" -H "Authorization: Bearer YOUR-API-ACCESS-TOKEN" > ped_opentargets_2021_pedcbio_case_set_ids.json
+curl -X GET "https://pedcbioportal.kidsfirstdrc.org/api/studies/STUDY_NAME/sample-lists" -H "accept: application/json" -H "Authorization: Bearer API-ACCESS-TOKEN" > ped_opentargets_2021_pedcbio_case_set_ids.json
 ```
 
 To update the `case_set_id`s, rerun the `curl` command with your own PedcBioPortal web API access token. The token can be requested and downloaded at <https://pedcbioportal.kidsfirstdrc.org/webAPI>. More information about the access token is at <https://docs.cbioportal.org/2.2-authorization-and-authentication/authenticating-users-via-tokens#using-data-access-tokens>.
 
 Two more changes in column names and additions of three more columns are made for OT compatibility:
- - `Gene_Ensembl_Id` is changed to `targetFromSourceId`
- - `EFO` to `diseaseFromSourceMappedId`
- Three additional columns added: 
- - `chop_uuid` includes 32 digit UUIDs that are unique for each row of the file 
- - `datatypeId` column with `somatic_mutation` in each row
- - `datasourceId` column with `chop_gene_level_snv` in each row for gene-level table and `chop_variant_level_snv` in each row for variant-level table.
+
+- `Gene_Ensembl_Id` is changed to `targetFromSourceId`
+- `EFO` to `diseaseFromSourceMappedId`
+
+Three additional columns added:
+
+- `chop_uuid` includes 32 digit UUIDs that are unique for each row of the file
+- `datatypeId` column with `somatic_mutation` in each row
+- `datasourceId` column with `chop_gene_level_snv` in each row for gene-level table and `chop_variant_level_snv` in each row for variant-level table.
 
 ### Results
 
-Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v9.
+Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v10.
 
 The merged variant-level and gene-level SNV mutation frequency tables of all `cancer_group_cohort`s is output in TSV and JSONL formats.
 

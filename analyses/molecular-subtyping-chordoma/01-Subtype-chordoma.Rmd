@@ -26,11 +26,11 @@ Set up metadata
 
 ```{r}
 # Read in non-subsetted metadata
-histologies_df <- readr::read_tsv(file.path("..", "..", "data", "pbta-histologies-base.tsv"), guess_max = 10000)
+histologies_df <- readr::read_tsv(file.path("..", "..", "data", "histologies-base.tsv"), guess_max = 100000)
 
 # Subset metadata
 subset_metadata <- histologies_df %>%
-  dplyr::filter(short_histology == "Chordoma") %>%
+  dplyr::filter(pathology_diagnosis == "Chordoma") %>%
   select(
     Kids_First_Biospecimen_ID, sample_id, Kids_First_Participant_ID,
     experimental_strategy,tumor_ploidy
@@ -44,7 +44,7 @@ subset_focal_cn_df <-
 ```
 
 ```{r}
-# we need to include the sample_id field from pbta-histologies-base.tsv in the final
+# we need to include the sample_id field from histologies-base.tsv in the final
 # table (field will allow #us to map between RNA-seq (e.g., SMARCB1 expression
 # values) and WGS data (e.g., SMARCB1 focal copy number status) from the same
 # event for a given individual). To get the SMARCB1 jitter plot in the photo
@@ -53,7 +53,7 @@ subset_focal_cn_df <-
 subset_expression_data <-
   read_rds(file.path(
     input_dir,
-    "chordoma-only-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+    "chordoma-only-gene-expression-rsem-tpm-collapsed.rds"
   ))
 ```
 
@@ -220,7 +220,7 @@ copy loss vs. copy neutral
 # this specifies that this is the data we want to plot
 chordoma_smarcb1_df %>%
   # drop the sample that doesn't have WGS data
-  tidyr::drop_na() %>%
+  # tidyr::drop_na() %>%
   # this step specifies what should go on the x- and y-axes
   ggplot(aes(
     x = focal_SMARCB1_status,
@@ -251,6 +251,7 @@ Write the table to file.
 ```{r}
 chordoma_smarcb1_df %>%
   arrange(Kids_First_Participant_ID, sample_id) %>%
+  distinct() %>% 
   write_tsv(output_file)
 ```
 

@@ -34,16 +34,13 @@ subset_id <-
                      "biospecimen_ids_embryonal_subtyping.tsv")) %>%
   pull(Kids_First_Biospecimen_ID)
 
-# There are relevant samples in both the poly-A and stranded RNA-seq data
-polya_collapsed <-
+# There are relevant samples in RNA-seq data
+rnaseq_collapsed <-
   read_rds(file.path(data_dir,
-                     "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"))
-stranded_collapsed <-
-  read_rds(file.path(data_dir,
-                     "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
+                     "gene-expression-rsem-tpm-collapsed.rds"))
 
 # structural variant for BCOR tandem duplications
-manta_sv_df <- read_tsv(file.path(data_dir, "pbta-sv-manta.tsv.gz"))
+manta_sv_df <- data.table::fread(file.path(data_dir, "sv-manta.tsv.gz"))
 
 #### Filter and process expression data ----------------------------------------
 
@@ -65,19 +62,16 @@ filter_process_expression <- function(expression_mat) {
   z_scored_expression <- scale(t(log_expression),
                                center = TRUE,
                                scale = TRUE)
-  # the subset_id vector has WGS, etc. samples in it so get only the relevant
-  # identifiers for the expression filteringstep
-  relevant_ids <- intersect(rownames(z_scored_expression),
-                            subset_id)
-  filtered_expression <- z_scored_expression[relevant_ids, ]
-  return(filtered_expression)
 
+  # return z-scored expression data
+  return(z_scored_expression)
 }
 
-filter_process_expression(polya_collapsed) %>%
-  write_rds(file.path(subset_dir, "embryonal_zscored_exp.polya.rds"))
-filter_process_expression(stranded_collapsed) %>%
-  write_rds(file.path(subset_dir, "embryonal_zscored_exp.stranded.rds"))
+# filter for embryonal samples and then z-score
+rnaseq_collapsed <- rnaseq_collapsed %>%
+  dplyr::select(intersect(subset_id, colnames(rnaseq_collapsed)))
+filter_process_expression(rnaseq_collapsed) %>%
+  write_rds(file.path(subset_dir, "embryonal_zscored_exp.rds"))
 
 #### Structural variant data ---------------------------------------------------
 

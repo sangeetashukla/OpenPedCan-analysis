@@ -9,7 +9,7 @@
 # of the repository as follows:
 #
 # Rscript 'analyses/molecular-subtyping-chordoma/00-subset-files-for-chordoma.R'
-
+library(tidyverse)
 
 #### Set Up --------------------------------------------------------------------
 
@@ -33,7 +33,7 @@ if (!dir.exists(results_dir)) {
 
 # Read in metadata
 metadata <-
-  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies-base.tsv"), guess_max = 10000)
+  readr::read_tsv(file.path(root_dir, "data", "histologies-base.tsv"), guess_max = 100000)
 
 #### Filter metadata -----------------------------------------------------------
 # Select wanted columns in metadata for merging and assign to a new object
@@ -50,7 +50,7 @@ chordoma_metadata <- metadata %>%
 expression_data <- readr::read_rds(file.path(
   root_dir,
   "data",
-  "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+  "gene-expression-rsem-tpm-collapsed.rds"
 ))
 
 # Filter to Chordoma samples only -- we can use chordoma_df because it is subset to
@@ -62,7 +62,7 @@ expression_data <- expression_data %>%
   )) %>%
   readr::write_rds(file.path(
     results_dir,
-    "chordoma-only-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+    "chordoma-only-gene-expression-rsem-tpm-collapsed.rds"
   ))
 
 #### Filter focal CN data ------------------------------------------------------
@@ -71,7 +71,7 @@ expression_data <- expression_data %>%
 cn_metadata <- data.table::fread(file.path(
   root_dir,
   "data",
-  "consensus_seg_annotated_cn_autosomes.tsv.gz"
+  "consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz"
 )) %>%
   dplyr::left_join(chordoma_metadata,
     by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")
