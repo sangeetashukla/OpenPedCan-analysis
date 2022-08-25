@@ -1,0 +1,119 @@
+CancerGroup	SearchTerm	EFOOntoID	OntoDesc
+Acute Lymphoblastic Leukemia	Acute Lymphoblastic Leukemia	EFO_0000220	acute lymphoblastic leukemia
+Acute Myeloid Leukemia	Acute Myeloid Leukemia	EFO_0000222	acute myeloid leukemia
+Adamantinomatous Craniopharyngioma	Adamantinomatous Craniopharyngioma	EFO_1000069	Adamantinomatous Craniopharyngioma
+Adenocarcinoma	Adenocarcinoma	EFO_0000228	adenocarcinoma
+Adrenocortical Carcinoma	Adrenocortical Carcinoma	MONDO_0008734	adrenocortical carcinoma, hereditary
+Anaplastic Large Cell Lymphoma	Anaplastic Large Cell Lymphoma	EFO_0003032	anaplastic large cell lymphoma
+Angiosarcoma	Angiosarcoma	EFO_0003968	angiosarcoma
+Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor	EFO_1002008	atypical teratoid rhabdoid tumor
+B Acute Lymphoblastic Leukemia/Lymphoma	B Acute Lymphoblastic Leukemia Lymphoma	EFO_0000094	B-cell acute lymphoblastic leukemia
+Bladder Urothelial Carcinoma	Bladder Urothelial Carcinoma	MONDO_0004163	bladder urachal urothelial carcinoma
+Breast Invasive Carcinoma	Breast Invasive Carcinoma	EFO_1000307	Invasive Breast Carcinoma
+Burkitt Leukemia/Lymphoma	Burkitt Leukemia Lymphoma	EFO_1000182	Colon Burkitt Lymphoma
+Cavernoma	Cavernoma	EFO_1000151	Cavernous Hemangioma
+Central neurocytoma	Central neurocytoma	EFO_1000856	central neurocytoma
+Cervical Squamous Cell Carcinoma and Endocervical Adenocarcinoma	Cervical Squamous Cell Carcinoma and Endocervical Adenocarcinoma	EFO_0001061	cervical carcinoma
+Cholangiocarcinoma	Cholangiocarcinoma	EFO_0005221	cholangiocarcinoma
+Chordoma	Chordoma	MONDO_0008978	chordoma
+Choroid plexus carcinoma	Choroid plexus carcinoma	MONDO_0016718	choroid plexus carcinoma
+Choroid plexus tumor	Choroid plexus tumor	MONDO_0016717	choroid plexus neoplasm
+Chromophobe renal cell carcinoma	Chromophobe renal cell carcinoma	EFO_0000335	chromophobe renal cell carcinoma
+Chronic Myelogenous Leukemia	Chronic Myelogenous Leukemia	EFO_0000339	chronic myelogenous leukemia
+CIC-DUX4 Sarcoma	CIC-DUX4 Sarcoma	EFO_0000691	sarcoma
+Clear cell sarcoma of the kidney	Clear cell sarcoma of the kidney	EFO_0000350	clear cell sarcoma of the kidney
+CNS Burkitt's lymphoma	CNS Burkitt's lymphoma	EFO_0000309	Burkitts lymphoma
+CNS Embryonal tumor	CNS Embryonal tumor	EFO_0005784	embryonal neoplasm
+CNS Melanoma	CNS Melanoma	MONDO_0016747	primary melanoma of the central nervous system
+CNS neuroblastoma	CNS neuroblastoma	EFO_0000621	neuroblastoma
+Colon Adenocarcinoma	Colon Adenocarcinoma	EFO_1001949	colon adenocarcinoma
+Craniopharyngioma	Craniopharyngioma	EFO_1000209	Craniopharyngioma
+Cutaneous Melanoma	Cutaneous Melanoma	EFO_0000389	cutaneous melanoma
+Desmoid-type fibromatosis	Desmoid-type fibromatosis	EFO_0009907	Desmoid-type fibromatosis
+Desmoplastic infantile astrocytoma and ganglioglioma	Desmoplastic infantile astrocytoma and ganglioglioma	MONDO_0016729	mixed neuronal-glial tumor
+Diffuse fibrillary astrocytoma	Diffuse fibrillary astrocytoma	EFO_0000272	astrocytoma
+Diffuse intrinsic pontine glioma	Diffuse intrinsic pontine glioma	EFO_1000026	diffuse intrinsic pontine glioma
+Diffuse leptomeningeal glioneuronal tumor	Diffuse leptomeningeal glioneuronal tumor	EFO_1001012	leptomeningeal metastasis
+Diffuse midline glioma	Diffuse midline glioma	EFO_1000026	diffuse intrinsic pontine glioma
+Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	EFO_0005551	dysembryoplastic neuroepithelial tumor
+Dysgerminoma	Dysgerminoma	MONDO_0003002	dysgerminoma
+Embryonal tumor	Embryonal tumor	EFO_0005784	embryonal neoplasm
+Embryonal Tumor NOS	Embryonal Tumor NOS	EFO_0005784	embryonal neoplasm
+Embryonal tumor with multilayer rosettes	Embryonal tumor with multilayer rosettes	MONDO_0016715	ependymoblastoma
+Ependymoma	Ependymoma	EFO_1000028	ependymoma
+Esophageal Carcinoma	Esophageal Carcinoma	EFO_0002916	esophageal carcinoma
+Ewing sarcoma	Ewing sarcoma	EFO_0000174	Ewing sarcoma
+Extraventricular neurocytoma	Extraventricular neurocytoma	EFO_1000856	central neurocytoma
+Fibromyxoid lesion	Fibromyxoid lesion	MONDO_0037745	fibromyxoid tumor
+Ganglioglioma	Ganglioglioma	EFO_0003094	ganglioglioma
+Ganglioneuroblastoma	Ganglioneuroblastoma	EFO_0000502	ganglioneuroblastoma
+Ganglioneuroma	Ganglioneuroma	EFO_0000500	ganglioneuroma
+Germ Cell Tumor	Germ Cell Tumor	EFO_0000514	germ cell tumor
+Germinoma	Germinoma	EFO_0004281	testicular neoplasm
+Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	MONDO_0016729	mixed neuronal-glial tumor
+Glioblastoma Multiforme	Glioblastoma Multiforme	EFO_0000519	glioblastoma multiforme
+Gliomatosis Cerebri	Gliomatosis Cerebri	MONDO_0016683	gliomatosis cerebri
+Gliosarcoma	Gliosarcoma	EFO_1001465	gliosarcoma
+Head and Neck Squamous Cell Carcinoma	Head and Neck Squamous Cell Carcinoma	EFO_0000181	head and neck squamous cell carcinoma
+Hemangioblastoma	Hemangioblastoma	MONDO_0016748	hemangioblastoma
+Hepatoblastoma	Hepatoblastoma	EFO_1000292	Hepatoblastoma
+Hepatocellular Carcinoma	Hepatocellular Carcinoma	EFO_0000182	hepatocellular carcinoma
+High-grade glioma/astrocytoma	High-grade glioma astrocytoma	EFO_1001197	subependymal glioma
+Histiocytic tumor	Histiocytic tumor	MONDO_0020081	macrophage or histiocytic tumor
+Hodgkin's lymphoma	Hodgkin's lymphoma	EFO_0000183	Hodgkins lymphoma
+Infantile Fibrosarcoma	Infantile Fibrosarcoma	EFO_0002087	fibrosarcoma
+Inflammatory Myofibroblastic Tumor	Inflammatory Myofibroblastic Tumor	MONDO_0015798	inflammatory myofibroblastic tumor
+Intrahepatic Cholangiocarcinoma	Intrahepatic Cholangiocarcinoma	EFO_1001961	intrahepatic cholangiocarcinoma
+Juvenile xanthogranuloma	Juvenile xanthogranuloma	EFO_1000311	Juvenile Xanthogranuloma
+Langerhans Cell histiocytosis	Langerhans Cell histiocytosis	EFO_1000318	Langerhans Cell Histiocytosis
+Low-grade glioma/astrocytoma	Low-grade glioma astrocytoma	MONDO_0021637	low grade glioma
+Lung Adenocarcinoma	Lung Adenocarcinoma	EFO_0000571	lung adenocarcinoma
+Lung Squamous Cell Carcinoma	Lung Squamous Cell Carcinoma	EFO_0000708	squamous cell lung carcinoma
+Lymphoid Neoplasm Diffuse Large B-cell Lymphoma	Lymphoid Neoplasm Diffuse Large B-cell Lymphoma	EFO_0000403	diffuse large B-cell lymphoma
+Malignant peripheral nerve sheath tumor	Malignant peripheral nerve sheath tumor	EFO_0000760	malignant peripheral nerve sheath tumor
+Medulloblastoma	Medulloblastoma	EFO_0002939	medulloblastoma
+Melanocytic tumor	Melanocytic tumor	MONDO_0016744	primary melanocytic tumor of central nervous system
+Melanoma	Melanoma	EFO_0000756	melanoma
+Meningioma	Meningioma	MONDO_0016642	meningioma
+Mesothelioma	Mesothelioma	EFO_0000588	mesothelioma
+Metastatic secondary tumors	Metastatic secondary tumors	EFO_0009709	metastatic neoplasm
+Mixed germ cell tumor	Mixed germ cell tumor	MONDO_0015864	mixed germ cell tumor
+Myeloid Neoplasm	Myeloid Neoplasm	EFO_0002427	myeloid neoplasm
+Neuroblastoma	Neuroblastoma	EFO_0000621	neuroblastoma
+Neuroepithelial neoplasm	Neuroepithelial neoplasm	MONDO_0021193	neuroepithelial neoplasm
+Neurofibroma/Plexiform	Neurofibroma Plexiform	EFO_0000658	plexiform neurofibroma
+Non-Hodgkin Lymphoma	Non-Hodgkin Lymphoma	MONDO_0042493	gastric non-hodgkin lymphoma
+Oligodendroglioma	Oligodendroglioma	EFO_0000632	oligodendroglioma
+Osteosarcoma	Osteosarcoma	EFO_0000637	osteosarcoma
+Ovarian Serous Cystadenocarcinoma	Ovarian Serous Cystadenocarcinoma	EFO_1000043	ovarian serous cystadenocarcinoma
+Pancreatic Adenocarcinoma	Pancreatic Adenocarcinoma	EFO_1000044	pancreatic adenocarcinoma
+Pheochromocytoma and Paraganglioma	Pheochromocytoma and Paraganglioma	EFO_0020005	pheochromocytoma-paraganglioma
+Pilocytic astrocytoma	Pilocytic astrocytoma	MONDO_0016691	pilocytic astrocytoma
+Pineal tumor	Pineal tumor	MONDO_0021232	pineal body neoplasm
+Pineoblastoma	Pineoblastoma	EFO_1000475	Pineoblastoma
+Pineocytoma	Pineocytoma	EFO_1000476	Pineocytoma
+Pleomorphic xanthoastrocytoma	Pleomorphic xanthoastrocytoma	MONDO_0016690	pleomorphic xanthoastrocytoma
+Prostate Adenocarcinoma	Prostate Adenocarcinoma	EFO_0000673	prostate adenocarcinoma
+Rectum Adenocarcinoma	Rectum Adenocarcinoma	EFO_0005631	rectal adenocarcinoma
+Renal Clear Cell Carcinoma	Renal Clear Cell Carcinoma	EFO_0000349	clear cell renal carcinoma
+Renal Papillary Cell Carcinoma	Renal Papillary Cell Carcinoma	EFO_0000640	papillary renal cell carcinoma
+Retinoblastoma	Retinoblastoma	MONDO_0008380	retinoblastoma
+Rhabdoid tumor of the kidney	Rhabdoid tumor of the kidney	EFO_1000512	Rhabdoid Tumor of the Kidney
+Rhabdomyosarcoma	Rhabdomyosarcoma	EFO_0002918	rhabdomyosarcoma
+Rosai-Dorfman disease	Rosai-Dorfman disease	MONDO_0006412	sinus histiocytosis with massive lymphadenopathy
+Rosette-forming glioneuronal tumor	Rosette-forming glioneuronal tumor	MONDO_0016736	rosette-forming glioneuronal tumor of fourth ventricule
+Sarcoma	Sarcoma	EFO_0000691	sarcoma
+Schwannoma	Schwannoma	EFO_0000693	schwannoma
+Stomach Adenocarcinoma	Stomach Adenocarcinoma	EFO_0000503	gastric adenocarcinoma
+Subependymal Giant Cell Astrocytoma	Subependymal Giant Cell Astrocytoma	MONDO_0016693	subependymal giant cell astrocytoma
+T Acute Lymphoblastic Leukemia/Lymphoma	T Acute Lymphoblastic Leukemia Lymphoma	EFO_1001936	adult T acute lymphoblastic leukemia
+Teratoma	Teratoma	MONDO_0002601	teratoma
+Testicular Germ Cell Tumor	Testicular Germ Cell Tumor	EFO_1000566	Testicular Germ Cell Tumor
+Thymoma	Thymoma	EFO_1000581	Thymoma
+Thyroid Carcinoma	Thyroid Carcinoma	EFO_0002892	thyroid carcinoma
+Thyroid Gland Follicular Carcinoma	Thyroid Gland Follicular Carcinoma	EFO_0000501	follicular thyroid carcinoma
+Thyroid Gland Papillary Carcinoma	Thyroid Gland Papillary Carcinoma	EFO_0000641	papillary thyroid carcinoma
+Uterine Carcinosarcoma	Uterine Carcinosarcoma	EFO_1000613	Uterine Carcinosarcoma
+Uterine Corpus Endometrial Carcinoma	Uterine Corpus Endometrial Carcinoma	EFO_1000238	Endometrial Serous Adenocarcinoma
+Uveal Melanoma	Uveal Melanoma	EFO_1000616	Uveal Melanoma
+Wilms tumor	Wilms tumor	MONDO_0006058	Wilms tumor
