@@ -8,10 +8,7 @@ output: html_notebook
 ```{r load_libraries}
 suppressPackageStartupMessages({
   library(tidyverse)
-  library(readr)
   library(splitstackshape)
-  library(tidyr)
-  library(data.table)
 })
 ```
 
@@ -32,29 +29,15 @@ tpm_file <- readRDS(tpm)
 fusion_file <- readr::read_tsv(fusion, col_types = cols())
 
 split <- do.call(rbind,strsplit(x = snv_file[1,], split = "\t"))
-#print(split)
 
 
-#snv_data <- cSplit(snv_file, snv_file[1], "/t")
 #snv_data <- as.data.frame(snv_file[1:1000,])   #test data to validate cSplit works on subset
-snv_data <- cSplit(snv_file,splitCols = 1,  sep = "\t", fixed = TRUE, drop = TRUE)
+snv_data <- cSplit(snv_file, splitCols = 1, sep = "\t", fixed = TRUE, drop = TRUE)
+snv_data <- cSplit(snv_data, splitCols = 1, sep = "\t", fixed = TRUE, drop = TRUE)
 names(snv_data) <- split
 snv_data <- snv_data[-1,]
 
 snv_file <- snv_data #test before editing script any further
-
-#split <- do.call(rbind,strsplit(x = snv_file[1,], split = "\t"))
-#snv_data <- snv_file[[1]] %>%
-#  separate(into = split, extra = "merge", sep = "\t") %>% 
-#  retype()
-
-split <- do.call(rbind,strsplit(x = snv_file[1,], split = "\t"))
-print(split)
-
-#tidyr::separate(data = snv_file[1], col=1, into = split,sep = "\t",remove = TRUE)
-
-
-#S <- split(setDT(snv_file[1])[, id := cumsum(grepl("##", WORDS, fixed = TRUE))], by = "id")
 
 
 # read in pmtl ensemble hugo mapped 
