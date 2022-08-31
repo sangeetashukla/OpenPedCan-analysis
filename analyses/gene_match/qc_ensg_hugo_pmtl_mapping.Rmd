@@ -37,7 +37,7 @@ split <- do.call(rbind,strsplit(x = snv_file[1,], split = "\t"))
 
 #snv_data <- cSplit(snv_file, snv_file[1], "/t")
 #snv_data <- as.data.frame(snv_file[1:1000,])   #test data to validate cSplit works on subset
-snv_data <- cSplit(snv_data,splitCols = 1,  sep = "\t", fixed = TRUE, drop = TRUE)
+snv_data <- cSplit(snv_file,splitCols = 1,  sep = "\t", fixed = TRUE, drop = TRUE)
 names(snv_data) <- split
 snv_data <- snv_data[-1,]
 
