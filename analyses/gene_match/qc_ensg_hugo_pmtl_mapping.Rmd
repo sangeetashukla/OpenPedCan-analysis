@@ -8,6 +8,10 @@ output: html_notebook
 ```{r load_libraries}
 suppressPackageStartupMessages({
   library(tidyverse)
+  library(readr)
+  library(splitstackshape)
+  library(tidyr)
+  library(data.table)
 })
 ```
 
@@ -22,15 +26,31 @@ tpm<- file.path(open_ped_can_data_path, 'gene-expression-rsem-tpm-collapsed.rds'
 fusion<- file.path(open_ped_can_data_path, 'fusion-putative-oncogenic.tsv')
 
 # Read in files for SNV, CNV, TPM and fusion
-snv_file <- readr::read_tsv(
-      snv, comment = '#',
-      col_types = cols(
-        .default = col_guess(),
-        CLIN_SIG = col_character(),
-        PUBMED = col_character()))
+snv_file <- readr::read_tsv(snv) %>% as.data.frame()
 cnv_file <- readr::read_tsv(cnv, col_types = cols())
 tpm_file <- readRDS(tpm)
 fusion_file <- readr::read_tsv(fusion, col_types = cols())
+
+
+
+#snv_data <- cSplit(snv_file, snv_file[1], "/t")
+snv_data <- cSplit(snv_file,splitCols = snv_file[1],  sep = "\t", fixed = TRUE, drop = TRUE)
+
+
+
+#split <- do.call(rbind,strsplit(x = snv_file[1,], split = "\t"))
+#snv_data <- snv_file[[1]] %>%
+#  separate(into = split, extra = "merge", sep = "\t") %>% 
+#  retype()
+
+split <- do.call(rbind,strsplit(x = snv_file[1,], split = "\t"))
+print(split)
+
+#tidyr::separate(data = snv_file[1], col=1, into = split,sep = "\t",remove = TRUE)
+
+
+#S <- split(setDT(snv_file[1])[, id := cumsum(grepl("##", WORDS, fixed = TRUE))], by = "id")
+
 
 # read in pmtl ensemble hugo mapped 
 ehr_df <- read_tsv('results/ensg-hugo-pmtl-mapping.tsv', col_types = cols())
