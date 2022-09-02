@@ -40,7 +40,7 @@ Current and previous input mutation frequencies input files
 
 
 ## Analysis output files
-Results are reported similarly in both RMD notebook and Excel workbook
+Results are similarly reported in both html notebooks and excel workbooks. Each excel workbook has sheet tabs with descriptive names of tables rendered in their corresponding html notebook. 
 - `gene-level-cnv-consensus-annotated-mut-freq-checks.nb.html`
 - `results/gene-level-cnv-consensus-annotated-mut-freq.xlsx`
 - `gene-level-snv-consensus-annotated-mut-freq-checks.nb.html`
