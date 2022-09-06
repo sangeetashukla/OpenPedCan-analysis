@@ -61,7 +61,7 @@ Load GenCode gtf file
 ```{r}
 # read file
 gtf <- file.path(data_dir, "gencode.v38.primary_assembly.annotation.gtf.gz")
-gencode_gtf <- rtracklayer::import(con = gtf) %>% as.data.frame() %>% tibble()
+gencode_gtf <- rtracklayer::import(con = gtf) %>% as.data.frame() %>% tibble::as_tibble()
 ```
 
 Get Ensembl identifiers
@@ -81,8 +81,7 @@ rm(gencode_gtf)
 Get PMTL Ensembl identifiers
 ```{r}
 # filter for gene rows and get ids
-pmtl_df <- readr::read_tsv(file.path(gene_match_input_dir, "PMTL_v1.1.tsv"),
-                           show_col_types = FALSE)
+pmtl_df <- readr::read_tsv(file.path(gene_match_input_dir, "PMTL_v1.1.tsv"))
 pmtl_ids <-pmtl_df %>% 
   pull(Ensembl_ID) %>% 
   unique() 
@@ -93,7 +92,7 @@ rm(pmtl_df)
 Get OpenPedCan sample IDs (Kids_First_Biospecimen_ID)
 ```{r}
 sample_ids <- readr::read_tsv(file.path(data_dir, "histologies.tsv"), 
-                              guess_max = 10000, show_col_types = FALSE) %>% 
+                              guess_max = 10000) %>% 
   dplyr::filter(sample_type == "Tumor") %>% 
   dplyr::select(Kids_First_Biospecimen_ID, cohort)
 ```
@@ -106,8 +105,7 @@ Function to filter for required Ensembl gene identifiers and write to file
 filter_freq_table <- function(freq_file, ensg_ids) {
   
   # Read gene level table 
-  freq_table <-  readr::read_tsv(freq_file, guess_max = 10000, 
-                                 show_col_types = FALSE) 
+  freq_table <-  readr::read_tsv(freq_file, guess_max = 10000) 
   
   # Write filtered TSV file
   file_name <- basename(freq_file)
@@ -141,7 +139,7 @@ filtered_ensg <- gene_level_snv %>%
 consensus_ensg <- data.table::fread(
   file.path(data_dir, "snv-consensus-plus-hotspots.maf.tsv.gz"), 
   select = c("Tumor_Sample_Barcode", "Gene"), showProgress = FALSE) %>% 
-  tibble() %>% 
+  tibble::as_tibble() %>% 
   dplyr::filter(!is.na(Gene)) %>% 
   dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>% 
   dplyr::distinct()
@@ -234,7 +232,7 @@ filtered_ensg <- gene_level_cnv %>%
 consensus_ensg <- data.table::fread(
   file.path(data_dir, "consensus_wgs_plus_cnvkit_wxs.tsv.gz"), 
   select = c("biospecimen_id", "ensembl"), showProgress = FALSE) %>% 
-  tibble() %>% 
+  tibble::as_tibble() %>% 
   dplyr::filter(!is.na(ensembl)) %>% 
   dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id) %>% 
   dplyr::distinct()
@@ -285,7 +283,7 @@ filtered_ensg <- fusion %>%
 fusion_names <- data.table::fread(
   file.path(data_dir, "fusion-putative-oncogenic.tsv"), 
   select = c("Sample", "FusionName"), showProgress = FALSE) %>% 
-  tibble() %>% 
+  tibble::as_tibble() %>% 
   tidyr::separate_rows(FusionName, sep = "--", convert = FALSE) %>% 
   tidyr::separate_rows(FusionName, sep = '/', convert = FALSE) %>% 
   dplyr::rename(Kids_First_Biospecimen_ID = Sample, 
