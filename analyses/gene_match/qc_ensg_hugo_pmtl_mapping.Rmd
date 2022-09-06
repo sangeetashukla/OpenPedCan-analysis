@@ -8,7 +8,6 @@ output: html_notebook
 ```{r load_libraries}
 suppressPackageStartupMessages({
   library(tidyverse)
-  library(splitstackshape)
 })
 ```
 
@@ -27,17 +26,6 @@ snv_file <- readr::read_tsv(snv, comment ='#') %>% as.data.frame()  # 1.5 minute
 cnv_file <- readr::read_tsv(cnv, col_types = cols())
 tpm_file <- readRDS(tpm)
 fusion_file <- readr::read_tsv(fusion, col_types = cols())
-
-#split <- do.call(rbind,strsplit(x = snv_file[,1], split = "\t"))
-
-
-#snv_data <- as.data.frame(snv_file[1:10000,])   #test data to validate cSplit works on subset
-#snv_data <- cSplit(snv_file, splitCols = 1, sep = "\t", fixed = TRUE, drop = TRUE)
-#snv_data <- cSplit(snv_data, splitCols = 1, sep = "\t", fixed = TRUE, drop = TRUE)
-#names(snv_data) <- split
-#snv_data <- snv_data[-1,]
-
-#snv_file <- snv_data #test before editing script any further
 
 
 # read in pmtl ensemble hugo mapped 
