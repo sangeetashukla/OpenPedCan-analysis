@@ -28,3 +28,6 @@ GTF file sources:
 org.Hs.eg.db 3.7.0
 GenomicFeatures 1.34.3
 AnnotationDbi 1.44.0
+
+## Note :
+Since some of the scripts require high CPU processing capacity, this module must be run on EC2.
