@@ -26,7 +26,6 @@ _This assumes you are in the modules directory of the repository, OpenPedCan-ana
 ```{r}
 # R analysis packages
 suppressPackageStartupMessages(library(tidyverse))
-suppressPackageStartupMessages(library(data.table))
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -46,6 +45,25 @@ if (!dir.exists(results_dir)) {
 }
 ```
 
+#### Functions
+
+- Output table function
+```{r}
+missing_biospecimen_table <- function(hist_df, missing_ids, output_file) {
+  missing_ids_df <- hist_df %>% 
+    dplyr::filter(Kids_First_Biospecimen_ID %in% missing_ids) %>% 
+    dplyr::select(Kids_First_Biospecimen_ID, 
+                  Kids_First_Participant_ID,
+                  experimental_strategy,
+                  sample_type,
+                  RNA_library, 
+                  cohort)
+  readr::write_tsv(missing_ids_df, file.path(results_dir, output_file))
+  return(missing_ids_df)
+}
+
+```
+
 #### Histologies file
 
 - Load histologies file
@@ -55,6 +73,8 @@ hist_df <- readr::read_tsv(file.path(data_dir, "histologies.tsv"),
                            guess_max = 10000,
                            col_types = cols(.default = col_guess()))
 ```
+
+
 
 #### Check non-TCGA RNA-Seq biospecimen IDs
 
@@ -75,9 +95,9 @@ biospecimen_ids <- readr::read_rds(file.path(data_dir,
 missing_ids <- non_tcga_rnaseq_ids %>% 
   setdiff(biospecimen_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids,
-                     file.path(results_dir, 
-                               "gene-counts-rsem-expected_count-collapsed-missing-samples.txt"))
+  output_file <- "gene-counts-rsem-expected_count-collapsed-missing-samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df
 }
 print(paste("RNA-Seq biospecimen in histolgies.tsv missing in gene-counts-rsem-expected_count-collapsed.rds = ", length(missing_ids)))
 ```
@@ -92,11 +112,12 @@ biospecimen_ids <- readr::read_rds(file.path(data_dir,
 missing_ids <- non_tcga_rnaseq_ids %>% 
   setdiff(biospecimen_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids,
-                     file.path(results_dir, 
-                               "gene-expression-rsem-tpm-collapsed-missing-samples.txt"))
+  output_file <- "gene-expression-rsem-tpm-collapsed-missing-samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df
 }
 print(paste("RNA-Seq  biospecimen in histolgies.tsv missing in gene-expression-rsem-tpm-collapsed.rds = ", length(missing_ids)))
+
 ```
 
 #### Check TCGA RNA-Seq biospecimen IDs
@@ -119,9 +140,9 @@ biospecimen_ids <- readr::read_rds(file.path(data_dir,
 missing_ids <- tcga_rnaseq_ids %>% 
   setdiff(biospecimen_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids,
-                     file.path(results_dir, 
-                               "tcga-gene-counts-rsem-expected_count-collapsed-missing-samples.txt"))
+  output_file <- "tcga-gene-counts-rsem-expected_count-collapsed-missing-samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df
 }
 print(paste("RNA-Seq  biospecimen in histolgies.tsv missing in tcga-gene-counts-rsem-expected_count-collapsed.rds = ", length(missing_ids)))
 ```
@@ -136,9 +157,9 @@ biospecimen_ids <- readr::read_rds(file.path(data_dir,
 missing_ids <- tcga_rnaseq_ids %>% 
   setdiff(biospecimen_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids,
-                     file.path(results_dir, 
-                               "tcga-gene-expression-rsem-tpm-collapsed-missing-samples.txt"))
+  output_file <- "tcga-gene-expression-rsem-tpm-collapsed-missing-samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df
 }
 print(paste("RNA-Seq  biospecimen in histolgies.tsv missing in tcga-gene-expression-rsem-tpm-collapsed.rds = ", length(missing_ids)))
 ```
@@ -173,8 +194,9 @@ intersect_genes <- Reduce(intersect, expr_matrices_genes)
 if (length(all_genes) > length(intersect_genes)) {
   readr::write_lines(setdiff(all_genes, intersect_genes),
                      file.path(results_dir, "genes_not_all_expression_matrices.txt"))
+  tibble::as_tibble(setdiff(all_genes, intersect_genes))
 }
-print(paste("Genes not matching all expression matrices =", length(all_genes) - length(intersect_genes) ))
+print(paste("Genes not matching all expression matrices =", length(setdiff(all_genes, intersect_genes))))
 ```
 
 #### Check CNV WGS and WXS biospecimen IDs
@@ -182,8 +204,7 @@ print(paste("Genes not matching all expression matrices =", length(all_genes) - 
 - CNVkit seg file (cnv-cnvkit.seg.gz)
 ```{r}
 # check that all  biospecimen IDs are in the file
-biospecimen_ids <- readr::read_tsv(file.path(data_dir, "cnv-cnvkit.seg.gz"), 
-                            show_col_types = FALSE) %>% 
+biospecimen_ids <- readr::read_tsv(file.path(data_dir, "cnv-cnvkit.seg.gz")) %>% 
   dplyr::pull(ID) %>% 
   unique()
 missing_ids <- hist_df %>%
@@ -193,8 +214,9 @@ missing_ids <- hist_df %>%
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   setdiff(biospecimen_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids, file.path(results_dir, 
-                                            "cnv-cnvkit.seg-missing-samples.txt"))
+  output_file <- "cnv-cnvkit.seg-missing-samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df
 }
 print(paste("WGS/WXS biospecimen in histolgies.tsv missing in cnv-cnvkit.seg.gz = ", length(missing_ids)))
 ```
@@ -202,8 +224,7 @@ print(paste("WGS/WXS biospecimen in histolgies.tsv missing in cnv-cnvkit.seg.gz 
 - Control-FREEC file (cnv-controlfreec.tsv.gz)
 ```{r}
 # check that all  biospecimen IDs are in the file
-biospecimen_ids <- readr::read_tsv(file.path(data_dir, "cnv-controlfreec.tsv.gz"), 
-                            show_col_types = FALSE) %>% 
+biospecimen_ids <- readr::read_tsv(file.path(data_dir, "cnv-controlfreec.tsv.gz")) %>% 
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   unique()
 missing_ids <- hist_df %>%
@@ -213,8 +234,9 @@ missing_ids <- hist_df %>%
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   setdiff(biospecimen_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids, file.path(results_dir, 
-                                            "cnv-controlfreec-missing-samples.txt"))
+  output_file <- "cnv-controlfreec-missing-samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df
 }
 print(paste("WGS/WXS biospecimen in histolgies.tsv missing in cnv-controlfreec.tsv.gz = ", length(missing_ids)))
 ```
@@ -222,8 +244,7 @@ print(paste("WGS/WXS biospecimen in histolgies.tsv missing in cnv-controlfreec.t
 - CNVKit status file (cnvkit_with_status.tsv)
 ```{r}
 # check that all  biospecimen IDs are in the file
-cnvkit_status_ids <- readr::read_tsv(file.path(data_dir, "cnvkit_with_status.tsv"), 
-                            show_col_types = FALSE) %>% 
+cnvkit_status_ids <- readr::read_tsv(file.path(data_dir, "cnvkit_with_status.tsv")) %>% 
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   unique()
 missing_ids <- hist_df %>%
@@ -233,7 +254,9 @@ missing_ids <- hist_df %>%
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   setdiff(cnvkit_status_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids, file.path(results_dir, "cnvkit_with_status-missing-samples.txt"))
+  output_file <- "cnvkit_with_status-missing-samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df
 }
 print(paste("WGS/WXS biospecimen in histolgies.tsv missing in cnvkit_with_status.tsv = ", length(missing_ids)))
 ```
@@ -249,14 +272,14 @@ wxs_cnvkit_status_ids <- hist_df %>%
   dplyr::pull(Kids_First_Biospecimen_ID)
 # check that all  biospecimen IDs are in the file
 biospecimen_ids <- readr::read_tsv(file.path(data_dir,
-                                             "consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz"), 
-                            show_col_types = FALSE) %>% 
+                                             "consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz")) %>% 
   dplyr::pull(biospecimen_id ) %>% 
   unique()
 missing_ids <- setdiff(wxs_cnvkit_status_ids, biospecimen_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids, file.path(results_dir, 
-                                            "consensus_wgs_plus_cnvkit_wxs_autosomes_missing_samples.txt"))
+  output_file <- "consensus_wgs_plus_cnvkit_wxs_autosomes_missing_samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df 
 }
 print(paste("WXS biospecimen in cnvkit_with_status.tsv smissing in consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz = ", length(missing_ids)))
 ```
@@ -265,14 +288,14 @@ print(paste("WXS biospecimen in cnvkit_with_status.tsv smissing in consensus_wgs
 ```{r}
 # check that all  biospecimen IDs are in the file
 biospecimen_ids <- readr::read_tsv(file.path(data_dir,
-                                             "consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz"), 
-                            show_col_types = FALSE) %>% 
+                                             "consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz")) %>% 
   dplyr::pull(biospecimen_id ) %>% 
   unique()
 missing_ids <- setdiff(wxs_cnvkit_status_ids, biospecimen_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids, file.path(results_dir, 
-                                            "consensus_wgs_plus_cnvkit_wxs_x_and_y_missing_samples.txt"))
+  output_file <- "consensus_wgs_plus_cnvkit_wxs_x_and_y_missing_samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df
 }
 print(paste("WXS biospecimen in cnvkit_with_status.tsv missing in consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz = ", length(missing_ids)))
 ```
@@ -285,8 +308,7 @@ print(paste("WXS biospecimen in cnvkit_with_status.tsv missing in consensus_wgs_
 biospecimen_ids <- readr::read_tsv(file.path(analyses_dir, 
                                              "tmb-calculation",
                                              "results",
-                                             "snv-mutation-tmb-all.tsv"), 
-                            show_col_types = FALSE) %>% 
+                                             "snv-mutation-tmb-all.tsv")) %>% 
   dplyr::pull(Tumor_Sample_Barcode) %>% 
   unique()
 missing_ids <- hist_df %>%
@@ -296,8 +318,9 @@ missing_ids <- hist_df %>%
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   setdiff(biospecimen_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids, file.path(results_dir, 
-                                            "snv-mutation-tmb-all-missing-samples.txt"))
+  output_file <- "snv-mutation-tmb-all-missing-samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df 
 }
 print(paste("WGS/WXS biospecimen in histologies.tsv missing in snv-mutation-tmb-all.tsv = ", length(missing_ids)))
 ```
@@ -308,8 +331,7 @@ print(paste("WGS/WXS biospecimen in histologies.tsv missing in snv-mutation-tmb-
 biospecimen_ids <- readr::read_tsv(file.path(analyses_dir, 
                                              "tmb-calculation",
                                              "results",
-                                             "snv-mutation-tmb-coding.tsv"), 
-                            show_col_types = FALSE) %>% 
+                                             "snv-mutation-tmb-coding.tsv")) %>% 
   dplyr::pull(Tumor_Sample_Barcode) %>% 
   unique()
 missing_ids <- hist_df %>%
@@ -319,8 +341,9 @@ missing_ids <- hist_df %>%
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   setdiff(biospecimen_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids, file.path(results_dir, 
-                                            "snv-mutation-tmb-coding-missing-samples.txt"))
+  output_file <- "snv-mutation-tmb-coding-missing-samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df 
 }
 print(paste("WGS/WXS biospecimen in histologies.tsv missing in snv-mutation-tmb-coding.tsv = ", length(missing_ids)))
 ```
@@ -335,8 +358,7 @@ and currently exludes TCGA and DGD cohorts,
 biospecimen_ids <- readr::read_tsv(file.path(analyses_dir, 
                                              "fusion-summary",
                                              "results",
-                                             "fusion_summary_embryonal_foi.tsv"), 
-                            show_col_types = FALSE) %>% 
+                                             "fusion_summary_embryonal_foi.tsv")) %>% 
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   unique()
 missing_ids <- hist_df %>%
@@ -352,8 +374,9 @@ missing_ids <- hist_df %>%
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   setdiff(biospecimen_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids, file.path(results_dir, 
-                                            "fusion_summary_embryonal_foi-missing-samples.txt"))
+  output_file <- "fusion_summary_embryonal_foi-missing-samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df 
 }
 print(paste("RNA-Seq/Targeted Panels biospecimen in histologies.tsv missing in fusion_summary_embryonal_foi.tsv = ", length(missing_ids)))
 ```
@@ -364,8 +387,8 @@ print(paste("RNA-Seq/Targeted Panels biospecimen in histologies.tsv missing in f
 biospecimen_ids <- readr::read_tsv(file.path(analyses_dir, 
                                              "fusion-summary",
                                              "results",
-                                             "fusion_summary_ependymoma_foi.tsv"), 
-                            show_col_types = FALSE) %>% 
+                                             "fusion_summary_ependymoma_foi.tsv")
+                                   ) %>% 
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   unique()
 missing_ids <- hist_df %>%
@@ -381,8 +404,9 @@ missing_ids <- hist_df %>%
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   setdiff(biospecimen_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids, file.path(results_dir, 
-                                            "fusion_summary_ependymoma_foi-missing-samples.txt"))
+  output_file <- "fusion_summary_ependymoma_foi-missing-samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df 
 }
 print(paste("RNA-Seq/Targeted Panels biospecimen in histologies.tsv missing in fusion_summary_ependymoma_foi.tsv = ", length(missing_ids)))
 ```
@@ -393,8 +417,7 @@ print(paste("RNA-Seq/Targeted Panels biospecimen in histologies.tsv missing in f
 biospecimen_ids <- readr::read_tsv(file.path(analyses_dir, 
                                              "fusion-summary",
                                              "results",
-                                             "fusion_summary_ewings_foi.tsv"), 
-                            show_col_types = FALSE) %>% 
+                                             "fusion_summary_ewings_foi.tsv")) %>% 
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   unique()
 missing_ids <- hist_df %>%
@@ -410,8 +433,9 @@ missing_ids <- hist_df %>%
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   setdiff(biospecimen_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids, file.path(results_dir, 
-                                            "fusion_summary_ewings_foi-missing-samples.txt"))
+  output_file <- "fusion_summary_ewings_foi-missing-samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df
 }
 print(paste("RNA-Seq/Targeted Panels biospecimen in histologies.tsv missing in fusion_summary_ewings_foi.tsv = ", length(missing_ids)))
 ```
@@ -422,8 +446,7 @@ print(paste("RNA-Seq/Targeted Panels biospecimen in histologies.tsv missing in f
 biospecimen_ids <- readr::read_tsv(file.path(analyses_dir, 
                                              "fusion-summary",
                                              "results",
-                                             "fusion_summary_lgat_foi.tsv"), 
-                            show_col_types = FALSE) %>% 
+                                             "fusion_summary_lgat_foi.tsv")) %>% 
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   unique()
 missing_ids <- hist_df %>%
@@ -439,8 +462,9 @@ missing_ids <- hist_df %>%
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   setdiff(biospecimen_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids, file.path(results_dir, 
-                                            "fusion_summary_lgat_foi-missing-samples.txt"))
+  output_file <- "fusion_summary_lgat_foi-missing-samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df 
 }
 print(paste("RNA-Seq/Targeted Panels biospecimen in histologies.tsv missing in fusion_summary_lgat_foi.tsv = ", length(missing_ids)))
 ```
@@ -451,8 +475,7 @@ Exludes DGD DNA Targeted Panels cohorts
 - Biospecimen to bed file mapping file (biospecimen_id_to_bed_map.txt)
 ```{r}
 # check that all biospecimen IDs have associated with a bed file
-biospecimen_ids <- readr::read_tsv(file.path(data_dir, "biospecimen_id_to_bed_map.txt"), 
-                            show_col_types = FALSE) %>% 
+biospecimen_ids <- readr::read_tsv(file.path(data_dir, "biospecimen_id_to_bed_map.txt")) %>% 
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   unique()
 missing_ids <- hist_df %>%
@@ -465,8 +488,9 @@ missing_ids <- hist_df %>%
   dplyr::pull(Kids_First_Biospecimen_ID) %>% 
   setdiff(biospecimen_ids)
 if (length(missing_ids) > 0) {
-  readr::write_lines(missing_ids, file.path(results_dir, 
-                                            "biospecimen_id_to_bed_map-missing-samples.txt"))
+  output_file <- "biospecimen_id_to_bed_map-missing-samples.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df 
 }
 print(paste("WGS/WXS/Targeted Panels biospecimen in histologies.tsv missing in biospecimen_id_to_bed_map.txt = ", length(missing_ids)))
 ```
@@ -486,8 +510,9 @@ missing_sex_estimate <- wgs_sex_estimate %>%
                   germline_sex_estimate != "Male") %>% 
   dplyr::pull(Kids_First_Biospecimen_ID)
 if (length(missing_sex_estimate) > 0) {
-  readr::write_lines(missing_sex_estimate, file.path(results_dir, 
-                                            "wgs-biospecimen-missing-sex_estimate.txt"))
+  output_file <- "wgs-biospecimen-missing-sex_estimate.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df 
 }
 print(paste("WGS biospecimen in histologies.tsv missing germline sex estimate = ", length(missing_sex_estimate)))
 ```
@@ -514,8 +539,9 @@ missing_sex_estimate <- wxspanel_sex_estimate %>%
                   germline_sex_estimate != "Male") %>% 
   dplyr::pull(Kids_First_Biospecimen_ID)
 if (length(missing_sex_estimate) > 0) {
-  readr::write_lines(missing_sex_estimate, file.path(results_dir, 
-                                            "wxspanel-biospecimen-missing-transferred-wgs-sex_estimate.txt"))
+  output_file <- "wxspanel-biospecimen-missing-transferred-wgs-sex_estimate.txt"
+  missing_ids_df <- missing_biospecimen_table(hist_df, missing_ids, output_file)
+  missing_ids_df 
 }
 print(paste("WXS/Targeted Panels biospecimen in histologies.tsv missing transferred WGS germline sex estimate = ", length(missing_sex_estimate)))
 ```
