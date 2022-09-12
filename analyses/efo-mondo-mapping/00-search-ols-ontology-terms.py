@@ -84,7 +84,7 @@ def main():
      ols_search_results = parse_input_for_ols_term_type(args.INPUT_MAP_PREFILL, args.OLS_TERM_TYPE, URL)
      
      # column names for result dataframe
-     columns = ["CancerGroup", "SearchTerm", str(args.OLS_TERM_TYPE)+"OntoID", "OntoDesc"]
+     columns = ["cancer_group", "search_term", str(args.OLS_TERM_TYPE).lower()+"_code", str(args.OLS_TERM_TYPE).lower()+"_OntoDesc"]
      
      # write annotated CNV frequencies results to TSV file
      parsed_results = "{}/{}".format(results_dir,args.OUT_FILE)

@@ -17,14 +17,14 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 # Set up paths to data files consumed by analysis
-#data_dir="../../data"
-source_dir="./results"
+source_dir="results"
 
 # Set up paths to to write result files 
-results_dir="./results"
+results_dir="results"
 
 # Input data file path 
 input_prefill_file="${source_dir}/efo-mondo-map-prefill.tsv"
+
 
 
 ols_efo="EFO"
@@ -36,6 +36,13 @@ ols_ncit="NCIT"
 # Result file name
 result_parsed_prefix="map-prefill"
 result_parsed_suffix="codes.tsv"
+merged_results="efo-mondo-map-prefill-auto.tsv"
+
+# File name arguments
+efo_auto_prefill="${result_parsed_prefix}-${ols_efo}-${result_parsed_suffix}"
+mondo_auto_prefill="${result_parsed_prefix}-${ols_mondo}-${result_parsed_suffix}"
+ncit_auto_prefill="${result_parsed_prefix}-${ols_ncit}-${result_parsed_suffix}"
+
 
 
 
@@ -67,5 +74,21 @@ python3 00-search-ols-ontology-terms.py \
 #  $input_prefill_file \
 #  $ols_hp \
 #  "${result_parsed_prefix}-${ols_hp}-${result_parsed_suffix}"
+
+
+# Merge prefill and auto search results in a single file
+Rscript --vanilla 01-merge-auto-search-ols-terms.R \
+        --map_prefill "$input_prefill_file" \
+        --efo_auto_prefill "$efo_auto_prefill" \
+        --mondo_auto_prefill "$mondo_auto_prefill" \
+        --ncit_auto_prefill "$ncit_auto_prefill" \
+        --out_dir "$results_dir" \
+        --out_file "$merged_results"
+        
+        
+# Remove intermediate data files        
+rm "${results_dir}/${efo_auto_prefill}"
+rm "${results_dir}/${mondo_auto_prefill}"
+rm "${results_dir}/${ncit_auto_prefill}"
 
 
