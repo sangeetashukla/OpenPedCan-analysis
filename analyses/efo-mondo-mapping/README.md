@@ -15,23 +15,13 @@ The purpose of maintaining `efo-mondo-map.tsv` is to map each cancer group found
 
 The EFO codes may have prefix “EFO_”, “MONDO_” or “Orphanet_”, the MONDO codes have a prefix “MONDO_”; each followed by seven digits; and NCIT codes have a prefix "NCIT_".
 
-## File QC
-To make sure all the `cancer_group` with n>=3 in the histologies file are included in the `efo-mondo-map.tsv` file, a QC Rmd script is included in the repo. 
-This notebook can be run with the command `bash run_qc.sh`
-This QC step should be performed, as below, for all new histologies file release before generating SNV, CNV and fusion frequencies tables.
-
-`./run_qc.sh`
-
-
 ## Automated OLS search
-The module also enables an automated search to retrieve EFO, MONDO, and NCIT codes for all `cancer_group` found in the current data release `efo-mondo-map-prefill.tsv` file. Running the script `run_auto_ols_search.sh` as below creates `.tsv` files under `results` directory in the module.
+The module enables an automated search to retrieve EFO, MONDO, and NCIT codes for all `cancer_group` found in the current data release `efo-mondo-map-prefill.tsv` file. Running the script `run_auto_ols_search.sh` as below creates `.tsv` files under `results` directory in the module which are then merged into a single file describing the cancer_group, old EFO and MONDO codes as found in the `efo-mondo-map-prefill.tsv`, EFO, MONDO and NCIT codes retrieved by the automated search, and T/F flag columns describing if the old and new codes match.
 
-`./run_auto_ols_search.sh`
+`bash run_auto_ols_search.sh`
 
-The below files must be manually reviewed for each `cancer_group` to curate acceptable EFO, MONDO, and NCIT codes that must be included in the `efo-mondo-mapping.tsv` file.
-`results/map-prefill-EFO-codes.tsv`
-`results/map-prefill-MONDO-codes.tsv`
-`results/map-prefill-NCITcodes.tsv`
+The below file must be manually reviewed for each `cancer_group` to curate acceptable EFO, MONDO, and NCIT codes that must be included in the `efo-mondo-mapping.tsv` file. The T/F flag columns are useful for such curation.
+`results/efo-mondo-map-prefill-auto.tsv`
 
 ## Note
 As more cancer groups or subtypes are added to existing histologies dataset and/or in case of any ambiguity, these codes will be revised with a combination of manual curation and automated search.
