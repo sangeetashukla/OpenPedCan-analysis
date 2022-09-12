@@ -23,5 +23,10 @@ The module enables an automated search to retrieve EFO, MONDO, and NCIT codes fo
 The below file must be manually reviewed for each `cancer_group` to curate acceptable EFO, MONDO, and NCIT codes that must be included in the `efo-mondo-mapping.tsv` file. The T/F flag columns are useful for such curation.
 `results/efo-mondo-map-prefill-auto.tsv`
 
+## File QC
+To make sure all the cancer_group with n>=3 in the histologies file are included in the efo-mondo-map.tsv file, a QC Rmd script is included in the repo. This notebook can be run with the command bash run_qc.sh This QC step should be done for all new histologies file release before generating SNV, CNV and fusion frequencies tables.
+
+
+
 ## Note
 As more cancer groups or subtypes are added to existing histologies dataset and/or in case of any ambiguity, these codes will be revised with a combination of manual curation and automated search.
