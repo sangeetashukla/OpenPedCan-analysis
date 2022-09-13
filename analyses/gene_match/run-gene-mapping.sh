@@ -17,7 +17,6 @@ mkdir -p results
 Rscript --vanilla gene_ensembl_id_from_gtf.R --gtf_file input/gencode.v27.annotation.gtf.gz --output_file results/ensembl_gene_symbol_gtf_genode_v27.tsv
 Rscript --vanilla gene_ensembl_id_from_gtf.R --gtf_file input/gencode.v28.annotation.gtf.gz --output_file results/ensembl_gene_symbol_gtf_genode_v28.tsv
 Rscript --vanilla gene_ensembl_id_from_gtf.R --gtf_file input/gencode.v36.annotation.gtf.gz --output_file results/ensembl_gene_symbol_gtf_genode_v36.tsv
-Rscript --vanilla gene_ensembl_id_from_gtf.R --gtf_file input/gencode.v38.annotation.gtf.gz --output_file results/ensembl_gene_symbol_gtf_genode_v38.tsv
 Rscript --vanilla gene_ensembl_id_from_gtf.R --gtf_file input/gencode.v39.annotation.gtf.gz --output_file results/ensembl_gene_symbol_gtf_genode_v39.tsv
 
 ## Merge gencode all results and input/open_ped_can_v7_ensg-hugo-rmtl-mapping.tsv
