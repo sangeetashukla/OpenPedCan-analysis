@@ -21,6 +21,7 @@ histology_df <- histology_df[sample(nrow(histology_df)), ]
 
 # Filter to only samples from tumors, where composition is not "Derived Cell Line".
 tumor_samples <- histology_df %>%
+  dplyr::filter(pathology_diagnosis != "Metastatic secondary tumors")
   dplyr::filter(sample_type == "Tumor", 
                 composition != "Derived Cell Line", 
                 is.na(RNA_library), 

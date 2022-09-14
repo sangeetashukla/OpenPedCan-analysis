@@ -46,7 +46,8 @@ Sort to just sequencing samples of tumors
 ```{r}
 seq_samples <- sample_df %>%
   filter(experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing"),
-         sample_type == "Tumor")
+         sample_type == "Tumor",
+         pathology_diagnosis != "Metastatic secondary tumors")
 ```
 
 How many WGS, how many WXS, how many panel, summarize #s of samples and participants by 
