@@ -216,6 +216,7 @@ independents <- sample_df %>%
   filter(experimental_strategy == "WGS",
          sample_type == "Tumor", 
          composition != "Derived Cell Line",
+         pathology_diagnosis != "Metastatic secondary tumors"
          ) %>%
   independent_dna_samples(tumor_types = "primary")
 
