@@ -49,6 +49,7 @@ OPENPBTA_BASE_SUBTYPING=1 bash run_fusion_merged.sh
 
 # Copy over fusions lists
 cp ${analyses_dir}/fusion_filtering/results/fusion-putative-oncogenic.tsv ${release_dir}
+cp ${analyses_dir}/fusion_filtering/results/fusion-putative-oncogenic.tsv ${commit_dir}
 
 # Run modules that cannot be run locally due to memory requirements
 if [ "$RUN_LOCAL" -lt "1" ]; then
@@ -75,12 +76,17 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
   
   ## Copy over focal CN
   cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz ${release_dir}
+  cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz ${commit_dir}
   cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz ${release_dir}
+  cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz ${commit_dir}
   cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_wgs_plus_cnvkit_wxs.tsv.gz ${release_dir}
+  cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_wgs_plus_cnvkit_wxs.tsv.gz ${commit_dir}
 
-  # Move over the consensus with status file
+  # Copy over the consensus with status file
   cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_seg_with_status.tsv ${release_dir}
+  cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_seg_with_status.tsv ${commit_dir}
   cp ${analyses_dir}/focal-cn-file-preparation/results/cnvkit_with_status.tsv ${release_dir}
+  cp ${analyses_dir}/focal-cn-file-preparation/results/cnvkit_with_status.tsv ${commit_dir}
 
 fi
 
@@ -99,6 +105,7 @@ bash run-new-analysis.sh
 
 # Copy over fusion summary
 cp ${analyses_dir}/fusion-summary/results/* ${release_dir}
+cp ${analyses_dir}/fusion-summary/results/* ${commit_dir}
 
 # Run TMB
 echo "Create TMB results"
@@ -109,13 +116,16 @@ bash run_tmb_calculation.sh
 cp ${analyses_dir}/tmb-calculation/results/snv-mutation-tmb-coding.tsv ${release_dir}
 cp ${analyses_dir}/tmb-calculation/results/snv-mutation-tmb-all.tsv ${release_dir}
 
+
+## Step 1. Generate summary files needed for subtyping
+
 # Run GSEA
 echo "Run GSEA"
 cd ${analyses_dir}/gene-set-enrichment-analysis
 OPENPBTA_BASE_SUBTYPING=1 bash run-gsea.sh
 
 # Copy over GSEA results for subtyping
-cp ${analyses_dir}/gene-set-enrichment-analysis/results/gsva_scores.tsv ${release_dir}
+cp ${analyses_dir}/gene-set-enrichment-analysis/results/gsva_scores.tsv ${commit_dir}
 
 # Run TP53
 echo "TP53 altered score"
@@ -123,10 +133,102 @@ cd ${analyses_dir}/tp53_nf1_score
 OPENPBTA_BASE_SUBTYPING=1 bash run_classifier.sh
 
 # Copy over TP53 results
-cp ${analyses_dir}/tp53_nf1_score/results/*.tsv ${release_dir}
 cp ${analyses_dir}/tp53_nf1_score/results/*.tsv ${commit_dir}
 
-# Copy over TMB results
+## Step 2. Run subtyping modules
+
+# Run MB subtyping
+echo "Run MB subtyping"
+cd ${analyses_dir}/molecular-subtyping-MB
+bash run-molecular-subtyping-mb.sh
+
+# Copy over MB subtyping
+cp ${analyses_dir}/molecular-subtyping-MB/results/MB_molecular_subtype.tsv ${commit_dir}
+cp ${analyses_dir}/molecular-subtyping-MB/results/mb-classified.rds ${commit_dir}
+
+# Run CRANIO subtyping
+echo "Run CRANIO subtyping"
+cd ${analyses_dir}/molecular-subtyping-CRANIO
+bash run-molecular-subtyping-cranio.sh
+
+# Copy over CRANIO subtyping
+cp ${analyses_dir}/molecular-subtyping-CRANIO/results/CRANIO_defining_lesions.tsv ${commit_dir}
+cp ${analyses_dir}/molecular-subtyping-CRANIO/results/CRANIO_molecular_subtype.tsv ${commit_dir}
+
+# Run EPN subtyping
+echo "Run EPN subtyping"
+cd ${analyses_dir}/molecular-subtyping-EPN
+bash run-molecular-subtyping-EPN.sh
+
+# Copy over EPN subtyping
+cp ${analyses_dir}/molecular-subtyping-EPN/results/EPN_all_data.tsv ${commit_dir}
+cp ${analyses_dir}/molecular-subtyping-EPN/results/EPN_all_data_withsubgroup.tsv ${commit_dir}
+
+# Run Embryonal subtyping
+echo "Run Embryonal subtyping"
+cd ${analyses_dir}/molecular-subtyping-embryonal
+bash run-embryonal-subtyping.sh
+
+# Copy over Embryonal subtyping
+cp ${analyses_dir}/molecular-subtyping-embryonal/results/embryonal_tumor_molecular_subtypes.tsv ${commit_dir}
+cp ${analyses_dir}/molecular-subtyping-embryonal/results/embryonal_tumor_subtyping_relevant_data.tsv ${commit_dir}
+
+# Run chordoma subtyping
+echo "Run chordoma subtyping"
+cd ${analyses_dir}/molecular-subtyping-chordoma
+bash run-molecular-subtyping-chordoma.sh
+
+# Copy over chordoma subtyping
+cp ${analyses_dir}/molecular-subtyping-chordoma/results/chordoma_smarcb1_status.tsv ${commit_dir}
+
+# Run EWS subtyping
+echo "Run EWS subtyping"
+cd ${analyses_dir}/molecular-subtyping-EWS
+bash run_subtyping.sh
+
+# Copy over EWS subtyping
+cp ${analyses_dir}/molecular-subtyping-EWS/results/EWS_results.tsv ${commit_dir}
+
+# Run neurocytoma subtyping
+echo "Run neurocytoma subtyping"
+cd ${analyses_dir}/molecular-subtyping-neurocytoma
+bash run_subtyping.sh
+
+# Copy over neurocytoma subtyping
+cp ${analyses_dir}/molecular-subtyping-neurocytoma/results/neurocytoma_subtyping.tsv ${commit_dir}
+
+# Run HGG subtyping
+echo "Run HGG subtyping"
+cd ${analyses_dir}/molecular-subtyping-HGG
+bash run-molecular-subtyping-HGG.sh
+
+# Copy over neurocytoma subtyping
+cp ${analyses_dir}/molecular-subtyping-HGG/results/*.tsv ${commit_dir}
+
+# Run LGAT subtyping
+echo "Run LGAT subtyping"
+cd ${analyses_dir}/molecular-subtyping-LGAT
+bash run_subtyping.sh
+
+# Copy over LGAT subtyping
+cp ${analyses_dir}/molecular-subtyping-LGAT/results/lgat_subtyping.tsv ${commit_dir}
+
+# Run compile subtyping
+echo "Run compile subtyping"
+cd ${analyses_dir}/molecular-subtyping-pathology
+bash run-subtyping-aggregation.sh
+
+# Copy over compiled subtyping
+cp ${analyses_dir}/molecular-subtyping-pathology/results/*.tsv ${commit_dir}
+
+# Run integrate subtyping
+echo "Run integrate subtyping"
+cd ${analyses_dir}/molecular-subtyping-integrate
+bash run-subtyping-integrate.sh
+
+# Copy over integrated subtyping
+cp ${analyses_dir}/molecular-subtyping-integrate/results/histologies.tsv ${release_dir}
+cp ${analyses_dir}/molecular-subtyping-integrate/results/*.tsv ${commit_dir}
 
 # Create an md5sum file for all the files in the directories where the analysis
 # files are compiled
@@ -142,7 +244,7 @@ rm -f analysis_files_commit_md5sum.txt
 md5sum * > analysis_files_commit_md5sum.txt
 
 # Upload all release and commit files s3 bucket in their respective folders
-aws s3 cp ${release_dir}/ $URL/$RELEASE/ --recursive
-aws s3 cp ${commit_dir}/ $URL/$COMMIT/ --recursive
+#aws s3 cp ${release_dir}/ $URL/$RELEASE/ --recursive
+#aws s3 cp ${commit_dir}/ $URL/$COMMIT/ --recursive
 
 printf "\nDone generating pre-release files...\n\n"
