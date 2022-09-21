@@ -16,7 +16,7 @@ The purpose of maintaining `efo-mondo-map.tsv` is to map each cancer group found
 The EFO codes may have prefix “EFO_”, “MONDO_” or “Orphanet_”, the MONDO codes have a prefix “MONDO_”; each followed by seven digits; and NCIT codes have a prefix "NCIT_".
 
 ## Automated OLS search
-The module enables an automated search to retrieve EFO, MONDO, and NCIT codes for all `cancer_group` found in the current data release `efo-mondo-map-prefill.tsv` file. Running the script `run_auto_ols_search.sh` as below creates `.tsv` files under `results` directory in the module which are then merged into a single file describing the cancer_group, old EFO and MONDO codes as found in the `efo-mondo-map-prefill.tsv`, EFO, MONDO and NCIT codes retrieved by the automated search, and T/F flag columns describing if the old and new codes match.
+The module enables an automated search to retrieve EFO, MONDO, and NCIT codes for all `cancer_group` found in the current data release `efo-mondo-map-prefill.tsv` file. Running the script `run_auto_ols_search.sh` as below creates `.tsv` files under `results` directory in the module which are then merged into a single file describing the cancer_group, old EFO and MONDO codes as found in the `efo-mondo-map-prefill.tsv`, EFO, MONDO and NCIT codes retrieved by the automated search, and T/F flag columns describing if the old and new codes match. If needed, the script can also include other OLS ontology types such as HP, UBERON, et cetera.
 
 `bash run_auto_ols_search.sh`
 

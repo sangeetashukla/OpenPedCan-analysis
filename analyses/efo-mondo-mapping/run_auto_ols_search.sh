@@ -30,8 +30,7 @@ input_prefill_file="${source_dir}/efo-mondo-map-prefill.tsv"
 ols_efo="EFO"
 ols_mondo="MONDO"
 ols_ncit="NCIT"
-#ols_uberon="UBERON"
-#ols_hp="HP"
+
 
 # Result file name
 result_parsed_prefix="map-prefill"
@@ -62,18 +61,6 @@ python3 00-search-ols-ontology-terms.py \
   $input_prefill_file \
   $ols_ncit \
   "${result_parsed_prefix}-${ols_ncit}-${result_parsed_suffix}"
-
-
-#python3 00-search-ols-ontology-terms.py \
-#  $input_prefill_file \
-#  $ols_uberon \
-#  "${result_parsed_prefix}-${ols_uberon}-${result_parsed_suffix}"
-
-
-#python3 00-search-ols-ontology-terms.py \
-#  $input_prefill_file \
-#  $ols_hp \
-#  "${result_parsed_prefix}-${ols_hp}-${result_parsed_suffix}"
 
 
 # Merge prefill and auto search results in a single file
