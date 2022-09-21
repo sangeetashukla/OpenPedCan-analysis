@@ -25,7 +25,7 @@ results_dir="results"
 # Input data file path 
 input_prefill_file="${source_dir}/efo-mondo-map-prefill.tsv"
 
-
+ols_onto_type=("EFO" "MONDO" "NCIT")
 
 ols_efo="EFO"
 ols_mondo="MONDO"
@@ -45,22 +45,13 @@ ncit_auto_prefill="${result_parsed_prefix}-${ols_ncit}-${result_parsed_suffix}"
 
 
 
-python3 00-search-ols-ontology-terms.py \
-  $input_prefill_file \
-  $ols_efo \
-  "${result_parsed_prefix}-${ols_efo}-${result_parsed_suffix}"
-
-
-python3 00-search-ols-ontology-terms.py \
-  $input_prefill_file \
-  $ols_mondo \
-  "${result_parsed_prefix}-${ols_mondo}-${result_parsed_suffix}"
-
-
-python3 00-search-ols-ontology-terms.py \
-  $input_prefill_file \
-  $ols_ncit \
-  "${result_parsed_prefix}-${ols_ncit}-${result_parsed_suffix}"
+for onto_type in "${ols_onto_type[@]}"
+do
+   python3 00-search-ols-ontology-terms.py \
+   $input_prefill_file \
+   $onto_type \
+   "${result_parsed_prefix}-$onto_type-${result_parsed_suffix}"
+done
 
 
 # Merge prefill and auto search results in a single file
@@ -74,8 +65,9 @@ Rscript --vanilla 01-merge-auto-search-ols-terms.R \
         
         
 # Remove intermediate data files        
-rm "${results_dir}/${efo_auto_prefill}"
-rm "${results_dir}/${mondo_auto_prefill}"
-rm "${results_dir}/${ncit_auto_prefill}"
+for onto_type in "${ols_onto_type[@]}"
+do
+   rm "${results_dir}/${result_parsed_prefix}-$onto_type-${result_parsed_suffix}"
+done
 
 

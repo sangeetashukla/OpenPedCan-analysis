@@ -9,7 +9,7 @@ Angiosarcoma	NA	NA	EFO_0003968	MONDO_0016982	NCIT_C3088	angiosarcoma	angiosarcom
 Atypical Teratoid Rhabdoid Tumor	EFO_1002008	MONDO_0020560	EFO_1002008	MONDO_0020560	NCIT_C6906	atypical teratoid rhabdoid tumor	atypical teratoid rhabdoid tumor	Atypical Teratoid/Rhabdoid Tumor	True	True	False	True	True	False
 B Acute Lymphoblastic Leukemia/Lymphoma	NA	NA	EFO_0000094	MONDO_0003538	NCIT_C8936	B-cell acute lymphoblastic leukemia	precursor lymphoblastic lymphoma/leukemia	B Lymphoblastic Leukemia/Lymphoma	False	False	False	False	False	False
 Bladder Urothelial Carcinoma	NA	NA	MONDO_0004163	MONDO_0004056	NCIT_C39851	bladder urachal urothelial carcinoma	bladder papillary urothelial carcinoma	Bladder Urothelial Carcinoma	False	False	True	False	False	False
-Breast Invasive Carcinoma	NA	NA	EFO_1000307	MONDO_0005051	NCIT_C36084	Invasive Breast Carcinoma	invasive lobular breast carcinoma	Invasive Breast Micropapillary Carcinoma	False	False	False	False	False	False
+Breast Invasive Carcinoma	NA	NA	EFO_1000307	MONDO_0005051	NCIT_C5142	Invasive Breast Carcinoma	invasive lobular breast carcinoma	Invasive Breast Cribriform Carcinoma	False	False	False	False	False	False
 Burkitt Leukemia/Lymphoma	NA	NA	EFO_1000182	MONDO_0007243	NCIT_C7400	Colon Burkitt Lymphoma	Burkitt lymphoma	Burkitt Leukemia	False	False	False	False	False	False
 Cavernoma	EFO_1000151	MONDO_0003155	EFO_1000151	MONDO_0003155	NCIT_C3086	Cavernous Hemangioma	cavernous hemangioma	Cavernous Hemangioma	False	False	False	True	True	False
 Central neurocytoma	NA	NA	EFO_1000856	MONDO_0019134	NCIT_C3791	central neurocytoma	central neurocytoma	Central Neurocytoma	True	True	True	False	False	False
@@ -69,14 +69,14 @@ Langerhans Cell histiocytosis	EFO_1000318	MONDO_0009519	EFO_1000318	MONDO_001831
 Low-grade glioma/astrocytoma	MONDO_0016685	MONDO_0016685	MONDO_0021637	MONDO_0021637	NCIT_C132067	low grade glioma	low grade glioma	Low Grade Glioma	False	False	False	False	False	False
 Lung Adenocarcinoma	NA	NA	EFO_0000571	MONDO_0005061	NCIT_C3512	lung adenocarcinoma	lung adenocarcinoma	Lung Adenocarcinoma	True	True	True	False	False	False
 Lung Squamous Cell Carcinoma	NA	NA	EFO_0000708	MONDO_0005097	NCIT_C3493	squamous cell lung carcinoma	squamous cell lung carcinoma	Lung Squamous Cell Carcinoma	False	False	True	False	False	False
-Lymphoid Neoplasm Diffuse Large B-cell Lymphoma	NA	NA	EFO_0000403	MONDO_0018905	NCIT_C45605	diffuse large B-cell lymphoma	diffuse large B-cell lymphoma	Lung Diffuse Large B-Cell Lymphoma	False	False	False	False	False	False
+Lymphoid Neoplasm Diffuse Large B-cell Lymphoma	NA	NA	EFO_0000403	MONDO_0018905	NCIT_C171264	diffuse large B-cell lymphoma	diffuse large B-cell lymphoma	Advanced Diffuse Large B-Cell Lymphoma	False	False	False	False	False	False
 Malignant peripheral nerve sheath tumor	EFO_0000760	MONDO_0018078	EFO_0000760	MONDO_0017827	NCIT_C3798	malignant peripheral nerve sheath tumor	malignant peripheral nerve sheath tumor	Malignant Peripheral Nerve Sheath Tumor	True	True	True	True	False	False
 Medulloblastoma	EFO_0002939	MONDO_0007959	EFO_0002939	MONDO_0007959	NCIT_C3222	medulloblastoma	medulloblastoma	Medulloblastoma	True	True	True	True	True	False
 Melanocytic tumor	MONDO_0003222	MONDO_0003222	MONDO_0016744	MONDO_0016744	NCIT_C168592	primary melanocytic tumor of central nervous system	primary melanocytic tumor of central nervous system	Melanocytic Matricoma	False	False	False	False	False	False
 Melanoma	NA	NA	EFO_0000756	MONDO_0005105	NCIT_C3224	melanoma	melanoma	Melanoma	True	True	True	False	False	False
 Meningioma	Orphanet_2495	MONDO_0016642	MONDO_0016642	MONDO_0016642	NCIT_C3230	meningioma	meningioma	Meningioma	True	True	True	False	True	False
 Mesothelioma	NA	NA	EFO_0000588	MONDO_0005065	NCIT_C3234	mesothelioma	mesothelioma	Mesothelioma	True	True	True	False	False	False
-Metastatic secondary tumors	EFO_0009812	MONDO_0024883	EFO_0009709	MONDO_0024879	NCIT_C8816	metastatic neoplasm	metastatic carcinoma	Metastatic Liposarcoma	False	False	False	False	False	False
+Metastatic secondary tumors	EFO_0009812	MONDO_0024883	EFO_0009709	MONDO_0024879	NCIT_C8779	metastatic neoplasm	metastatic carcinoma	Metastatic Chondrosarcoma	False	False	False	False	False	False
 Mixed germ cell tumor	NA	NA	MONDO_0015864	MONDO_0015864	NCIT_C4290	mixed germ cell tumor	mixed germ cell tumor	Mixed Germ Cell Tumor	True	True	True	False	False	False
 Myeloid Neoplasm	NA	NA	EFO_0002427	MONDO_0005170	NCIT_C9290	myeloid neoplasm	myeloid neoplasm	Myeloid Neoplasm	True	True	True	False	False	False
 Neuroblastoma	EFO_0000621	MONDO_0005072	EFO_0000621	MONDO_0005072	NCIT_C3270	neuroblastoma	neuroblastoma	Neuroblastoma	True	True	True	True	True	False
