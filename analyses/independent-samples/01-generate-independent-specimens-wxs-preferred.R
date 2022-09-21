@@ -25,7 +25,8 @@ tumor_samples <- histology_df %>%
                 composition != "Derived Cell Line", 
                 is.na(RNA_library), 
                 experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing"),
-                pathology_diagnosis != "Metastatic secondary tumors")
+                !grepl("Metastatic secondary tumors", pathology_diagnosis, ignore.case = FALSE, perl = FALSE,
+                       fixed = FALSE, useBytes = FALSE))
 
 # subset to WXS samples only
 wxs_samples <- tumor_samples %>%

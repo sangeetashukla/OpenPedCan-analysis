@@ -25,7 +25,8 @@ rnaseq_samples <- histology_df %>%
   dplyr::filter(sample_type == "Tumor", 
                 composition != "Derived Cell Line", 
                 experimental_strategy == "RNA-Seq",
-                pathology_diagnosis != "Metastatic secondary tumors")
+                !grepl("Metastatic secondary tumors", pathology_diagnosis, ignore.case = FALSE, perl = FALSE,
+                       fixed = FALSE, useBytes = FALSE))
 
 print(nrow(rnaseq_samples))
 # generate release RNA-Seq independent samples for all cohorts

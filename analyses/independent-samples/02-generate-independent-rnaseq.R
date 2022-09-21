@@ -30,7 +30,8 @@ independent_dna_sample_df_all <- readr::read_tsv("results/independent-specimens.
 histology_df <- histology_df %>%
   dplyr::filter(sample_type == "Tumor",
                 composition != "Derived Cell Line",
-                pathology_diagnosis != "Metastatic secondary tumors") 
+                !grepl("Metastatic secondary tumors", pathology_diagnosis, ignore.case = FALSE, perl = FALSE,
+                       fixed = FALSE, useBytes = FALSE)) 
 
 # write independent sample outputs for independent levels of each cohort 
 rnaseq_primary_each_file <- file.path(out_dir, "independent-specimens.rnaseqpanel.primary.eachcohort.tsv")

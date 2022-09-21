@@ -24,7 +24,8 @@ wgs_samples <- histology_df %>%
   dplyr::filter(sample_type == "Tumor", 
                 composition != "Derived Cell Line", 
                 experimental_strategy == "WGS",
-                pathology_diagnosis != "Metastatic secondary tumors")
+                !grepl("Metastatic secondary tumors", pathology_diagnosis, ignore.case = FALSE, perl = FALSE,
+                       fixed = FALSE, useBytes = FALSE))
 
 # generate WGS independent samples for each cohort
 wgs_primary_each <- independent_dna_samples(wgs_samples, tumor_types = "primary", independent_level = "each-cohort", seed = 2020)
