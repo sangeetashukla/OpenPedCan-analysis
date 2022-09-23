@@ -54,14 +54,20 @@ then
   echo "Downloading ${GENCODE27##*/}"
   curl -O $GENCODE27
 fi
-cd ../
 
 GENCODE38="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_38/gencode.v38.primary_assembly.annotation.gtf.gz"
-cd data
 if [ ! -e ${GENCODE38##*/} ]
 then
   echo "Downloading ${GENCODE38##*/}"
   curl -O $GENCODE38
+fi
+
+
+GENCODE39="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_39/gencode.v39.primary_assembly.annotation.gtf.gz"
+if [ ! -e ${GENCODE39##*/} ]
+then
+  echo "Downloading ${GENCODE39##*/}"
+  curl -O $GENCODE39
 fi
 
 
