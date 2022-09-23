@@ -182,7 +182,7 @@ jobs:
         uses: ./
         id: RUN-efo-mondo-mapping
         with:
-          args: analyses/efo-mondo-mapping/run_qc.sh
+          args: analyses/efo-mondo-mapping/run_search_and_qc.sh
 
       - name: Run ENSEMBL Gene matching
         uses: ./
