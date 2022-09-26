@@ -133,7 +133,7 @@ cd ${analyses_dir}/tp53_nf1_score
 OPENPBTA_BASE_SUBTYPING=1 bash run_classifier.sh
 
 # Copy over TP53 results
-cp ${analyses_dir}/tp53_nf1_score/results/*.tsv ${commit_dir}
+cp ${analyses_dir}/tp53_nf1_score/results/* ${commit_dir}
 
 ## Step 2. Run subtyping modules
 
@@ -244,7 +244,7 @@ rm -f analysis_files_commit_md5sum.txt
 md5sum * > analysis_files_commit_md5sum.txt
 
 # Upload all release and commit files s3 bucket in their respective folders
-#aws s3 cp ${release_dir}/ $URL/$RELEASE/ --recursive
-#aws s3 cp ${commit_dir}/ $URL/$COMMIT/ --recursive
+aws s3 cp ${release_dir}/ $URL/$RELEASE/ --recursive
+aws s3 cp ${commit_dir}/ $URL/$COMMIT/ --recursive
 
 printf "\nDone generating pre-release files...\n\n"
