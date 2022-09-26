@@ -134,8 +134,15 @@ jobs:
           - name: Update table annotation data
             entrypoint: long-format-table-utils/run-update-long-format-table-utils.sh
 
-          - name: Fusion frequency tables
+# MTP-specific modules
+         - name: Fusion frequency tables
             entrypoint: fusion-frequencies/run-frequencies.sh
+            
+          - name: SNV frequency tables
+            entrypoint: snv-frequencies/run-snv-frequencies.sh
+            
+          - name: CNV frequency tables
+            entrypoint: cnv-frequencies/run-cnv-frequencies-analysis.sh
     steps:
       - uses: actions/checkout@v3
 
