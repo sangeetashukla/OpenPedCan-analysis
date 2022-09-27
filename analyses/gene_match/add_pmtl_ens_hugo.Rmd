@@ -7,7 +7,7 @@ output: html_notebook
 ```{r}
 library(tidyverse)
 
-ens_map <- read_tsv("results/ensembl_gene_symbol_gtf_genode_v28_v38_open_ped_can_v7_merged.tsv") %>%
+ens_map <- read_tsv("results/gencode_ensg_symbol_map_merged.tsv") %>%
   rename(ensg_id = ensembl)
 pmtl <- read_tsv("input/PMTL_v1.1.tsv") %>%
   rename(ensg_id = Ensembl_ID, pmtl = FDA_Designation)

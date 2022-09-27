@@ -15,15 +15,15 @@ mkdir -p results
 
 ## Match ensembl to gene_symbol using gtf file
 
-Rscript --vanilla gene_ensembl_id_from_gtf.R --gtf_file input/gencode.v27.annotation.gtf.gz --output_file results/ensembl_gene_symbol_gtf_genode_v27.tsv
-Rscript --vanilla gene_ensembl_id_from_gtf.R --gtf_file input/gencode.v28.annotation.gtf.gz --output_file results/ensembl_gene_symbol_gtf_genode_v28.tsv
-Rscript --vanilla gene_ensembl_id_from_gtf.R --gtf_file input/gencode.v36.annotation.gtf.gz --output_file results/ensembl_gene_symbol_gtf_genode_v36.tsv
-Rscript --vanilla gene_ensembl_id_from_gtf.R --gtf_file input/gencode.v39.annotation.gtf.gz --output_file results/ensembl_gene_symbol_gtf_genode_v39.tsv
+Rscript --vanilla gene_ensembl_id_from_gtf.R --gtf_file input/gencode.v27.annotation.gtf.gz --output_file results/ensembl_gene_symbol_gtf_gencode_v27.tsv
+Rscript --vanilla gene_ensembl_id_from_gtf.R --gtf_file input/gencode.v28.annotation.gtf.gz --output_file results/ensembl_gene_symbol_gtf_gencode_v28.tsv
+Rscript --vanilla gene_ensembl_id_from_gtf.R --gtf_file input/gencode.v36.annotation.gtf.gz --output_file results/ensembl_gene_symbol_gtf_gencode_v36.tsv
+Rscript --vanilla gene_ensembl_id_from_gtf.R --gtf_file input/gencode.v39.annotation.gtf.gz --output_file results/ensembl_gene_symbol_gtf_gencode_v39.tsv
 
 ## Merge gencode all results and input/open_ped_can_v7_ensg-hugo-rmtl-mapping.tsv
 
-Rscript --vanilla merge_gencode_v28_v38_open_ped_can_v7_gene_ensg_symbol_mapping_files.R
-# creates ensembl_gene_symbol_gtf_genode_v28_v38_merged.tsv
+Rscript --vanilla merge_gencode_ensg_symbol_map.R
+# creates gencode_ensg_symbol_map_merged.tsv
 
 ## Merge PMTL
 Rscript -e "rmarkdown::render('add_pmtl_ens_hugo.Rmd')"
