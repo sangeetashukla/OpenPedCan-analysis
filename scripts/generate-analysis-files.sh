@@ -134,6 +134,7 @@ OPENPBTA_BASE_SUBTYPING=1 bash run_classifier.sh
 
 # Copy over TP53 results
 cp ${analyses_dir}/tp53_nf1_score/results/* ${commit_dir}
+cp ${analyses_dir}/tp53_nf1_score/plots/* ${commit_dir}
 
 ## Step 2. Run subtyping modules
 
