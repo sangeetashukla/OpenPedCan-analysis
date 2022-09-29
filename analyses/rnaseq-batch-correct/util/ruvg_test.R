@@ -50,7 +50,6 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
     
     # run RUVg assuming there are k_val factors of unwanted variation
     ruvg_set <- RUVg(x = seq_expr_set, cIdx = emp_neg_ctrl_genes, k = k_val[i], drop = drop)
-    readr::write_rds(x = ruvg_set, file = file.path(output_dir, paste0('normCounts_', i,'_d', drop, '_ruvseq_output.rds')))
     
     # pca and umap after ruvg
     ruvg_pca <- edaseq_plot(object = ruvg_set, title = paste0("PCA: RUVg output (k = ", i, ", d=", drop, ")"), type = "PCA", color_var = color_var, shape_var = shape_var)
@@ -73,7 +72,6 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
         arrange(padj) 
       
       readr::write_tsv(x = dge_output, file = file.path(output_dir, paste0('DESeq2_', i, '_d', drop,  '_ruvseq_dge.tsv')))
-      readr::write_rds(x = ruv_dds, file = file.path(output_dir, paste0('DESeq2_', i, '_d', drop, '_ruvseq_dge.rds')))
       
     } else if(diff_type == "edger") {
       # W corresponds to the factors of "unwanted variation"
@@ -88,6 +86,7 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
       dge_output <- topTags(lrt, n = Inf)$table %>%
         rownames_to_column('gene') %>%
         dplyr::rename("pvalue" = "PValue", "padj" = "FDR")
+      readr::write_tsv(x = dge_output, file = file.path(output_dir, paste0('EdgeR_', i, '_d', drop,  '_ruvseq_dge.tsv')))
     }
     
     # plot and save p-value histogram
