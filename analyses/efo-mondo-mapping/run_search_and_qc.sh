@@ -85,4 +85,4 @@ done
 
 
 # Section 2: Run QC for the efo-mondo-map.tsv file
-Rscript -e "rmarkdown::render('qc_efo_mondo_map.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('02-qc_efo_mondo_map.Rmd', clean = TRUE)"
