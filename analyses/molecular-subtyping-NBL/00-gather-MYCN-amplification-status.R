@@ -1,9 +1,18 @@
+setwd("~/OpenPedCan-analysis/analyses/molecular-subtyping-NBL")
 library(dplyr)
 library(data.table)
 
-# Load the file consensus_wgs_plus_cnvkit_wxs.tsv.gz
+# Load the files from the ticket
 consensus_df<-as.data.frame(fread("/home/rstudio/OpenPedCan-analysis/data/consensus_wgs_plus_cnvkit_wxs.tsv.gz"))
 hist_df<- as.data.frame(fread("/home/rstudio/OpenPedCan-analysis/data/histologies.tsv"))
+cnv_cnvkit_df<-as.data.frame(fread("/home/rstudio/OpenPedCan-analysis/data/cnv-cnvkit.seg.gz"))
+cnv_controlfreec_df<-as.data.frame(fread("/home/rstudio/OpenPedCan-analysis/data/cnv-controlfreec.tsv.gz"))
+gene_expression_df<-as.data.frame(readRDS("/home/rstudio/OpenPedCan-analysis/data/gene-expression-rsem-tpm-collapsed.rds"))
+
+
+
+
+
 
 # For each NBL sample, gather MYCN amplification status 
 
