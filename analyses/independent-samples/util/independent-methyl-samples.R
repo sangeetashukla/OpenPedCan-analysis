@@ -91,7 +91,7 @@ independent_methyl_samples <- function(independent_methyl_sample_df = NULL,
       dplyr::filter(experimental_strategy == "Methylation",
                     tumor_descriptor %in% primary_descs,
                     # find and remove participants which have 
-                    # matching rna samples in independent_wgswxspanel
+                    # matching rna samples in independent_rna
                     !Kids_First_Participant_ID %in% independent_rna$Kids_First_Participant_ID)
     
     # has rna samples which match the independent samples provided plus rna only sample which are primary tumors
@@ -165,13 +165,6 @@ independent_methyl_samples <- function(independent_methyl_sample_df = NULL,
           dplyr::filter(cancer_group == cancer_group_name)
       }
       
-      # split filtered_df for each cohort into rnaseq and panel sample and rbind 
-      # with panel samples at the end to allow dplyr::distinct to preferentially select  
-      # rnaseq samples whenever there are samples for a participant in both rna libraries
-      rnaseq <- filtered_df %>% filter(RNA_library != "exome_capture")
-      exome_capture <- filtered_df %>% filter(RNA_library == "exome_capture")
-      filtered_df <- rbind(rnaseq, exome_capture)
-      
       # find the independent samples for the specific cancer group and cohort
       # "If there are multiple rows for a given combination of inputs, only the first
       # row will be preserved. If omitted, will use all variables." -- distinct in dplyr 0.8.3
@@ -188,9 +181,6 @@ independent_methyl_samples <- function(independent_methyl_sample_df = NULL,
   }
   
   if(independent_level == "all-cohorts"){
-    rnaseq <- sample_df %>% filter(RNA_library != "exome_capture")
-    exome_capture <- sample_df %>% filter(RNA_library == "exome_capture")
-    sample_df <- rbind(rnaseq, exome_capture)
     
     independent_all <- sample_df %>%
       dplyr::distinct(Kids_First_Participant_ID, .keep_all = TRUE) %>%
