@@ -1,3 +1,5 @@
+# Purpose: Generate tables of independent rna-seq specimens 
+
 # load libraries
 library(magrittr)
 library(dplyr)
@@ -19,90 +21,83 @@ histology_df <- readr::read_tsv(file.path(root_dir, 'data/histologies.tsv'), gue
 set.seed(100)
 histology_df <- histology_df[sample(nrow(histology_df)), ]
 
-# Filter to only methylation samples from tumors, where composition is not "Derived Cell Line"
-methyl_samples <- histology_df %>%
-  dplyr::filter(sample_type == "Tumor", 
-                composition != "Derived Cell Line", 
-                experimental_strategy == "Methylation",
+# Read in RNA-seq independent sample list to match to mehtyl samples
+# So that independent RNA samples match the Methyl samples
+independent_rnaseqpanel_sample_df_each <- readr::read_tsv("results/independent-specimens.rnaseqpanel.primary-plus.eachcohort.tsv")
+independent_rnaseqpanel_sample_df_all <- readr::read_tsv("results/independent-specimens.rnaseqpanel.primary-plus.tsv")
+
+# Filter for tumor samples where composition is not Derived Cell Line
+histology_df <- histology_df %>%
+  dplyr::filter(sample_type == "Tumor",
+                composition != "Derived Cell Line",
                 !grepl("Metastatic secondary tumors", pathology_diagnosis, ignore.case = FALSE, perl = FALSE,
-                       fixed = FALSE, useBytes = FALSE))
-
-# generate methylation independent samples for all cohorts
-methyl_primary_all <- independent_methyl_samples(methyl_samples,
-                                                 histology_df = histology_df,
-                                                 match_type = "independent_methyl_plus_only_rna",
-                                                 tumor_description_methyl_only = "primary",
-                                                 independent_level = "all-cohorts", 
-                                                 seed = 2020)
-methyl_relapse_all <- independent_methyl_samples(methyl_samples, 
-                                                 histology_df = histology_df,
-                                                 match_type = "independent_methyl_plus_only_rna",
-                                                 tumor_description_methyl_only = "relapse", 
-                                                 independent_level = "all-cohorts", 
-                                                 seed = 2020)
-methyl_primary_plus_all <- independent_methyl_samples(methyl_samples, 
-                                                      histology_df = histology_df,
-                                                      match_type = "independent_methyl_plus_only_rna",
-                                                      tumor_description_methyl_only = "primary_plus", 
-                                                      independent_level = "all-cohorts", 
-                                                      seed = 2020)
+                       fixed = FALSE, useBytes = FALSE)) 
 
 
-# save output for all cohorts
-methyl_primary_all_file <- file.path(out_dir, "independent-specimens.methyl.primary.tsv")
-message(paste(nrow(methyl_primary_all), "Methylation primary specimens for all cohorts"))
-methyl_primary_all %>% 
-  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
-  readr::write_tsv(methyl_primary_all_file)
-
-methyl_relapse_all_file <- file.path(out_dir, "independent-specimens.methyl.relapse.tsv")
-message(paste(nrow(methyl_relapse_all), "Methylation relapse specimens for all cohorts"))
-methyl_relapse_all %>% 
-  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
-  readr::write_tsv(methyl_relapse_all_file)
-
-methyl_primplus_all_file <- file.path(out_dir, "independent-specimens.methyl.primary-plus.tsv")
-message(paste(nrow(methyl_primary_plus_all), "Methylation specimens (including non-primary) for all cohorts"))
-methyl_primary_plus_all %>% 
-  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
-  readr::write_tsv(methyl_primplus_all_file)
-
-
-# generate methylation independent samples for each cohort
-methyl_primary_each <- independent_methyl_samples(methyl_samples, 
-                                                  histology_df = histology_df,
-                                                  match_type = "independent_methyl_plus_only_rna",
-                                                  tumor_description_methyl_only = "primary", 
-                                                  independent_level = "each-cohort", 
-                                                  seed = 2020)
-methyl_relapse_each <- independent_methyl_samples(methyl_samples, 
-                                                  histology_df = histology_df,
-                                                  match_type = "independent_methyl_plus_only_rna",
-                                                  tumor_description_methyl_only = "relapse", 
-                                                  independent_level = "each-cohort", 
-                                                  seed = 2020)
-methyl_primary_plus_each <- independent_methyl_samples(methyl_samples, 
-                                                       histology_df = histology_df,
-                                                       match_type = "independent_methyl_plus_only_rna",
-                                                       tumor_description_methyl_only = "primary_plus", 
-                                                       independent_level = "each-cohort", 
-                                                       seed = 2020)
-
-# save output for each cohort
+# write independent sample outputs for independent levels of each cohort 
 methyl_primary_each_file <- file.path(out_dir, "independent-specimens.methyl.primary.eachcohort.tsv")
-message(paste(nrow(methyl_primary_each), "Methylation primary specimens for each cohort"))
-methyl_primary_each %>% 
-  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+independent_methyl_primary_each <- histology_df %>%
+  independent_methyl_samples(independent_methyl_sample_df = independent_rnaseqpanel_sample_df_each,
+                             independent_level = "each-cohort",
+                             histology_df = .,
+                             match_type = "independent_methyl_plus_only_rna",
+                             tumor_description_methyl_only = "primary", 
+                             seed = 2020) %>% 
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
   readr::write_tsv(methyl_primary_each_file)
 
 methyl_relapse_each_file <- file.path(out_dir, "independent-specimens.methyl.relapse.eachcohort.tsv")
-message(paste(nrow(methyl_relapse_each), "Methylation relapse specimens for each cohort"))
-methyl_relapse_each %>% 
-  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+independent_methyl_relapse_each <- histology_df %>%
+  independent_methyl_samples(independent_methyl_sample_df = independent_rnaseqpanel_sample_df_each,
+                             independent_level = "each-cohort",
+                             histology_df = .,
+                             match_type = "independent_methyl_plus_only_rna",
+                             tumor_description_methyl_only = "relapse", 
+                             seed = 2020) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
   readr::write_tsv(methyl_relapse_each_file)
 
 methyl_primplus_each_file <- file.path(out_dir, "independent-specimens.methyl.primary-plus.eachcohort.tsv")
-message(paste(nrow(methyl_primary_plus_each), "Methylation specimens (including non-primary) for each cohort"))
-methyl_primary_plus_each %>% 
-  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+independent_methyl_primary_plus_each <- histology_df %>%
+  independent_methyl_samples(independent_methyl_sample_df = independent_rnaseqpanel_sample_df_each,
+                             independent_level = "each-cohort",
+                             histology_df = .,
+                             match_type = "independent_methyl_plus_only_rna",
+                             tumor_description_methyl_only = "primary_plus",
+                             seed = 2020) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
   readr::write_tsv(methyl_primplus_each_file)
+
+# write independent sample outputs for independent level of all cohorts 
+methyl_primary_all_file <- file.path(out_dir, "independent-specimens.methyl.primary.tsv")
+independent_methyl_primary_all <- histology_df %>%
+  independent_methyl_samples(independent_methyl_sample_df = independent_rnaseqpanel_sample_df_all,
+                             independent_level = "all-cohorts",
+                             histology_df = .,
+                             match_type = "independent_methyl_plus_only_rna",
+                             tumor_description_methyl_only = "primary",
+                             seed = 2020) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
+  readr::write_tsv(methyl_primary_all_file)
+
+methyl_relapse_all_file <- file.path(out_dir, "independent-specimens.methyl.relapse.tsv")
+independent_methyl_relapse_all <- histology_df %>%
+  independent_methyl_samples(independent_methyl_sample_df = independent_rnaseqpanel_sample_df_all,
+                             independent_level = "all-cohorts",
+                             histology_df = .,
+                             match_type = "independent_methyl_plus_only_rna",
+                             tumor_description_methyl_only = "relapse",
+                             seed = 2020) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
+  readr::write_tsv(methyl_relapse_all_file)
+
+methyl_primplus_all_file <- file.path(out_dir, "independent-specimens.methyl.primary-plus.tsv")
+independent_methyl_primary_plus_all <- histology_df %>%
+  independent_methyl_samples(independent_methyl_sample_df = independent_rnaseqpanel_sample_df_all,
+                             independent_level = "all-cohorts",
+                             histology_df = .,
+                             match_type = "independent_methyl_plus_only_rna",
+                             tumor_description_methyl_only = "primary_plus",
+                             seed = 2020) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
+  readr::write_tsv(methyl_primplus_all_file)
