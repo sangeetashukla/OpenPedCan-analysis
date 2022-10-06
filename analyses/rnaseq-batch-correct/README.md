@@ -22,7 +22,11 @@ as standard output for use in downstream visualizations.
 #### Run tumor-only RUVg analysis 
 
 The script below runs a tumor-only analysis for a specific cancer_group, using molecular subtype
-as the default design variable. 
+as the default design variable. The script evaluates DESeq2-RUVg results by pulling in all analysis results across all k's, 
+evaluating changes in p-value for negative control genes (HRT Atlas genes) and positive control genes
+that are analysis-specific. The script looks for k's that maximize sensitivity and specificity by
+selecting the k that resulted in the most p-values increasing for negative control genes and decreasing
+for positive control genes when correcting for batch effects. 
 
 
 Example run:
@@ -30,8 +34,10 @@ Example run:
 ```sh
 Rscript code/01-ruvseq-deseq.R \
 --dataset 'target_nbl' \
---cohort_value 'TARGET' \
---cancer_group_value 'Neuroblastoma' \
+--cohort_values 'TARGET' \
+--cancer_group_values 'Neuroblastoma' \
+--pos_c 'MYCN_targets_M2919_M18532.rds' \
+--neg_c 'hk_genes_normals.rds' \
 --k_value 5
 ```
 
@@ -39,7 +45,6 @@ Output files containing normalized counts, RUVg objects, and dge results are in 
 
 ```sh
 output/[dataset]/deseq2-analysis
-├──*dge.rds # RUVg output object
 └── *dge.tsv # DESeq2 DGE results
 └── *pvalues.tsv # p-value results
 └── *output.rds # normalized counts at all k's
@@ -64,7 +69,11 @@ plots/[dataset]/
 The script below runs a tumor-normal analysis for cancer groups (comma-separated) versus gtex subgroups (comma-separated)
 creating a tumor-normal comparison in the design. A key parameter is `drop`, which is a user-specifiable
 parameter which drops the initial n factors of variation to guard against removing true biological variation
-across tumor and normal.  
+across tumor and normal. The script evaluates DESeq2-RUVg results by pulling in all analysis results across all k's, 
+evaluating changes in p-value for negative control genes (HRT Atlas genes) and positive control genes
+(Reactome Cell Cycle). The script looks for k's that maximize sensitivity and specificity by
+selecting the k that resulted in the most p-values increasing for negative control genes and decreasing
+for positive control genes when correcting for batch effect 
 
 
 Example run:
@@ -76,17 +85,18 @@ Rscript code/02-ruvseq-deseq-tn.R \
 --cancer_group_values 'Diffuse midline glioma,High-grade glioma/astrocytoma' \
 --gtex_subgroups 'Brain - Cortex,Brain - Cerebellum' \
 --k_value 5 \
---drop 2
+--drop 2 \
+--pos_c 'reactome_cell_cycle_msigdb_v7.5.1.rds' \
+--neg_c 'hk_genes_normals.rds'
 ```
 
 Output files containing normalized counts, RUVg objects, and dge results are in the `output/[dataset]/deseq2-analysis/` folder
 
 ```sh
 output/[dataset]/deseq2-analysis
-├──*dge.rds # RUVg output object
 └── *dge.tsv # DESeq2 DGE results
 └── *pvalues.tsv # p-value results
-└── *output.rds # normalized counts at all k's
+└── *output.rds # normalized counts
 ```
 
 #### Initial QC plots using PCA and UMAP
@@ -104,58 +114,6 @@ plots/[dataset]/
 └── *transcriptome.pdf # p-value histogram of full transcriptome
 ```
 
-
-#### Select optimal results 
-
-This script evaluates DESeq2-RUVg results by pulling in all analysis results across all k's, 
-evaluating changes in p-value for negative control genes (HRT Atlas genes) and positive control genes
-that are analysis-specific. The script looks for k's that maximize sensitivity and specificity by
-selecting the k that resulted in the most p-values increasing for negative control genes and decreasing
-for positive control genes when correcting for batch effects. 
-
-
-Example run tumor-normal:
-
-```sh
-Rscript code/03-ruvseq-summarization.R \
---dataset 'HGG-DMG_TN' \
---cohort_values 'PBTA,GTEx' \
---cancer_group_values 'Diffuse midline glioma,High-grade glioma/astrocytoma' \
---ruvg_dir 'deseq2_analysis' \
---pos_c 'reactome_cell_cycle_msigdb_v7.5.1.rds' \
---neg_c 'hk_genes_normals.rds' \
---analysis_type 'tumor-normal' \
---gtex_subgroups 'Brain - Cortex,Brain - Cerebellum'
-```
-
-Example run tumor-only:
-
-```sh
-Rscript code/03-ruvseq-summarization.R \
---dataset 'hgg_dmg' \
---cohort_values 'PBTA' \
---cancer_group_values 'High-grade glioma/astrocytoma,Diffuse midline glioma' \
---ruvg_dir 'deseq2_analysis' \
---pos_c '12915_2022_1324_MOESM4_ESM.rds' \
---neg_c 'hk_genes_normals.rds'
---analysis_type 'tumor-only'
-```
-
-Output files containing normalized counts, RUVg objects, and dge results are in the `output/[dataset]/deseq2-analysis/` folder
-
-```sh
-output/[dataset]/deseq2-analysis
-├── /normalized_counts/*normalized_counts.rds # RUVg output object
-```
-
-Plots corresponding to the optimal `k` are as follows: 
-
-```sh
-# PCA, UMAP
-plots/[dataset]/
-├── *optimal_histogram.pdf # p-value histogram  and for optimal k
-├── final_clustering*.pdf # PCA and UMAP clustering results for optimal k
-```
 
 ###Archive
 #### RUVSeq analysis 
