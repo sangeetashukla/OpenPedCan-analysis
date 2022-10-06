@@ -367,7 +367,7 @@ readr::write_rds(ruvg.res@assayData$normalizedCounts,
 # Return corresponding DGE analysis
 readr::write_tsv(ruvg.dge,
                  file = file.path(
-                   output_dir,
+                   output_dir, 'deseq2_analysis',
                    paste0('RUVg_optimal_k', scores.ind, '_dgeResults.tsv')
                  ))
 message('Done')
