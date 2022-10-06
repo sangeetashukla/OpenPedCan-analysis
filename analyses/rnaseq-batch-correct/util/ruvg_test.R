@@ -44,12 +44,15 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
   dge_output_neg_control_genes <- list()
   chisq_out <- list()
   ks_out <- list()
+  dge_output_list <- list()
+  ruvseq_set_list <- list()
   for(i in 1:length(k_val)){
     print(paste0("K = ", i))
     print(paste0('Run RUVg...'))
     
     # run RUVg assuming there are k_val factors of unwanted variation
     ruvg_set <- RUVg(x = seq_expr_set, cIdx = emp_neg_ctrl_genes, k = k_val[i], drop = drop)
+    ruvseq_set_list[[i]] <- ruvg_set
     
     # pca and umap after ruvg
     ruvg_pca <- edaseq_plot(object = ruvg_set, title = paste0("PCA: RUVg output (k = ", i, ", d=", drop, ")"), type = "PCA", color_var = color_var, shape_var = shape_var)
@@ -71,7 +74,7 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
         rownames_to_column('gene') %>%
         arrange(padj) 
       
-      readr::write_tsv(x = dge_output, file = file.path(output_dir, paste0('DESeq2_', i, '_d', drop,  '_ruvseq_dge.tsv')))
+      dge_output_list[[i]] <- dge_output
       
     } else if(diff_type == "edger") {
       # W corresponds to the factors of "unwanted variation"
@@ -86,7 +89,8 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
       dge_output <- topTags(lrt, n = Inf)$table %>%
         rownames_to_column('gene') %>%
         dplyr::rename("pvalue" = "PValue", "padj" = "FDR")
-      readr::write_tsv(x = dge_output, file = file.path(output_dir, paste0('EdgeR_', i, '_d', drop,  '_ruvseq_dge.tsv')))
+      
+      dge_output_list[[i]] <- dge_output
     }
     
     # plot and save p-value histogram
@@ -117,6 +121,9 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
     ks_out[[i]]$k <- k_val[i]
   }
   
+  # save dge and ruvseq outputs
+  #readr::write_rds(x = dge_output_list, file = file.path(output_dir, paste0(diff_type, '_d', drop,  '_ruvseq_dge.rds')))
+  #readr::write_rds(x = ruvseq_dds_list, file = file.path(output_dir, paste0(diff_type, '_d', drop,  '_ruvseq_rdslist.rds')))
   # save the plots for all k values in a multi-page pdf file
   # clustering output (PCA/UMAP)
   pdf(file = file.path(plot_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_d', drop, '_clustering.pdf')), width = 6, height = 4)
@@ -140,4 +147,7 @@ ruvg_test <- function(seq_expr_set, emp_neg_ctrl_genes, k_val = 1:2, prefix, dif
   # rbind and save ks values
   data.table::rbindlist(ks_out) %>%
     write_tsv(file = file.path(output_dir, paste0(prefix, '_dge_ruvg_', diff_type, '_d', drop, '_ks_pvalues.tsv')))
+  
+  output_list <- list(dge_output = dge_output_list, ruvg_eset = ruvseq_set_list)
+  return(output_list)
 }
