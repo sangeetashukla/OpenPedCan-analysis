@@ -9,15 +9,15 @@ cnv_cnvkit_df<-as.data.frame(fread("/home/rstudio/OpenPedCan-analysis/data/cnv-c
 cnv_controlfreec_df<-as.data.frame(fread("/home/rstudio/OpenPedCan-analysis/data/cnv-controlfreec.tsv.gz"))
 gene_expression_df<-as.data.frame(readRDS("/home/rstudio/OpenPedCan-analysis/data/gene-expression-rsem-tpm-collapsed.rds"))
 
-
-
+# should be like independent-specimens.wgswxspanel.primary.
+test_df <- as.data.frame(fread("/home/rstudio/OpenPedCan-analysis/data/independent-specimens.wgswxspanel.primary.prefer.wgs.tsv"))
 
 
 
 # For each NBL sample, gather MYCN amplification status 
 
 ## Step 1: Filter the neuroblastoma, ganglioneuroblastoma, and ganglioneuroma samples from hist file first
-hist_df <- hist_df %>% filter(pathology_diagnosis=="Neuroblastoma"|
+hist_filtered_df <- hist_df %>% filter(pathology_diagnosis=="Neuroblastoma"|
                                 pathology_diagnosis=="Ganglioneuroblastoma"|
                                 pathology_diagnosis=="Ganglioneuroblastoma,nodular"|
                                 pathology_diagnosis=="Ganglioneuroblastoma, intermixed"|
@@ -25,7 +25,26 @@ hist_df <- hist_df %>% filter(pathology_diagnosis=="Neuroblastoma"|
 
 
 ## Step 2: Filter the MCYN records from consensus_wgs_plus_cnvkit_wxs.tsv.gz
-consensus_df <- consensus_df %>% filter(gene_symbol=="MYCN")
+consensus_filtered_df <- consensus_df %>% filter(gene_symbol=="MYCN")
 
 ## Join the two data frames to get MYCN details with respect to the diagnosis
-Myc_df <- inner_join(hist_df,consensus_df,by= c("Kids_First_Biospecimen_ID" = "biospecimen_id"))
+Myc_df <- inner_join(hist_filtered_df,consensus_filtered_df,by= c("Kids_First_Biospecimen_ID" = "biospecimen_id"))
+
+
+# Create alterations/output table for matched DNA/RNA biospecimens. Match ID can be adapted from the independent-samples module
+
+## First create a df like A data frame of samples, with columnscorresponding to those in `independent-specimens.wgswxspanel.primary.tsv
+# independent-specimens.wgswxspanel.relapse.tsv independent-specimens.wgswxspanel.primary-plus.tsv
+# columns that I need here : "Kids_First_Participant_ID" "Kids_First_Biospecimen_ID" "cohort" "cancer_group" "experimental_strategy""tumor_descriptor"
+
+independent_dna_samples_df <- Myc_df %>% select(Kids_First_Participant_ID,Kids_First_Biospecimen_ID,
+                                             cohort,cancer_group,experimental_strategy,tumor_descriptor)
+
+histology_df_processed <- hist_filtered_df %>%mutate(match_id = paste(Kids_First_Participant_ID, sample_id, sep = "_"))
+
+
+independent_dna <- histology_df_processed %>%filter(Kids_First_Participant_ID %in% independent_dna_samples_df$Kids_First_Participant_ID)
+
+matched_rna <- histology_df_processed %>%filter(experimental_strategy == "RNA-Seq" | experimental_strategy == "Targeted Sequencing",
+                                      RNA_library %in% c("exome_capture", "stranded", "poly-A", "poly-A stranded"),
+                                      match_id %in% independent_dna$match_id)
