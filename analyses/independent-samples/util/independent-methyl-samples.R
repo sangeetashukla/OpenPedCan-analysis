@@ -7,11 +7,9 @@
 #' should be pre-filtered by `composition` and `sample_type`.  
 #' 
 #' 
-#' @param independent_methyl_sample_df A data frame of samples, with columns 
-#' corresponding to those in `independent-specimens.methyl.primary.tsv` 
-#' or `independent-specimens.methyl.relapse.tsv` 
-#' or `independent-specimens.methyl.primary-plus.tsv` depending on what 
-#' set of samples you need to include
+#' @param independent_rna_sample_df A data frame of samples, with columns 
+#' corresponding to those in produced by RNA independent samples scripts  
+#' depending on what set of samples you need to include
 #' @param histology_df A data frame of samples, with columns corresponding 
 #' to those `histologies.tsv`
 #' @param independent_level Designates whether we want to count independent samples in 
@@ -19,14 +17,14 @@
 #' in different cohorts as the same sample and "each-cohort" consider the same sample
 #' in different cohorts as "independent" (different). 
 #' @param match_type Designates which type matching needs to be done. Options
-#' are "independent_rna" to include only rna samples that match the 
-#' independent-specimens.methyl sample set, 
-#' "independent_methyl_plus_only_rna" to include samples that match the rna sample 
+#' are "independent_rna" to include only methyl samples that match the 
+#' independent-specimens.rnaseqpanel sample set, 
+#' "independent_rna_plus_only_methyl" to include samples that match the rna sample 
 #' set plus include samples where only rna samples exists
 #' "none" to include only rnaseq samples
 #' @param tumor_description_methyl_only Tumor descriptors to select samples where
-#' only RNA samples are available and will have no matching id in independent_methyl_sample_df
-#' Ope=tions are "primary" to select only primary/initial tumors. Primary tumors are defined as those designated "Initial CNS Tumor"+ "Primary Tumor".
+#' only methylation samples are available and will have no matching id in independent_rna_sample_df
+#' Options are "primary" to select only primary/initial tumors. Primary tumors are defined as those designated "Initial CNS Tumor"+ "Primary Tumor".
 #' "primary_plus" if you would like to select other non-initial tumor RNA-Seq sample if no 
 #' initial tumor RNA-Seq sample exists
 #' or "relapse" in select only relapse tumors. Relapse tumors are defined as those designated by "Recurrence", "Recurrent Tumor","Recurrent tumor","Progressive","Progressive Disease Post-Mortem" in `tumor_descriptor` field
@@ -35,10 +33,10 @@
 #' @return a data frame of Participant and Specimen IDs, each present only once.
 
 
-independent_methyl_samples <- function(independent_methyl_sample_df = NULL, 
+independent_methyl_samples <- function(independent_rna_sample_df = NULL, 
                                     histology_df,
-                                    independent_level = c("each-cohort", "all-cohorts", "all-cohorts-pre-release"),
-                                    match_type = c("independent_methyl", "independent_methyl_plus_only_rna", "none"),
+                                    independent_level = c("each-cohort", "all-cohorts"),
+                                    match_type = c("independent_rna", "independent_rna_plus_only_methyl", "none"),
                                     tumor_description_methyl_only = c("primary", "relapse", "primary_plus"),
                                     seed){
   match_type <- match.arg(match_type)
@@ -48,93 +46,93 @@ independent_methyl_samples <- function(independent_methyl_sample_df = NULL,
   primary_descs <- c("Initial CNS Tumor", "Primary Tumor")
   relapse_descs <- c("Recurrence", "Progressive", "Progressive Disease Post-Mortem")
   
-  # add dna-rna match_id column comprising of "Kids_First_Participant_ID" and "sample_id" to histology_df
+  # add rna-methy match_id column comprising of "Kids_First_Participant_ID" and "sample_id" to histology_df
   # because some Kids_First_Participant_ID might have more than one sample_id
   histology_df <- histology_df %>%
     dplyr::mutate(match_id = paste(Kids_First_Participant_ID, sample_id, sep = "_"))
   
   # Find sample set for the dna independent samples 
   # This will always be the included since in both the following
-  # conditions "independent_methyl" "independent_methyl_plus_only_rna"
+  # conditions "independent_rna" "independent_rna_plus_only_methyl"
   # 
   independent_rna <- histology_df %>%
-    # include matched independent_rna samples
+    # include matched independent_methyl samples
     dplyr::filter(Kids_First_Participant_ID %in%
-                    independent_methyl_sample_df$Kids_First_Participant_ID)
+                    independent_rna_sample_df$Kids_First_Participant_ID)
   
-  matched_rna <- histology_df %>%
-    # keep rna from histology_df
+  matched_methyl <- histology_df %>%
+    # keep methyl from histology_df
     dplyr::filter(experimental_strategy == "Methylation",
                   # keep match_id that only present in independent_rna
                   match_id %in% independent_rna$match_id)
   
-  matched_rna_primary <- histology_df %>%
-    # keep rna from histology_df
+  matched_methyl_primary <- histology_df %>%
+    # keep methyl from histology_df
     dplyr::filter(experimental_strategy == "Methylation",
                   tumor_descriptor %in% primary_descs,
                   match_id %in% independent_rna$match_id)
   
-  matched_rna_relapse <- histology_df %>%
-    # keep rna from histology_df
+  matched_methyl_relapse <- histology_df %>%
+    # keep methyl from histology_df
     dplyr::filter(experimental_strategy == "Methylation",
                   tumor_descriptor %in% relapse_descs,
                   match_id %in% independent_rna$match_id)
   
-  # Here we are adding only initial only-methylation samples
+  # Here we are adding only initial only-methyl samples
   # since this will always be part of independent_rna_plus_only_rna
   # regardless tumor_description_methyl_only is "primary" OR "primary_plus"
   #
-  if( match_type == "independent_methyl_plus_only_rna" & tumor_description_methyl_only == "primary") {
-    # find sample set where we initial only-RNA-Seq samples
-    only_rna_primary <- histology_df %>% 
-      # keep rna from histology_df
+  if( match_type == "independent_rna_plus_only_methyl" & tumor_description_methyl_only == "primary") {
+    # find sample set where we initial only-methyl samples
+    only_methyl_primary <- histology_df %>% 
+      # keep methyl from histology_df
       dplyr::filter(experimental_strategy == "Methylation",
                     tumor_descriptor %in% primary_descs,
                     # find and remove participants which have 
-                    # matching rna samples in independent_rna
+                    # matching rna samples in independent_rnaseqpanel
                     !Kids_First_Participant_ID %in% independent_rna$Kids_First_Participant_ID)
     
-    # has rna samples which match the independent samples provided plus rna only sample which are primary tumors
-    sample_df <- bind_rows(matched_rna_primary, only_rna_primary)
+    # has methyl samples which match the independent samples provided plus methyl only sample which are primary tumors
+    sample_df <- bind_rows(matched_methyl_primary, only_methyl_primary)
   }
   
-  if( match_type == "independent_methyl_plus_only_rna" & tumor_description_methyl_only == "relapse") {
-    # find sample set where we initial only-RNA-Seq samples
-    only_rna_relapse <- histology_df %>% 
-      # keep rna from histology_df
+  if( match_type == "independent_rna_plus_only_methyl" & tumor_description_methyl_only == "relapse") {
+    # find sample set where we initial only-methyl samples
+    only_methyl_relapse <- histology_df %>% 
+      # keep methyl from histology_df
       dplyr::filter(experimental_strategy == "Methylation",
                     tumor_descriptor %in% relapse_descs,
                     # find and remove participants which have 
-                    # matching methylation samples in independent_methyl
+                    # matching rna samples in independent_rnaseqpanel
                     !Kids_First_Participant_ID %in% independent_rna$Kids_First_Participant_ID)
     
-    # has rna samples which match the independent methylation samples provided plus rna only sample which are primary tumors
-    sample_df <- bind_rows(matched_rna_relapse,only_rna_relapse)
+    # has methyl samples which match the independent samples provided plus methyl only sample which are primary tumors
+    sample_df <- bind_rows(matched_methyl_relapse, only_methyl_relapse)
   }
   
-  # Here we are adding only-methylation samples which are not initial
+  # Here we are adding only-methyl samples which are not initial
   # if tumor_description_methyl_only == "primary_plus"
   #
-  if(match_type == "independent_methyl_plus_only_rna" & tumor_description_methyl_only == "primary_plus"){
-    # find sample set where we only find rna samples
-    only_rna_primary <- histology_df %>% 
-      # keep rna from histology_df
+  if(match_type == "independent_rna_plus_only_methyl" & tumor_description_methyl_only == "primary_plus"){
+    # find sample set where we only find methyl samples
+    only_methyl_primary <- histology_df %>% 
+      # keep methyl from histology_df
       dplyr::filter(experimental_strategy == "Methylation",
                     tumor_descriptor %in% primary_descs,
                     # find and remove participants which have 
-                    # matching rna samples in independent_methyl
+                    # matching rna samples in independent_rnaseqpanel
                     !Kids_First_Participant_ID %in% independent_rna$Kids_First_Participant_ID)
-    only_rna_plus <- histology_df %>% 
-      # keep rna from histology_df
+    only_methyl_plus <- histology_df %>% 
+      # keep methyl from histology_df
       dplyr::filter(experimental_strategy == "Methylation",
                     # find and remove participants which have 
-                    # matching rna samples in independent_methyl
+                    # matching rna samples in independent_rnaseqpanel
                     !Kids_First_Participant_ID %in% independent_rna$Kids_First_Participant_ID,
-                    # and participant not in only_rna_primary sample set
-                    !Kids_First_Participant_ID %in% only_rna_primary$Kids_First_Participant_ID
+                    # and participant not in only_methyl_primary sample set
+                    !Kids_First_Participant_ID %in% only_methyl_primary$Kids_First_Participant_ID
       )
-    # has rna samples which match the independent samples provided plus rna only sample which are primary tumors plus rna samples where no primary primaries exists
-    sample_df <- bind_rows(matched_rna, only_rna_primary, only_rna_plus)
+    # has methyl samples which match the independent samples provided plus methyl only sample which are primary tumors plus methyl samples where no primary samples exists
+    sample_df <- bind_rows(matched_methyl, only_methyl_primary, only_methyl_plus)
   } 
   
   if(independent_level == "each-cohort"){
@@ -190,43 +188,6 @@ independent_methyl_samples <- function(independent_methyl_sample_df = NULL,
     return(independent_all)
   }
   
-  if(match_type == "none" & independent_level == "all-cohorts-pre-release"){
-    if(tumor_description_methyl_only %in% c("primary_plus")){
-      # find cases where non-primary is the only option
-      no_primary <- histology_df %>% 
-        dplyr::group_by(Kids_First_Participant_ID) %>%
-        dplyr::summarize(n_primary = sum(tumor_descriptor %in% primary_descs)) %>%
-        dplyr::filter(n_primary == 0) %>%
-        dplyr::pull(Kids_First_Participant_ID)
-    } else {
-      no_primary <- c()
-    }
-    
-    if(tumor_description_methyl_only %in% c("primary", "primary_plus")){
-      primary_df <- histology_df %>%
-        dplyr::filter(tumor_descriptor %in% primary_descs)
-      noprimary_df <- histology_df %>%
-        dplyr::filter(Kids_First_Participant_ID %in% no_primary)
-      sample_df <- dplyr::bind_rows(primary_df, noprimary_df)
-    } 
-    
-    if(tumor_description_methyl_only == "primary"){
-      sample_df <- histology_df %>%
-        dplyr::filter(tumor_descriptor %in% primary_descs)
-    } 
-    
-    if(tumor_description_methyl_only == "relapse"){
-      sample_df <- histology_df %>%
-        dplyr::filter(tumor_descriptor %in% relapse_descs)
-    } 
-    
-    independent_all <- sample_df %>%
-      dplyr::distinct(Kids_First_Participant_ID, .keep_all = TRUE) %>%
-      dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, cohort, tumor_descriptor) %>%
-      arrange(Kids_First_Biospecimen_ID)
-    
-    return(independent_all)
-  }
 }
 
 
