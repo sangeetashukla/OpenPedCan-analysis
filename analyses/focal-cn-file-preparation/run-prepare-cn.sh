@@ -24,7 +24,7 @@ scratch_dir=../../scratch
 data_dir=../../data
 results_dir=../../analyses/focal-cn-file-preparation/results
 histologies_file=${data_dir}/histologies.tsv
-gtf_file=${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz
+gtf_file=${data_dir}/gencode.v39.primary_assembly.annotation.gtf.gz
 goi_file=../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt
 independent_specimens_file=${data_dir}/independent-specimens.wgswxs.primary.tsv
 
