@@ -17,7 +17,7 @@ scratch_dir="../../scratch"
 input_dir="input"
 
 # BED and GTF file paths
-cds_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
+cds_file="${scratch_dir}/gencode.v39.primary_assembly.annotation.bed"
 wgs_bed="${scratch_dir}/intersect_strelka_mutect2_vardict_WGS.bed"
 
 # Filtered Fusion file 
