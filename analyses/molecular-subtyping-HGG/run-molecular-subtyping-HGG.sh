@@ -16,7 +16,7 @@ SUBSET=${OPENPBTA_SUBSET:-1}
 
 # cds gencode bed file is used by other analyses where mutation data is
 # filtered to only coding regions
-exon_file="../../scratch/gencode.v27.primary_assembly.annotation.bed"
+exon_file="../../scratch/gencode.v39.primary_assembly.annotation.bed"
 
 # This script should always run as if it were being called from
 # the directory it lives in.
