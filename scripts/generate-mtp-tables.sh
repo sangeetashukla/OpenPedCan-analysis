@@ -43,4 +43,14 @@ aws s3 cp results/ $URL/$RELEASE/ --recursive --exclude "*" --include "*.tsv.gz"
 
 cd $SCRIPT_DIR
 
+
+TPM_MODULE_DIR=$SCRIPT_DIR/../analyses/rna-seq-expression-summary-stats
+
+# Run rna-seq-expression-summary-stats module
+printf "\n\nGenrating mtp tpm tables...\n\n"
+cd $TPM_MODULE_DIR
+bash run-rna-seq-expression-summary-stats.sh
+aws s3 cp results/ $URL/$RELEASE/ --recursive --exclude "*" --include "*.tsv.gz" --include "*.jsonl.gz"
+
+
 printf "\nDone generating mtp tables...\n\n"
