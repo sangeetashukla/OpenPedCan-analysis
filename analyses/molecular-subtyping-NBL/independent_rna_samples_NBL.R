@@ -1,7 +1,7 @@
 independent_rna_samples_NBL <- function(independent_dna_sample_df, histology_df){
   
 #### ***** START ********* ####
-histology_df_processed <- hist_filtered_df %>%mutate(match_id = paste(Kids_First_Participant_ID, sample_id, sep = "_"))
+histology_df_processed <- histology_df %>%mutate(match_id = paste(Kids_First_Participant_ID, sample_id, sep = "_"))
   
   
 independent_dna <- histology_df_processed %>%filter(Kids_First_Participant_ID %in% independent_dna_samples_df$Kids_First_Participant_ID)
