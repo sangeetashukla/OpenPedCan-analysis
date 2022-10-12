@@ -46,4 +46,5 @@ matched_independent_NBL_df <- independent_rna_samples_NBL(independent_dna_sample
 ## Step 3: Add MYCN TPM and MYCN copy number and status to table. It may also be useful to see a quick ascending barplot of MYCN TPM (y-axis) 
 ## and sample (x-axis) colored by clinical status (see 4 below). 
 
+#matched_independent_NBL_df$Kids_First_Biospecimen_ID %in% independent_dna_samples_df$Kids_First_Biospecimen_ID
 
