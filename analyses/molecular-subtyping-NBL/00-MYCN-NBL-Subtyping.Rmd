@@ -56,7 +56,7 @@ print(unique(MYCN_df$RNA_library)) # No RNA-Seq
 ### Create alterations/output table for matched DNA/RNA biospecimens. Match ID can be adapted from the independent-samples module
 
 ```{r}
-
+MYCN_df <- MYCN_df %>% mutate(match_id = paste(Kids_First_Participant_ID, sample_id, sep = "_"))
 ```
 
 
