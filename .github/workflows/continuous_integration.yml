@@ -145,6 +145,12 @@ jobs:
 
           - name: CNV frequency tables
             entrypoint: cnv-frequencies/run-cnv-frequencies-analysis.sh
+            
+          - name: RNA-Seq Tumor-Normal batch correction
+            entrypoint: rnaseq-batch-correct/run_ruvseq_tn.sh
+
+          - name: RNA-Seq Tumor-only batch correction
+            entrypoint: rnaseq-batch-correct/run_ruvseq_molecular_subtype.sh
     steps:
       - uses: actions/checkout@v3
 
