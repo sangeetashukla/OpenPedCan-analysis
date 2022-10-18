@@ -88,7 +88,7 @@ if (!dir.exists(output_dir)) {
 # source functions
 source('util/deseq2_pvals_histogram.R') # DESeq2 pval histograms
 source('util/edaseq_plot.R') # PCA and UMAP clustering
-source('util/ruvg_test.R') # function to run RUVg
+source('util/ruvg.R') # function to run RUVg
 
 # read histology
 message("Reading in histologies file")
