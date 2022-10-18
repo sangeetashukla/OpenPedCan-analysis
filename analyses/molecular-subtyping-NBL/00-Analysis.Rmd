@@ -28,6 +28,14 @@ results_dir <- "results"
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
+
+
+#plot directory
+plot_dir <- "plots"
+# create if doesn't exist
+if (!dir.exists(plot_dir)) {
+  dir.create(plot_dir)
+}
 ```
 
 # Load Libraries
@@ -163,17 +171,25 @@ colnames(MYCN_DNA_RNA_FILTERED_DF)<-c("Kids_First_Biospecimen_ID_DNA","Kids_Firs
 Find the duplicate rows of MYCN_DNA_RNA_FILTERED_DF
 ```{r remove duplicate rows}
 MYCN_DNA_RNA_FILTERED_DF<-distinct(MYCN_DNA_RNA_FILTERED_DF)
-#MYCN_DNA_RNA_FILTERED_DF<- MYCN_DNA_RNA_FILTERED_DF%>%mutate(merged_id = paste(Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, sep = "_"))
-# biospecimen_count_df <-as.data.frame(table(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA))
-# colnames(biospecimen_count_df)<- c("Kids_First_Biospecimen_ID_DNA", "Frequencies")
-# repeated_biospecimen_index <- which(biospecimen_count_df$Frequencies >1)
-# print("Repeated Biospecimens are: \n")
-# print(biospecimen_count_df[repeated_biospecimen_index,])
+MYCN_Table <- as.data.frame(table(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA))
+colnames(MYCN_Table)<- c("Kids_First_Biospecimen_ID_DNA", "Freq")
+MYCN_Table$Kids_First_Biospecimen_ID_DNA<-as.character(MYCN_Table$Kids_First_Biospecimen_ID_DNA)
+index_repeats <- which(MYCN_Table$Freq>1)
+repeated_ids <- MYCN_Table$Kids_First_Biospecimen_ID_DNA[index_repeats]
+for (iter in 1:length(repeated_ids))
+  print(MYCN_DNA_RNA_FILTERED_DF[MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA==repeated_ids[iter],])
+```
+```{r removing values}
+# For the record TARGET-30-PAPVFD-01A-01D retaining the record with status Neutral and copynumber 3
+# For the record TARGET-30-PASXRG-01A-01D retaining the record with copy number 14
+rows_to_delete_MYCN <- c(which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA=="TARGET-30-PAPVFD-01A-01D" &
+                               MYCN_DNA_RNA_FILTERED_DF$copy_number==2),which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA
+                                                                              =="TARGET-30-PASXRG-01A-01D" &
+                                                                                MYCN_DNA_RNA_FILTERED_DF$copy_number==4))
+MYCN_DNA_RNA_FILTERED_DF<- MYCN_DNA_RNA_FILTERED_DF[-rows_to_delete_MYCN,]
 ```
 
-```{r write alteration table}
-MYCN_DNA_RNA_FILTERED_DF%>%readr::write_tsv(file.path(results_dir, "Alteration_Table.tsv"))
-```
+
 
 #Part 3
 Add MYCN TPM and MYCN copy number and status to table. It may also be useful to see a quick ascending barplot of MYCN TPM (y-axis) and sample (x-axis) colored by clinical status (see 4 below). See example plot here.
@@ -188,28 +204,44 @@ MYCN_Plot_df <- MYCN_Plot_df %>% mutate(status = str_replace(status, "neutral", 
 MYCN_Plot_df <- MYCN_Plot_df %>% mutate(status = str_replace(status, "gain", "non-amplified"))
 MYCN_Plot_df <- MYCN_Plot_df %>% mutate(status = str_replace(status, "loss", "non-amplified"))
 
-# Plot the grouped bar graph
-ggplot(MYCN_Plot_df, aes(fill=status, y=MYCN_TPM, x=Kids_First_Biospecimen_ID_DNA)) + 
-    geom_bar(position="dodge", stat="identity")
+# Refered code from [5]
+plot1<-MYCN_Plot_df %>% 
+  arrange(status,MYCN_TPM) %>% 
+  mutate(Kids_First_Biospecimen_ID_DNA = factor(Kids_First_Biospecimen_ID_DNA, unique(Kids_First_Biospecimen_ID_DNA))) %>%
+  ggplot() +aes(x=Kids_First_Biospecimen_ID_DNA, y=MYCN_TPM, fill=status)+
+  geom_bar(position="dodge",stat="identity")+
+  theme(axis.text.x = element_text(size = 15, angle = 45, hjust = 1))
 
+
+plot_file <- file.path(plot_dir, "TPM_Biospecimen_Amp_NonAmp.png")
+ggsave(filename = plot_file,width = 45, height = 20)
+
+
+
+```
+
+#Part 4: Assign subtype
+```{r : select only relevant data}
+alteration_df <- MYCN_DNA_RNA_FILTERED_DF %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,MYCN_TPM,
+                                          copy_number,MYCN_TPM,status,pathology_free_text_diagnosis)
+alteration_df$subtype<-NA
+
+```
+
+```{r : subtype assignment}
+alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplification" & pathology_free_text_diagnosis=="MYCN amp" 
+                                                           ~ "NBL, MYCN amplified",
+                                                           status =="amplification" & pathology_free_text_diagnosis %in% 
+                                                             c("Metastatic secondary tumors;Neuroblastoma","MYCN non-amp") 
+                                                           ~ "NBL, MYCN amplified"))
+                                            
 ```
 
 
 
-```{r}
-# Refered code from [5]
-MYCN_Plot_df %>% 
-  arrange(status,MYCN_TPM) %>% 
-  mutate(Kids_First_Biospecimen_ID_DNA = factor(Kids_First_Biospecimen_ID_DNA, unique(Kids_First_Biospecimen_ID_DNA))) %>%
-  ggplot() +aes(x=Kids_First_Biospecimen_ID_DNA, y=MYCN_TPM, fill=status)+
-  geom_bar(position="dodge",stat="identity") +
-  theme_minimal()+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        plot.title = element_text(hjust = 0.5))
-
-
-
-
+#Part 5: Write the table
+```{r write alteration table}
+alteration_df%>%readr::write_tsv(file.path(results_dir, "Alteration_Table.tsv"))
 ```
 
 # References
