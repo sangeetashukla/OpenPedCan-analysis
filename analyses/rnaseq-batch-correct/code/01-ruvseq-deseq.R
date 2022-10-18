@@ -91,7 +91,8 @@ selected_htl_df <- htl_df %>%
   dplyr::filter(
     experimental_strategy == "RNA-Seq",
     sample_type == "Tumor",
-    cancer_group %in% cancer_group_values,!is.na(molecular_subtype)
+    cancer_group %in% cancer_group_values,
+    !is.na(molecular_subtype)
   )
 
 # filter expression
