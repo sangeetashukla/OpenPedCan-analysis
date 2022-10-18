@@ -23,3 +23,13 @@ Rscript code/01-ruvseq-deseq.R \
 --pos_c '12915_2022_1324_MOESM4_ESM.rds' \
 --neg_c 'hk_genes_normals.rds' \
 --k_value 5
+
+Rscript code/02-ruvseq-deseq-tn.R \
+--dataset 'HGG-DMG_TN' \
+--cohort_values 'PBTA,GTEx' \
+--cancer_group_values 'Diffuse midline glioma,High-grade glioma/astrocytoma' \
+--gtex_subgroups 'Brain - Cortex,Brain - Cerebellum' \
+--k_value 5 \
+--drop 2 \
+--pos_c 'reactome_cell_cycle_msigdb_v7.5.1.rds' \
+--neg_c 'hk_genes_normals.rds'
