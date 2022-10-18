@@ -1,10 +1,11 @@
 Kids_First_Biospecimen_ID_DNA	Kids_First_Biospecimen_ID_RNA	MYCN_TPM	copy_number	status	pathology_free_text_diagnosis	subtype
+BS_4NPEMNAD	BS_DY88N5ZT	83.29	100	amplification	Metastatic secondary tumors;Neuroblastoma	NBL, MYCN amplified
+BS_KP0YNTAK	BS_1RT76ANT	9.38	4	gain	Metastatic secondary tumors;Neuroblastoma	NA
 BS_0RBGK29M	BS_KC02E200	47.21	3	gain	NA	NA
 BS_2FPVHEQS	BS_GR7694W1	404.76	145	amplification	NA	NA
 BS_3564XTTK	BS_3CSY3JTN	375.71	647	amplification	NA	NA
 BS_3AKS23A0	BS_F2F7BXT5	24.78	3	gain	NA	NA
 BS_4J8JK335	BS_H4TFY19Z	96.4	5	amplification	NA	NA
-BS_4NPEMNAD	BS_DY88N5ZT	83.29	100	amplification	Metastatic secondary tumors;Neuroblastoma	NBL, MYCN amplified
 BS_5BB8J64W	BS_T7MWWC0A	26.39	3	gain	NA	NA
 BS_64P50TAP	BS_CZMY8CVE	42.78	3	gain	NA	NA
 BS_76SQJSHP	BS_BW9QBKEQ	33.58	5	gain	NA	NA
@@ -29,7 +30,6 @@ BS_FJP95JXF	BS_ZFJS669M	311.07	3	gain	NA	NA
 BS_GZG7GH62	BS_TT20NP68	23.2	3	gain	NA	NA
 BS_HZKJMB0D	BS_YA56YE71	74.25	29	amplification	NA	NA
 BS_JV1GTZ1Q	BS_82Q78622	30.16	3	gain	NA	NA
-BS_KP0YNTAK	BS_1RT76ANT	9.38	4	gain	Metastatic secondary tumors;Neuroblastoma	NA
 BS_NVJJJ7MT	BS_WKPG4MH1	40.72	3	gain	NA	NA
 BS_P0BHM8S1	BS_CCV91DR0	57.78	59	amplification	NA	NA
 BS_QDRHQSPZ	BS_6WBAV14H	313.7	3	gain	NA	NA

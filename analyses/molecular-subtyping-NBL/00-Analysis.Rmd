@@ -48,7 +48,7 @@ library(ggplot2)
 
 # Load all the datafiles in the ticket
 ```{r load the data files: this will take time}
-hist_df<-readr::read_tsv(file.path(dataDir, "histologies.tsv"),guess_max = 100000)
+hist_df<-readr::read_tsv(file.path(dataDir, "histologies-base.tsv"),guess_max = 100000)
 consensus_df<-readr::read_tsv(file.path(dataDir, "consensus_wgs_plus_cnvkit_wxs.tsv.gz"),guess_max = 100000)
 cnv_cnvkit_df<-readr::read_tsv(file.path(dataDir, "cnv-cnvkit.seg.gz"),guess_max = 100000)
 cnv_controlfreec_df<-readr::read_tsv(file.path(dataDir, "cnv-controlfreec.tsv.gz"),guess_max = 100000)
@@ -61,7 +61,7 @@ gene_expression_df<-as.data.frame(readRDS(paste(dataDir,"/","gene-expression-rse
 
 Code logic and background: 
 NBL is defined as neuroblastoma, ganglioneuroblastoma, and ganglioneuroma.
-These diseases are mentioned in the histology.tsv file. consensus_wgs_plus_cnvkit_wxs.tsv.gz 
+These diseases are mentioned in the histology-base.tsv file. consensus_wgs_plus_cnvkit_wxs.tsv.gz 
 has information regarding copy number, status, and gene symbol (MYCN). The key idea in the following 
 code chunks is to find the MYCN samples that belong to NBL. Specifically for part 2 we need to use gene-expression-rsem-tpm-collapsed.rds file. This file has Biospecimen_ID_RNA for MYCN samples, and consensus_wgs_plus_cnvkit_wxs.tsv.gz has Biospecimen_ID_DNA for MYCN samples. The histologies files 
 contain both DNA and RNA Biospecimen_ID. 
@@ -69,9 +69,12 @@ contain both DNA and RNA Biospecimen_ID.
 
 ```{r Data filtering}
 # First filter the histology file based on diseases we are intereseted in neuroblastoma, ganglioneuroblastoma, and ganglioneuroma
-hist_filtered_df <- hist_df %>% filter(cancer_group=="Neuroblastoma"|
-                                       cancer_group=="Ganglioneuroblastoma"|
-                                        cancer_group=="Ganglioneuroma")
+hist_filtered_df <- hist_df %>% filter(pathology_diagnosis=="Neuroblastoma"|
+                                       pathology_diagnosis=="Ganglioneuroblastoma"|
+                                       pathology_diagnosis=="Ganglioneuroblastoma, nodular"|
+                                       pathology_diagnosis =="Ganglioneuroblastoma, intermixed"|
+                                       pathology_diagnosis ==
+                                         "Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated")
 
 # The consensus_wgs_plus_cnvkit_wxs.tsv.gz file has all types of genes, we just need MYCN, so we filter the dataset as follows:
 consensus_filtered_df <- consensus_df %>% filter(gene_symbol=="MYCN")
@@ -143,7 +146,7 @@ MYCN_DNA_RNA_DF <- inner_join(MYCN_dna_df,MYCN_rna_df, by="match_id")
 
 # Retain the information of RNA/DNA Biospecimen ID, gene symbol, cancer group, pathology free text diagnosis, copy number, TPM and status
 MYCN_DNA_RNA_FILTERED_DF <- MYCN_DNA_RNA_DF %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,gene_symbol.x,gene_symbol.y,
-                                              cancer_group.x,cancer_group.y,
+                                              pathology_diagnosis.x,pathology_diagnosis.y,
                                               pathology_free_text_diagnosis.x,pathology_free_text_diagnosis.y,
                                               copy_number.x,copy_number.y,MYCN_TPM.x,MYCN_TPM.y,status.x,status.y, match_id)
 # Remove columns with no info
@@ -151,16 +154,16 @@ empty_columns <- colSums(is.na(MYCN_DNA_RNA_FILTERED_DF) | MYCN_DNA_RNA_FILTERED
 # Logic in empty column is adapted from [2] 
 MYCN_DNA_RNA_FILTERED_DF<- MYCN_DNA_RNA_FILTERED_DF[!empty_columns]
 #Remove duplicated coulmns
-print(all.equal(MYCN_DNA_RNA_FILTERED_DF$cancer_group.x,MYCN_DNA_RNA_FILTERED_DF$cancer_group.y))
+print(all.equal(MYCN_DNA_RNA_FILTERED_DF$pathology_diagnosis.x,MYCN_DNA_RNA_FILTERED_DF$pathology_diagnosis.y))
 print(all.equal(MYCN_DNA_RNA_FILTERED_DF$pathology_free_text_diagnosis.x,MYCN_DNA_RNA_FILTERED_DF$pathology_free_text_diagnosis.y))
 
 # The pathology free text diagnosis in row 114 of MYCN_DNA_RNA_FILTERED has differing values:
-print(which(mapply(identical,unlist(MYCN_DNA_RNA_FILTERED_DF$pathology_free_text_diagnosis.x),unlist(MYCN_DNA_RNA_FILTERED_DF$pathology_free_text_diagnosis.y))==FALSE))# Logic used from [3] 
+#print(which(mapply(identical,unlist(MYCN_DNA_RNA_FILTERED_DF$pathology_free_text_diagnosis.x),unlist(MYCN_DNA_RNA_FILTERED_DF$pathology_free_text_diagnosis.y))==FALSE))# Logic used from [3] 
 
 #Since pathology_free_text_diagnosis.x is MYCN AMP and pathology_free_text_diagnosis.y is NA we will retain the information from pathology_free_text_diagnosis.x and remove pathology_free_text_diagnosis.y as it is identical to pathology_free_text_diagnosis.x otherwise. 
 
 # Remove duplicate columns after inspection
-duplicate_columns <- c("cancer_group.y","pathology_free_text_diagnosis.y")
+duplicate_columns <- c("pathology_diagnosis.y","pathology_free_text_diagnosis.y")
 MYCN_DNA_RNA_FILTERED_DF<-MYCN_DNA_RNA_FILTERED_DF[ , -which(names(MYCN_DNA_RNA_FILTERED_DF) %in% duplicate_columns)] # Reffered from the following code [4] 
 
 
@@ -205,7 +208,7 @@ MYCN_Plot_df <- MYCN_Plot_df %>% mutate(status = str_replace(status, "gain", "no
 MYCN_Plot_df <- MYCN_Plot_df %>% mutate(status = str_replace(status, "loss", "non-amplified"))
 
 # Refered code from [5]
-plot1<-MYCN_Plot_df %>% 
+MYCN_Plot_df %>% 
   arrange(status,MYCN_TPM) %>% 
   mutate(Kids_First_Biospecimen_ID_DNA = factor(Kids_First_Biospecimen_ID_DNA, unique(Kids_First_Biospecimen_ID_DNA))) %>%
   ggplot() +aes(x=Kids_First_Biospecimen_ID_DNA, y=MYCN_TPM, fill=status)+
@@ -228,15 +231,85 @@ alteration_df$subtype<-NA
 
 ```
 
-```{r : subtype assignment}
+```{r : subtype assignment Case 1}
+
+# ompare the clinical status (currently in pathology_free_text_diagnosis to the CNV call). If a match, assign molecular_subtype as NBL, MYCN amplified. If not a match: If MYCN is called as amplified but clinical file says non-amplified, assign NBL, MYCN amplified.
+
 alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplification" & pathology_free_text_diagnosis=="MYCN amp" 
                                                            ~ "NBL, MYCN amplified",
                                                            status =="amplification" & pathology_free_text_diagnosis %in% 
                                                              c("Metastatic secondary tumors;Neuroblastoma","MYCN non-amp") 
-                                                           ~ "NBL, MYCN amplified"))
+                                                          ~ "NBL, MYCN amplified"))
                                             
 ```
 
+```{r subtype assignment Case}
+# If MYCN is called non-amplified but clinical file says amplified, plot the CNV data to visualize whether we see focal amplification but the CNV was not called. 
+
+index_clinical_amplified <- which(alteration_df$status != "amplification" & alteration_df$pathology_free_text_diagnosis=="MYCN amp")
+
+clincal_amplified_IDs <- alteration_df$Kids_First_Biospecimen_ID_DNA[index_clinical_amplified]
+
+
+# adapating code from: https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/785c3224de29f701b1c1b62841d0f84d46f7eaca/analyses/molecular-subtyping-embryonal/03-clean-c19mc-data.Rmd#L56-L112
+
+
+
+plot_chr19 <- function(cn_df, biospecimen_id) {
+ # This function takes a seg data.frame and a biospecimen identifier and 
+ # returns a plot of the chromosome 19 segment mean for that biospecimen.
+ # It fills missing seg.mean values with zeroes.
+ # 
+ # Args:
+ #   cn_df: data.frame in SEG format
+ #   biospecimen_id: A Kids First Biospecimen ID used to filter cn_df
+ # 
+ # Returns: essentially a barplot of the non-neutral segment means
+  
+  bsid_data <- cn_df %>%  
+    # For visualization purposes fill the missing seg.mean values with zeroes
+    tidyr::replace_na(list(seg.mean = 0)) %>%
+    # Reformat the chromosome variable to drop the "chr"
+    dplyr::mutate(chrom = factor(gsub("chr", "", chrom), 
+                                 levels = c(1:22, "X", "Y"))) %>%
+    # Only look at chr19 in the relevant sample
+    filter(ID == biospecimen_id,
+           chrom == 19) %>%
+    # Make Del/Amp variable
+    dplyr::mutate(Type = dplyr::case_when(
+      seg.mean < 0 ~ "Del",
+      seg.mean > 0 ~ "Amp",
+      seg.mean == 0 ~ "Neutral"
+    ))
+  
+  # Turn into a GRanges for easier mapping
+  bsid_ranges <- GenomicRanges::GRanges(
+    seqnames = bsid_data$chrom,
+    ranges = IRanges::IRanges(
+      start = bsid_data$loc.start,
+      end = bsid_data$loc.end
+    ),
+    score = bsid_data$seg.mean,
+    mcols = bsid_data$Type
+  )
+  
+  # Map this on a plot
+  bsid_plot <- 
+    ggbio::autoplot(bsid_ranges,
+                    ggplot2::aes(y = score, fill = mcols),
+                    geom = "bar") +
+    ggplot2::theme_bw() +
+    ggplot2::ylim(c(-2, 2)) +
+    colorblindr::scale_fill_OkabeIto(name = "Type") +
+    ggplot2::labs(
+      title = paste(biospecimen_id, "chr19"),
+      y = "segment mean"
+    )
+  
+  return(bsid_plot)
+}
+
+```
 
 
 #Part 5: Write the table
