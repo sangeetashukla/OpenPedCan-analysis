@@ -242,7 +242,7 @@ RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remote
 # Packages required for rna-seq-composition
 RUN ./install_bioc.r \
     EnvStats \
-    janitor
+    janitor 
 
 # Patchwork for plot compositions
 RUN R -e "remotes::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
