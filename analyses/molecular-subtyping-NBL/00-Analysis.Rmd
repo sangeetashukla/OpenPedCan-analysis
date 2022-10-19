@@ -250,9 +250,11 @@ index_clinical_amplified <- which(alteration_df$status != "amplification" & alte
 
 clincal_amplified_IDs <- alteration_df$Kids_First_Biospecimen_ID_DNA[index_clinical_amplified]
 
+```
+
+```{r plot function loading}
 
 # adapating code from: https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/785c3224de29f701b1c1b62841d0f84d46f7eaca/analyses/molecular-subtyping-embryonal/03-clean-c19mc-data.Rmd#L56-L112
-
 
 
 plot_chr19 <- function(cn_df, biospecimen_id) {
@@ -274,7 +276,7 @@ plot_chr19 <- function(cn_df, biospecimen_id) {
                                  levels = c(1:22, "X", "Y"))) %>%
     # Only look at chr19 in the relevant sample
     filter(ID == biospecimen_id,
-           chrom == 19) %>%
+           chrom == 2) %>%
     # Make Del/Amp variable
     dplyr::mutate(Type = dplyr::case_when(
       seg.mean < 0 ~ "Del",
@@ -311,6 +313,16 @@ plot_chr19 <- function(cn_df, biospecimen_id) {
 
 ```
 
+
+```{r plots}
+plot_chr19(cnv_cnvkit_df,clincal_amplified_IDs[1])
+```
+```{r}
+plot_chr19(cnv_cnvkit_df,clincal_amplified_IDs[2])
+```
+```{r}
+plot_chr19(cnv_cnvkit_df,clincal_amplified_IDs[3])
+```
 
 #Part 5: Write the table
 ```{r write alteration table}
