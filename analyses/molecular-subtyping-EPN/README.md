@@ -67,7 +67,7 @@ This above  script is designed to change to this directory to run, so it should 
                 </tr>
                 <tr>
                     <td>EPN, ST YAP1</td>
-                    <td>C11orf95--YAP1 == TRUE` or `YAP1--MAMLD1 == TRUE` or `YAP1--FAM118B == TRUE`</td>
+                    <td>`C11orf95--YAP1 == TRUE` or `YAP1--MAMLD1 == TRUE` or `YAP1--FAM118B == TRUE`</td>
                 </tr>
                 <tr>
                     <td>EPN, PF A</td>
