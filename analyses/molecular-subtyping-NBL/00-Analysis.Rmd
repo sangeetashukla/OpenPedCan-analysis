@@ -246,7 +246,8 @@ alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplificati
 ```{r subtype assignment Case}
 # If MYCN is called non-amplified but clinical file says amplified, plot the CNV data to visualize whether we see focal amplification but the CNV was not called. 
 
-index_clinical_amplified <- which(alteration_df$status != "amplification" & alteration_df$pathology_free_text_diagnosis=="MYCN amp")
+index_clinical_amplified <- which(alteration_df$status %in% c("gain","loss")  
+                                  & alteration_df$pathology_free_text_diagnosis=="MYCN amp")
 
 clincal_amplified_IDs <- alteration_df$Kids_First_Biospecimen_ID_DNA[index_clinical_amplified]
 
@@ -319,9 +320,6 @@ plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[1])
 ```
 ```{r}
 plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[2])
-```
-```{r}
-plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[3])
 ```
 
 
