@@ -150,7 +150,8 @@ Now find the intersection of MYCN_dna_df and MYCN_rna_df, this will give you a t
 MYCN_DNA_RNA_DF <- inner_join(MYCN_dna_df,MYCN_rna_df, by="match_id") 
 
 # Retain the information of RNA/DNA Biospecimen ID, gene symbol, cancer group, pathology free text diagnosis, copy number, TPM and status
-MYCN_DNA_RNA_FILTERED_DF <- MYCN_DNA_RNA_DF %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,gene_symbol.x,gene_symbol.y,
+MYCN_DNA_RNA_FILTERED_DF <- MYCN_DNA_RNA_DF %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,Kids_First_Participant_ID.x,Kids_First_Participant_ID.y,
+                                              gene_symbol.x,gene_symbol.y,
                                               pathology_diagnosis.x,pathology_diagnosis.y,
                                               pathology_free_text_diagnosis.x,pathology_free_text_diagnosis.y,
                                               copy_number.x,copy_number.y,MYCN_TPM.x,MYCN_TPM.y,status.x,status.y, match_id)
@@ -161,6 +162,7 @@ MYCN_DNA_RNA_FILTERED_DF<- MYCN_DNA_RNA_FILTERED_DF[!empty_columns]
 #Remove duplicated coulmns
 print(all.equal(MYCN_DNA_RNA_FILTERED_DF$pathology_diagnosis.x,MYCN_DNA_RNA_FILTERED_DF$pathology_diagnosis.y))
 print(all.equal(MYCN_DNA_RNA_FILTERED_DF$pathology_free_text_diagnosis.x,MYCN_DNA_RNA_FILTERED_DF$pathology_free_text_diagnosis.y))
+print(all.equal(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Participant_ID.x,MYCN_DNA_RNA_FILTERED_DF$Kids_First_Participant_ID.y))
 
 # The pathology free text diagnosis in row 114 of MYCN_DNA_RNA_FILTERED has differing values:
 #print(which(mapply(identical,unlist(MYCN_DNA_RNA_FILTERED_DF$pathology_free_text_diagnosis.x),unlist(MYCN_DNA_RNA_FILTERED_DF$pathology_free_text_diagnosis.y))==FALSE))# Logic used from [3] 
@@ -168,13 +170,14 @@ print(all.equal(MYCN_DNA_RNA_FILTERED_DF$pathology_free_text_diagnosis.x,MYCN_DN
 #Since pathology_free_text_diagnosis.x is MYCN AMP and pathology_free_text_diagnosis.y is NA we will retain the information from pathology_free_text_diagnosis.x and remove pathology_free_text_diagnosis.y as it is identical to pathology_free_text_diagnosis.x otherwise. 
 
 # Remove duplicate columns after inspection
-duplicate_columns <- c("pathology_diagnosis.y","pathology_free_text_diagnosis.y")
+duplicate_columns <- c("pathology_diagnosis.y","pathology_free_text_diagnosis.y","Kids_First_Participant_ID.y")
 MYCN_DNA_RNA_FILTERED_DF<-MYCN_DNA_RNA_FILTERED_DF[ , -which(names(MYCN_DNA_RNA_FILTERED_DF) %in% duplicate_columns)] # Reffered from the following code [4] 
 
 
 # Clean the table:
-colnames(MYCN_DNA_RNA_FILTERED_DF)<-c("Kids_First_Biospecimen_ID_DNA","Kids_First_Biospecimen_ID_RNA","gene_symbol",
-                                      "cancer_group","pathology_free_text_diagnosis","copy_number","MYCN_TPM","status","Match_ID")    
+colnames(MYCN_DNA_RNA_FILTERED_DF)<-c("Kids_First_Biospecimen_ID_DNA","Kids_First_Biospecimen_ID_RNA","Kids_First_Participant_ID",
+                                  "gene_symbol","cancer_group","pathology_free_text_diagnosis","copy_number",
+                                  "MYCN_TPM","status","Match_ID")    
 ```
 Find the duplicate rows of MYCN_DNA_RNA_FILTERED_DF
 ```{r remove duplicate rows}
@@ -230,8 +233,20 @@ ggsave(filename = plot_file,width = 45, height = 20)
 
 #Part 4: Assign subtype
 ```{r : select only relevant data}
-alteration_df <- MYCN_DNA_RNA_FILTERED_DF %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,MYCN_TPM,
-                                          copy_number,MYCN_TPM,status,pathology_free_text_diagnosis)
+alteration_df <- MYCN_DNA_RNA_FILTERED_DF %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,                                              Kids_First_Participant_ID,MYCN_TPM,copy_number,MYCN_TPM,status,pathology_free_text_diagnosis)
+#alteration_df <- alteration_df %>% mutate(pathology_free_text_diagnosis2 = pathology_free_text_diagnosis)
+
+# Bring in the extra pathology free diagnonsis text from files in input folder:
+colnames(gmfk_patient_clinical_mycn_status_df)<-c("Kids_First_Participant_ID","pathology_free_text_diagnosis_gmfk")
+colnames(target_patient_clinical_mycn_status_df)<-c("Kids_First_Participant_ID","pathology_free_text_diagnosis_target")
+
+alteration_df<- left_join(alteration_df,gmfk_patient_clinical_mycn_status_df,by="Kids_First_Participant_ID")
+alteration_df<- left_join(alteration_df,target_patient_clinical_mycn_status_df,by="Kids_First_Participant_ID")
+alteration_df<-alteration_df%>% mutate(pathology=coalesce(pathology_free_text_diagnosis,pathology_free_text_diagnosis_gmfk,
+                                                          pathology_free_text_diagnosis_target))
+alteration_df<-alteration_df %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,                            
+                                        MYCN_TPM,copy_number,MYCN_TPM,status,pathology)
+colnames(alteration_df)[6]<- "pathology_free_text_diagnosis"
 alteration_df$subtype<-NA
 
 ```
@@ -242,25 +257,20 @@ alteration_df$subtype<-NA
 
  alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplification" & pathology_free_text_diagnosis=="MYCN amp"
                                                             ~ "NBL, MYCN amplified",status =="amplification" &
-                                                             pathology_free_text_diagnosis %in%
-                                                              c("Metastatic secondary tumors;Neuroblastoma","MYCN non-amp",
-                                                                NA_character_) ~ "NBL, MYCN amplified",
-                                      status %in% c("gain", "loss", "neutral") &
-                                         pathology_free_text_diagnosis %in% c("Metastatic secondary tumors;Neuroblastoma",
-                                                                              "MYCN non-amp", NA_character_)~
-                                         "NBL, MYCN non amplified"))
-
+                                                             pathology_free_text_diagnosis=="MYCN non-amp" ~ "NBL, MYCN amplified"))
 
 ```
 
 ```{r subtype assignment Case}
 # If MYCN is called non-amplified but clinical file says amplified, plot the CNV data to visualize whether we see focal amplification but the CNV was not called. 
 
-index_clinical_amplified <- which(alteration_df$status %in% c("gain","loss")  
+index_clinical_amplified <- which(alteration_df$status %in% c("gain","loss","neutral")  
                                   & alteration_df$pathology_free_text_diagnosis=="MYCN amp")
 
 clincal_amplified_IDs <- alteration_df$Kids_First_Biospecimen_ID_DNA[index_clinical_amplified]
 
+print("Biospecimens for which pathology file says  amplified but call is loss, gain or netural")
+print(clincal_amplified_IDs)
 ```
 
 ```{r plot function loading}
