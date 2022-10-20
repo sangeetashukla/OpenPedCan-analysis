@@ -216,13 +216,14 @@ MYCN_Plot_df <- MYCN_DNA_RNA_FILTERED_DF %>% select (Kids_First_Biospecimen_ID_D
 #MYCN_Plot_df <- MYCN_Plot_df %>% mutate(status = str_replace(status, "loss", "non-amplified"))
 
 # Refered code from [5]
-MYCN_Plot_df %>% 
+bar_plot1<-MYCN_Plot_df %>% 
   arrange(MYCN_TPM) %>% 
   mutate(Kids_First_Biospecimen_ID_DNA = factor(Kids_First_Biospecimen_ID_DNA, unique(Kids_First_Biospecimen_ID_DNA))) %>%
   ggplot() +aes(x=Kids_First_Biospecimen_ID_DNA, y=MYCN_TPM, fill=status)+
   geom_bar(position="dodge",stat="identity")+
   theme(axis.text.x = element_text(size = 15, angle = 45, hjust = 1))
 
+bar_plot1+ geom_hline(aes(yintercept=156.12,linetype = "Suggested Amp Cutoff"),color = "black",size=2) #TARGET-30-PAPKXS-01A-01D	
 
 plot_file <- file.path(plot_dir, "TPM_Biospecimen_Amp_NonAmp.png")
 ggsave(filename = plot_file,width = 45, height = 20)
@@ -336,11 +337,13 @@ plot_chr2 <- function(cn_df, biospecimen_id) {
 
 
 ```{r plots}
-plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[1])
+for (iter in 1: length(clincal_amplified_IDs)){
+plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[iter])
+plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"Amp_Del",".png"))
+ggsave(filename = plt_file,width = 10, height = 20)
+}
 ```
-```{r}
-plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[2])
-```
+
 
 
 
@@ -364,27 +367,21 @@ for (iter in 1:length(clincal_amplified_IDs)){
 
 ```
 
-
-
-Cases when status call is neutral and pathology_free_text_diagnosis is amplified.
-
 ```{r}
-index_clinical_neutral <- which(alteration_df$status =="neutral"  
-                                  & alteration_df$pathology_free_text_diagnosis=="MYCN amp")
-clincal_neutral_IDs <- alteration_df$Kids_First_Biospecimen_ID_DNA[index_clinical_neutral]
-
-print("The biospecimen where status is netural and pathology free text is MYCN amp")
-print(clincal_neutral_IDs)
-
+alteration_df$subtype[index_clinical_amplified]<- "Clincal-Amp Call-Non-Amp"
 ```
 
+
+
 ```{r : plot distribution of subtypes}
-alteration_df %>% 
-  arrange(subtype,MYCN_TPM) %>% 
+bar_plt2<-alteration_df %>% 
+  arrange(MYCN_TPM) %>% 
   mutate(Kids_First_Biospecimen_ID_DNA = factor(Kids_First_Biospecimen_ID_DNA, unique(Kids_First_Biospecimen_ID_DNA))) %>%
   ggplot() +aes(x=Kids_First_Biospecimen_ID_DNA, y=MYCN_TPM, fill=subtype)+
   geom_bar(position="dodge",stat="identity")+
   theme(axis.text.x = element_text(size = 15, angle = 45, hjust = 1))
+
+bar_plt2+ geom_hline(aes(yintercept=156.12,linetype = "Suggested Amp Cutoff"),color = "violet",size=2) #TARGET-30-PAPKXS-01A-01D	
 
 
 plot_file2 <- file.path(plot_dir, "TPM_Subtype.png")
@@ -398,7 +395,21 @@ ggsave(filename = plot_file2,width = 45, height = 20)
 #Part 5: Write the table
 ```{r write alteration table}
 alteration_df%>%readr::write_tsv(file.path(results_dir, "Alteration_Table.tsv"))
+
 ```
+
+
+
+
+#Part 6
+
+```{r Biospecimens that will change}
+
+
+```
+
+
+
 
 # References
 [1]https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/analyses/independent-samples/util/independent-rna-samples.R
