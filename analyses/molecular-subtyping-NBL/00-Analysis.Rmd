@@ -236,10 +236,14 @@ alteration_df$subtype<-NA
 # ompare the clinical status (currently in pathology_free_text_diagnosis to the CNV call). If a match, assign molecular_subtype as NBL, MYCN amplified. If not a match: If MYCN is called as amplified but clinical file says non-amplified, assign NBL, MYCN amplified.
 
 alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplification" & pathology_free_text_diagnosis=="MYCN amp" 
-                                                           ~ "NBL, MYCN amplified",
-                                                           status =="amplification" & pathology_free_text_diagnosis %in% 
-                                                             c("Metastatic secondary tumors;Neuroblastoma","MYCN non-amp") 
-                                                          ~ "NBL, MYCN amplified"))
+                                                           ~ "NBL, MYCN amplified",status =="amplification" &
+                                                             pathology_free_text_diagnosis %in% 
+                                                             c("Metastatic secondary tumors;Neuroblastoma","MYCN non-amp",
+                                                               NA_character_) ~ "NBL, MYCN amplified",
+                                       status %in% c("gain", "loss", "neutral") & 
+                                         pathology_free_text_diagnosis %in% c("Metastatic secondary tumors;Neuroblastoma", 
+                                                                              "MYCN non-amp", NA_character_)~ 
+                                         "NBL, MYCN non amplified"))
                                             
 ```
 
@@ -345,6 +349,15 @@ for (iter in 1:length(clincal_amplified_IDs)){
 ```
 
 
+
+Cases when status call is neutral and pathology_free_text_diagnosis is amplified.
+
+```{r}
+index_clinical_neutral <- which(alteration_df$status =="neutral"  
+                                  & alteration_df$pathology_free_text_diagnosis=="MYCN amp")
+clincal_neutral_IDs <- alteration_df$Kids_First_Biospecimen_ID_DNA[index_clinical_neutral]
+
+```
 
 
 #Part 5: Write the table
