@@ -111,7 +111,7 @@ focal_cn_gene_NF2 <- focal_cn_gene %>%
   column_to_rownames('biospecimen_id')
 
 # Reading consensus snv results and filtering for EPN samples and NF2 mutations
-mutations <- data.table::fread(mutations, skip = 1) %>%
+mutations <- data.table::fread(mutations) %>%
   filter(Hugo_Symbol == "NF2")
 
 # Reading the input in a  dataframe
