@@ -121,6 +121,8 @@ TPM_MYCN_data <-as.data.frame(TPM_MYCN_data) # Convert to data framte
 TPM_MYCN_data <- tibble::rownames_to_column(TPM_MYCN_data, "Kids_First_Biospecimen_ID") # Make ID rownames into a column 
 # Finally add the TPM data using left join
 MYCN_DF<- left_join(MYCN_DF,TPM_MYCN_data, by="Kids_First_Biospecimen_ID") # rows remain the same
+
+MYCN_DF<- distinct(MYCN_DF)
 ```
 
 Code logic and background: 
@@ -233,6 +235,59 @@ ggsave(filename = plot_file,width = 45, height = 20)
 
 
 ```
+
+
+# add IDs that don't necessarily have both DNA and RNA 
+
+```{r}
+MYCN_IDs_exhaustive <- as.data.frame(MYCN_DF$Kids_First_Biospecimen_ID) # Has every biospecimen ID of NBL-MYCN samples
+colnames(MYCN_IDs_exhaustive)<-"Kids_First_Biospecimen_ID"
+# Repeating IDs with different copy numbers TARGET-30-PAMDAL-01A-01W, TARGET-30-PAPVFD-01A-01D, TARGET-30-PASXRG-01A-01D
+
+# Last two are sorted out in DNA-RNA matching 
+
+
+MYCN_IDs_with_DNA_RNA <- as.data.frame(c(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA,
+                               MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_RNA))
+colnames(MYCN_IDs_with_DNA_RNA)<-"Kids_First_Biospecimen_ID"
+
+MYCN_IDs_without_DNA_RNA_Match <- as.data.frame(MYCN_IDs_exhaustive[-(which(MYCN_IDs_exhaustive$Kids_First_Biospecimen_ID %in% MYCN_IDs_with_DNA_RNA$Kids_First_Biospecimen_ID)),])
+colnames(MYCN_IDs_without_DNA_RNA_Match)<- "Kids_First_Biospecimen_ID"
+# 676-296= 380 but remember TARGET-30-PAPVFD-01A-01D, TARGET-30-PASXRG-01A-01D has two copies in MYCN_IDs_exhaustive so extra 2 samples are further removed so 378 samples without RNA
+
+
+# Now we need to identify which IDs in MYCN_IDs_without_DNA_RNA_Match are DNA IDs and Which are RNA IDs
+DNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_dna_df$Kids_First_Biospecimen_ID_DNA),])
+colnames(DNA_IDs_MYCN_Non_Match)<- "Kids_First_Biospecimen_ID_DNA"
+
+RNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_rna_df$Kids_First_Biospecimen_ID_RNA),])
+colnames(RNA_IDs_MYCN_Non_Match)<- "Kids_First_Biospecimen_ID_RNA"
+
+# Make dfs DNA and RNA IDs found here with  
+
+DNA_only_MYCN_df<- MYCN_DF %>% filter(Kids_First_Biospecimen_ID %in% DNA_IDs_MYCN_Non_Match$Kids_First_Biospecimen_ID_DNA)
+
+DNA_only_MYCN_df <- DNA_only_MYCN_df %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,gene_symbol,
+                                                pathology_diagnosis,pathology_free_text_diagnosis,copy_number,
+                                                MYCN_TPM,status)
+colnames(DNA_only_MYCN_df)[1]<- "Kids_First_Biospecimen_ID_DNA"
+
+
+RNA_only_MYCN_df<- MYCN_DF %>% filter(Kids_First_Biospecimen_ID %in% RNA_IDs_MYCN_Non_Match$Kids_First_Biospecimen_ID_DNA)
+
+RNA_only_MYCN_df <- RNA_only_MYCN_df %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,gene_symbol,
+                                                pathology_diagnosis,pathology_free_text_diagnosis,copy_number,
+                                                MYCN_TPM,status)
+colnames(RNA_only_MYCN_df)[1]<- "Kids_First_Biospecimen_ID_RNA"
+
+
+#select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,Kids_First_Participant_ID.x,Kids_First_Participant_ID.y,
+#                                              gene_symbol.x,gene_symbol.y,
+#                                              pathology_diagnosis.x,pathology_diagnosis.y,
+#                                              pathology_free_text_diagnosis.x,pathology_free_text_diagnosis.y,
+#                                              copy_number.x,copy_number.y,MYCN_TPM.x,MYCN_TPM.y,status.x,status.y, match_id)
+```
+
 
 #Part 4: Assign subtype
 ```{r : select only relevant data}
@@ -421,6 +476,7 @@ alteration_df%>%readr::write_tsv(file.path(results_dir, "Alteration_Table.tsv"))
 df_pending_classification%>%readr::write_tsv(file.path(results_dir, "Suggested_Change.tsv"))
 
 ```
+
 
 
 
