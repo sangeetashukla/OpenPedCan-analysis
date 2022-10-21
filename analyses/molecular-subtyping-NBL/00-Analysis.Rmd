@@ -215,6 +215,8 @@ MYCN_Plot_df <- MYCN_DNA_RNA_FILTERED_DF %>% select (Kids_First_Biospecimen_ID_D
 #MYCN_Plot_df <- MYCN_Plot_df %>% mutate(status = str_replace(status, "gain", "non-amplified"))
 #MYCN_Plot_df <- MYCN_Plot_df %>% mutate(status = str_replace(status, "loss", "non-amplified"))
 
+Suggested_Cutoff<-156.12
+
 # Refered code from [5]
 bar_plot1<-MYCN_Plot_df %>% 
   arrange(MYCN_TPM) %>% 
@@ -223,7 +225,7 @@ bar_plot1<-MYCN_Plot_df %>%
   geom_bar(position="dodge",stat="identity")+
   theme(axis.text.x = element_text(size = 15, angle = 45, hjust = 1))
 
-bar_plot1+ geom_hline(aes(yintercept=156.12,linetype = "Suggested Amp Cutoff"),color = "black",size=2) #TARGET-30-PAPKXS-01A-01D	
+bar_plot1+ geom_hline(aes(yintercept=Suggested_Cutoff,linetype = "Suggested Amp Cutoff"),color = "black",size=2) #TARGET-30-PAPKXS-01A-01D	
 
 plot_file <- file.path(plot_dir, "TPM_Biospecimen_Amp_NonAmp.png")
 ggsave(filename = plot_file,width = 45, height = 20)
@@ -381,7 +383,7 @@ bar_plt2<-alteration_df %>%
   geom_bar(position="dodge",stat="identity")+
   theme(axis.text.x = element_text(size = 15, angle = 45, hjust = 1))
 
-bar_plt2+ geom_hline(aes(yintercept=156.12,linetype = "Suggested Amp Cutoff"),color = "violet",size=2) #TARGET-30-PAPKXS-01A-01D	
+bar_plt2+ geom_hline(aes(yintercept=Suggested_Cutoff,linetype = "Suggested Amp Cutoff"),color = "violet",size=2) #TARGET-30-PAPKXS-01A-01D	
 
 
 plot_file2 <- file.path(plot_dir, "TPM_Subtype.png")
