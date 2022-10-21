@@ -392,22 +392,33 @@ ggsave(filename = plot_file2,width = 45, height = 20)
 
 
 
-#Part 5: Write the table
-```{r write alteration table}
-alteration_df%>%readr::write_tsv(file.path(results_dir, "Alteration_Table.tsv"))
-
-```
 
 
 
-
-#Part 6
+#Part 5
 
 ```{r Biospecimens that will change}
+df_pending_classification<-alteration_df[alteration_df$Kids_First_Biospecimen_ID_DNA %in% clincal_amplified_IDs,]
+
+temp_df <- alteration_df %>% filter(MYCN_TPM <= 156.12, subtype =="NBL, MYCN amplified")
+
+df_pending_classification<- rbind(df_pending_classification,temp_df)
+
+colnames(df_pending_classification)[7]<- "subtype_current"
+df_pending_classification$subtype_suggested <- NA
+
+df_pending_classification <- df_pending_classification %>% mutate(subtype_suggested = case_when(MYCN_TPM < 156.12 ~ "NBL, MYCN non amplified",MYCN_TPM >= 156.12 ~ "NBL, MYCN amplified"))
 
 
 ```
 
+
+#Part 6: Write the table
+```{r write alteration table}
+alteration_df%>%readr::write_tsv(file.path(results_dir, "Alteration_Table.tsv"))
+df_pending_classification%>%readr::write_tsv(file.path(results_dir, "Suggested_Change.tsv"))
+
+```
 
 
 
