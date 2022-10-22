@@ -248,7 +248,7 @@ colnames(MYCN_IDs_exhaustive)<-"Kids_First_Biospecimen_ID"
 
 
 MYCN_IDs_with_DNA_RNA <- as.data.frame(c(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA,
-                               MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_RNA))
+                               MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_RNA)) # size 296,296/2 =148 (1/2 samples in DNA/RNA)
 colnames(MYCN_IDs_with_DNA_RNA)<-"Kids_First_Biospecimen_ID"
 
 MYCN_IDs_without_DNA_RNA_Match <- as.data.frame(MYCN_IDs_exhaustive[-(which(MYCN_IDs_exhaustive$Kids_First_Biospecimen_ID %in% MYCN_IDs_with_DNA_RNA$Kids_First_Biospecimen_ID)),])
@@ -267,25 +267,27 @@ colnames(RNA_IDs_MYCN_Non_Match)<- "Kids_First_Biospecimen_ID_RNA"
 
 DNA_only_MYCN_df<- MYCN_DF %>% filter(Kids_First_Biospecimen_ID %in% DNA_IDs_MYCN_Non_Match$Kids_First_Biospecimen_ID_DNA)
 
-DNA_only_MYCN_df <- DNA_only_MYCN_df %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,gene_symbol,
-                                                pathology_diagnosis,pathology_free_text_diagnosis,copy_number,
-                                                MYCN_TPM,status)
+DNA_only_MYCN_df <- DNA_only_MYCN_df %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,MYCN_TPM,copy_number,
+                                                status,pathology_free_text_diagnosis)
 colnames(DNA_only_MYCN_df)[1]<- "Kids_First_Biospecimen_ID_DNA"
 
 
-RNA_only_MYCN_df<- MYCN_DF %>% filter(Kids_First_Biospecimen_ID %in% RNA_IDs_MYCN_Non_Match$Kids_First_Biospecimen_ID_DNA)
+RNA_only_MYCN_df<- MYCN_DF %>% filter(Kids_First_Biospecimen_ID %in% RNA_IDs_MYCN_Non_Match$Kids_First_Biospecimen_ID_RNA)
 
-RNA_only_MYCN_df <- RNA_only_MYCN_df %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,gene_symbol,
-                                                pathology_diagnosis,pathology_free_text_diagnosis,copy_number,
-                                                MYCN_TPM,status)
+RNA_only_MYCN_df <- RNA_only_MYCN_df %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,MYCN_TPM,
+                                                copy_number,status,pathology_free_text_diagnosis)
 colnames(RNA_only_MYCN_df)[1]<- "Kids_First_Biospecimen_ID_RNA"
 
 
-#select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,Kids_First_Participant_ID.x,Kids_First_Participant_ID.y,
-#                                              gene_symbol.x,gene_symbol.y,
-#                                              pathology_diagnosis.x,pathology_diagnosis.y,
-#                                              pathology_free_text_diagnosis.x,pathology_free_text_diagnosis.y,
-#                                              copy_number.x,copy_number.y,MYCN_TPM.x,MYCN_TPM.y,status.x,status.y, match_id)
+# Add biospecimen_dna_id and biospecimen_rna_id accordingly
+
+DNA_only_MYCN_df$Kids_First_Biospecimen_ID_RNA<- NA_character_
+RNA_only_MYCN_df$Kids_First_Biospecimen_ID_DNA<- NA_character_
+DNA_only_MYCN_df<- DNA_only_MYCN_df[,c(1,7,2:6)] # Rearrange the columns to make it look like MYCN_DNA_RNA_FILTERED_DF
+RNA_only_MYCN_df<- RNA_only_MYCN_df[,c(7,1:6)] 
+
+# Combine the above two dfs, these are DFs where either DNA or RNA Biospecimen_ID is missing
+MYCN_non_match_df <- rbind(DNA_only_MYCN_df,RNA_only_MYCN_df)
 ```
 
 
@@ -293,6 +295,10 @@ colnames(RNA_only_MYCN_df)[1]<- "Kids_First_Biospecimen_ID_RNA"
 ```{r : select only relevant data}
 alteration_df <- MYCN_DNA_RNA_FILTERED_DF %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,                                              Kids_First_Participant_ID,MYCN_TPM,copy_number,MYCN_TPM,status,pathology_free_text_diagnosis)
 #alteration_df <- alteration_df %>% mutate(pathology_free_text_diagnosis2 = pathology_free_text_diagnosis)
+
+
+alteration_df <- rbind(alteration_df,MYCN_non_match_df)
+
 
 # Bring in the extra pathology free diagnonsis text from files in input folder:
 colnames(gmfk_patient_clinical_mycn_status_df)<-c("Kids_First_Participant_ID","pathology_free_text_diagnosis_gmfk")
@@ -305,7 +311,6 @@ alteration_df<-alteration_df%>% mutate(pathology=coalesce(pathology_free_text_di
 alteration_df<-alteration_df %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,                            
                                         MYCN_TPM,copy_number,MYCN_TPM,status,pathology)
 colnames(alteration_df)[6]<- "pathology_free_text_diagnosis"
-alteration_df$subtype<-NA
 
 ```
 
