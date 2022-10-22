@@ -311,11 +311,44 @@ alteration_df<-alteration_df%>% mutate(pathology=coalesce(pathology_free_text_di
 alteration_df<-alteration_df %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,                            
                                         MYCN_TPM,copy_number,MYCN_TPM,status,pathology)
 colnames(alteration_df)[6]<- "pathology_free_text_diagnosis"
+alteration_df$subtype<-NA # Create a subtype column 
 
 ```
 
-```{r : subtype assignment Case 1}
 
+```{r Subtyping}
+alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplification" & pathology_free_text_diagnosis=="MYCN amp"
+                                                  ~ "NBL, MYCN amplified",status =="amplification" & 
+                                                    pathology_free_text_diagnosis %in% c("MYCN non-amp","ganglioneuroblastoma, stage ii favorable histology non n-myc amplified") ~ "NBL, MYCN amplified"))
+
+
+
+```
+
+```{r}
+plot_alteration_df <- alteration_df %>% filter(!is.na(MYCN_TPM))
+plot_alteration_df<- plot_alteration_df %>% mutate(Kids_First_Biospecimen_ID=coalesce(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA))
+
+bar_plot3<-plot_alteration_df %>% 
+  arrange(MYCN_TPM) %>% 
+  mutate(Kids_First_Biospecimen_ID = factor(Kids_First_Biospecimen_ID, unique(Kids_First_Biospecimen_ID))) %>%
+  ggplot() +aes(x=Kids_First_Biospecimen_ID, y=MYCN_TPM, fill=status)+
+  geom_bar(position="dodge",stat="identity")+
+  theme(axis.text.x = element_text(size = 15, angle = 45, hjust = 1))
+
+bar_plot3+ geom_hline(aes(yintercept=Suggested_Cutoff,linetype = "Suggested Amp Cutoff"),color = "black",size=2) #TARGET-30-PAPKXS-01A-01D	
+
+plot_file <- file.path(plot_dir, "TPM_Biospecimen_Amp_NonAmp.png")
+ggsave(filename = plot_file,width = 45, height = 20)
+
+
+```
+
+
+
+
+```{r : subtype assignment Case 1}
+alteration_df$subtype<-NA # Create a subtype column 
 # ompare the clinical status (currently in pathology_free_text_diagnosis to the CNV call). If a match, assign molecular_subtype as NBL, MYCN amplified. If not a match: If MYCN is called as amplified but clinical file says non-amplified, assign NBL, MYCN amplified.
 
  alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplification" & pathology_free_text_diagnosis=="MYCN amp"
