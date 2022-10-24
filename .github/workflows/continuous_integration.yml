@@ -115,6 +115,9 @@ jobs:
             openpbta_subset: 0
 
           - name: Consensus CN
+            entrypoint: copy_number_consensus_call/run_consensus_call.sh
+
+          - name: Consensus CN annotation
             entrypoint: focal-cn-file-preparation/run-prepare-cn-OpenTarget.sh
             openpbta_testing: 1
 
@@ -125,7 +128,7 @@ jobs:
             entrypoint: immune-deconv/run-immune-deconv.sh
 
           - name: EFO/MONDO annotation
-            entrypoint: efo-mondo-mapping/run_qc.sh
+            entrypoint: efo-mondo-mapping/run_search_and_qc.sh
 
           - name: ENSEMBL Gene matching
             entrypoint: gene_match/run-gene-mapping.sh
@@ -133,13 +136,16 @@ jobs:
           - name: Update table annotation data
             entrypoint: long-format-table-utils/run-update-long-format-table-utils.sh
 
+          - name: RNA-Seq Expression Summary stats
+            entrypoint: rna-seq-expression-summary-stats/run-rna-seq-expression-summary-stats.sh
+
           # MTP-specific modules
           - name: Fusion frequency tables
             entrypoint: fusion-frequencies/run-frequencies.sh
-            
+
           - name: SNV frequency tables
             entrypoint: snv-frequencies/run-snv-frequencies.sh
-            
+
           - name: CNV frequency tables
             entrypoint: cnv-frequencies/run-cnv-frequencies-analysis.sh
     steps:
