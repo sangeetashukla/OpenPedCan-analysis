@@ -96,15 +96,13 @@ MYCN_Index <- which(rownames(gene_expression_df)=="MYCN") # find which rows (con
 TPM_MYCN_data <- gene_expression_df[MYCN_Index,] # Get the TPM data for for MYCN
 MYCN_biospecimen_rna_ID <- colnames(TPM_MYCN_data) # Get the column names which have biospecimen IDs
 MYCN_biospecimen_rna_ID<-as.data.frame(MYCN_biospecimen_rna_ID) # Converting to dataframe for ease of use for later
-```
 
-
-```{r Changing column names}
 colnames(MYCN_biospecimen_dna_ID)<- "Kids_First_Biospecimen_ID" #change biospecimen_ID to Kids_First_Biospecimen_ID
 colnames(MYCN_biospecimen_rna_ID)<- "Kids_First_Biospecimen_ID" #change MYCN_biospecimen_rna_ID to Kids_First_Biospecimen_ID
 # Store all the biospecimen IDs for MYCN both DNA and RNA in the following variable
 all_MYCN_biospecimen_ID <- rbind(MYCN_biospecimen_dna_ID,MYCN_biospecimen_rna_ID)
 ```
+
 
 ```{r Getting TPM, Copy Number and Status info}
 # Find which MYCN Biospecimen IDs in all_MYCN_biospecimen_ID correspond to NBL as defined in hist_filtered_df. Thus the intersection of biosepcimen in all_MYCN_biospecimen_ID  and hist_filtered_df will have the biospecimens IDs belonging to MYCN-NBL
@@ -207,7 +205,7 @@ MYCN_DNA_RNA_FILTERED_DF<- MYCN_DNA_RNA_FILTERED_DF[-rows_to_delete_MYCN,]
 #Part 3
 Add MYCN TPM and MYCN copy number and status to table. It may also be useful to see a quick ascending barplot of MYCN TPM (y-axis) and sample (x-axis) colored by clinical status (see 4 below). See example plot here.
 
-```{r make plot}
+```{r make TPM vs Biospecimen plot for samples with DNA and RNA IDs}
 #Select relevant info
 MYCN_Plot_df <- MYCN_DNA_RNA_FILTERED_DF %>% select (Kids_First_Biospecimen_ID_DNA,MYCN_TPM,status)
 
@@ -238,7 +236,7 @@ ggsave(filename = plot_file,width = 45, height = 20)
 
 # add IDs that don't necessarily have both DNA and RNA 
 
-```{r}
+```{r Gather samples that dont have both DNA and RNA IDs}
 MYCN_IDs_exhaustive <- as.data.frame(MYCN_DF$Kids_First_Biospecimen_ID) # Has every biospecimen ID of NBL-MYCN samples
 colnames(MYCN_IDs_exhaustive)<-"Kids_First_Biospecimen_ID"
 # Repeating IDs with different copy numbers TARGET-30-PAMDAL-01A-01W, TARGET-30-PAPVFD-01A-01D, TARGET-30-PASXRG-01A-01D
@@ -291,7 +289,7 @@ MYCN_non_match_df <- rbind(DNA_only_MYCN_df,RNA_only_MYCN_df)
 
 
 #Part 4: Assign subtype
-```{r : select only relevant data}
+```{r : select only relevant data for subtyping table}
 alteration_df <- MYCN_DNA_RNA_FILTERED_DF %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,                                              Kids_First_Participant_ID,MYCN_TPM,copy_number,MYCN_TPM,status,pathology_free_text_diagnosis)
 #alteration_df <- alteration_df %>% mutate(pathology_free_text_diagnosis2 = pathology_free_text_diagnosis)
 
@@ -314,7 +312,7 @@ alteration_df$subtype<-NA # Create a subtype column
 
 ```
 
-```{r}
+```{r Plot of all biospecimen with TPMs}
 plot_alteration_df <- alteration_df %>% filter(!is.na(MYCN_TPM))
 plot_alteration_df<- plot_alteration_df %>% mutate(Kids_First_Biospecimen_ID=coalesce(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA))
 
@@ -356,10 +354,11 @@ ggsave(filename = plot_file,width = 49, height = 20)
 
 
 
-```{r Subtyping}
+```{r Subtyping: when match is found and when call is amp and pathology free text is non amp}
 alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplification" & pathology_free_text_diagnosis=="MYCN amp"
                                                   ~ "NBL, MYCN amplified",status =="amplification" & 
-                                                    pathology_free_text_diagnosis %in% c("MYCN non-amp","ganglioneuroblastoma, stage ii favorable histology non n-myc amplified") ~ "NBL, MYCN amplified"))
+                                                    pathology_free_text_diagnosis %in% c("MYCN non-amp","ganglioneuroblastoma, stage ii favorable histology non n-myc amplified") ~ "NBL, MYCN amplified",
+                                       status %in% c("gain","loss","neutral") &  pathology_free_text_diagnosis %in% c("MYCN non-amp","ganglioneuroblastoma, stage ii favorable histology non n-myc amplified") ~ "NBL, MYCN non-amplified"))
 
 
 
@@ -367,7 +366,7 @@ alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplificati
 
 
 
-```{r subtype assignment Case}
+```{r subtyping when call is not amp but pathology free text is amp}
 # If MYCN is called non-amplified but clinical file says amplified, plot the CNV data to visualize whether we see focal amplification but the CNV was not called. 
 
 index_clinical_amplified <- which(alteration_df$status %in% c("gain","loss","neutral")  
@@ -385,10 +384,11 @@ print(clincal_amplified_IDs)
 
 # adapating code from: https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/785c3224de29f701b1c1b62841d0f84d46f7eaca/analyses/molecular-subtyping-embryonal/03-clean-c19mc-data.Rmd#L56-L112
 
+# Apply this code to chromosome 2 since MYCN is on Chromosome 2
 
 plot_chr2 <- function(cn_df, biospecimen_id) {
  # This function takes a seg data.frame and a biospecimen identifier and 
- # returns a plot of the chromosome 19 segment mean for that biospecimen.
+ # returns a plot of the chromosome 2 segment mean for that biospecimen.
  # It fills missing seg.mean values with zeroes.
  # 
  # Args:
@@ -403,7 +403,7 @@ plot_chr2 <- function(cn_df, biospecimen_id) {
     # Reformat the chromosome variable to drop the "chr"
     dplyr::mutate(chrom = factor(gsub("chr", "", chrom), 
                                  levels = c(1:22, "X", "Y"))) %>%
-    # Only look at chr19 in the relevant sample
+    # Only look at chr2 in the relevant sample
     filter(ID == biospecimen_id,
            chrom == 2) %>%
     # Make Del/Amp variable
@@ -443,13 +443,12 @@ plot_chr2 <- function(cn_df, biospecimen_id) {
 ```
 
 
-```{r plots}
+```{r create the segmean vs location plots for samples where call is non-amp but pathology free text is amp}
 for (iter in 1: length(clincal_amplified_IDs)){
   if(!is.na(clincal_amplified_IDs[iter])){
     plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[iter])
     plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"Amp_Del",".png"))
     ggsave(filename = plt_file,width = 10, height = 20)
-    print(iter)
   }
   else{
     plot_chr2(cnv_cnvkit_df,alteration_df$Kids_First_Biospecimen_ID_RNA[index_clinical_amplified[iter]])
@@ -461,7 +460,7 @@ for (iter in 1: length(clincal_amplified_IDs)){
 ```
 
 
-```{r}
+```{r : Assign Subtypes status non amp but pathology free text amp}
 for (iter in index_clinical_amplified){
   if(is.na(alteration_df$MYCN_TPM[iter])){
     alteration_df$subtype[iter]<- "Pathology-amp,Status-non-amp,TPM-NA"
@@ -482,6 +481,23 @@ for (iter in index_clinical_amplified){
 
 
 
+```{r : Assign the remaining unclassified samples based of a suggested cutoff TPM }
+index_tpm_unsubtype_above<-which(is.na(alteration_df$subtype) & !is.na(alteration_df$MYCN_TPM)& alteration_df$MYCN_TPM >= Suggested_Cutoff)
+
+index_tpm_unsubtype_below<-which(is.na(alteration_df$subtype) & !is.na(alteration_df$MYCN_TPM)& alteration_df$MYCN_TPM < Suggested_Cutoff)
+
+alteration_df$subtype[index_tpm_unsubtype_above]<-"NBL, MYCN amplified"
+
+alteration_df$subtype[index_tpm_unsubtype_below]<-"NBL, MYCN non-amplified"
+
+```
+
+
+```{r}
+index_unclassified <- which(is.na(alteration_df$subtype))
+alteration_df$subtype[index_unclassified]<-"Unclassified due to insufficient info"
+
+```
 
 
 ```{r}
@@ -507,42 +523,24 @@ for (iter in index_clinical_amplified){
 
 
 ```{r : subtype assignment Case 1}
-alteration_df$subtype<-NA # Create a subtype column 
-# ompare the clinical status (currently in pathology_free_text_diagnosis to the CNV call). If a match, assign molecular_subtype as NBL, MYCN amplified. If not a match: If MYCN is called as amplified but clinical file says non-amplified, assign NBL, MYCN amplified.
-
- alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplification" & pathology_free_text_diagnosis=="MYCN amp"
-                                                            ~ "NBL, MYCN amplified",status =="amplification" &
-                                                             pathology_free_text_diagnosis=="MYCN non-amp" ~ "NBL, MYCN amplified"))
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
-```{r : plot distribution of subtypes}
-bar_plt2<-alteration_df %>% 
-  arrange(MYCN_TPM) %>% 
-  mutate(Kids_First_Biospecimen_ID_DNA = factor(Kids_First_Biospecimen_ID_DNA, unique(Kids_First_Biospecimen_ID_DNA))) %>%
-  ggplot() +aes(x=Kids_First_Biospecimen_ID_DNA, y=MYCN_TPM, fill=subtype)+
-  geom_bar(position="dodge",stat="identity")+
-  theme(axis.text.x = element_text(size = 15, angle = 45, hjust = 1))
-
-bar_plt2+ geom_hline(aes(yintercept=Suggested_Cutoff,linetype = "Suggested Amp Cutoff"),color = "violet",size=2) #TARGET-30-PAPKXS-01A-01D	
-
-
-plot_file2 <- file.path(plot_dir, "TPM_Subtype.png")
-ggsave(filename = plot_file2,width = 45, height = 20)
-
+# alteration_df$subtype<-NA # Create a subtype column 
+# # ompare the clinical status (currently in pathology_free_text_diagnosis to the CNV call). If a match, assign molecular_subtype as NBL, MYCN amplified. If not a match: If MYCN is called as amplified but clinical file says non-amplified, assign NBL, MYCN amplified.
+# 
+#  alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplification" & pathology_free_text_diagnosis=="MYCN amp"
+#                                                             ~ "NBL, MYCN amplified",status =="amplification" &
+#                                                              pathology_free_text_diagnosis=="MYCN non-amp" ~ "NBL, MYCN amplified"))
 
 ```
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -570,7 +568,7 @@ df_pending_classification <- df_pending_classification %>% mutate(subtype_sugges
 #Part 6: Write the table
 ```{r write alteration table}
 alteration_df%>%readr::write_tsv(file.path(results_dir, "Alteration_Table.tsv"))
-df_pending_classification%>%readr::write_tsv(file.path(results_dir, "Suggested_Change.tsv"))
+#df_pending_classification%>%readr::write_tsv(file.path(results_dir, "Suggested_Change.tsv"))
 
 ```
 
