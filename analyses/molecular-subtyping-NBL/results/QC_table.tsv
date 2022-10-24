@@ -1,0 +1,5 @@
+Kids_First_Biospecimen_ID_GMKF	Kids_First_Biospecimen_ID_TARGET	Kids_First_Participant_ID	sample_id	cohort_GMKF	cohort_TARGET	status_GMKF	status_TARGET	subtype_GMKF	subtype_Target
+BS_2P6MH05V	TARGET-30-PATGLU-01A-01D	PATGLU	01	GMKF	TARGET	gain	gain	NBL, MYCN non-amplified	NBL, MYCN non-amplified
+BS_8XDZQKSD	TARGET-30-PASWYR-01A-01D	PASWYR	01	GMKF	TARGET	gain	amplification	NBL, MYCN amplified	NBL, MYCN amplified
+BS_SYSZCYYZ	TARGET-30-PASCDX-01A-01D	PASCDX	01	GMKF	TARGET	amplification	amplification	NBL, MYCN amplified	NBL, MYCN amplified
+BS_V4VGG98Y	TARGET-30-PASXHE-01A-01D	PASXHE	01	GMKF	TARGET	gain	gain	NBL, MYCN non-amplified	NBL, MYCN non-amplified
