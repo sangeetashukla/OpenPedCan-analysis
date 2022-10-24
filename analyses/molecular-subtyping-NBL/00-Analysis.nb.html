@@ -2400,20 +2400,10 @@ plot_chr2 &lt;- function(cn_df, biospecimen_id) {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZm9yIChpdGVyIGluIDE6IGxlbmd0aChjbGluY2FsX2FtcGxpZmllZF9JRHMpKXtcbiAgaWYoIWlzLm5hKGNsaW5jYWxfYW1wbGlmaWVkX0lEc1tpdGVyXSkpe1xuICAgIHBsb3RfY2hyMihjbnZfY252a2l0X2RmLGNsaW5jYWxfYW1wbGlmaWVkX0lEc1tpdGVyXSlcbiAgICBwbHRfZmlsZSA8LSBmaWxlLnBhdGgocGxvdF9kaXIsIHBhc3RlKGNsaW5jYWxfYW1wbGlmaWVkX0lEc1tpdGVyXSxcIkFtcF9EZWxcIixcIi5wbmdcIikpXG4gICAgZ2dzYXZlKGZpbGVuYW1lID0gcGx0X2ZpbGUsd2lkdGggPSAxMCwgaGVpZ2h0ID0gMjApXG4gIH1cbiAgZWxzZXtcbiAgICBwbG90X2NocjIoY252X2NudmtpdF9kZixhbHRlcmF0aW9uX2RmJEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfUk5BW2luZGV4X2NsaW5pY2FsX2FtcGxpZmllZFtpdGVyXV0pXG4gICAgcGx0X2ZpbGUgPC0gZmlsZS5wYXRoKHBsb3RfZGlyLCBwYXN0ZShjbGluY2FsX2FtcGxpZmllZF9JRHNbaXRlcl0sXCJBbXBfRGVsXCIsXCIucG5nXCIpKVxuICAgIGdnc2F2ZShmaWxlbmFtZSA9IHBsdF9maWxlLHdpZHRoID0gMTAsIGhlaWdodCA9IDIwKVxuICB9XG4gIFxufVxuYGBgIn0= -->
-<pre class="r"><code>for (iter in 1: length(clincal_amplified_IDs)){
-  if(!is.na(clincal_amplified_IDs[iter])){
-    plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[iter])
-    plt_file &lt;- file.path(plot_dir, paste(clincal_amplified_IDs[iter],&quot;Amp_Del&quot;,&quot;.png&quot;))
-    ggsave(filename = plt_file,width = 10, height = 20)
-  }
-  else{
-    plot_chr2(cnv_cnvkit_df,alteration_df$Kids_First_Biospecimen_ID_RNA[index_clinical_amplified[iter]])
-    plt_file &lt;- file.path(plot_dir, paste(clincal_amplified_IDs[iter],&quot;Amp_Del&quot;,&quot;.png&quot;))
-    ggsave(filename = plt_file,width = 10, height = 20)
-  }
-  
-}</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuaW5kZXhfdHBtX3Vuc3VidHlwZV9hYm92ZTwtd2hpY2goaXMubmEoYWx0ZXJhdGlvbl9kZiRzdWJ0eXBlKSAmICFpcy5uYShhbHRlcmF0aW9uX2RmJE1ZQ05fVFBNKSYgYWx0ZXJhdGlvbl9kZiRNWUNOX1RQTSA+PSBTdWdnZXN0ZWRfQ3V0b2ZmKVxuXG5pbmRleF90cG1fdW5zdWJ0eXBlX2JlbG93PC13aGljaChpcy5uYShhbHRlcmF0aW9uX2RmJHN1YnR5cGUpICYgIWlzLm5hKGFsdGVyYXRpb25fZGYkTVlDTl9UUE0pJiBhbHRlcmF0aW9uX2RmJE1ZQ05fVFBNIDwgU3VnZ2VzdGVkX0N1dG9mZilcblxuYWx0ZXJhdGlvbl9kZiRzdWJ0eXBlW2luZGV4X3RwbV91bnN1YnR5cGVfYWJvdmVdPC1cXE5CTFxuYGBgIn0= -->
+<p><code>r</code>r index_tpm_unsubtype_above&lt;-which(is.na(alteration_df<span class="math inline">\(subtype) &amp; !is.na(alteration_df\)</span>MYCN_TPM)&amp; alteration_df$MYCN_TPM &gt;= Suggested_Cutoff)</p>
+<p>index_tpm_unsubtype_below&lt;-which(is.na(alteration_df<span class="math inline">\(subtype) &amp; !is.na(alteration_df\)</span>MYCN_TPM)&amp; alteration_df$MYCN_TPM &lt; Suggested_Cutoff)</p>
+<p>alteration_df$subtype[index_tpm_unsubtype_above]&lt;- ```</p>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2463,41 +2453,25 @@ alteration_df$subtype[index_unclassified]&lt;-&quot;Unclassified due to insuffic
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBnZXRfc3RhdHVzIDwtIGZ1bmN0aW9uIChjbl9kZiwgYmlvc3BlY2ltZW5faWQpe1xuIyAgIHN0YXR1cyA8LSBcIk5CTCwgTVlDTiBub24gYW1wbGlmaWVkXCJcbiMgICBjbl9kZjwtIGNuX2RmW2NuX2RmJElEPT1iaW9zcGVjaW1lbl9pZCxdXG4jICAgbWVhbl9zZWdtZWFuPC0gbWVhbihjbl9kZiRzZWcubWVhbilcbiMgICBpZihtZWFuX3NlZ21lYW4+MCl7XG4jICAgICBzdGF0dXM8LVwiTkJMLCBNWUNOIGFtcGxpZmllZFwiXG4jICAgfVxuIyAgcmV0dXJuKHN0YXR1cylcbiMgfVxuXG5gYGAifQ== -->
-<pre class="r"><code># get_status &lt;- function (cn_df, biospecimen_id){
-#   status &lt;- &quot;NBL, MYCN non amplified&quot;
-#   cn_df&lt;- cn_df[cn_df$ID==biospecimen_id,]
-#   mean_segmean&lt;- mean(cn_df$seg.mean)
-#   if(mean_segmean&gt;0){
-#     status&lt;-&quot;NBL, MYCN amplified&quot;
-#   }
-#  return(status)
-# }
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBhbHRlcmF0aW9uX2RmJHN1YnR5cGU8LU5BICMgQ3JlYXRlIGEgc3VidHlwZSBjb2x1bW4gXG4jICMgb21wYXJlIHRoZSBjbGluaWNhbCBzdGF0dXMgKGN1cnJlbnRseSBpbiBwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3NpcyB0byB0aGUgQ05WIGNhbGwpLiBJZiBhIG1hdGNoLCBhc3NpZ24gbW9sZWN1bGFyX3N1YnR5cGUgYXMgTkJMLCBNWUNOIGFtcGxpZmllZC4gSWYgbm90IGEgbWF0Y2g6IElmIE1ZQ04gaXMgY2FsbGVkIGFzIGFtcGxpZmllZCBidXQgY2xpbmljYWwgZmlsZSBzYXlzIG5vbi1hbXBsaWZpZWQsIGFzc2lnbiBOQkwsIE1ZQ04gYW1wbGlmaWVkLlxuIyBcbiMgIGFsdGVyYXRpb25fZGY8LWFsdGVyYXRpb25fZGYgJT4lbXV0YXRlKHN1YnR5cGUgPSBjYXNlX3doZW4oc3RhdHVzID09XFxhbXBsaWZpY2F0aW9uXFwgJiBwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3Npcz09XFxNWUNOIGFtcFxcXG4jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH4gXFxOQkxcbmBgYCJ9 -->
+<p><code>r</code>r # alteration_df$subtype&lt;-NA # Create a subtype column # # ompare the clinical status (currently in pathology_free_text_diagnosis to the CNV call). If a match, assign molecular_subtype as NBL, MYCN amplified. If not a match: If MYCN is called as amplified but clinical file says non-amplified, assign NBL, MYCN amplified. # # alteration_df&lt;-alteration_df %&gt;%mutate(subtype = case_when(status == &amp; pathology_free_text_diagnosis==amp<br />
+# ~  ```</p>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBmb3IgKGl0ZXIgaW4gMTpsZW5ndGgoY2xpbmNhbF9hbXBsaWZpZWRfSURzKSl7XG4jICAgYWx0ZXJhdGlvbl9kZiRzdWJ0eXBlW2luZGV4X2NsaW5pY2FsX2FtcGxpZmllZFtpdGVyXV08LSBnZXRfc3RhdHVzKGNudl9jbnZraXRfZGYsY2xpbmNhbF9hbXBsaWZpZWRfSURzW2l0ZXJdKVxuIyAgIFxuIyB9XG5cbmBgYCJ9 -->
-<pre class="r"><code># for (iter in 1:length(clincal_amplified_IDs)){
-#   alteration_df$subtype[index_clinical_amplified[iter]]&lt;- get_status(cnv_cnvkit_df,clincal_amplified_IDs[iter])
-#   
-# }
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZGZfcGVuZGluZ19jbGFzc2lmaWNhdGlvbjwtYWx0ZXJhdGlvbl9kZlthbHRlcmF0aW9uX2RmJEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfRE5BICVpbiUgY2xpbmNhbF9hbXBsaWZpZWRfSURzLF1cblxudGVtcF9kZiA8LSBhbHRlcmF0aW9uX2RmICU+JSBmaWx0ZXIoTVlDTl9UUE0gPD0gMTU2LjEyLCBzdWJ0eXBlID09XFxOQkxcbmBgYCJ9 -->
+<p><code>r</code>r df_pending_classification&lt;-alteration_df[alteration_df$Kids_First_Biospecimen_ID_DNA %in% clincal_amplified_IDs,]</p>
+<p>temp_df &lt;- alteration_df %&gt;% filter(MYCN_TPM &lt;= 156.12, subtype == ```</p>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBhbHRlcmF0aW9uX2RmJHN1YnR5cGU8LU5BICMgQ3JlYXRlIGEgc3VidHlwZSBjb2x1bW4gXG4jICMgb21wYXJlIHRoZSBjbGluaWNhbCBzdGF0dXMgKGN1cnJlbnRseSBpbiBwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3NpcyB0byB0aGUgQ05WIGNhbGwpLiBJZiBhIG1hdGNoLCBhc3NpZ24gbW9sZWN1bGFyX3N1YnR5cGUgYXMgTkJMLCBNWUNOIGFtcGxpZmllZC4gSWYgbm90IGEgbWF0Y2g6IElmIE1ZQ04gaXMgY2FsbGVkIGFzIGFtcGxpZmllZCBidXQgY2xpbmljYWwgZmlsZSBzYXlzIG5vbi1hbXBsaWZpZWQsIGFzc2lnbiBOQkwsIE1ZQ04gYW1wbGlmaWVkLlxuIyBcbiMgIGFsdGVyYXRpb25fZGY8LWFsdGVyYXRpb25fZGYgJT4lbXV0YXRlKHN1YnR5cGUgPSBjYXNlX3doZW4oc3RhdHVzID09XCJhbXBsaWZpY2F0aW9uXCIgJiBwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3Npcz09XCJNWUNOIGFtcFwiXG4jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH4gXCJOQkwsIE1ZQ04gYW1wbGlmaWVkXCIsc3RhdHVzID09XCJhbXBsaWZpY2F0aW9uXCIgJlxuIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXM9PVwiTVlDTiBub24tYW1wXCIgfiBcIk5CTCwgTVlDTiBhbXBsaWZpZWRcIikpXG5cbmBgYCJ9 -->
-<pre class="r"><code># alteration_df$subtype&lt;-NA # Create a subtype column 
-# # ompare the clinical status (currently in pathology_free_text_diagnosis to the CNV call). If a match, assign molecular_subtype as NBL, MYCN amplified. If not a match: If MYCN is called as amplified but clinical file says non-amplified, assign NBL, MYCN amplified.
-# 
-#  alteration_df&lt;-alteration_df %&gt;%mutate(subtype = case_when(status ==&quot;amplification&quot; &amp; pathology_free_text_diagnosis==&quot;MYCN amp&quot;
-#                                                             ~ &quot;NBL, MYCN amplified&quot;,status ==&quot;amplification&quot; &amp;
-#                                                              pathology_free_text_diagnosis==&quot;MYCN non-amp&quot; ~ &quot;NBL, MYCN amplified&quot;))
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYWx0ZXJhdGlvbl9kZiU+JXJlYWRyOjp3cml0ZV90c3YoZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcXEFsdGVyYXRpb25fVGFibGUudHN2XFwpKVxuI2RmX3BlbmRpbmdfY2xhc3NpZmljYXRpb24lPiVyZWFkcjo6d3JpdGVfdHN2KGZpbGUucGF0aChyZXN1bHRzX2RpciwgXFxTdWdnZXN0ZWRfQ2hhbmdlLnRzdlxcKSlcblxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r alteration_df%&gt;%readr::write_tsv(file.path(results_dir, _Table.tsv)) #df_pending_classification%&gt;%readr::write_tsv(file.path(results_dir, _Change.tsv))</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
