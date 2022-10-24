@@ -461,6 +461,7 @@ for (iter in 1: length(clincal_amplified_IDs)){
 
 
 ```{r : Assign Subtypes status non amp but pathology free text amp}
+index_clincal <- NA
 for (iter in index_clinical_amplified){
   if(is.na(alteration_df$MYCN_TPM[iter])){
     alteration_df$subtype[iter]<- "Pathology-amp,Status-non-amp,TPM-NA"
@@ -468,10 +469,12 @@ for (iter in index_clinical_amplified){
   }
   else if (alteration_df$MYCN_TPM[iter] >= Suggested_Cutoff){
    alteration_df$subtype[iter]<- "NBL, MYCN amplified"
+   index_clincal <- c(index_clincal,iter)
 
  }
   else if (alteration_df$MYCN_TPM[iter] < Suggested_Cutoff) {
     alteration_df$subtype[iter]<- "NBL, MYCN non-amplified"
+    index_clincal <- c(index_clincal,iter)
 
   } 
   
@@ -500,43 +503,16 @@ alteration_df$subtype[index_unclassified]<-"Unclassified due to insufficient inf
 ```
 
 
-```{r}
-# get_status <- function (cn_df, biospecimen_id){
-#   status <- "NBL, MYCN non amplified"
-#   cn_df<- cn_df[cn_df$ID==biospecimen_id,]
-#   mean_segmean<- mean(cn_df$seg.mean)
-#   if(mean_segmean>0){
-#     status<-"NBL, MYCN amplified"
-#   }
-#  return(status)
-# }
+```{r Dataframe where all the sample subtype are determined based on TPM cutoff}
+index_clincal<- index_clincal[2:length(index_clincal)] # Remove NA at index 1
 
+TPM_index <- c(index_clincal,index_tpm_unsubtype_above,index_tpm_unsubtype_below)
+
+df_tpm <- alteration_df[TPM_index,]
+
+df_tpm <- df_tpm %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,copy_number,
+                            pathology_free_text_diagnosis,status,MYCN_TPM,subtype)
 ```
-
-```{r}
-# for (iter in 1:length(clincal_amplified_IDs)){
-#   alteration_df$subtype[index_clinical_amplified[iter]]<- get_status(cnv_cnvkit_df,clincal_amplified_IDs[iter])
-#   
-# }
-
-```
-
-
-```{r : subtype assignment Case 1}
-# alteration_df$subtype<-NA # Create a subtype column 
-# # ompare the clinical status (currently in pathology_free_text_diagnosis to the CNV call). If a match, assign molecular_subtype as NBL, MYCN amplified. If not a match: If MYCN is called as amplified but clinical file says non-amplified, assign NBL, MYCN amplified.
-# 
-#  alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplification" & pathology_free_text_diagnosis=="MYCN amp"
-#                                                             ~ "NBL, MYCN amplified",status =="amplification" &
-#                                                              pathology_free_text_diagnosis=="MYCN non-amp" ~ "NBL, MYCN amplified"))
-
-```
-
-
-
-
-
-
 
 
 
@@ -550,28 +526,58 @@ alteration_df$subtype[index_unclassified]<-"Unclassified due to insufficient inf
 #Part 5
 
 ```{r Biospecimens that will change}
-df_pending_classification<-alteration_df[alteration_df$Kids_First_Biospecimen_ID_DNA %in% clincal_amplified_IDs,]
-
-temp_df <- alteration_df %>% filter(MYCN_TPM <= 156.12, subtype =="NBL, MYCN amplified")
-
-df_pending_classification<- rbind(df_pending_classification,temp_df)
-
-colnames(df_pending_classification)[7]<- "subtype_current"
-df_pending_classification$subtype_suggested <- NA
-
-df_pending_classification <- df_pending_classification %>% mutate(subtype_suggested = case_when(MYCN_TPM < 156.12 ~ "NBL, MYCN non amplified",MYCN_TPM >= 156.12 ~ "NBL, MYCN amplified"))
+# df_pending_classification<-alteration_df[alteration_df$Kids_First_Biospecimen_ID_DNA %in% clincal_amplified_IDs,]
+# 
+# temp_df <- alteration_df %>% filter(MYCN_TPM <= 156.12, subtype =="NBL, MYCN amplified")
+# 
+# df_pending_classification<- rbind(df_pending_classification,temp_df)
+# 
+# colnames(df_pending_classification)[7]<- "subtype_current"
+# df_pending_classification$subtype_suggested <- NA
+# 
+# df_pending_classification <- df_pending_classification %>% mutate(subtype_suggested = case_when(MYCN_TPM < 156.12 ~ "NBL, MYCN non amplified",MYCN_TPM >= 156.12 ~ "NBL, MYCN amplified"))
 
 
 ```
 
+#Part 6: QC Check
+```{r perform QC check}
+GMKF_MYCN_NBL_df <- MYCN_DF %>% filter(cohort=="GMKF" & experimental_strategy %in% c("WGS","WXS"))
+TARGET_MYCN_NBL_df <- MYCN_DF %>% filter(cohort=="TARGET"& experimental_strategy %in% c("WGS","WXS"))
+QC_df <- inner_join(GMKF_MYCN_NBL_df,TARGET_MYCN_NBL_df, by=c("Kids_First_Participant_ID"="Kids_First_Participant_ID", 
+                                                              "sample_id"="sample_id"))
+QC_df <-  QC_df %>% select(Kids_First_Biospecimen_ID.x,Kids_First_Biospecimen_ID.y,Kids_First_Participant_ID,sample_id,cohort.x,cohort.y,experimental_strategy.x,experimental_strategy.y,status.x,status.y)
+colnames(QC_df)<- c("Kids_First_Biospecimen_ID_GMKF","Kids_First_Biospecimen_ID_TARGET","Kids_First_Participant_ID","sample_id",
+                    "cohort_GMKF","cohort_TARGET","experimental_strategy_GMKF","experimental_strategy_Target",
+                    "status_GMKF","status_TARGET")
 
-#Part 6: Write the table
+QC_df$subtype_GMKF<-NA
+QC_df$subtype_Target<-NA
+
+
+for (iter in 1:dim(QC_df)[1]){
+  index_gmkf <- which(alteration_df$Kids_First_Biospecimen_ID_DNA == QC_df$Kids_First_Biospecimen_ID_GMKF[iter])
+  index_target <- which(alteration_df$Kids_First_Biospecimen_ID_DNA == QC_df$Kids_First_Biospecimen_ID_TARGET[iter])
+
+  if(length(index_gmkf) ==0 ){
+    index_gmkf <- which(alteration_df$Kids_First_Biospecimen_ID_RNA == QC_df$Kids_First_Biospecimen_ID_GMKF[iter])
+  }
+  QC_df$subtype_GMKF[iter]<- alteration_df$subtype[index_gmkf]
+  
+    if(length(index_target) ==0 ){
+    index_target <- which(alteration_df$Kids_First_Biospecimen_ID_RNA == QC_df$Kids_First_Biospecimen_ID_TARGET[iter])
+  }
+  QC_df$subtype_Target[iter]<- alteration_df$subtype[index_target]
+}
+
+```
+
+#Part 7: Write the table
 ```{r write alteration table}
 alteration_df%>%readr::write_tsv(file.path(results_dir, "Alteration_Table.tsv"))
-#df_pending_classification%>%readr::write_tsv(file.path(results_dir, "Suggested_Change.tsv"))
-
+df_tpm%>%readr::write_tsv(file.path(results_dir, "Subtypes_Based_On_Cutoff.tsv"))
+QC_df%>%readr::write_tsv(file.path(results_dir, "QC_table.tsv"))
 ```
-
 
 
 
