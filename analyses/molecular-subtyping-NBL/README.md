@@ -1,6 +1,9 @@
 # Molecular Subtyping NBL
 **Module authors**: Aditya Lahiri, Eric Wafula, and Jo Lynne Rokita
 To molecularly subtype neuroblastoma, ganglioneuroblastoma, and ganglioneuroma samples into MYCN amplified or MYCN non-amplified.
+
+**Note**: The files in the input folder are NBL MCYN `clinical patient-status mapping files` for GMKF and TARGET samples. In V11 some values of the `pathology_free_text_diagnosis` are missing, these input files fill in some of these missing values. 
+
 # Usage
 To run the module, execute the following command from the command line in the directory `OpenPedCan-analysis
 /analyses/molecular-subtyping-NBL` `bash run_nbl_subtyping.sh `

@@ -509,56 +509,6 @@ df_tpm <- df_tpm %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen
                             pathology_free_text_diagnosis,status,MYCN_TPM,subtype)
 ```
 
-QC Check
-```{r}
-
-### QC Check with ERIC
-TARGET<-readr::read_tsv(file.path(dataDir, "histologies.tsv"),guess_max = 100000) 
-GMFK<-readr::read_tsv(file.path(dataDir, "histologies.tsv"),guess_max = 100000) 
-
-TARGET<- TARGET %>% filter(cohort=="TARGET",cancer_group %in% c("Neuroblastoma", "Ganglioneuroblastoma","Ganglioneuroma"), experimental_strategy=="WXS") 
-GMFK<- GMFK %>% filter(cohort=="GMKF",cancer_group %in% c("Neuroblastoma", "Ganglioneuroblastoma","Ganglioneuroma")) 
-
-TARGET <- TARGET %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,sample_id,cohort,experimental_strategy)
-GMFK <- GMFK %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,sample_id,cohort,experimental_strategy)
-
-df_merge <- inner_join(TARGET,GMFK, by= c("Kids_First_Participant_ID","sample_id"))
-
-
-colnames(df_merge)<- c("Kids_First_Biospecimen_ID_TARGET",
-                        "Kids_First_Participant_ID","sample_id","cohort_TARGET",
-                        "experimental_strategy_Target","Kids_First_Biospecimen_ID_GMKF","cohort_GMKF",
-                       "experimental_strategy_GMKF")
-df_merge$TPM_GMKF<-NA_character_
-df_merge$TPM_Target<-NA_character_
-
-df_merge$status_GMKF<-NA_character_
-df_merge$status_Target<-NA_character_
-
-df_merge$subtype_GMKF<-NA_character_
-df_merge$subtype_Target<-NA_character_
-
-for (iter in 1:dim(df_merge)[1]){
-  index_gmkf <- which(alteration_df$Kids_First_Biospecimen_ID_DNA == df_merge$Kids_First_Biospecimen_ID_GMKF[iter])
-  index_target <- which(alteration_df$Kids_First_Biospecimen_ID_DNA == df_merge$Kids_First_Biospecimen_ID_TARGET[iter])
-
-  if(length(index_gmkf) ==0 ){
-    index_gmkf <- which(alteration_df$Kids_First_Biospecimen_ID_RNA == df_merge$Kids_First_Biospecimen_ID_GMKF[iter])
-  }
-  df_merge$TPM_GMKF[iter]<- alteration_df$MYCN_TPM[index_gmkf]
-  df_merge$status_GMKF[iter]<- alteration_df$status[index_gmkf]
-  df_merge$subtype_GMKF[iter]<- alteration_df$subtype[index_gmkf]
-  
-  if(length(index_target) ==0 ){
-    index_target <- which(alteration_df$Kids_First_Biospecimen_ID_RNA == 
-                            df_merge$Kids_First_Biospecimen_ID_TARGET[iter])
-  }
-  df_merge$TPM_Target[iter]<- alteration_df$MYCN_TPM[index_target]
-  df_merge$status_Target[iter]<- alteration_df$status[index_target]
-  df_merge$subtype_Target[iter]<- alteration_df$subtype[index_target]
-}
-```
-
 #Part 6: QC Check
 
 ```{r}
@@ -625,6 +575,7 @@ alteration_df%>%readr::write_tsv(file.path(results_dir, "Alteration_Table.tsv"))
 df_tpm%>%readr::write_tsv(file.path(results_dir, "Subtypes_Based_On_Cutoff.tsv"))
 QC_df%>%readr::write_tsv(file.path(results_dir, "QC_table.tsv"))
 df_merge%>%readr::write_tsv(file.path(results_dir, "QC_table2.tsv"))
+subtype_table%>%readr::write_tsv(file.path(results_dir, "NBL_MYCN_Subtype.tsv"))
 ```
 
 
