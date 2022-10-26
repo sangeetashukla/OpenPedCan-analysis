@@ -23,7 +23,7 @@ This above  script is designed to change to this directory to run, so it should 
 
 1. __`00-subset-for-EPN.R`__ is a script that subsets expression data to only include ependymoma samples for CI. The script uses `histologies-base.tsv` file to filter for ependymoma samples and `gene-expression-rsem-tpm-collapsed.rds` file for expression data.
 
-2. __`01-assign-disease-group.R`__ is a script that filters WGS and RNA-seq ependymoma samples from `pbta-histologies.tsv` file and adds `disease_group` column to the output file based on the primary_site. The values for `disease_group` are: 1) supratentorial, 2) infratentorial, 3) spinal, 4) mixed, and 5) undetermined.
+2. __`01-assign-disease-group.R`__ is a script that filters WGS and RNA-seq ependymoma samples from `histologies-base.tsv` file and adds `disease_group` column to the output file based on the primary_site. The values for `disease_group` are: 1) supratentorial, 2) infratentorial, 3) spinal, 4) mixed, and 5) undetermined.
 
 3. __`02_ependymoma_generate_all_data.R`__  is a script that takes in expression, GISTIC, consensus focal CNV, fusion, breakpoint, GSVA, and SNV files to add values from these tables as new columns to the input notebook. Output from `01-assign-disease-group.R` script is used as input notebook. The output notebook from this is saved to `results/EPN_all_data.tsv`
 
