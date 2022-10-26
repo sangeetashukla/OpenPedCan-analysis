@@ -72,6 +72,11 @@ if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
 
+norm_count_dir <- file.path(output_dir, 'normalized_counts')
+if (!dir.exists(norm_count_dir)) {
+  dir.create(norm_count_dir, recursive = TRUE)
+}
+
 # source functions
 source('util/deseq2_pvals_histogram.R') # DESeq2 pval histograms
 source('util/edaseq_plot.R') # PCA and UMAP clustering
@@ -85,6 +90,11 @@ htl_df <- readr::read_tsv('../../data/v10/histologies.tsv')
 message("Reading RSEM expected counts file")
 cnt_df <-
   readRDS('../../data/v10/gene-counts-rsem-expected_count-collapsed.rds')
+
+# Read in positive and negative control gene sets
+pos_ctrl_genes <- readRDS(file.path(input_dir, pos_ctrl_genes.f))
+pos_neg_ctrl_genes <- c(neg_ctrl_genes, pos_ctrl_genes)
+neg_ctrl_genes <- readRDS(file.path(input_dir, neg_ctrl_genes.f))
 
 # filter histology
 selected_htl_df <- htl_df %>%
@@ -129,7 +139,6 @@ seq_expr_set <-
 
 # 1.1. RUVg using hk genes in normals only (full HRT atlas)
 message("Running RUVg-DESeq2 analysis for k = 1-5")
-neg_ctrl_genes <- readRDS(file.path(input_dir, neg_ctrl_genes.f))
 ruvg_out <-
   ruvg_test(
     seq_expr_set = seq_expr_set,
@@ -196,12 +205,7 @@ ggsave(
   bg = "white"
 )
 
-
 print("DESeq2 analysis finished.")
-
-# Read in positive and negative control gene sets
-pos_ctrl_genes <- readRDS(file.path(input_dir, pos_ctrl_genes.f))
-gene.list <- c(neg_ctrl_genes, pos_ctrl_genes)
 
 # Create appended list objects from deseq2 and dge output
 dfs.ruvseq <- ruvg_out[["ruvg_eset"]]
@@ -215,11 +219,11 @@ dfs.dge <- lapply(dfs.dge, function(x) {
 })
 
 dfs.dge.filt <- lapply(dfs.dge, function(x) {
-  dplyr::filter(.data = x, gene %in% gene.list)
+  dplyr::filter(.data = x, gene %in% pos_neg_ctrl_genes)
 })
 
 dge_output_nobatch <-
-  dplyr::filter(.data = dge_output_nobatch, gene %in% gene.list)
+  dplyr::filter(.data = dge_output_nobatch, gene %in% pos_neg_ctrl_genes)
 
 # Set to data frame and order by gene
 dfs.dge.filt <- lapply(dfs.dge.filt, function(x) {
@@ -230,6 +234,7 @@ dfs.dge.filt <- lapply(dfs.dge.filt, function(x) {
 setDT(dge_output_nobatch)
 setkey(dge_output_nobatch, cols = 'gene')
 
+# Identify ruvseq analysis with optimal sensitivity/specificity
 dfs.dge.filt <- lapply(dfs.dge.filt, function(x) {
   x <- x[, c('p_val_diff') := padj - dge_output_nobatch$padj]
 })
@@ -354,10 +359,6 @@ ggsave(
 )
 
 # Return normalized counts
-norm_count_dir <- file.path(output_dir, 'normalized_counts')
-if (!dir.exists(norm_count_dir)) {
-  dir.create(norm_count_dir, recursive = TRUE)
-}
 
 readr::write_rds(ruvg.res@assayData$normalizedCounts,
                  file = file.path(
