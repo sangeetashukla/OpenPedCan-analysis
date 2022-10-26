@@ -21,7 +21,7 @@ This above  script is designed to change to this directory to run, so it should 
 
 ## Folder content
 
-1. __`00-subset-for-EPN.R`__ is a script that subsets expression data to only include ependymoma samples for CI. The script uses `pbta-histologies.tsv` file to filter for ependymoma samples and `pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds` file for expression data.
+1. __`00-subset-for-EPN.R`__ is a script that subsets expression data to only include ependymoma samples for CI. The script uses `histologies-base.tsv` file to filter for ependymoma samples and `gene-expression-rsem-tpm-collapsed.rds` file for expression data.
 
 2. __`01-assign-disease-group.R`__ is a script that filters WGS and RNA-seq ependymoma samples from `pbta-histologies.tsv` file and adds `disease_group` column to the output file based on the primary_site. The values for `disease_group` are: 1) supratentorial, 2) infratentorial, 3) spinal, 4) mixed, and 5) undetermined.
 
