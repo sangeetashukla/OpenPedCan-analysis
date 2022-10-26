@@ -529,14 +529,14 @@ colnames(df_merge)<- c("Kids_First_Biospecimen_ID_TARGET",
                         "Kids_First_Participant_ID","sample_id","cohort_TARGET",
                         "experimental_strategy_Target","Kids_First_Biospecimen_ID_GMKF","cohort_GMKF",
                        "experimental_strategy_GMKF")
-df_merge$TPM_GMKF<-NA
-df_merge$TPM_Target<-NA
+df_merge$TPM_GMKF<-NA_character_
+df_merge$TPM_Target<-NA_character_
 
-df_merge$status_GMKF<-NA
-df_merge$status_Target<-NA
+df_merge$status_GMKF<-NA_character_
+df_merge$status_Target<-NA_character_
 
-df_merge$subtype_GMKF<-NA
-df_merge$subtype_Target<-NA
+df_merge$subtype_GMKF<-NA_character_
+df_merge$subtype_Target<-NA_character_
 
 for (iter in 1:dim(df_merge)[1]){
   index_gmkf <- which(alteration_df$Kids_First_Biospecimen_ID_DNA == df_merge$Kids_First_Biospecimen_ID_GMKF[iter])
@@ -613,6 +613,11 @@ for (iter in 1:dim(QC_df)[1]){
 ```
 
 
+```{r subtype table}
+subtype_table <- alteration_df %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,subtype)
+index_NA<-which(subtype_table$subtype %in% c("Unclassified due to insufficient info","Pathology-amp,Status-non-amp,TPM-NA"))
+subtype_table$subtype[index_NA]<-NA_character_
+```
 
 #Part 7: Write the table
 ```{r write alteration table}
