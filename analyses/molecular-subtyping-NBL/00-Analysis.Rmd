@@ -105,7 +105,7 @@ all_MYCN_biospecimen_ID <- rbind(MYCN_Consensus_ID,MYCN_TPM_ID)
 
 ```{r Getting TPM, Copy Number and Status info}
 # Find which MYCN Biospecimen IDs in all_MYCN_biospecimen_ID correspond to NBL as defined in hist_filtered_df. 
-MYCN_DF<- left_join(hist_filtered_df,all_MYCN_biospecimen_ID,by="Kids_First_Biospecimen_ID") ##### CHANGED TO LEFT
+MYCN_DF<- left_join(hist_filtered_df,all_MYCN_biospecimen_ID,by="Kids_First_Biospecimen_ID") ##### 1508 samples 
 
 #Add the satus and copy Number to these samples. Adding the information if available, so we do a left join with respect to MYCN_DF as we don't want to discard any biospecimen of MYCN-NBL for which Status and copy number is not avaialable
 MYCN_DF<- left_join(MYCN_DF,consensus_filtered_df, by= c("Kids_First_Biospecimen_ID" = "biospecimen_id")) # Some rows increased likely copies , 1514 samples , there were 1508 samples
@@ -116,9 +116,9 @@ TPM_MYCN_data<-t(TPM_MYCN_data) # coverting 1 X N matrix to N X 1 matrix (lenght
 TPM_MYCN_data <-as.data.frame(TPM_MYCN_data) # Convert to data framte 
 TPM_MYCN_data <- tibble::rownames_to_column(TPM_MYCN_data, "Kids_First_Biospecimen_ID") # Make ID rownames into a column 
 # Finally add the TPM data using left join
-MYCN_DF<- left_join(MYCN_DF,TPM_MYCN_data, by="Kids_First_Biospecimen_ID") # rows remain the same 1514 samples
+MYCN_DF<- left_join(MYCN_DF,TPM_MYCN_data, by="Kids_First_Biospecimen_ID") 
 
-MYCN_DF<- distinct(MYCN_DF) # now 1508 samples
+MYCN_DF<- distinct(MYCN_DF) # no change in number of samples
 ```
 
 Code logic and background: 
@@ -139,7 +139,7 @@ MYCN_DF <- MYCN_DF %>%mutate(match_id = paste(Kids_First_Participant_ID, sample_
 MYCN_dna_df<-MYCN_DF %>% filter(experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing")) # 1134 samples
 
 # If the Biospecimen IDs are of DNA then experimental strategy is RNA-Seq
-MYCN_rna_df<-MYCN_DF %>% filter(experimental_strategy == "RNA-Seq") # 375 samples
+MYCN_rna_df<-MYCN_DF %>% filter(experimental_strategy == "RNA-Seq") # 374 samples
 
 # Rename the columns
 colnames(MYCN_dna_df)[which(names(MYCN_dna_df) == "Kids_First_Biospecimen_ID")] <- "Kids_First_Biospecimen_ID_DNA"
@@ -306,16 +306,16 @@ alteration_df$subtype<-NA # Create a subtype column
 plot_alteration_df <- alteration_df %>% filter(!is.na(MYCN_TPM))
 plot_alteration_df<- plot_alteration_df %>% mutate(Kids_First_Biospecimen_ID=coalesce(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA))
 
-bar_plot3<-plot_alteration_df %>% 
+bar_plot2<-plot_alteration_df %>% 
   arrange(MYCN_TPM) %>% 
   mutate(Kids_First_Biospecimen_ID = factor(Kids_First_Biospecimen_ID, unique(Kids_First_Biospecimen_ID))) %>%
   ggplot() +aes(x=Kids_First_Biospecimen_ID, y=MYCN_TPM, fill=status)+
   geom_bar(position="dodge",stat="identity")+
   theme(axis.text.x = element_text(size = 2, angle = 45, hjust = 1))
-bar_plot3
+bar_plot2
 
 Suggested_Cutoff<-140.83 # TARGET-30-PAMEZH-01A-01R	
-bar_plot3+ geom_hline(aes(yintercept=Suggested_Cutoff,linetype = "Suggested Amp Cutoff"),color = "black",size=2) #TARGET-30-PAPKXS-01A-01D	
+bar_plot2+ geom_hline(aes(yintercept=Suggested_Cutoff,linetype = "Suggested Amp Cutoff"),color = "black",size=2) #TARGET-30-PAPKXS-01A-01D	
 
 plot_file <- file.path(plot_dir, "TPM_Biospecimen_All_Samples_With_TMP.png")
 ggsave(filename = plot_file,width = 49, height = 20)
@@ -437,12 +437,12 @@ plot_chr2 <- function(cn_df, biospecimen_id) {
 for (iter in 1: length(clincal_amplified_IDs)){
   if(!is.na(clincal_amplified_IDs[iter])){
     plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[iter])
-    plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"Amp_Del",".png"))
+    plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"_Amp_Del",".png",sep=""))
     ggsave(filename = plt_file,width = 10, height = 20)
   }
   else{
     plot_chr2(cnv_cnvkit_df,alteration_df$Kids_First_Biospecimen_ID_RNA[index_clinical_amplified[iter]])
-    plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"Amp_Del",".png"))
+    plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"_Amp_Del",".png",sep=""))
     ggsave(filename = plt_file,width = 10, height = 20)
   }
   
@@ -504,32 +504,7 @@ df_tpm <- df_tpm %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen
                             pathology_free_text_diagnosis,status,MYCN_TPM,subtype)
 ```
 
-
-
-
-
-
-
-
-
-
-#Part 5
-
-```{r Biospecimens that will change}
-# df_pending_classification<-alteration_df[alteration_df$Kids_First_Biospecimen_ID_DNA %in% clincal_amplified_IDs,]
-# 
-# temp_df <- alteration_df %>% filter(MYCN_TPM <= 156.12, subtype =="NBL, MYCN amplified")
-# 
-# df_pending_classification<- rbind(df_pending_classification,temp_df)
-# 
-# colnames(df_pending_classification)[7]<- "subtype_current"
-# df_pending_classification$subtype_suggested <- NA
-# 
-# df_pending_classification <- df_pending_classification %>% mutate(subtype_suggested = case_when(MYCN_TPM < 156.12 ~ "NBL, MYCN non amplified",MYCN_TPM >= 156.12 ~ "NBL, MYCN amplified"))
-
-
-```
-
+QC Check
 ```{r}
 
 ### QC Check with ERIC
@@ -544,13 +519,44 @@ GMFK <- GMFK %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,samp
 
 df_merge <- inner_join(TARGET,GMFK, by= c("Kids_First_Participant_ID","sample_id"))
 
+
+colnames(df_merge)<- c("Kids_First_Biospecimen_ID_TARGET",
+                        "Kids_First_Participant_ID","sample_id","cohort_TARGET",
+                        "experimental_strategy_Target","Kids_First_Biospecimen_ID_GMKF","cohort_GMKF",
+                       "experimental_strategy_GMKF")
+df_merge$TPM_GMKF<-NA
+df_merge$TPM_Target<-NA
+
+df_merge$status_GMKF<-NA
+df_merge$status_Target<-NA
+
+df_merge$subtype_GMKF<-NA
+df_merge$subtype_Target<-NA
+
+for (iter in 1:dim(df_merge)[1]){
+  index_gmkf <- which(alteration_df$Kids_First_Biospecimen_ID_DNA == df_merge$Kids_First_Biospecimen_ID_GMKF[iter])
+  index_target <- which(alteration_df$Kids_First_Biospecimen_ID_DNA == df_merge$Kids_First_Biospecimen_ID_TARGET[iter])
+
+  if(length(index_gmkf) ==0 ){
+    index_gmkf <- which(alteration_df$Kids_First_Biospecimen_ID_RNA == df_merge$Kids_First_Biospecimen_ID_GMKF[iter])
+  }
+  df_merge$TPM_GMKF[iter]<- alteration_df$MYCN_TPM[index_gmkf]
+  df_merge$status_GMKF[iter]<- alteration_df$status[index_gmkf]
+  df_merge$subtype_GMKF[iter]<- alteration_df$subtype[index_gmkf]
+  
+  if(length(index_target) ==0 ){
+    index_target <- which(alteration_df$Kids_First_Biospecimen_ID_RNA == 
+                            df_merge$Kids_First_Biospecimen_ID_TARGET[iter])
+  }
+  df_merge$TPM_Target[iter]<- alteration_df$MYCN_TPM[index_target]
+  df_merge$status_Target[iter]<- alteration_df$status[index_target]
+  df_merge$subtype_Target[iter]<- alteration_df$subtype[index_target]
+}
 ```
 
 #Part 6: QC Check
 
 ```{r}
-
-### QC Check with ERIC
 
 
 TARGET2<- hist_df %>% filter(cohort=="TARGET",pathology_diagnosis %in% c("Neuroblastoma", "Ganglioneuroblastoma","Ganglioneuroblastoma, nodular","Ganglioneuroblastoma, intermixed","Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated"),
@@ -608,6 +614,7 @@ for (iter in 1:dim(QC_df)[1]){
 alteration_df%>%readr::write_tsv(file.path(results_dir, "Alteration_Table.tsv"))
 df_tpm%>%readr::write_tsv(file.path(results_dir, "Subtypes_Based_On_Cutoff.tsv"))
 QC_df%>%readr::write_tsv(file.path(results_dir, "QC_table.tsv"))
+df_merge%>%readr::write_tsv(file.path(results_dir, "QC_table2.tsv"))
 ```
 
 
