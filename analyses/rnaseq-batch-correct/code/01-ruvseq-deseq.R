@@ -93,8 +93,8 @@ cnt_df <-
 
 # Read in positive and negative control gene sets
 pos_ctrl_genes <- readRDS(file.path(input_dir, pos_ctrl_genes.f))
-pos_neg_ctrl_genes <- c(neg_ctrl_genes, pos_ctrl_genes)
 neg_ctrl_genes <- readRDS(file.path(input_dir, neg_ctrl_genes.f))
+pos_neg_ctrl_genes <- c(neg_ctrl_genes, pos_ctrl_genes)
 
 # filter histology
 selected_htl_df <- htl_df %>%
