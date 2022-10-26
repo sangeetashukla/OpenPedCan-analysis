@@ -118,7 +118,7 @@ TPM_MYCN_data <- tibble::rownames_to_column(TPM_MYCN_data, "Kids_First_Biospecim
 # Finally add the TPM data using left join
 MYCN_DF<- left_join(MYCN_DF,TPM_MYCN_data, by="Kids_First_Biospecimen_ID") 
 
-MYCN_DF<- distinct(MYCN_DF) # no change in number of samples
+MYCN_DF<- distinct(MYCN_DF) # 1508 samples 
 ```
 
 Code logic and background: 
@@ -136,10 +136,11 @@ MYCN_DF <- MYCN_DF %>%mutate(match_id = paste(Kids_First_Participant_ID, sample_
 # If the Biospecimen IDs are of DNA then the RNA_Library must be empty and experimental strategy is WGS, WXS or Targeted Sequencing 
 #MYCN_dna_df<-MYCN_DF %>% filter(is.na(RNA_library),experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing"))
 # MYCN_dna has 1103 samples
-MYCN_dna_df<-MYCN_DF %>% filter(experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing")) # 1134 samples
+MYCN_dna_df<-MYCN_DF %>% filter(is.na(RNA_library),experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing")) # 1103 samples samples
 
 # If the Biospecimen IDs are of DNA then experimental strategy is RNA-Seq
-MYCN_rna_df<-MYCN_DF %>% filter(experimental_strategy == "RNA-Seq") # 374 samples
+#MYCN_rna_df<-MYCN_DF %>% filter(experimental_strategy == "RNA-Seq", (!is.na(RNA_library) & experimental_strategy=="Targeted Sequencing")) # 374 samples
+MYCN_rna_df<-MYCN_DF %>% filter( (experimental_strategy=="RNA-Seq") | (experimental_strategy=="Targeted Sequencing" & !is.na(RNA_library))) # 374 rna-seq + 31 targeted_seq+exome_capture
 
 # Rename the columns
 colnames(MYCN_dna_df)[which(names(MYCN_dna_df) == "Kids_First_Biospecimen_ID")] <- "Kids_First_Biospecimen_ID_DNA"
@@ -148,7 +149,7 @@ colnames(MYCN_rna_df)[which(names(MYCN_rna_df) == "Kids_First_Biospecimen_ID")] 
 
 Now find the intersection of MYCN_dna_df and MYCN_rna_df, this will give you a table of DNA and RNA biospecimen IDs
 ```{r Further filter the data to create alteration table}
-MYCN_DNA_RNA_DF <- inner_join(MYCN_dna_df,MYCN_rna_df, by="match_id")  # 312 samples with DNA and RNA IDs
+MYCN_DNA_RNA_DF <- inner_join(MYCN_dna_df,MYCN_rna_df, by="match_id")  # 312 samples with DNA and RNA IDs 342 samples after exome cap
 
 # Retain the information of RNA/DNA Biospecimen ID, gene symbol, cancer group, pathology free text diagnosis, copy number, TPM and status
 MYCN_DNA_RNA_FILTERED_DF <- MYCN_DNA_RNA_DF %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,Kids_First_Participant_ID.x,Kids_First_Participant_ID.y,
@@ -168,7 +169,7 @@ print(all.equal(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Participant_ID.x,MYCN_DNA_RN
 
 # Remove duplicate columns after inspection
 duplicate_columns <- c("pathology_diagnosis.y","pathology_free_text_diagnosis.y","Kids_First_Participant_ID.y")
-MYCN_DNA_RNA_FILTERED_DF<-MYCN_DNA_RNA_FILTERED_DF[ , -which(names(MYCN_DNA_RNA_FILTERED_DF) %in% duplicate_columns)] # Reffered from the following code [4]  312 samples are present. 
+MYCN_DNA_RNA_FILTERED_DF<-MYCN_DNA_RNA_FILTERED_DF[ , -which(names(MYCN_DNA_RNA_FILTERED_DF) %in% duplicate_columns)] # Reffered from the following code [4]  312 samples are present. 342 samples 
 
 
 # Rename the columns appropriately.
@@ -191,11 +192,15 @@ for (iter in 1:length(repeated_ids))
 ```{r removing values}
 # For the record TARGET-30-PAPVFD-01A-01D retaining the record with status Neutral and copynumber 3
 # For the record TARGET-30-PASXRG-01A-01D retaining the record with copy number 14
+
+# For records BS_0XC02E11 and BS_1F8J25Q1 two samples are there, differing in alliquot.id.y
 rows_to_delete_MYCN <- c(which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA=="TARGET-30-PAPVFD-01A-01D" 
                         & MYCN_DNA_RNA_FILTERED_DF$copy_number==2),
                         which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA=="TARGET-30-PASXRG-01A-01D" &
                                                                               MYCN_DNA_RNA_FILTERED_DF$copy_number==4))
-MYCN_DNA_RNA_FILTERED_DF<- MYCN_DNA_RNA_FILTERED_DF[-rows_to_delete_MYCN,]
+rows_to_delete_MYCN_DGD_1<-which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA=="BS_0XC02E11") [2] # remove ET_FD9T78QE_DGD_FUSIP_29
+rows_to_delete_MYCN_DGD_2<-which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA=="BS_1F8J25Q1") [2] # ET_FD9T78QE_DGD_FUSIP_29 
+MYCN_DNA_RNA_FILTERED_DF<- MYCN_DNA_RNA_FILTERED_DF[-c(rows_to_delete_MYCN,rows_to_delete_MYCN_DGD_1,rows_to_delete_MYCN_DGD_2),] # 338 samples 
 ```
 
 
