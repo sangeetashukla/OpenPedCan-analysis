@@ -514,7 +514,6 @@ TARGET-30-PALZSL-01A-01W	NA	NA	69	amplification	MYCN amp	NBL, MYCN amplified
 TARGET-30-PAMBAC-01A-01W	NA	NA	101	amplification	MYCN amp	NBL, MYCN amplified
 TARGET-30-PAMCXF-01A-01W	NA	NA	2	loss	MYCN amp	Pathology-amp,Status-non-amp,TPM-NA
 TARGET-30-PAMDAL-01A-01W	NA	NA	50	amplification	MYCN amp	NBL, MYCN amplified
-TARGET-30-PAMDAL-01A-01W	NA	NA	3	neutral	MYCN amp	Pathology-amp,Status-non-amp,TPM-NA
 TARGET-30-PAMMWD-01A-01W	NA	NA	260	amplification	MYCN amp	NBL, MYCN amplified
 TARGET-30-PAMNYX-01A-01D	NA	NA	2	loss	MYCN non-amp	NBL, MYCN non-amplified
 TARGET-30-PAMUTD-01A-01W	NA	NA	55	amplification	MYCN amp	NBL, MYCN amplified

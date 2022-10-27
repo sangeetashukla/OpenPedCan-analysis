@@ -272,14 +272,15 @@ colnames(MYCN_IDs_without_DNA_RNA_Match)<- "Kids_First_Biospecimen_ID"
 
 
 Code Logic: We now need to identify with of the IDs in MYCN_IDs_without_DNA_RNA_Match are DNA IDs and which RNA IDs.
-If a sample in MYCN_IDs_without_DNA_RNA_Match is a DNA ID then it will be in  MYCN_dna_df which contains all the NBL DNA IDs, otherwise it will be an RNA ID which will be contained in MYCN_rna_df (contains all RNA NBL IDs). 
+If a sample in MYCN_IDs_without_DNA_RNA_Match is a DNA ID then it will be in  MYCN_dna_df which contains all the NBL DNA IDs, otherwise it will be an RNA ID which will be contained in MYCN_rna_df (contains all RNA NBL IDs). Then we create dataframes for DNA only and RNA only samples with relevant column information. These dataframes will specifically have a column for DNA ID and another for RNA ID. We then concatenate these two dataframes to create the 
+a dataframe of unmatched DNA and RNA IDs samples, this dataframe is : MYCN_non_match_df.
 
 # Now we need to identify which IDs in MYCN_IDs_without_DNA_RNA_Match are DNA IDs and Which are RNA IDs
 ```{r}
 DNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_dna_df$Kids_First_Biospecimen_ID_DNA),]) # 762 samples 
 colnames(DNA_IDs_MYCN_Non_Match)<- "Kids_First_Biospecimen_ID_DNA"
 
-RNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_rna_df$Kids_First_Biospecimen_ID_RNA),]) #
+RNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_rna_df$Kids_First_Biospecimen_ID_RNA),]) # 68 samples  , 762+68= 830 samples as expected. 
 colnames(RNA_IDs_MYCN_Non_Match)<- "Kids_First_Biospecimen_ID_RNA"
 
 # Make dfs DNA and RNA IDs found here with  
@@ -287,14 +288,20 @@ colnames(RNA_IDs_MYCN_Non_Match)<- "Kids_First_Biospecimen_ID_RNA"
 DNA_only_MYCN_df<- MYCN_DF %>% filter(Kids_First_Biospecimen_ID %in% DNA_IDs_MYCN_Non_Match$Kids_First_Biospecimen_ID_DNA)
 
 DNA_only_MYCN_df <- DNA_only_MYCN_df %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,MYCN_TPM,copy_number,
-                                                status,pathology_free_text_diagnosis)
+                                                status,pathology_free_text_diagnosis)  # 763 samples 
 colnames(DNA_only_MYCN_df)[1]<- "Kids_First_Biospecimen_ID_DNA"
 
+# An extra sample is created due to copy number and status variation TARGET-30-PAMDAL-01A-01W	
+# Retain the sample with high copy number 
+index_dna_only <- which(DNA_only_MYCN_df$Kids_First_Biospecimen_ID_DNA=="TARGET-30-PAMDAL-01A-01W" & DNA_only_MYCN_df$copy_number==3 &
+                        DNA_only_MYCN_df$status=="neutral")
+
+DNA_only_MYCN_df<- DNA_only_MYCN_df[-c(index_dna_only),]
 
 RNA_only_MYCN_df<- MYCN_DF %>% filter(Kids_First_Biospecimen_ID %in% RNA_IDs_MYCN_Non_Match$Kids_First_Biospecimen_ID_RNA)
 
 RNA_only_MYCN_df <- RNA_only_MYCN_df %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,MYCN_TPM,
-                                                copy_number,status,pathology_free_text_diagnosis)
+                                                copy_number,status,pathology_free_text_diagnosis) # 68 samples
 colnames(RNA_only_MYCN_df)[1]<- "Kids_First_Biospecimen_ID_RNA"
 
 
@@ -310,15 +317,24 @@ MYCN_non_match_df <- rbind(DNA_only_MYCN_df,RNA_only_MYCN_df)
 ```
 
 
-#Part 4: Assign subtype
+Code Logic: Create subtyping table by concatenating MYCN_non_match_df we created above and the dataframe containing matched DNA and RNA IDs in 
+MYCN_DNA_RNA_FILTERED_DF. 
+
 ```{r : select only relevant data for subtyping table}
-alteration_df <- MYCN_DNA_RNA_FILTERED_DF %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,                                              Kids_First_Participant_ID,MYCN_TPM,copy_number,MYCN_TPM,status,pathology_free_text_diagnosis)
-#alteration_df <- alteration_df %>% mutate(pathology_free_text_diagnosis2 = pathology_free_text_diagnosis)
+# select only relevant columns from MYCN_DNA_RNA_FILTERED_DF and store it in alteration_df
+alteration_df <- MYCN_DNA_RNA_FILTERED_DF %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,                                              Kids_First_Participant_ID,MYCN_TPM,copy_number,MYCN_TPM,status,pathology_free_text_diagnosis) 
 
-
+# concatenate matched DNA and RNA IDs with DNA only and RNA only dfs. 
 alteration_df <- rbind(alteration_df,MYCN_non_match_df)
 
+```
 
+
+Code Logic: pathology_free_text_diagnosis column has multiple of NA values in the alteration_df. To resolve this issue we use the files 
+input folder which are NBL MCYN clinical patient-status mapping files for GMKF and TARGET samples. These NA values will be integrated in the 
+V12 version. 
+
+```{r integrate new pathology free text diagnosis values from input folder}
 # Bring in the extra pathology free diagnonsis text from files in input folder:
 colnames(gmkf_patient_clinical_mycn_status_df)<-c("Kids_First_Participant_ID","pathology_free_text_diagnosis_gmfk")
 colnames(target_patient_clinical_mycn_status_df)<-c("Kids_First_Participant_ID","pathology_free_text_diagnosis_target")
@@ -333,6 +349,9 @@ colnames(alteration_df)[6]<- "pathology_free_text_diagnosis"
 alteration_df$subtype<-NA # Create a subtype column 
 
 ```
+
+
+Code Logic: Plot the TPM values for biospecimens which have TPMs both for  Matched and Non Matched  biospecimens.
 
 ```{r Plot of all biospecimen with TPMs}
 plot_alteration_df <- alteration_df %>% filter(!is.na(MYCN_TPM))
@@ -354,28 +373,13 @@ ggsave(filename = plot_file,width = 49, height = 20)
 
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Code Logic: Start the subtyping on alteration_df. Here are subtyping criteria: 
+case 1:
+If pathology_free_text_diagnosis is amplification and status is amplification assign subtype as "NBL, MYCN amplified"
+case 2:
+If pathology_free_text_diagnosis is non-amp and status is amplification assign subtype as "NBL, MYCN amplified"
+case 3:
+If pathology_free_text_diagnosis is non-amp and status is non-amp assign subtype as "NBL, MYCN non-amplified"
 ```{r Subtyping: when match is found and when call is amp and pathology free text is non amp}
 alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplification" & pathology_free_text_diagnosis=="MYCN amp"
                                                   ~ "NBL, MYCN amplified",status =="amplification" & 
@@ -387,6 +391,10 @@ alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplificati
 ```
 
 
+Code Logic:
+If there is mismatch between pathology_free_text_diagnosis and status  
+case 4: pathology_free_text_diagnosis is amped and status is non amp
+First we find such cases and then plot thier segmean vs location plots. 
 
 ```{r subtyping when call is not amp but pathology free text is amp}
 # If MYCN is called non-amplified but clinical file says amplified, plot the CNV data to visualize whether we see focal amplification but the CNV was not called. 
@@ -401,10 +409,10 @@ print("Biospecimens for which pathology (clinical) file says  amplified but call
 print(clincal_amplified_IDs)
 ```
 
-
+Adapting the plot function from https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/785c3224de29f701b1c1b62841d0f84d46f7eaca/analyses/molecular-subtyping-embryonal/03-clean-c19mc-data.Rmd#L56-L112
 ```{r plot function loading}
 
-# adapating code from: https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/785c3224de29f701b1c1b62841d0f84d46f7eaca/analyses/molecular-subtyping-embryonal/03-clean-c19mc-data.Rmd#L56-L112
+
 
 # Apply this code to chromosome 2 since MYCN is on Chromosome 2
 
@@ -464,7 +472,7 @@ plot_chr2 <- function(cn_df, biospecimen_id) {
 
 ```
 
-
+Code Logic: For the case 4 create the plots. 
 ```{r create the segmean vs location plots for samples where call is non-amp but pathology free text is amp}
 for (iter in 1: length(clincal_amplified_IDs)){
   if(!is.na(clincal_amplified_IDs[iter])){
@@ -480,7 +488,12 @@ for (iter in 1: length(clincal_amplified_IDs)){
   
 }
 ```
-
+Code Logic:
+Case 4:pathology_free_text_diagnosis is amped and status is non amp
+For the samples that have a TPM value see if they are above or below the Suggested_Cutoff established in plot barplot of
+TPM_Biospecimen_All_Samples_With_TMP.png. If TPM values are above or equal to Suggested_Cutoff assign "NBL, MYCN amplified"
+otherwise, assign "NBL, MYCN non-amplified".  In case there is no TPM values then assign "Pathology-amp,Status-non-amp,TPM-NA," we 
+will change this to NA later.
 
 ```{r : Assign Subtypes status non amp but pathology free text amp}
 index_clincal <- NA
@@ -503,8 +516,8 @@ for (iter in index_clinical_amplified){
 }
 ```
 
-
-
+Code Logic:
+Case 5: Find the samples where we don't have subtype but there is a TPM then assign subtype based on Suggested_Cutoff.
 
 ```{r : Assign the remaining unclassified samples based of a suggested cutoff TPM }
 index_tpm_unsubtype_above<-which(is.na(alteration_df$subtype) & !is.na(alteration_df$MYCN_TPM)& alteration_df$MYCN_TPM >= Suggested_Cutoff)
@@ -517,14 +530,15 @@ alteration_df$subtype[index_tpm_unsubtype_below]<-"NBL, MYCN non-amplified"
 
 ```
 
-
-```{r}
+Code Logic:
+For the samples which are not assigned a subtype we will assign the subtype field as "Unclassified due to insufficient info". We will later change this to NA. 
+```{r :assign unclassified status to samples with low info}
 index_unclassified <- which(is.na(alteration_df$subtype))
 alteration_df$subtype[index_unclassified]<-"Unclassified due to insufficient info"
 
 ```
 
-
+Code Logic: create a dataframe containing all the samples whose subtype was determined based on TPM.
 ```{r Dataframe where all the sample subtype are determined based on TPM cutoff}
 index_clincal<- index_clincal[2:length(index_clincal)] # Remove NA at index 1
 
@@ -536,8 +550,7 @@ df_tpm <- df_tpm %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen
                             pathology_free_text_diagnosis,status,MYCN_TPM,subtype)
 ```
 
-#Part 6: QC Check
-
+QC Check
 ```{r}
 
 
@@ -589,7 +602,7 @@ for (iter in 1:dim(QC_df)[1]){
 
 ```
 
-
+Create the final subtyping table, where 
 ```{r subtype table}
 subtype_table <- alteration_df %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,subtype)
 index_NA<-which(subtype_table$subtype %in% c("Unclassified due to insufficient info","Pathology-amp,Status-non-amp,TPM-NA"))
@@ -601,7 +614,6 @@ subtype_table$subtype[index_NA]<-NA_character_
 alteration_df%>%readr::write_tsv(file.path(results_dir, "Alteration_Table.tsv"))
 df_tpm%>%readr::write_tsv(file.path(results_dir, "Subtypes_Based_On_Cutoff.tsv"))
 QC_df%>%readr::write_tsv(file.path(results_dir, "QC_table.tsv"))
-df_merge%>%readr::write_tsv(file.path(results_dir, "QC_table2.tsv"))
 subtype_table%>%readr::write_tsv(file.path(results_dir, "NBL_MYCN_Subtype.tsv"))
 ```
 
