@@ -7,7 +7,7 @@ output: html_notebook
 # Objective:
 To molecularly subtype neuroblastoma, ganglioneuroblastoma, and ganglioneuroma samples into MYCN amplified or MYCN non-amplified.
 
-Load Libraries
+#Load Libraries
 ```{r load libraries}
 library(dplyr)
 library(data.table)
@@ -16,7 +16,7 @@ library(ggplot2)
 ```
 
 
-Set up directories
+#Set up directories
 ```{r setup directories}
 # root directory
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -45,7 +45,7 @@ if (!dir.exists(plot_dir)) {
 
 
 
-# Load all the datafiles in the ticket
+#Load all the datafiles in the ticket
 ```{r load the data files: this will take time}
 hist_df<-readr::read_tsv(file.path(dataDir, "histologies-base.tsv"),guess_max = 100000)
 consensus_df<-readr::read_tsv(file.path(dataDir, "consensus_wgs_plus_cnvkit_wxs.tsv.gz"),guess_max = 100000)
@@ -72,7 +72,7 @@ biospecimen IDs, with their corresponding molecular subtype, so we will need get
 file. 
 
 We filter the consensus_wgs_plus_cnvkit_wxs.tsv.gz and gene-expression-rsem-tpm-collapsed.rds for MYCN to get the relevant information. 
-
+# Data Filtering
 ```{r Data filtering}
 # First filter the histology file based on diseases we are intereseted in neuroblastoma, ganglioneuroblastoma, and ganglioneuroma
 hist_filtered_df <- hist_df %>% filter(pathology_diagnosis=="Neuroblastoma"|
@@ -107,7 +107,7 @@ Code Logic:
 We will integrate the TMP and cnv data with the hist_filtered using left join. Histology file has all the 
 IDs but we are only concerned with NBL-MYCN IDs, so we use the filtered version of histology file. 
 
-
+# Get TPM , Copy Number and Status
 ```{r Getting TPM, Copy Number and Status info}
 # Find which MYCN Biospecimen IDs in MYCN_Con_TPM_ID correspond to NBL as defined in hist_filtered_df. 
 MYCN_DF<- left_join(hist_filtered_df,MYCN_Con_TPM_ID,by="Kids_First_Biospecimen_ID") ##### 1508 samples 
@@ -133,6 +133,7 @@ RNA IDs, so we need to first find the matching DNA/RNA IDs.  To find matching RN
 IDs for DNA IDs, we create a match ID by combining Kids_First_Participant_ID + Sample_ID + Cohort. 
 To this end, we create a new column in MYCN_Df called match_id. 
 
+# Create dataframes of samples where DNA and RNA IDs match 
 ```{r create match ID and dataframes of RNA and DNA}
 # Create Match_ID Kids_First_Participant_ID + Sample_ID + Cohort
 MYCN_DF <- MYCN_DF %>%mutate(match_id = paste(Kids_First_Participant_ID, sample_id,cohort,sep = "_"))
@@ -251,8 +252,8 @@ repeating IDs in MYCN_DF.
 
 Once we have a list of all unique IDs in MYCN_DF, we remove from them the Matched DNA and RNA IDs in MYCN_DNA_RNA_FILTERED_DF. This will leave us with only the IDs that only have a DNA ID or RNA ID but never both. 
 
-# add IDs that don't necessarily have both DNA and RNA 
-
+Add IDs that don't necessarily have both DNA and RNA 
+# Create dataframe of samples where DNA and RNA IDs dont match 
 ```{r Find DNA only and RNA only samples}
 MYCN_IDs_exhaustive <- as.data.frame(unique(MYCN_DF$Kids_First_Biospecimen_ID)) # Has every biospecimen ID of NBL-MYCN samples 1505 samples in total.  MYCN_DF has 1508 samples as we have the follwing repeating IDs with different copy numbers TARGET-30-PAMDAL-01A-01W, TARGET-30-PAPVFD-01A-01D, TARGET-30-PASXRG-01A-01D  
 
@@ -275,7 +276,7 @@ Code Logic: We now need to identify with of the IDs in MYCN_IDs_without_DNA_RNA_
 If a sample in MYCN_IDs_without_DNA_RNA_Match is a DNA ID then it will be in  MYCN_dna_df which contains all the NBL DNA IDs, otherwise it will be an RNA ID which will be contained in MYCN_rna_df (contains all RNA NBL IDs). Then we create dataframes for DNA only and RNA only samples with relevant column information. These dataframes will specifically have a column for DNA ID and another for RNA ID. We then concatenate these two dataframes to create the 
 a dataframe of unmatched DNA and RNA IDs samples, this dataframe is : MYCN_non_match_df.
 
-# Now we need to identify which IDs in MYCN_IDs_without_DNA_RNA_Match are DNA IDs and Which are RNA IDs
+Now we need to identify which IDs in MYCN_IDs_without_DNA_RNA_Match are DNA IDs and Which are RNA IDs
 ```{r}
 DNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_dna_df$Kids_First_Biospecimen_ID_DNA),]) # 762 samples 
 colnames(DNA_IDs_MYCN_Non_Match)<- "Kids_First_Biospecimen_ID_DNA"
@@ -319,7 +320,7 @@ MYCN_non_match_df <- rbind(DNA_only_MYCN_df,RNA_only_MYCN_df)
 
 Code Logic: Create subtyping table by concatenating MYCN_non_match_df we created above and the dataframe containing matched DNA and RNA IDs in 
 MYCN_DNA_RNA_FILTERED_DF. 
-
+# Create subtyping Table
 ```{r : select only relevant data for subtyping table}
 # select only relevant columns from MYCN_DNA_RNA_FILTERED_DF and store it in alteration_df
 alteration_df <- MYCN_DNA_RNA_FILTERED_DF %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,                                              Kids_First_Participant_ID,MYCN_TPM,copy_number,MYCN_TPM,status,pathology_free_text_diagnosis) 
@@ -550,7 +551,7 @@ df_tpm <- df_tpm %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen
                             pathology_free_text_diagnosis,status,MYCN_TPM,subtype)
 ```
 
-QC Check
+# QC Check
 ```{r}
 
 
@@ -602,7 +603,7 @@ for (iter in 1:dim(QC_df)[1]){
 
 ```
 
-Create the final subtyping table, where 
+# Write the tables. 
 ```{r subtype table}
 subtype_table <- alteration_df %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,subtype)
 index_NA<-which(subtype_table$subtype %in% c("Unclassified due to insufficient info","Pathology-amp,Status-non-amp,TPM-NA"))
