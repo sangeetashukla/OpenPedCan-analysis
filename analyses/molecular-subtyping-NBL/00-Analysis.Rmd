@@ -186,7 +186,7 @@ colnames(MYCN_DNA_RNA_FILTERED_DF)<-c("Kids_First_Biospecimen_ID_DNA","Kids_Firs
                                       "pathology_free_text_diagnosis","copy_number","MYCN_TPM","status","Match_ID")    
 ```
 
-
+Code Logic:
 In MYCN_DNA_RNA_FILTERED_DF we want to find the repeating Kids_First_Biospecimen_ID_DNA 
 We do not need to check for repeating Kids_First_Biospecimen_ID_RNA as all the DNA and RNA IDs are matched in 
 MYCN_DNA_RNA_FILTERED_DF. Therefore if we find a repeating DNA ID, we will also find its corresponding RNA ID which will also be repeating. 
@@ -202,27 +202,32 @@ repeated_ids <- MYCN_Table$Kids_First_Biospecimen_ID_DNA[index_repeats]
 for (iter in 1:length(repeated_ids))
   print(MYCN_DNA_RNA_FILTERED_DF[MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA==repeated_ids[iter],])
 ```
-```{r removing values}
-# For the record TARGET-30-PAPVFD-01A-01D retaining the record with status Neutral and copynumber 3
-# For the record TARGET-30-PASXRG-01A-01D retaining the record with copy number 14
 
-# For records BS_0XC02E11 and BS_1F8J25Q1 two samples are there, differing in alliquot.id.y
+Code Logic:
+We find that there are four DNA IDs which are repeating. 
+For the record TARGET-30-PAPVFD-01A-01D retaining the record with status Neutral and copynumber 3
+For the record TARGET-30-PASXRG-01A-01D retaining the record with copy number 14
+For the records BS_0XC02E11 and BS_1F8J25Q1 we see that in their repeating copies all column values except for
+their aliquot_id are different. We remove the rows with aliquot_ids of ET_FD9T78QE_DGD_FUSIP_29 for the time being, in
+each sample. 
+
+```{r removing values}
+# For records BS_0XC02E11 and BS_1F8J25Q1 two samples are there, differing in aliquot_id.y
 rows_to_delete_MYCN <- c(which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA=="TARGET-30-PAPVFD-01A-01D" 
                         & MYCN_DNA_RNA_FILTERED_DF$copy_number==2),
                         which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA=="TARGET-30-PASXRG-01A-01D" &
                                                                               MYCN_DNA_RNA_FILTERED_DF$copy_number==4))
 rows_to_delete_MYCN_DGD_1<-which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA=="BS_0XC02E11") [2] # remove ET_FD9T78QE_DGD_FUSIP_29
 rows_to_delete_MYCN_DGD_2<-which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA=="BS_1F8J25Q1") [2] # ET_FD9T78QE_DGD_FUSIP_29 
-MYCN_DNA_RNA_FILTERED_DF<- MYCN_DNA_RNA_FILTERED_DF[-c(rows_to_delete_MYCN,rows_to_delete_MYCN_DGD_1,rows_to_delete_MYCN_DGD_2),] # 338 samples 
+MYCN_DNA_RNA_FILTERED_DF<- MYCN_DNA_RNA_FILTERED_DF[-c(rows_to_delete_MYCN,rows_to_delete_MYCN_DGD_1,rows_to_delete_MYCN_DGD_2),] # 338 samples 342- 4 (repeating samples) = 338
 ```
 
 
-
-Plot TPMs vs Biospecimen for samples that have both DNA and RNA IDs
-
-```{r make TPM vs Biospecimen plot for samples with DNA and RNA IDs}
+Code Logic:
+Plot TPMs vs Biospecimen for samples that have both DNA and RNA IDs. Only plot those biospecimens that have a TPM value. 
+```{r make TPM vs Biospecimen plot for samples with matched DNA and RNA IDs}
 #Select relevant info
-MYCN_Plot_df <- MYCN_DNA_RNA_FILTERED_DF %>% filter(!is.na(MYCN_TPM)) %>% select (Kids_First_Biospecimen_ID_DNA,MYCN_TPM,status)
+MYCN_Plot_df <- MYCN_DNA_RNA_FILTERED_DF %>% filter(!is.na(MYCN_TPM)) %>% select (Kids_First_Biospecimen_ID_DNA,MYCN_TPM,status) 
 
 # Refered code from [5]
 bar_plot1<-MYCN_Plot_df %>% 
@@ -236,18 +241,23 @@ bar_plot1<-MYCN_Plot_df %>%
 
 plot_file <- file.path(plot_dir, "TPM_Biospecimen_Matching.png")
 ggsave(filename = plot_file,width = 45, height = 20)
-
-
-
 ```
 
+Code Logic: 
+Now that we have found the data for which containing matched DNA and RNA IDs. We need to identify the data 
+that only have DNA IDs and RNA IDs. To do this we first create and exhaustive list of all NBL-MYCN IDs from 
+the dataframe MYCN_DF. MYCN_DF contains all the IDs which are NBL from the histology file, and there are some
+repeating IDs in MYCN_DF. 
+
+Once we have a list of all unique IDs in MYCN_DF, we remove from them the Matched DNA and RNA IDs in MYCN_DNA_RNA_FILTERED_DF. This will leave us with only the IDs that only have a DNA ID or RNA ID but never both. 
 
 # add IDs that don't necessarily have both DNA and RNA 
 
-```{r Gather samples that dont have both DNA and RNA IDs}
-MYCN_IDs_exhaustive <- as.data.frame(unique(MYCN_DF$Kids_First_Biospecimen_ID)) # Has every biospecimen ID of NBL-MYCN samples
+```{r Find DNA only and RNA only samples}
+MYCN_IDs_exhaustive <- as.data.frame(unique(MYCN_DF$Kids_First_Biospecimen_ID)) # Has every biospecimen ID of NBL-MYCN samples 1505 samples in total.  MYCN_DF has 1508 samples as we have the follwing repeating IDs with different copy numbers TARGET-30-PAMDAL-01A-01W, TARGET-30-PAPVFD-01A-01D, TARGET-30-PASXRG-01A-01D  
+
 colnames(MYCN_IDs_exhaustive)<-"Kids_First_Biospecimen_ID"
-# Repeating IDs with different copy numbers TARGET-30-PAMDAL-01A-01W, TARGET-30-PAPVFD-01A-01D, TARGET-30-PASXRG-01A-01D  totally 1508 samples
+
 
 # Last two are sorted out in DNA-RNA matching 
 
@@ -256,16 +266,20 @@ MYCN_IDs_with_DNA_RNA <- as.data.frame(c(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Bio
                                MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_RNA)) # 676 samples but half of them are DNA and rest are corresponding RNA  
 colnames(MYCN_IDs_with_DNA_RNA)<-"Kids_First_Biospecimen_ID"
 
-MYCN_IDs_without_DNA_RNA_Match <- as.data.frame(MYCN_IDs_exhaustive[-(which(MYCN_IDs_exhaustive$Kids_First_Biospecimen_ID %in% MYCN_IDs_with_DNA_RNA$Kids_First_Biospecimen_ID)),]) # 830 samples here 
+MYCN_IDs_without_DNA_RNA_Match <- as.data.frame(MYCN_IDs_exhaustive[-(which(MYCN_IDs_exhaustive$Kids_First_Biospecimen_ID %in% MYCN_IDs_with_DNA_RNA$Kids_First_Biospecimen_ID)),]) # 830 samples here (# 1505-676= 829 => 829+1 =830)
 colnames(MYCN_IDs_without_DNA_RNA_Match)<- "Kids_First_Biospecimen_ID"
-# 1508-624= 884 but remember TARGET-30-PAPVFD-01A-01D, TARGET-30-PASXRG-01A-01D has two copies in MYCN_IDs_exhaustive so extra 2 samples are further removed so 378 samples without RNA
+```
 
+
+Code Logic: We now need to identify with of the IDs in MYCN_IDs_without_DNA_RNA_Match are DNA IDs and which RNA IDs.
+If a sample in MYCN_IDs_without_DNA_RNA_Match is a DNA ID then it will be in  MYCN_dna_df which contains all the NBL DNA IDs, otherwise it will be an RNA ID which will be contained in MYCN_rna_df (contains all RNA NBL IDs). 
 
 # Now we need to identify which IDs in MYCN_IDs_without_DNA_RNA_Match are DNA IDs and Which are RNA IDs
-DNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_dna_df$Kids_First_Biospecimen_ID_DNA),])
+```{r}
+DNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_dna_df$Kids_First_Biospecimen_ID_DNA),]) # 762 samples 
 colnames(DNA_IDs_MYCN_Non_Match)<- "Kids_First_Biospecimen_ID_DNA"
 
-RNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_rna_df$Kids_First_Biospecimen_ID_RNA),])
+RNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_rna_df$Kids_First_Biospecimen_ID_RNA),]) #
 colnames(RNA_IDs_MYCN_Non_Match)<- "Kids_First_Biospecimen_ID_RNA"
 
 # Make dfs DNA and RNA IDs found here with  
