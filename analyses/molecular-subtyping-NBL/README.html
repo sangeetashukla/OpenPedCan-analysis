@@ -379,7 +379,7 @@ $(document).ready(function () {
 
 <div id="molecular-subtyping-nbl" class="section level1">
 <h1>Molecular Subtyping NBL</h1>
-<p><strong>Module authors</strong>: Aditya Lahiri (<span class="citation">@adilahiri</span>), Eric Wafula (<span class="citation">@ewafula</span>), and Jo Lynne Rokita (<span class="citation">@jharenza</span>)</p>
+<p><strong>Module authors</strong>: Aditya Lahiri (<span class="citation">[@adilahiri]</span>(<a href="https://github.com/adilahiri" class="uri">https://github.com/adilahiri</a>)), Eric Wafula (<span class="citation">[@ewafula]</span>(<a href="https://github.com/ewafula" class="uri">https://github.com/ewafula</a>)), and Jo Lynne Rokita (<span class="citation">[@jharenza]</span>(<a href="https://github.com/jharenza" class="uri">https://github.com/jharenza</a>))</p>
 <p>To molecularly subtype neuroblastoma, ganglioneuroblastoma, and ganglioneuroma samples into MYCN amplified or MYCN non-amplified.</p>
 <p><strong>Subtyping criteria</strong>:</p>
 <p><strong>case 1</strong>: If <code>pathology_free_text_diagnosis</code> is <strong>amplified</strong> and <code>status</code> is <strong>amplified</strong> assign subtype as <code>NBL, MYCN amplified</code></p>
@@ -397,10 +397,15 @@ $(document).ready(function () {
 <h1>Module Content</h1>
 <p><code>00-Analysis-RMD</code>: This file contains the main analysis pipeline for subtyping MYCN-NBL.</p>
 <p><code>run_nbl_subtyping.sh</code>: Bash script to execute <code>00-Analysis-RMD</code>.</p>
-<p><code>input/gmkf_patient_clinical_mycn_status.tsv</code>: Has values for <code>pathology_free_text_diagnosis</code> in the GMKF cohort. These values are not present in the V11 data.</p>
-<p><code>input/target_patient_clinical_mycn_status.tsv</code>: Has values for <code>pathology_free_text_diagnosis</code> in the TARGET cohort. These values are not present in the V11 data.</p>
-<p><code>results</code>: Contains the alteration table <code>Alteration_Table.tsv</code> and the table <code>Suggested_Change.tsv</code> listing the biospecimens where the subtypes were reassigned based on a TPM cut off.</p>
-<p><code>plots</code>: Contains the TPM vs Biospecimen plots, and plots of amplification and deletions for samples status call is non-amplified but pathology_free_text_diagnosis is amplified.</p>
+<p><code>input/gmkf_patient_clinical_mycn_status.tsv</code>: Has values for <code>pathology_free_text_diagnosis</code> in the GMKF cohort. These values are not present in the V11 data and will be made available in V12.</p>
+<p><code>input/target_patient_clinical_mycn_status.tsv</code>: Has values for <code>pathology_free_text_diagnosis</code> in the TARGET cohort. These values are not present in the V11 data and will be made available in V12.</p>
+<p><code>results/NBL_MYCN_Subtype.tsv</code>: This table is the main output of this module. For each biospecimen sample, the table lists its DNA and RNA IDs (if available) and the subtype.</p>
+<p><code>results/Alteration_Table.tsv</code>: This table is similar to the table <code>NBL_MYCN_Subtype.tsv</code>. However, this table has additional columns which contain information on <code>MYCN_TPM</code>, <code>copy_number</code>, <code>status</code>, and <code>pathology_free_text_diagnosis</code>. Furthermore, the column <code>subtype</code> in this table provides more insights into the samples in <code>NBL_MYCN_Subtype.tsv</code> which had a subtype <code>NA</code> (samples which could not be subtyped). If samples fell into <strong>case 4</strong> but didn’t have a TPM value, those are subtyped as <code>Pathology-amp,Status-non-amp,TPM-NA</code>. If a sample did not fall into any of the above cases they are subtyped as <code>Unclassified due to insufficient info</code>.</p>
+<p><code>results/QC_table.tsv</code>: This table has matched samples from the TARGET and GMKF cohort. Samples were matched if they shared the same <code>Kids_First_Participant_ID</code> and <code>sample_id</code>. We specifically compare the <code>status</code> between each cohort and also compare their subtpyes.</p>
+<p><code>results/Subtypes_Based_On_Cutoff.tsv</code>: This table contains the biospecimens which were subtyped based on their TPM values. The subtyping of these biospecimens were done using a threshold TPM value was established in <code>00-Analysis-RMD</code>.</p>
+<p><code>plots/TPM_Biospecimen_Matching.png</code>: This file contains the plot of TPM vs Biospecimen_ID for those samples which had both DNA and RNA IDs.</p>
+<p><code>plots/TPM_Biospecimen_All_Samples_With_TMP.png</code>:This file contains the plot of TPM vs Biospecimen_ID for those samples which had a TPM value.</p>
+<p><code>plots/biospecimen_ID_Amp_Del.png</code>: The image files labeled in the following format <code>biospecimen_ID_Amp_Del.png</code></p>
 <p>The data files being used in this analysis are:</p>
 <pre><code>histologies-base.tsv
 
