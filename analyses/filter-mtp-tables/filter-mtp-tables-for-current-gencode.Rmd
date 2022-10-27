@@ -5,7 +5,7 @@ output:
     toc: TRUE
     toc_float: TRUE
     toc_depth: 4
-author: Eric Wafula for Pediatric OpenTargets
+author: Eric Wafula, Sangeeta Shukla for Pediatric OpenTargets
 date: 01/10/2021
 ---
 
@@ -30,6 +30,7 @@ suppressWarnings(
 )
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(data.table))
+suppressPackageStartupMessages(library(dplyr))
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -42,11 +43,12 @@ Set up directories.
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analyses_dir <- file.path(root_dir, "analyses")
-module_dir <- file.path(analyses_dir, "filter-mutation-frequencies-tables")
+module_dir <- file.path(analyses_dir, "filter-mtp-tables")
 gene_match_input_dir <- file.path(analyses_dir,  "gene_match/input")
 snv_results_dir <- file.path(analyses_dir,  "snv-frequencies/results")
 cnv_results_dir <- file.path(analyses_dir,  "cnv-frequencies/results")
 fusion_results_dir <- file.path(analyses_dir,  "fusion-frequencies/results")
+long_tpm_results_dir <- file.path(analyses_dir, "rna-seq-expression-summary-stats/results")
 input_dir <- file.path(module_dir, "input")
 results_dir <- file.path(module_dir, "results")
 
@@ -113,6 +115,17 @@ filter_freq_table <- function(freq_file, ensg_ids, ot_ensg_ids) {
   
   # Read gene level table 
   freq_table <-  readr::read_tsv(freq_file, guess_max = 10000) 
+  
+  # Long TPM tables have different column names which need to be renamed to be compatible with this function
+  lookup <-c("Gene_Ensembl_ID" = "targetFromSourceId")
+  freq_table %>% rename(!!! lookup[names(.) %in% lookup])
+  freq_table %>% rename_with(~ case_when(. == "Gene_Ensembl_ID" ~ "targetFromSourceId",TRUE ~ .))
+  freq_table %>% rename(any_of(lookup))
+  freq_table %>% rename_with(~case_when(. == "Gene_Ensembl_ID" ~ "targetFromSourceId", TRUE ~ .))
+  
+  if ("Gene_Ensembl_ID" %in% colnames(freq_table)) {
+    freq_table %>% rename("targetFromSourceId" = Gene_Ensembl_ID)
+  }
   
   # Write filtered TSV file
   file_name <- basename(freq_file)
@@ -372,6 +385,83 @@ filtered_ensg %>% dplyr::filter(Ensembl_ID %in% pmtl_ids) %>%
 # Remove frequencies data frame
 rm(fused_gene, filtered_ensg, fusion_names)
 ```
+
+
+#### Long TPM zscores
+```{r}
+# Remove Ensembl gene identifiers
+# gene_level_snv <- filter_freq_table(
+#   file.path(snv_results_dir, 
+#             "gene-level-snv-consensus-annotated-mut-freq.tsv.gz"), ensg_ids, ot_ensg_ids) 
+
+
+long_tpm_mean_sd_quantile_group_wise <- filter_freq_table(
+  file.path(long_tpm_results_dir, 
+            "long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz"), ensg_ids, ot_ensg_ids) 
+
+long_tpm_mean_sd_quantile_gene_wise <- filter_freq_table(
+  file.path(long_tpm_results_dir, 
+            "long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz"), ensg_ids, ot_ensg_ids) 
+
+# Ensembl gene identifiers removed
+# filtered_ensg <- gene_level_snv %>% 
+#   dplyr::filter(!targetFromSourceId %in% setdiff(ensg_ids, ot_ensg_ids)) %>% 
+#   dplyr::select(Gene_symbol, targetFromSourceId) %>%
+#   dplyr::rename(Ensembl_ID = targetFromSourceId) %>% 
+#   dplyr::distinct()
+
+filtered_ensg_group <- long_tpm_mean_sd_quantile_group_wise %>% 
+  dplyr::filter(!targetFromSourceId %in% setdiff(ensg_ids, ot_ensg_ids)) %>% 
+  dplyr::select(Gene_symbol, targetFromSourceId) %>%
+  dplyr::rename(Ensembl_ID = targetFromSourceId) %>% 
+  dplyr::distinct()
+
+filtered_ensg_gene <- long_tpm_mean_sd_quantile_gene_wise %>% 
+  dplyr::filter(!targetFromSourceId %in% setdiff(ensg_ids, ot_ensg_ids)) %>% 
+  dplyr::select(Gene_symbol, targetFromSourceId) %>%
+  dplyr::rename(Ensembl_ID = targetFromSourceId) %>% 
+  dplyr::distinct()
+
+
+
+# read the SNV consensus file
+consensus_ensg <- data.table::fread(
+  file.path(data_dir, "snv-consensus-plus-hotspots.maf.tsv.gz"), 
+  select = c("Tumor_Sample_Barcode", "Gene"), showProgress = FALSE) %>% 
+  tibble::as_tibble() %>% 
+  dplyr::filter(!is.na(Gene)) %>% 
+  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>% 
+  dplyr::distinct()
+
+# merge sample IDs to the ENSG IDs not in gencode v39
+filtered_ensg <- filtered_ensg %>% 
+  dplyr::left_join(consensus_ensg, by=c("Ensembl_ID" = "Gene"))
+
+# merge OpenPedCan cohorts to the ENSG IDs not in gencode v39
+filtered_ensg <- filtered_ensg %>% 
+  dplyr::left_join(sample_ids, by= "Kids_First_Biospecimen_ID")
+
+# write to file
+readr::write_tsv(filtered_ensg,
+  file.path(results_dir, 
+            "gene-level-snv-consensus-annotated-mut-freq_dropped_ensg.tsv.gz"))
+
+# Display removed ENSEMBL IDs 
+filtered_ensg %>% dplyr::select(Ensembl_ID, cohort) %>% 
+  dplyr::distinct() %>%
+  tidyr::drop_na() %>%  
+  table()
+
+# Display samples in removed ENSEMBL IDs that are in PMTL list
+filtered_ensg %>% dplyr::filter(Ensembl_ID %in% pmtl_ids) %>% 
+  select(Ensembl_ID, Kids_First_Biospecimen_ID) %>% 
+  dplyr::distinct()
+
+# Remove data frames
+rm(gene_level_snv, filtered_ensg)
+```
+
+
 
 ## Session Info
 ```{r}
