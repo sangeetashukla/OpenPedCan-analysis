@@ -413,7 +413,9 @@ RUN ./install_bioc.r \
 # Package for removing unwanted variation from RNA-Seq data
 RUN ./install_bioc.r \
     RUVSeq \
-    EDASeq
+    EDASeq \
+    edgeR \
+    uwot
 
 # Packages for RNA-seq expression boxplots (tumor-gtex-plots)
 RUN ./install_bioc.r \
