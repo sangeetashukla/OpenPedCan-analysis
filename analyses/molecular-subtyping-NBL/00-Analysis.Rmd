@@ -609,6 +609,7 @@ for (iter in 1:dim(QC_df)[1]){
 subtype_table <- alteration_df %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,subtype)
 index_NA<-which(subtype_table$subtype %in% c("Unclassified due to insufficient info","Pathology-amp,Status-non-amp,TPM-NA"))
 subtype_table$subtype[index_NA]<-NA_character_
+subtype_table<-subtype_table[order(subtype_table$subtype),]
 ```
 
 #Part 7: Write the table
