@@ -415,7 +415,8 @@ RUN ./install_bioc.r \
     RUVSeq \
     EDASeq \
     edgeR \
-    uwot
+    uwot \
+    irlba
 
 # Packages for RNA-seq expression boxplots (tumor-gtex-plots)
 RUN ./install_bioc.r \
