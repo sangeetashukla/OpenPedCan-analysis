@@ -18,6 +18,12 @@ If `pathology_free_text_diagnosis` is **non-amp** and `status` is **non-amp** as
 If `pathology_free_text_diagnosis` is **amplified** and status is **non-amp**
 For such samples if there exists a TPM value, evaluate if the TPM is above or below the Suggested_Cutoff established in the image `results/TPM_Biospecimen_All_Samples_With_TMP.png` assign subtype as `NBL, MYCN amplified` or `NBL, MYCN non-amplified` respectively.  In case there is no TPM values then assign the subtype as `NA`. 
 
+**case 5**
+If there are samples that are not yet subtyped but have a TPM value, assign them a subtype based on the Suggested_Cutoff.  
+
+**case 6**
+Other remaining samples are not subtyped and the subtype field is left as `NA`.
+
 **Note**: The files in the input folder are NBL MCYN `clinical patient-status mapping files` for GMKF and TARGET samples. In V11 some values of the `pathology_free_text_diagnosis` are missing, these input files fill in some of these missing values. 
 
 # Usage
