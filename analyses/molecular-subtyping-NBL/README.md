@@ -78,5 +78,3 @@ We then filter the `consensus_wgs_plus_cnvkit_wxs.tsv.gz` and `gene-expression-r
 
 
 
-
-| [molecular-subtyping-NBL](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/molecular-subtyping-NBL/analyses/molecular-subtyping-NBL)                  | `histologies-base.tsv` <br>  `consensus_wgs_plus_cnvkit_wxs.tsv.gz` <br> `cnv-cnvkit.seg.gz`<br> `cnv-controlfreec.tsv.gz` <br>`gene-expression-rsem-tpm-collapsed.rds`<br>`analyses/molecular-subtyping-NBL/input/gmkf_patient_clinical_mycn_status.tsv` <br>`analyses/molecular-subtyping-NBL/input/target_patient_clinical_mycn_status.tsv`<br>| molecular subtyping of NBL tumors |No| `results/NBL_MYCN_Subtype.tsv` <br> `results/Alteration_Table.tsv` <br> `results/Subtypes_Based_On_Cutoff.tsv` <br> `results/QC_table.tsv`| No| Yes| EC2 | N/A|

@@ -239,7 +239,6 @@ bar_plot1<-MYCN_Plot_df %>%
   geom_bar(position="dodge",stat="identity")+
   theme(axis.text.x = element_text(size = 5, angle = 45, hjust = 1))
 
-#bar_plot1+ geom_hline(aes(yintercept=Suggested_Cutoff,linetype = "Suggested Amp Cutoff"),color = "black",size=2) #TARGET-30-PAPKXS-01A-01D	
 
 plot_file <- file.path(plot_dir, "TPM_Biospecimen_Matching.png")
 ggsave(filename = plot_file,width = 45, height = 20)
