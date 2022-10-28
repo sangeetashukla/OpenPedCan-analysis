@@ -161,7 +161,11 @@ EPN_final <- EPN_final %>%
   mutate(subgroup = case_when(
     subgroup == "EPN, To be classified" & `1q_gain` > 0 & TKTL1_expr_zscore > 3 ~  "EPN, PF A",
     subgroup == "EPN, To be classified" & CXorf67_expr_zscore > 3 ~ "EPN, PF A",
-    subgroup == "EPN, To be classified" & (`6q_loss` > 0 | `6p_loss` > 0) & (GPBP1_expr_zscore > 3 | IFT46_expr_zscore > 3) ~ "EPN, PF B",
+    subgroup == "EPN, To be classified"  & CNS_region == "Posterior fossa" & 
+      (H3F3A_HGVSp_Short == "p.K28M" | H3F3B_HGVSp_Short == "p.K28M" | HIST1H3B_HGVSp_Short == "p.K28M" | 
+         HIST1H3C_HGVSp_Short == "p.K28M" | HIST2H3C_HGVSp_Short == "p.K28M") ~ "EPN, PF A",
+    subgroup == "EPN, To be classified" & (`6q_loss` > 0 | `6p_loss` > 0) & 
+      (GPBP1_expr_zscore > 3 | IFT46_expr_zscore > 3) ~ "EPN, PF B",
     TRUE ~ subgroup)
     )
                      
