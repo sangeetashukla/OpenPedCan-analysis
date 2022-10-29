@@ -61,22 +61,22 @@ readr::read_tsv(file.path(results_dir,
                 guess_max = 10000) %>% 
   update_efo() %>% 
   remove_dgd_dna() %>% 
-  write_to_file("putative-oncogene-fusion-freq.tsv.gz")
+  write_to_file("gene-level-snv-consensus-annotated-mut-freq.tsv.gz")
 
-# Update -level snv frequencies
+# Update variant-level snv frequencies
 readr::read_tsv(file.path(results_dir, 
                           "variant-level-snv-consensus-annotated-mut-freq.tsv.gz"),
                 guess_max = 10000) %>% 
-  remove_dgd_dna() %>%
   update_efo() %>% 
-  write_to_file("putative-oncogene-fusion-freq.tsv.gz")
+  remove_dgd_dna() %>%
+  write_to_file("variant-level-snv-consensus-annotated-mut-freq.tsv.gz")
 
 # Update gene-level cnv frequencies
 readr::read_tsv(file.path(results_dir, 
                           "gene-level-cnv-consensus-annotated-mut-freq.tsv.gz"),
                 guess_max = 10000) %>% 
   update_efo() %>% 
-  write_to_file("putative-oncogene-fusion-freq.tsv.gz")
+  write_to_file("gene-level-cnv-consensus-annotated-mut-freq.tsv.gz")
 
 # Update fusion frequencies
 readr::read_tsv(file.path(results_dir, "putative-oncogene-fusion-freq.tsv.gz"),
