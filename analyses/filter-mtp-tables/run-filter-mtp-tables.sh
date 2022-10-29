@@ -21,30 +21,30 @@ printf '\nFiltering MTP  tables for current Gencode...'
 Rscript -e "rmarkdown::render('01-filter-mtp-tables-for-current-gencode.Rmd', \
   clean = TRUE)"
 
-Rscript --vanilla 02-filter-mtp-table-misc-updates.R
+Rscript --vanilla 02-filter-mtp-tables-misc-updates.R
 
 ###################### Convert JSON to JSON Lines (JSONL) #######################
 printf '\nConvert JSON files to JSONL files...\n'
-
-jq --compact-output '.[]' \
-  ${results_path}/variant-level-snv-consensus-annotated-mut-freq.json \
-  > ${results_path}/variant-level-snv-consensus-annotated-mut-freq.jsonl
 
 jq --compact-output '.[]' \
   ${results_path}/gene-level-snv-consensus-annotated-mut-freq.json \
   > ${results_path}/gene-level-snv-consensus-annotated-mut-freq.jsonl
 
 jq --compact-output '.[]' \
+  ${results_path}/variant-level-snv-consensus-annotated-mut-freq.json \
+  > ${results_path}/variant-level-snv-consensus-annotated-mut-freq.jsonl
+
+jq --compact-output '.[]' \
   ${results_path}/gene-level-cnv-consensus-annotated-mut-freq.json \
   > ${results_path}/gene-level-cnv-consensus-annotated-mut-freq.jsonl
+  
+jq --compact-output '.[]' \
+  ${results_path}/putative-oncogene-fusion-freq.json \
+  > ${results_path}/putative-oncogene-fusion-freq.jsonl
 
 jq --compact-output '.[]' \
   ${results_path}/putative-oncogene-fused-gene-freq.json \
   > ${results_path}/putative-oncogene-fused-gene-freq.jsonl
-
-jq --compact-output '.[]' \
-  ${results_path}/putative-oncogene-fusion-freq.json \
-  > ${results_path}/putative-oncogene-fusion-freq.jsonl
   
 jq --compact-output '.[]' \
   ${results_path}/long_n_tpm_mean_sd_quantile_group_wise_zscore.json \
@@ -54,8 +54,6 @@ jq --compact-output '.[]' \
   ${results_path}/long_n_tpm_mean_sd_quantile_gene_wise_zscore.json \
   > ${results_path}/long_n_tpm_mean_sd_quantile_gene_wise_zscore.jsonl
 
-  
-  
 
 ############################ Removing JSON file ###############################
 printf '\nRemove JSON files...\n'
@@ -67,7 +65,7 @@ printf '\nCompressing JSONL files...\n'
 
 if ls ${results_path}/*.jsonl.gz &>/dev/null
 then 
-  rm ${results_path}/*.jsonl.gz 
+  rm -f ${results_path}/*.jsonl.gz 
 fi
 
 gzip -v --no-name ${results_path}/*.jsonl

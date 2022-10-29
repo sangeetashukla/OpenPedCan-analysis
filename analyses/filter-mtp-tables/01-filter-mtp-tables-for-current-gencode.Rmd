@@ -1,5 +1,5 @@
 ---
-title: "Filter Mutation Frequencies Tables"
+title: "Filter MTP Tables"
 output: 
   html_notebook:
     toc: TRUE
@@ -16,7 +16,7 @@ Purpose: Remove Ensembl (ESNG) gene identifier in the mutation frequency tables,
 
 To run this from the command line, use:
 ```
-Rscript -e "rmarkdown::render('filter-mutation-frequencies-tables.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('01-filter-mtp-tables-for-current-gencode.Rmd', clean = TRUE)"
 ```
 _This assumes you are in the modules directory of the repository, OpenPedCan-analysis/analyses/filter-mutation-frequency-tables._
 
@@ -30,7 +30,7 @@ suppressWarnings(
 )
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(data.table))
-suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(jsonlite))
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -48,7 +48,7 @@ gene_match_input_dir <- file.path(analyses_dir,  "gene_match/input")
 snv_results_dir <- file.path(analyses_dir,  "snv-frequencies/results")
 cnv_results_dir <- file.path(analyses_dir,  "cnv-frequencies/results")
 fusion_results_dir <- file.path(analyses_dir,  "fusion-frequencies/results")
-long_tpm_results_dir <- file.path(analyses_dir, "rna-seq-expression-summary-stats/results")
+tpm_results_dir <- file.path(analyses_dir, "rna-seq-expression-summary-stats/results")
 input_dir <- file.path(module_dir, "input")
 results_dir <- file.path(module_dir, "results")
 
@@ -111,34 +111,44 @@ sample_ids <- readr::read_tsv(file.path(data_dir, "histologies.tsv"),
 Function to filter for required Ensembl gene identifiers and write to file
 ```{r}
 
-filter_freq_table <- function(freq_file, ensg_ids, ot_ensg_ids) {
+filter_mtp_table <- function(mtp_file, ensg_ids, ot_ensg_ids) {
   
-  # Read gene level table 
-  freq_table <-  readr::read_tsv(freq_file, guess_max = 10000) 
+  # Read mtp table 
+  mtp_table <-  readr::read_tsv(mtp_file, guess_max = 10000) 
   
-  # Long TPM tables have different column names which need to be renamed to be compatible with this function
-  freq_table <- freq_table %>% dplyr::rename_with(~ case_when(. == "Gene_Ensembl_ID" ~ "targetFromSourceId", TRUE ~.))
-  
-  # Write filtered TSV file
-  file_name <- basename(freq_file)
-  freq_table %>% dplyr::filter(targetFromSourceId %in% ensg_ids) %>%
-    dplyr::filter(!targetFromSourceId %in% ot_ensg_ids) %>%
-    readr::write_tsv(file.path(results_dir, file_name))
-
-  # Write filtered JSON file
-  json_file <- paste(unlist(str_split(file_name, "\\."))[1], "json", sep = ".")
-  freq_table %>% dplyr::filter(targetFromSourceId %in% ensg_ids) %>%
-    dplyr::filter(!targetFromSourceId %in% ot_ensg_ids) %>%
-    jsonlite::write_json(file.path(results_dir,  json_file))  
-
-return(freq_table)
+  if ("Gene_Ensembl_ID" %in% colnames(mtp_table)) { 
+    # Write filtered TSV file
+    file_name <- basename(mtp_file)
+    mtp_table %>% dplyr::filter(Gene_Ensembl_ID %in% ensg_ids) %>%
+      dplyr::filter(!Gene_Ensembl_ID %in% ot_ensg_ids) %>%
+      readr::write_tsv(file.path(results_dir, file_name))
+    
+    # Write filtered JSON file
+    json_file <- paste(unlist(str_split(file_name, "\\."))[1], "json", sep = ".")
+    mtp_table %>% dplyr::filter(Gene_Ensembl_ID %in% ensg_ids) %>%
+      dplyr::filter(!Gene_Ensembl_ID %in% ot_ensg_ids) %>%
+      jsonlite::write_json(file.path(results_dir,  json_file))  
+  } else {
+    # Write filtered TSV file
+    file_name <- basename(mtp_file)
+    mtp_table %>% dplyr::filter(targetFromSourceId %in% ensg_ids) %>%
+      dplyr::filter(!targetFromSourceId %in% ot_ensg_ids) %>%
+      readr::write_tsv(file.path(results_dir, file_name))
+    
+    # Write filtered JSON file
+    json_file <- paste(unlist(str_split(file_name, "\\."))[1], "json", sep = ".")
+    mtp_table %>% dplyr::filter(targetFromSourceId %in% ensg_ids) %>%
+      dplyr::filter(!targetFromSourceId %in% ot_ensg_ids) %>%
+      jsonlite::write_json(file.path(results_dir,  json_file))
+  }
+return(mtp_table)
 }
 ```
 
 #### Gene level SNV frequencies
 ```{r}
 # Remove Ensembl gene identifiers
-gene_level_snv <- filter_freq_table(
+gene_level_snv <- filter_mtp_table(
   file.path(snv_results_dir, 
             "gene-level-snv-consensus-annotated-mut-freq.tsv.gz"), ensg_ids, ot_ensg_ids) 
 
@@ -189,7 +199,7 @@ rm(gene_level_snv, filtered_ensg)
 #### Variant level SNV frequencies
 ```{r}
 # Remove Ensembl gene identifiers
-variant_level_snv <- filter_freq_table(
+variant_level_snv <- filter_mtp_table(
   file.path(snv_results_dir, 
             "variant-level-snv-consensus-annotated-mut-freq.tsv.gz"), ensg_ids, ot_ensg_ids) 
 
@@ -231,7 +241,7 @@ rm(variant_level_snv, filtered_ensg, consensus_ensg)
 #### Gene level CNV frequencies
 ```{r}
 # Remove Ensembl gene identifiers
-gene_level_cnv <- filter_freq_table(
+gene_level_cnv <- filter_mtp_table(
   file.path(cnv_results_dir, 
             "gene-level-cnv-consensus-annotated-mut-freq.tsv.gz"), ensg_ids, ot_ensg_ids) 
 
@@ -282,7 +292,7 @@ rm(gene_level_cnv, filtered_ensg, consensus_ensg)
 #### Fusion frequencies
 ```{r}
 # Remove Ensembl gene identifiers
-fusion <- filter_freq_table(
+fusion <- filter_mtp_table(
   file.path(fusion_results_dir, 
             "putative-oncogene-fusion-freq.tsv.gz"), ensg_ids, ot_ensg_ids) 
 
@@ -338,7 +348,7 @@ rm(fusion, filtered_ensg)
 #### Fused gene frequencies
 ```{r}
 # Remove Ensembl gene identifiers
-fused_gene <- filter_freq_table(
+fused_gene <- filter_mtp_table(
   file.path(fusion_results_dir, 
             "putative-oncogene-fused-gene-freq.tsv.gz"), ensg_ids, ot_ensg_ids) 
 
@@ -378,82 +388,73 @@ filtered_ensg %>% dplyr::filter(Ensembl_ID %in% pmtl_ids) %>%
 rm(fused_gene, filtered_ensg, fusion_names)
 ```
 
-
-#### Long TPM zscores
-#### These will not generate sample_id level list of dropped ENSGs since the data is gene wise or cancer group wise
+#### Gene expression TPM group-wise summary statistics
+OpenPedCan collapsed gene expressions TPM matrix only contains gene symbols 
+and not ENSEMBL gene identifiers. Therefore, samples associated associated with
+removed ENSEMBL identifiers cannot be listed. 
 ```{r}
 # Remove Ensembl gene identifiers
+tpm_group_wise_stats <- filter_mtp_table(
+  file.path(tpm_results_dir, 
+            "long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz"), 
+  ensg_ids, ot_ensg_ids)
 
-long_tpm_mean_sd_quantile_group_wise <- filter_freq_table(
-  file.path(long_tpm_results_dir, 
-            "long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz"), ensg_ids, ot_ensg_ids) 
-
-
-long_tpm_mean_sd_quantile_gene_wise <- filter_freq_table(
-  file.path(long_tpm_results_dir, 
-            "long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz"), ensg_ids, ot_ensg_ids) 
-
-filtered_ensg_group <- long_tpm_mean_sd_quantile_group_wise %>% 
-  dplyr::filter(!targetFromSourceId %in% setdiff(ensg_ids, ot_ensg_ids)) %>% 
-  dplyr::select(Gene_symbol, targetFromSourceId) %>%
-  dplyr::rename(Gene_Ensembl_ID = targetFromSourceId) %>% 
+# Ensembl gene identifiers removed
+filtered_ensg <- tpm_group_wise_stats %>% 
+  dplyr::filter(!Gene_Ensembl_ID %in% setdiff(ensg_ids, ot_ensg_ids)) %>% 
+  dplyr::select(Gene_symbol, Gene_Ensembl_ID, cohort) %>%
+  dplyr::rename(Ensembl_ID = Gene_Ensembl_ID) %>% 
   dplyr::distinct()
 
-filtered_ensg_gene <- long_tpm_mean_sd_quantile_gene_wise %>% 
-  dplyr::filter(!targetFromSourceId %in% setdiff(ensg_ids, ot_ensg_ids)) %>% 
-  dplyr::select(Gene_symbol, targetFromSourceId) %>%
-  dplyr::rename(Gene_Ensembl_ID = targetFromSourceId) %>% 
-  dplyr::distinct()
-
-
-# merge sample IDs to the ENSG IDs not in gencode v39
-filtered_ensg_group <- filtered_ensg_group %>% 
-  dplyr::left_join(long_tpm_mean_sd_quantile_group_wise, by="Gene_symbol", copy = FALSE) %>%
-  dplyr::select(-targetFromSourceId)  #duplicated by Gene_Ensembl_ID
-
-filtered_ensg_gene <- filtered_ensg_gene %>% 
-  dplyr::left_join(long_tpm_mean_sd_quantile_gene_wise, by="Gene_symbol", copy = FALSE) %>%
-  dplyr::select(-targetFromSourceId)  #duplicated by Gene_Ensembl_ID
-
-
-# # merge OpenPedCan cohort to the ENSG IDs not in gencode v39
-# filtered_ensg_group <- filtered_ensg_group %>% 
-#   dplyr::left_join(sample_ids, by= "Kids_First_Biospecimen_ID")
-
-# # write to file
-# readr::write_tsv(filtered_ensg,
-#   file.path(results_dir, 
-#             "gene-level-snv-consensus-annotated-mut-freq_dropped_ensg.tsv.gz"))
+# write to file
+readr::write_tsv(filtered_ensg,
+  file.path(results_dir, 
+            "long_n_tpm_mean_sd_quantile_group_wise_zscore_dropped_ensg.tsv.gz"))
 
 # Display removed ENSEMBL IDs 
-filtered_ensg_group %>% dplyr::select(Gene_Ensembl_ID, cohort) %>% 
+filtered_ensg %>% dplyr::select(Ensembl_ID, cohort) %>% 
+  dplyr::filter(cohort != "All Cohorts") %>% 
   dplyr::distinct() %>%
   tidyr::drop_na() %>%  
   table()
 
-filtered_ensg_gene %>% dplyr::select(Gene_Ensembl_ID, cohort) %>% 
-  dplyr::distinct() %>%
-  tidyr::drop_na() %>%  
-  table()
-
-
-# Display Diseases in removed ENSEMBL IDs that are in PMTL list
-filtered_ensg_group %>% dplyr::filter(Gene_Ensembl_ID %in% pmtl_ids) %>% 
-  select(Gene_Ensembl_ID, cohort, Disease) %>% 
-  dplyr::distinct()
-
-
-filtered_ensg_gene %>% dplyr::filter(Gene_Ensembl_ID %in% pmtl_ids) %>% 
-  select(Gene_Ensembl_ID, cohort, Disease) %>% 
-  dplyr::distinct()
-
-
-# Remove data frames
-rm(long_tpm_mean_sd_quantile_group_wise, filtered_ensg_group)
-rm(long_tpm_mean_sd_quantile_gene_wise, filtered_ensg_gene)
+# Remove summary statistics data frame
+rm(tpm_group_wise_stats, filtered_ensg)
 ```
 
+#### Gene expression TPM gene-wise summary statistics
+OpenPedCan collapsed gene expressions TPM matrix only contains gene symbols 
+and not ENSEMBL gene identifiers. Therefore, samples associated associated with
+removed ENSEMBL identifiers cannot be listed. 
+```{r}
+# Remove Ensembl gene identifiers
+tpm_gene_wise_stats <- filter_mtp_table(
+  file.path(tpm_results_dir, 
+            "long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz"), 
+  ensg_ids, ot_ensg_ids)
 
+# Ensembl gene identifiers removed
+filtered_ensg <- tpm_group_wise_stats %>% 
+  dplyr::filter(!Gene_Ensembl_ID %in% setdiff(ensg_ids, ot_ensg_ids)) %>% 
+  dplyr::select(Gene_symbol, Gene_Ensembl_ID, cohort) %>%
+  dplyr::rename(Ensembl_ID = Gene_Ensembl_ID) %>% 
+  dplyr::distinct()
+
+# write to file
+readr::write_tsv(filtered_ensg,
+  file.path(results_dir, 
+            "long_n_tpm_mean_sd_quantile_gene_wise_zscore_dropped_ensg.tsv.gz"))
+
+# Display removed ENSEMBL IDs 
+filtered_ensg %>% dplyr::select(Ensembl_ID, cohort) %>% 
+  dplyr::filter(cohort != "All Cohorts") %>% 
+  dplyr::distinct() %>%
+  tidyr::drop_na() %>%  
+  table()
+
+# Remove summary statistics data frame
+rm(tpm_gene_wise_stats, filtered_ensg)
+```
 
 ## Session Info
 ```{r}
