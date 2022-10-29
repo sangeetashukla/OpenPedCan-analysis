@@ -14,16 +14,18 @@ cd "$script_directory" || exit
 # Set up paths results directory
 results_path="results"
 
-
-###################### Filter MTP frequencies tables for current Gencode #######################
+###################### Filter MTP tables for current Gencode ###################
 printf '\nFiltering MTP  tables for current Gencode...'
 
 Rscript -e "rmarkdown::render('01-filter-mtp-tables-for-current-gencode.Rmd', \
   clean = TRUE)"
 
+###################### Update MTP tables for miscellaneous FNL changes #########
+printf '\nUpdate MTP tabbles for miscellaneous FNL changes...'
+
 Rscript --vanilla 02-filter-mtp-tables-misc-updates.R
 
-###################### Convert JSON to JSON Lines (JSONL) #######################
+###################### Convert JSON to JSON Lines (JSONL) ######################
 printf '\nConvert JSON files to JSONL files...\n'
 
 jq --compact-output '.[]' \

@@ -434,7 +434,7 @@ tpm_gene_wise_stats <- filter_mtp_table(
   ensg_ids, ot_ensg_ids)
 
 # Ensembl gene identifiers removed
-filtered_ensg <- tpm_group_wise_stats %>% 
+filtered_ensg <- tpm_gene_wise_stats %>% 
   dplyr::filter(!Gene_Ensembl_ID %in% setdiff(ensg_ids, ot_ensg_ids)) %>% 
   dplyr::select(Gene_symbol, Gene_Ensembl_ID, cohort) %>%
   dplyr::rename(Ensembl_ID = Gene_Ensembl_ID) %>% 
