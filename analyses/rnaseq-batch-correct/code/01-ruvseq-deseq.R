@@ -84,12 +84,12 @@ source('util/ruvg.R') # function to run RUVg
 
 # read histology
 message("Reading in histologies file")
-htl_df <- readr::read_tsv('../../data/v10/histologies.tsv')
+htl_df <- data.table::fread('../../data/histologies.tsv')
 
 # read expected counts
 message("Reading RSEM expected counts file")
 cnt_df <-
-  readRDS('../../data/v10/gene-counts-rsem-expected_count-collapsed.rds')
+  readRDS('../../data/gene-counts-rsem-expected_count-collapsed.rds')
 
 # Read in positive and negative control gene sets
 pos_ctrl_genes <- readRDS(file.path(input_dir, pos_ctrl_genes.f))

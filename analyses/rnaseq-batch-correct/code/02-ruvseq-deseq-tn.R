@@ -97,7 +97,7 @@ source('util/ruvg.R') # function to run RUVg
 
 # read histology
 message("Reading in histologies file")
-htl_df <- readr::read_tsv('../../data/histologies.tsv')
+htl_df <- data.table::fread('../../data/histologies.tsv')
 
 # read expected counts
 message("Reading RSEM expected counts file")
