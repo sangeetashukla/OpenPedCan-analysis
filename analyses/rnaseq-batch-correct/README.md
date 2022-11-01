@@ -1,20 +1,20 @@
 ## Batch Correction of RNA-seq expression matrices
 
-**Module authors:** Komal Rathi ([@komalsrathi](https://github.com/komalsrathi)), Adam Kraya (@aadamk)
+**Module authors:** Komal Rathi ([@komalsrathi](https://github.com/komalsrathi)), Adam Kraya (@aadamk), Yuanchao Zhang (@logstar, initial piloting)
 
 ### Description
 
-This module uses HRT Gene Atlas housekeeping genes to correct for batch effects for tumor-only and tumor-normal comparisons. 
-Batch correction is performed as follows: 
+This module uses HRT Gene Atlas housekeeping genes to correct for batch effects for tumor-only and tumor-normal comparisons.
+Batch correction is performed as follows:
 1. Input genes from the HRT Atlas v1.0 (PMID: 32663312; `input/hk_genes_normals.rds`) are assumed to be non-differentially expressed between tumor subtypes and across tumor vs normal.
 Differences in housekeeping genes are assumed to be the result of technical rather than true biological variation.  
 (e.g. tumors are not expected to use housekeeping genes for a growth or proliferative advantage).
-2. DESeq2 analysis is run without batch correction as a baseline. 
+2. DESeq2 analysis is run without batch correction as a baseline.
 3. [RUVg](https://bioconductor.org/packages/devel/bioc/vignettes/RUVSeq/inst/doc/RUVSeq.pdf), which uses negative control genes for correcting batch effects, is run using multiple possible factors (`k`)
-4. Diagnostic plots showing p-value distributions and clustering before and after batch correction are generated. 
+4. Diagnostic plots showing p-value distributions and clustering before and after batch correction are generated.
 5. The module then selects the `k` with the maximum sensitivity/specificity balance by considering changes in p-values
-in positive and negative control gene sets. Three use cases are evaluated: 
-a. Neuroblastoma MYCN-amplified versus MYCN-N non amplified tumors with a positive control gene set corresponding to MSigDb gene sets 
+in positive and negative control gene sets. Three use cases are evaluated:
+a. Neuroblastoma MYCN-amplified versus MYCN-N non amplified tumors with a positive control gene set corresponding to MSigDb gene sets
 `KIM_MYCN_AMPLIFICATION_TARGETS_DN` (M2919) and `KIM_MYCN_AMPLIFICATION_TARGETS_UP` (M5329)
 b. High Grade Glioma and Diffuse Midline Glioma `molecular_subtype` comparisons with a positive control gene set corresponding to
 Additional file 4: Table S2 under `K27M vs WT day5`, where adj p < 0.05 (PMID: 35637482).
@@ -26,18 +26,18 @@ msig.gs <- msig.gs %>%
   dplyr::filter(gs_subcat %in% (grep('REACTOME', gs_subcat, value = T, ignore.case = T)))
   ```
 6. DESeq2 results of the optimal method from 5 are provided and normalized counts are generated
-as standard output for use in downstream visualizations. 
+as standard output for use in downstream visualizations.
 
 ### Analysis scripts
 
-#### Run tumor-only RUVg analysis 
+#### Run tumor-only RUVg analysis
 
 The script below runs a tumor-only analysis for a specific cancer_group, using molecular subtype
-as the default design variable. The script evaluates DESeq2-RUVg results by pulling in all analysis results across all k's, 
+as the default design variable. The script evaluates DESeq2-RUVg results by pulling in all analysis results across all k's,
 evaluating changes in p-value for negative control genes (HRT Atlas genes) and positive control genes
 that are analysis-specific. The script looks for k's that maximize sensitivity and specificity by
 selecting the k that resulted in the most p-values increasing for negative control genes and decreasing
-for positive control genes when correcting for batch effects. 
+for positive control genes when correcting for batch effects.
 
 
 Example run:
@@ -75,16 +75,16 @@ plots/[dataset]/
 ├── *controls.pdf # p-value histogram of negative control genes
 └── *transcriptome.pdf # p-value histogram of full transcriptome
 ```
-#### Run tumor-normal RUVg analysis 
+#### Run tumor-normal RUVg analysis
 
 The script below runs a tumor-normal analysis for cancer groups (comma-separated) versus gtex subgroups (comma-separated)
 creating a tumor-normal comparison in the design. A key parameter is `drop`, which is a user-specifiable
 parameter which drops the initial n factors of variation to guard against removing true biological variation
-across tumor and normal. The script evaluates DESeq2-RUVg results by pulling in all analysis results across all k's, 
+across tumor and normal. The script evaluates DESeq2-RUVg results by pulling in all analysis results across all k's,
 evaluating changes in p-value for negative control genes (HRT Atlas genes) and positive control genes
 (Reactome Cell Cycle). The script looks for k's that maximize sensitivity and specificity by
 selecting the k that resulted in the most p-values increasing for negative control genes and decreasing
-for positive control genes when correcting for batch effect 
+for positive control genes when correcting for batch effect
 
 
 Example run:
