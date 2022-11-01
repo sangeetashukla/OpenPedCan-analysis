@@ -97,12 +97,12 @@ source('util/ruvg.R') # function to run RUVg
 
 # read histology
 message("Reading in histologies file")
-htl_df <- readr::read_tsv('../../data/v10/histologies.tsv')
+htl_df <- readr::read_tsv('../../data/histologies.tsv')
 
 # read expected counts
 message("Reading RSEM expected counts file")
 cnt_df <-
-  readRDS('../../data/v10/gene-counts-rsem-expected_count-collapsed.rds')
+  readRDS('../../data/gene-counts-rsem-expected_count-collapsed.rds')
 
 # Read in positive and negative control gene sets
 pos_ctrl_genes <- readRDS(file.path(input_dir, pos_ctrl_genes.f))
@@ -191,12 +191,12 @@ dge_output_nobatch <- dge_output_nobatch %>%
   arrange(padj)
 
 message("Writing DESeq2 non batch-corrected results")
-readr::write_tsv(x = dge_output_nobatch,
+data.table::fwrite(x = dge_output_nobatch,
                  file = file.path(
                    output_dir,
                    'deseq2_analysis',
                    paste0('DESeq2_noBatchC_', dataset, '_dge.tsv')
-                 ))
+                 ), sep = '\t')
 
 # plot and save p-value histogram
 message("Saving p-value histogram")
@@ -369,17 +369,17 @@ ggsave(
 
 # Return normalized counts
 
-readr::write_rds(ruvg.res@assayData$normalizedCounts,
+saveRDS(ruvg.res@assayData$normalizedCounts,
                  file = file.path(
                    norm_count_dir,
                    paste0('RUVg_optimal_k', scores.ind, '_normalized_counts.rds')
                  ))
 
 # Return corresponding DGE analysis
-readr::write_tsv(ruvg.dge,
+data.table::fwrite(ruvg.dge,
                  file = file.path(
                    output_dir, 'deseq2_analysis', 
                    paste0('RUVg_optimal_k', scores.ind, '_dgeResults.tsv')
-                 ))
+                 ), sep = '\t')
 message('Done')
 ########################################### DESeq2 analysis ##############################################################

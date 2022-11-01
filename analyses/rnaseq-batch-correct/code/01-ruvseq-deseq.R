@@ -181,12 +181,12 @@ dge_output_nobatch <- dge_output_nobatch %>%
   arrange(padj)
 
 message("Writing DESeq2 non batch-corrected results")
-readr::write_tsv(x = dge_output_nobatch,
+data.table::fwrite(x = dge_output_nobatch,
                  file = file.path(
                    output_dir,
                    'deseq2_analysis',
                    paste0('DESeq2_noBatchC_', dataset, '_dge.tsv')
-                 ))
+                 ), sep = '\t')
 
 # plot and save p-value histogram
 message("Saving p-value histogram")
@@ -360,16 +360,16 @@ ggsave(
 
 # Return normalized counts
 
-readr::write_rds(ruvg.res@assayData$normalizedCounts,
+saveRDS(ruvg.res@assayData$normalizedCounts,
                  file = file.path(
                    norm_count_dir,
                    paste0('RUVg_optimal_k', scores.ind, '_normalized_counts.rds')
                  ))
 
 # Return corresponding DGE analysis
-readr::write_tsv(ruvg.dge,
+data.table::fwrite(ruvg.dge,
                  file = file.path(
                    output_dir, 'deseq2_analysis',
                    paste0('RUVg_optimal_k', scores.ind, '_dgeResults.tsv')
-                 ))
+                 ), sep = '\t')
 message('Done')

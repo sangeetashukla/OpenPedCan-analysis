@@ -239,7 +239,7 @@ ruvg_test <-
     
     # rbind and save chisq values
     data.table::rbindlist(chisq_out) %>%
-      write_tsv(file = file.path(
+      data.table::fwrite(file = file.path(
         output_dir,
         paste0(
           prefix,
@@ -249,11 +249,11 @@ ruvg_test <-
           drop,
           '_chisq_pvalues.tsv'
         )
-      ))
+      ), sep = '\t')
     
     # rbind and save ks values
     data.table::rbindlist(ks_out) %>%
-      write_tsv(file = file.path(
+      data.table::fwrite(file = file.path(
         output_dir,
         paste0(
           prefix,
@@ -263,7 +263,7 @@ ruvg_test <-
           drop,
           '_ks_pvalues.tsv'
         )
-      ))
+      ), sep = '\t')
     
     output_list <-
       list(dge_output = dge_output_list, ruvg_eset = ruvseq_set_list)
