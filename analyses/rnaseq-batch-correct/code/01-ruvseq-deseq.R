@@ -138,7 +138,7 @@ seq_expr_set <-
 ########################################### DESeq2 analysis ##############################################################
 
 # 1.1. RUVg using hk genes in normals only (full HRT atlas)
-message("Running RUVg-DESeq2 analysis for k = 1-5")
+
 ruvg_out <-
   ruvg_test(
     seq_expr_set = seq_expr_set,
