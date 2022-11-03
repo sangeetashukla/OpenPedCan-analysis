@@ -1,0 +1,60 @@
+---
+title: "TPM Table Checks"
+author: "Aditya Lahiri"
+date: "11/3/2022"
+output: html_document
+---
+
+### Purpose
+Performs summary and QC checks comparing the current and the previous OpenPedCan 
+tpm tables.
+
+
+### Load packages
+```{r load packages}
+# R packages
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(data.table))
+suppressPackageStartupMessages(library(openxlsx))
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+
+### Set output directory
+```{r set output directory}
+# directories for input and output files
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+analyses_dir <- file.path(root_dir, "analyses", "mtp-tables-qc-checks")
+results_dir <- file.path(analyses_dir, "results")
+
+# Create results folder if it doesn't exist
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+
+
+### Read in current and previous tpm files
+```{r load files}
+gene_wise_current_table<-data.table::fread("current/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz", 
+                                        data.table = FALSE, showProgress = FALSE) %>% purrr::discard(~all(is.na(.))) 
+  
+gene_wise_previous_table<-data.table::fread("previous/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz", 
+                                        data.table = FALSE, showProgress = FALSE) %>% purrr::discard(~all(is.na(.)))  
+  
+
+group_wise_current_table<-data.table::fread("current/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz", 
+                                        data.table = FALSE, showProgress = FALSE) %>% purrr::discard(~all(is.na(.))) 
+  
+group_wise_previous_table<-data.table::fread("previous/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz", 
+                                        data.table = FALSE, showProgress = FALSE) %>% purrr::discard(~all(is.na(.)))    
+  
+  
+
+```
+
+
+### First 50 records from a static cancer group (GMKF Neuroblastoma) 
