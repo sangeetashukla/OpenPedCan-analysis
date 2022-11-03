@@ -235,7 +235,7 @@ EPN_notebook[,"NF2_variant_classification"] <- unlist(sapply(EPN_notebook$Kids_F
 mutation_gene <- mutations %>% filter(Hugo_Symbol == "H3F3A" & HGVSp_Short == 'p.K28M')
 EPN_notebook[,"H3F3A_HGVSp_Short"] <- unlist(sapply(EPN_notebook$Kids_First_Biospecimen_ID_DNA,
                                                              function(x) mutation_fill_df(sample = x, ref_df = mutation_gene, col_name = 'HGVSp_Short')))
-mutation_gene <- mutations %>% filter(Hugo_Symbol == "H3F3B")
+mutation_gene <- mutations %>% filter(Hugo_Symbol == "H3F3B" & HGVSp_Short == 'p.K28M')
 EPN_notebook[,"H3F3B_HGVSp_Short"] <- unlist(sapply(EPN_notebook$Kids_First_Biospecimen_ID_DNA,
                                                     function(x) mutation_fill_df(sample = x, ref_df = mutation_gene, col_name = 'HGVSp_Short')))
 mutation_gene <- mutations %>% filter(Hugo_Symbol == "HIST1H3B")
