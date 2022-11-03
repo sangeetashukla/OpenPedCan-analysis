@@ -232,7 +232,7 @@ EPN_notebook[,"NF2_variant_consequence"] <- unlist(sapply(EPN_notebook$Kids_Firs
                                           function(x) mutation_fill_df(sample = x, ref_df = mutation_gene, col_name = 'Consequence')))
 EPN_notebook[,"NF2_variant_classification"] <- unlist(sapply(EPN_notebook$Kids_First_Biospecimen_ID_DNA,
                                                    function(x) mutation_fill_df(sample = x, ref_df = mutation_gene, col_name = 'Variant_Classification')))
-mutation_gene <- mutations %>% filter(Hugo_Symbol == "H3F3A")
+mutation_gene <- mutations %>% filter(Hugo_Symbol == "H3F3A" & HGVSp_Short == 'p.K28M')
 EPN_notebook[,"H3F3A_HGVSp_Short"] <- unlist(sapply(EPN_notebook$Kids_First_Biospecimen_ID_DNA,
                                                              function(x) mutation_fill_df(sample = x, ref_df = mutation_gene, col_name = 'HGVSp_Short')))
 mutation_gene <- mutations %>% filter(Hugo_Symbol == "H3F3B")
