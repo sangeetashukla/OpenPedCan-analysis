@@ -39,17 +39,17 @@ if (!dir.exists(results_dir)) {
 
 ### Read in current and previous tpm files
 ```{r load files}
-gene_wise_current_table<-data.table::fread("current/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz", 
+current_gene_wise_table<-data.table::fread("current/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz", 
                                         data.table = FALSE, showProgress = FALSE) %>% purrr::discard(~all(is.na(.))) 
   
-gene_wise_previous_table<-data.table::fread("previous/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz", 
+previous_gene_wise_table<-data.table::fread("previous/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz", 
                                         data.table = FALSE, showProgress = FALSE) %>% purrr::discard(~all(is.na(.)))  
   
 
-group_wise_current_table<-data.table::fread("current/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz", 
+current_group_wise_table<-data.table::fread("current/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz", 
                                         data.table = FALSE, showProgress = FALSE) %>% purrr::discard(~all(is.na(.))) 
   
-group_wise_previous_table<-data.table::fread("previous/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz", 
+previous_group_wise_table<-data.table::fread("previous/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz", 
                                         data.table = FALSE, showProgress = FALSE) %>% purrr::discard(~all(is.na(.)))    
   
   
@@ -58,3 +58,132 @@ group_wise_previous_table<-data.table::fread("previous/long_n_tpm_mean_sd_quanti
 
 
 ### First 50 records from a static cancer group (GMKF Neuroblastoma) 
+Records from a static cancer_group should not change between the current and previous mutation frequencies tables. There should be no changes in computed mutation frequencies. But other fields in the table will likely change if annotations are updated. 
+#### Current table
+```{r current table}
+# ordered top 50 GMKF Neuroblastoma records from current table
+gmkf_nbl_current_group <- current_group_wise_table %>% 
+  dplyr::filter(cohort == "GMKF", Disease == "Neuroblastoma") %>% 
+  dplyr::arrange() %>% 
+  head(n = 50)
+
+# write to file
+gmkf_nbl_current_group %>% 
+  readr::write_tsv(file.path(results_dir, "current_group_static_cancer_group.tsv")) 
+
+# display      
+gmkf_nbl_current_group   
+```
+
+
+
+#### Previous table
+```{r previous table}
+# ordered top 50 GMKF Neuroblastoma records from previous table
+gmkf_nbl_previous_group <- previous_group_wise_table %>% 
+  dplyr::filter(cohort == "GMKF", Disease == "Neuroblastoma") %>% 
+  dplyr::arrange() %>% 
+  head(n = 50)
+
+# write to file
+gmkf_nbl_previous_group %>% 
+  readr::write_tsv(file.path(results_dir, "previous_group_static_cancer_group.tsv"))
+
+# display   
+gmkf_nbl_previous_group  
+```
+
+### Number of patients in each cohort
+```{r number of patients}
+# get number of patients in each cohort
+num_patients <- get_num_patients(current_table) %>% 
+  dplyr::rename(patients_in_current = patients) %>% 
+  dplyr::full_join(get_num_patients(previous_table) %>% 
+                    dplyr::rename(patients_in_previous = patients))
+
+# write to file
+num_patients %>% 
+  readr::write_tsv(file.path(results_dir, "number_of_patients.tsv"), na = "NA")
+
+# display   
+num_patients 
+```
+
+
+
+
+
+
+
+### Functions
+```{r functions}
+# get number of patients in cohorts
+get_num_patients <- function(freq_df) {
+  return(freq_df %>% 
+           dplyr::filter(Dataset != "All Cohorts") %>%
+           dplyr::select(Dataset, Disease, 
+                         Total_alterations_over_subjects_in_dataset) %>%
+           tidyr::separate(Total_alterations_over_subjects_in_dataset, 
+                           c("alterations", "patients")) %>% 
+           dplyr::select(-alterations) %>% 
+           dplyr::distinct() %>% 
+           dplyr::select(-Disease) %>% 
+           dplyr::group_by(Dataset) %>%
+           dplyr::summarise(patients = sum(as.integer(patients, na.rm = TRUE)))
+         )
+}
+
+# get number of samples in cohorts
+get_num_samples <- function(freq_df) {
+  primary_samples <- freq_df %>% 
+    dplyr::filter(Dataset != "All Cohorts") %>%
+    dplyr::select(Dataset, Disease,
+                  Total_primary_tumors_mutated_over_primary_tumors_in_dataset) %>%
+    tidyr::separate(Total_primary_tumors_mutated_over_primary_tumors_in_dataset, 
+                    c("primary_mutations", "primary_samples")) %>%
+    dplyr::select(-primary_mutations) %>% 
+    dplyr::distinct() %>% 
+    dplyr::select(-Disease) %>%
+    dplyr::group_by(Dataset) %>% 
+    dplyr::summarise(primary_samples = 
+                       sum(as.integer(primary_samples, na.rm = TRUE)))
+  relapse_samples <- freq_df %>% 
+    dplyr::filter(Dataset != "All Cohorts") %>%
+    dplyr::select(Dataset, Disease,
+                  Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset) %>%
+    tidyr::separate(Total_relapse_tumors_mutated_over_relapse_tumors_in_dataset, 
+                    c("relapse_mutations", "relapse_samples")) %>%
+    dplyr::select(-relapse_mutations) %>% 
+    dplyr::distinct() %>% 
+    dplyr::select(-Disease) %>%
+    dplyr::group_by(Dataset) %>% 
+    dplyr::summarise(relapse_samples = 
+                       sum(as.integer(relapse_samples, na.rm = TRUE)))
+    return(primary_samples %>% 
+             dplyr::full_join(relapse_samples, by = "Dataset"))
+}
+
+# changes in common columns among MPT mutation frequencies  between 
+# current and previous tables
+changes_in_columns <- function(current_tables, previous_table, column_name) {
+  # values specific to current table
+  specific_to_current <- current_table %>% 
+  dplyr::select(Dataset, column_name) %>% 
+  dplyr::distinct() %>% 
+    setdiff(previous_table %>% dplyr::select(Dataset, column_name) %>%
+              dplyr::distinct()) %>% 
+    dplyr::rename(current_dataset = Dataset)
+  # values specific to previous table
+  specific_to_previous <- previous_table %>% 
+    dplyr::select(Dataset, column_name) %>% 
+    dplyr::distinct() %>% 
+    setdiff(current_table %>% dplyr::select(Dataset, column_name) %>%
+              dplyr::distinct()) %>% 
+    dplyr::rename(previous_dataset = Dataset)
+  # combine differences 
+  changes_in_columns <- specific_to_current %>%
+    dplyr::full_join(specific_to_previous, by = column_name) %>% 
+    dplyr::select(column_name, current_dataset, previous_dataset)
+  return(changes_in_columns)
+}
+```
