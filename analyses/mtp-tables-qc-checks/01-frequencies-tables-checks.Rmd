@@ -50,7 +50,7 @@ suppressPackageStartupMessages(library(openxlsx))
 ```{r set output directory}
 # directories for input and output files
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-analyses_dir <- file.path(root_dir, "analyses", "mutation-frequencies-table-checks")
+analyses_dir <- file.path(root_dir, "analyses", "mtp-tables-qc-checks")
 results_dir <- file.path(analyses_dir, "results")
 
 # Create results folder if it doesn't exist
