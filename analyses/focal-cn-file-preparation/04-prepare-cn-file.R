@@ -5,6 +5,7 @@ suppressPackageStartupMessages({
   library(AnnotationDbi)
   library(org.Hs.eg.db)
   library(rtracklayer)
+  library(tidyverse)
 })
 
 # This script converts a seg file into a tsv file with CN information and gene
@@ -85,6 +86,7 @@ dir.create(results_dir, showWarnings = F, recursive = T) # identical to mkdir -p
 
 # source function to annotate overlaps
 source(file.path(analysis_dir, "util", "process_annotate_overlaps.R"))
+source(file.path(analysis_dir, "util", "resolve_duplicate_annotations.R"))
 
 #### Format CNV file and overlap with hg38 genome annotations ------------------
 
@@ -150,12 +152,21 @@ annotations_orgDb <- annotations_orgDb %>%
                 "gene_id" = "ENSEMBL",
                 "gene_name" = "SYMBOL")
 gencode_gtf <- gencode_gtf %>%
-  dplyr::inner_join(annotations_orgDb, by = c("gene_id", "gene_name")) # 592480 x 6
-# the above dataframe has all information that is needed to annotated the input cnv file
+  dplyr::inner_join(annotations_orgDb, by = c("gene_id", "gene_name")) %>%
+  dplyr::distinct(seqnames, start, end, gene_id, gene_name, .keep_all = T)
 
 # make GRanges object and sort by coordinates (592480 rows)
-gencode_gtf <- makeGRangesFromDataFrame(gencode_gtf, keep.extra.columns = TRUE)
-gencode_gtf <- sort(gencode_gtf)
+gencode_gr <- makeGRangesFromDataFrame(gencode_gtf, keep.extra.columns = TRUE)
+gencode_gr <- unlist(GenomicRanges::reduce(split(gencode_gr, c(gencode_gr$gene_id, gencode_gr$gene_name))))
+
+gencode_df <- data.frame(gencode_gr) %>%
+  add_column(gene_id = names(gencode_gr)) %>%
+  merge(distinct(gencode_gtf, gene_id, .keep_all = T)[,c('gene_id', 'gene_name', 'cytoband')], by = 'gene_id') %>%
+  dplyr::select(seqnames, start, end, width, strand, gene_id, gene_name, cytoband)
+
+# make GRanges object and sort by coordinates (592480 rows)
+gencode_gr <- makeGRangesFromDataFrame(gencode_df, keep.extra.columns = TRUE)
+gencode_gr <- sort(gencode_gr)
 
 #### Addressing autosomes first ------------------------------------------------
 # slice the df to avoid memory exhaust issues
@@ -168,7 +179,7 @@ slice_vector <- seq(1, length(cnv_df_ids), 100)
 
 # define combined dataframe
 autosome_annotated_cn <- data.frame()
-for (i in 1:length(slice_vector)){
+for (i in 1:length(slice_vector[1:5])){
   start_id <- as.numeric(slice_vector[i])
   if(i<length(slice_vector)){
     end_id <- as.numeric(slice_vector[i+1]-1)
@@ -192,12 +203,15 @@ for (i in 1:length(slice_vector)){
     distinct()
   
   # Merge and annotated no X&Y
-  autosome_annotated_cn_each <- process_annotate_overlaps(cnv_df = cnv_no_xy_each, exon_granges = gencode_gtf) %>%
+  autosome_annotated_cn_each <- process_annotate_overlaps(cnv_df = cnv_no_xy_each, exon_granges = gencode_gr, gene_df = gencode_df) %>%
     # mark possible amplifications in autosomes
     dplyr::mutate(status = dplyr::case_when(
       copy_number > (2 * ploidy) ~ "amplification",
       copy_number == 0 ~ "deep deletion",
       TRUE ~ as.character(status)))
+  # Resolve cases of duplicate cn calls for genes
+  autosome_annotated_cn_each <- resolve_duplicate_annotations(overlap_annotation = autosome_annotated_cn_each)
+  
   autosome_annotated_cn <- bind_rows(autosome_annotated_cn, autosome_annotated_cn_each)
 }
 
@@ -216,7 +230,7 @@ readr::write_tsv(autosome_annotated_cn, file.path(results_dir, autosome_output_f
 if(xy_flag){
   # define combined dataframe
   sex_chrom_annotated_cn <- data.frame()
-  for (j in 1:length(slice_vector)){
+  for (j in 1:length(slice_vector[1:5])){
     start_id <- as.numeric(slice_vector[j])
     if(j<length(slice_vector)){
       end_id <- as.numeric(slice_vector[j+1]-1)
@@ -238,12 +252,15 @@ if(xy_flag){
       dplyr::filter(chr %in% c("chrX", "chrY"))
     
     # Merge and annotated X&Y
-    sex_chrom_annotated_cn_each <- process_annotate_overlaps(cnv_df = cnv_sex_chrom_each, exon_granges = gencode_gtf) %>%
+    sex_chrom_annotated_cn_each <- process_annotate_overlaps(cnv_df = cnv_sex_chrom_each, exon_granges = gencode_gr, gene_df = gencode_df) %>%
       # mark possible deep loss in sex chromosome
       dplyr::mutate(status = dplyr::case_when(
         copy_number == 0  ~ "deep deletion",
         TRUE ~ as.character(status))
       )
+    
+    # Resolve cases of duplicate cn calls for genes
+    sex_chrom_annotated_cn_each <- resolve_duplicate_annotations(overlap_annotation = sex_chrom_annotated_cn_each)
     
     # Add germline sex estimate into this data.frame
     sex_chrom_annotated_cn_each <- sex_chrom_annotated_cn_each %>%
