@@ -79,21 +79,6 @@ changes_in_columns <- function(current_table, previous_table, column_name) {
 ```
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### Read in current and previous tpm files
 ```{r load files}
 current_gene_wise_table<-data.table::fread("current/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz", 
@@ -119,69 +104,69 @@ Records from a static cancer_group should not change between the current and pre
 #### Current table
 ```{r current table gene wise}
 # ordered top 50 GMKF Neuroblastoma records from current gene wise table
-gmkf_nbl_current_gene <- current_gene_wise_table %>% 
+gmkf_nbl_current_gene_wise <- current_gene_wise_table %>% 
   dplyr::filter(cohort == "GMKF", Disease == "Neuroblastoma") %>% 
   dplyr::arrange() %>% 
   head(n = 50)
 
 # write to file
-gmkf_nbl_current_gene %>% 
-  readr::write_tsv(file.path(results_dir, "current_group_static_cancer_gene.tsv")) 
+gmkf_nbl_current_gene_wise %>% 
+  readr::write_tsv(file.path(results_dir, "current_group_static_cancer_tpm_gene_wise.tsv")) 
 
 # display      
-gmkf_nbl_current_gene   
+gmkf_nbl_current_gene_wise   
 ```
 
 ```{r current table group wise}
 # ordered top 50 GMKF Neuroblastoma records from current group wise table
-gmkf_nbl_current_group <- current_group_wise_table %>% 
+gmkf_nbl_current_group_wise <- current_group_wise_table %>% 
   dplyr::filter(cohort == "GMKF", Disease == "Neuroblastoma") %>% 
   dplyr::arrange() %>% 
   head(n = 50)
 
 # write to file
-gmkf_nbl_current_group %>% 
-  readr::write_tsv(file.path(results_dir, "current_group_static_cancer_group.tsv")) 
+gmkf_nbl_current_group_wise %>% 
+  readr::write_tsv(file.path(results_dir, "current_group_static_cancer_tpm_group_wise.tsv")) 
 
 # display      
-gmkf_nbl_current_group   
+gmkf_nbl_current_group_wise   
 ```
 
 #### Previous table
 
 ```{r previous table gene wise}
 # ordered top 50 GMKF Neuroblastoma records from previous gene wise table
-gmkf_nbl_previous_gene <- previous_gene_wise_table %>% 
+gmkf_nbl_previous_gene_wise <- previous_gene_wise_table %>% 
   dplyr::filter(cohort == "GMKF", Disease == "Neuroblastoma") %>% 
   dplyr::arrange() %>% 
   head(n = 50)
 
 # write to file
-gmkf_nbl_previous_gene %>% 
-  readr::write_tsv(file.path(results_dir, "previous_group_static_cancer_gene.tsv"))
+gmkf_nbl_previous_gene_wise %>% 
+  readr::write_tsv(file.path(results_dir, "previous_group_static_cancer_tpm_gene_wise.tsv"))
 
 # display   
-gmkf_nbl_previous_gene  
+gmkf_nbl_previous_gene_wise  
 ```
 
 
 ```{r previous table group wise}
 # ordered top 50 GMKF Neuroblastoma records from previous table
-gmkf_nbl_previous_group <- previous_group_wise_table %>% 
+gmkf_nbl_previous_group_wise <- previous_group_wise_table %>% 
   dplyr::filter(cohort == "GMKF", Disease == "Neuroblastoma") %>% 
   dplyr::arrange() %>% 
   head(n = 50)
 
 # write to file
-gmkf_nbl_previous_group %>% 
-  readr::write_tsv(file.path(results_dir, "previous_group_static_cancer_group.tsv"))
+gmkf_nbl_previous_group_wise %>% 
+  readr::write_tsv(file.path(results_dir, "previous_group_static_cancer_tpm_group_wise.tsv"))
 
 # display   
-gmkf_nbl_previous_group  
+gmkf_nbl_previous_group_wise  
 ```
 
 ### Number of samples in each cohort gene wise
-```{r number of samples}
+```{r number of samples gene wise}
 # get number of samples in each cohort
 num_samples_gene_wise <- get_num_samples(current_gene_wise_table) %>% 
   dplyr::rename(samples_in_current_gene_wise = n_samples) %>% 
@@ -191,14 +176,14 @@ num_samples_gene_wise <- get_num_samples(current_gene_wise_table) %>%
 
 # write to file
 num_samples_gene_wise %>% 
-  readr::write_tsv(file.path(results_dir, "number_of_samples_genewise_tpm.tsv"), na = "NA")
+  readr::write_tsv(file.path(results_dir, "number_of_samples_tpm_gene_wise.tsv"), na = "NA")
 
 # display   
 num_samples_gene_wise
 ```
 
 ### Number of samples in each cohort group wise
-```{r number of samples}
+```{r number of samples group wise}
 # get number of samples in each cohort
 num_samples_group_wise <- get_num_samples(current_group_wise_table) %>% 
   dplyr::rename(samples_in_current_group_wise = n_samples) %>% 
@@ -208,7 +193,7 @@ num_samples_group_wise <- get_num_samples(current_group_wise_table) %>%
 
 # write to file
 num_samples_group_wise %>% 
-  readr::write_tsv(file.path(results_dir, "number_of_samples_groupwise_tpm.tsv"), na = "NA")
+  readr::write_tsv(file.path(results_dir, "number_of_samples_tpm_group_wise.tsv"), na = "NA")
 
 # display   
 num_samples_group_wise
@@ -216,9 +201,9 @@ num_samples_group_wise
 
 
 ### Cancer groups in the "All Cohorts" category
-```{r all cohorts cancer groups}
+```{r all cohorts cancer groups gene wise}
 # get All Cohorts" cancer groups
-all_cohorts_cancer_groups_tpm_genewise <- current_gene_wise_table %>% 
+all_cohorts_cancer_groups_tpm_gene_wise <- current_gene_wise_table %>% 
   dplyr::select(cohort, Disease) %>% 
   dplyr::filter(cohort == "All Cohorts") %>% 
   dplyr::distinct() %>%
@@ -232,20 +217,20 @@ all_cohorts_cancer_groups_tpm_genewise <- current_gene_wise_table %>%
   dplyr::select(Disease, current_cohort, previous_cohort)
 
 # write to file
-all_cohorts_cancer_groups_tpm_genewise %>% 
+all_cohorts_cancer_groups_tpm_gene_wise %>% 
   readr::write_tsv(file.path(results_dir, 
-                             "all_cohorts_cancer_groups_tpm_genewise.tsv"), na = "NA")
+                             "all_cohorts_cancer_groups_tpm_gene_wise.tsv"), na = "NA")
 
 # display   
-all_cohorts_cancer_groups_tpm_genewise
+all_cohorts_cancer_groups_tpm_gene_wise
   
 ```
 
 
 
-```{r all cohorts cancer groups}
+```{r all cohorts cancer groups group wise}
 # get All Cohorts" cancer groups
-all_cohorts_cancer_groups_tpm_groupwise <- current_group_wise_table %>% 
+all_cohorts_cancer_groups_tpm_group_wise <- current_group_wise_table %>% 
   dplyr::select(cohort, Disease) %>% 
   dplyr::filter(cohort == "All Cohorts") %>% 
   dplyr::distinct() %>%
@@ -259,31 +244,20 @@ all_cohorts_cancer_groups_tpm_groupwise <- current_group_wise_table %>%
   dplyr::select(Disease, current_cohort, previous_cohort)
 
 # write to file
-all_cohorts_cancer_groups_tpm_groupwise %>% 
+all_cohorts_cancer_groups_tpm_group_wise %>% 
   readr::write_tsv(file.path(results_dir, 
-                             "all_cohorts_cancer_groups_tpm_groupwise.tsv"), na = "NA")
+                             "all_cohorts_cancer_groups_tpm_group_wise.tsv"), na = "NA")
 
 # display   
-all_cohorts_cancer_groups_tpm_groupwise
+all_cohorts_cancer_groups_tpm_group_wise
   
 ```
-
-
-
-
-
-
-
-
-
-
-
 
 
 ### Changes in common columns across tpm tables
 
 #### Check gene symbols
-```{r gene symbols genewise}
+```{r gene symbols gene wise}
 changes_gene_symbols_gene_wise <- 
   changes_in_columns(current_gene_wise_table,previous_gene_wise_table, "Gene_symbol")
 
@@ -296,7 +270,7 @@ changes_gene_symbols_gene_wise %>%
 changes_gene_symbols_gene_wise
 ```
 
-```{r gene symbols groupwise}
+```{r gene symbols group wise}
 changes_gene_symbols_group_wise <- 
   changes_in_columns(current_group_wise_table,previous_group_wise_table, "Gene_symbol")
 
@@ -310,12 +284,36 @@ changes_gene_symbols_group_wise
 ```
 
 
+#### Check Ensembl IDs
+```{r ensembl ids gene wise}
+changes_ensembl_ids_gene_wise <- 
+  changes_in_columns(current_gene_wise_table,previous_gene_wise_table, "Gene_Ensembl_ID")
 
+# write to file
+changes_ensembl_ids_gene_wise %>% 
+  readr::write_tsv(file.path(results_dir, 
+                             "changes_in_ensembl_ids_tpm_gene_wise.tsv"), na = "NA")
 
+# display   
+changes_ensembl_ids
+```
+
+```{r ensembl ids froup wise}
+changes_ensembl_ids_group_wise <- 
+  changes_in_columns(current_group_wise_table, previous_group_wise_table, "Gene_Ensembl_ID")
+
+# write to file
+changes_ensembl_ids_group_wise %>% 
+  readr::write_tsv(file.path(results_dir, 
+                             "changes_in_ensembl_ids_tpm_group_wise.tsv"), na = "NA")
+
+# display   
+changes_ensembl_ids_group_wise
+```
 
 
 #### Check cancer groups
-```{r ensembl ids}
+```{r disease gene wise}
 changes_disease_gene_wise <- 
   changes_in_columns(current_gene_wise_table,previous_gene_wise_table, "Disease")
 
@@ -329,7 +327,7 @@ changes_disease_gene_wise
 ```
 
 
-```{r ensembl ids}
+```{r disease group wise}
 changes_disease_group_wise <- 
   changes_in_columns(current_group_wise_table,previous_group_wise_table, "Disease")
 
@@ -343,6 +341,57 @@ changes_disease_group_wise
 ```
 
 
+
+#### Check EFO IDs
+```{r efo ids gene wise}
+changes_efo_ids_gene_wise <- 
+  changes_in_columns(current_gene_wise_table,previous_gene_wise_table,"EFO")
+
+# write to file
+changes_efo_ids_gene_wise %>% 
+  readr::write_tsv(file.path(results_dir, "changes_in_efo_ids_tpm_gene_wise.tsv"), na = "NA")
+
+# display   
+changes_efo_ids_gene_wise
+```
+
+```{r efo ids group wise}
+changes_efo_ids_group_wise <- 
+  changes_in_columns(current_group_wise_table,previous_group_wise_table,"EFO")
+
+# write to file
+changes_efo_ids_group_wise %>% 
+  readr::write_tsv(file.path(results_dir, "changes_in_efo_ids_tpm_group_wise.tsv"), na = "NA")
+
+# display   
+changes_efo_ids_group_wise
+```
+
+
+#### Check MONDO IDs
+```{r mondo ids gene wise}
+changes_mondo_ids_gene_wise <- 
+  changes_in_columns(current_gene_wise_table,previous_gene_wise_table,"MONDO")
+
+# write to file
+changes_mondo_ids_gene_wise %>% 
+  readr::write_tsv(file.path(results_dir, "changes_in_mondo_ids_tpm_gene_wise.tsv"), na = "NA")
+
+# display   
+changes_mondo_ids_gene_wise
+```
+
+```{r mondo ids group wise}
+changes_mondo_ids_group_wise <- 
+  changes_in_columns(current_group_wise_table,previous_group_wise_table,"MONDO")
+
+# write to file
+changes_mondo_ids_group_wise %>% 
+  readr::write_tsv(file.path(results_dir, "changes_in_mondo_ids_tpm_group_wise.tsv"), na = "NA")
+
+# display   
+changes_mondo_ids_group_wise
+```
 
 
 
