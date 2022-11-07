@@ -1,0 +1,203 @@
+---
+title: "02-tpm-tables-checks-bash"
+output:
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+    toc_depth: 4
+author: Aditya Lahiri
+date: 2022-11-07
+params:
+  current_table_gene:
+    label: "current tpm gene wise table"
+    value: current/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz
+    input: file
+   current_table_group:
+    label: "current tpm group table"
+    value: current/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz
+    input: file  
+  previous_table_gene:
+    label: "previous tpm gene wisetable"
+    value: previous/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz
+    input: file
+  previous_table_group:
+    label: "previous  tpm group table"
+    value: previous/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz
+    input: file  
+---
+
+### Purpose
+Performs summary and QC checks comparing the current and the previous OpenPedCan 
+tpm tables.
+
+### Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('02-tpm-tables-checks-bash.Rmd', clean = TRUE)"
+```
+_This assumes you are in the analysis module directory of the repository,_
+_OpenPedCan-analysis/analyses/mutation-frequencies-tables-checks._
+
+
+
+### Load packages
+```{r load packages}
+# R packages
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(data.table))
+suppressPackageStartupMessages(library(openxlsx))
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+
+### Set output directory
+```{r set output directory}
+# directories for input and output files
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+analyses_dir <- file.path(root_dir, "analyses", "mtp-tables-qc-checks")
+results_dir <- file.path(analyses_dir, "results")
+
+# Create results folder if it doesn't exist
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+
+
+### Functions
+```{r functions}
+# get number of samples in cohorts
+get_num_samples <- function(freq_df) {
+  primary_samples <- freq_df %>% 
+    dplyr::filter(cohort != "All Cohorts") %>%
+    dplyr::select(cohort, Disease,
+                  n_samples) %>%
+    dplyr::distinct() %>% 
+    dplyr::select(-Disease) %>%
+    dplyr::group_by(cohort) %>% 
+    dplyr::summarise(n_samples = 
+                       sum(as.integer(n_samples, na.rm = TRUE)))
+    return(primary_samples)
+}
+
+# changes in common columns among MPT mutation frequencies  between 
+# current and previous tables
+changes_in_columns <- function(current_table, previous_table, column_name) {
+  # values specific to current table
+  specific_to_current <- current_table %>% 
+  dplyr::select(cohort, column_name) %>% 
+  dplyr::distinct() %>% 
+    setdiff(previous_table %>% dplyr::select(cohort, column_name) %>%
+              dplyr::distinct()) %>% 
+    dplyr::rename(current_dataset = cohort)
+  # values specific to previous table
+  specific_to_previous <- previous_table %>% 
+    dplyr::select(cohort, column_name) %>% 
+    dplyr::distinct() %>% 
+    setdiff(current_table %>% dplyr::select(cohort, column_name) %>%
+              dplyr::distinct()) %>% 
+    dplyr::rename(previous_dataset = cohort)
+  # combine differences 
+  changes_in_columns <- specific_to_current %>%
+    dplyr::full_join(specific_to_previous, by = column_name) %>% 
+    dplyr::select(column_name, current_dataset, previous_dataset)
+  return(changes_in_columns)
+}
+```
+
+
+### Read in current and previous tpm files
+```{r load files}
+current_gene_wise_table <- data.table::fread(params$current_table_gene, 
+                                    data.table = FALSE, 
+                                   showProgress = FALSE) %>% purrr::discard(~all(is.na(.))) 
+
+previous_gene_wise_table<-data.table::fread(params$previous_table_gene, 
+                                    data.table = FALSE, 
+                                   showProgress = FALSE) %>% purrr::discard(~all(is.na(.))) 
+
+  
+
+current_group_wise_table<-data.table::fread(params$current_table_group, 
+                                    data.table = FALSE, 
+                                   showProgress = FALSE) %>% purrr::discard(~all(is.na(.))) 
+  
+previous_group_wise_table<-data.table::fread(params$previous_table_group, 
+                                    data.table = FALSE, 
+                                   showProgress = FALSE) %>% purrr::discard(~all(is.na(.)))    
+  
+  
+
+```
+
+
+### First 50 records from a static cancer group (GMKF Neuroblastoma) 
+Records from a static cancer_group should not change between the current and previous mutation frequencies tables. There should be no changes in computed mutation frequencies. But other fields in the table will likely change if annotations are updated. 
+#### Current table
+```{r current table gene wise}
+# ordered top 50 GMKF Neuroblastoma records from current gene wise table
+gmkf_nbl_current_gene_wise <- current_gene_wise_table %>% 
+  dplyr::filter(cohort == "GMKF", Disease == "Neuroblastoma") %>% 
+  dplyr::arrange() %>% 
+  head(n = 50)
+
+# write to file
+gmkf_nbl_current_gene_wise %>% 
+  readr::write_tsv(file.path(results_dir, "current_group_static_cancer_tpm_gene_wise.tsv")) 
+
+# display      
+gmkf_nbl_current_gene_wise   
+```
+
+```{r current table group wise}
+# ordered top 50 GMKF Neuroblastoma records from current group wise table
+gmkf_nbl_current_group_wise <- current_group_wise_table %>% 
+  dplyr::filter(cohort == "GMKF", Disease == "Neuroblastoma") %>% 
+  dplyr::arrange() %>% 
+  head(n = 50)
+
+# write to file
+gmkf_nbl_current_group_wise %>% 
+  readr::write_tsv(file.path(results_dir, "current_group_static_cancer_tpm_group_wise.tsv")) 
+
+# display      
+gmkf_nbl_current_group_wise   
+```
+
+#### Previous table
+
+```{r previous table gene wise}
+# ordered top 50 GMKF Neuroblastoma records from previous gene wise table
+gmkf_nbl_previous_gene_wise <- previous_gene_wise_table %>% 
+  dplyr::filter(cohort == "GMKF", Disease == "Neuroblastoma") %>% 
+  dplyr::arrange() %>% 
+  head(n = 50)
+
+# write to file
+gmkf_nbl_previous_gene_wise %>% 
+  readr::write_tsv(file.path(results_dir, "previous_group_static_cancer_tpm_gene_wise.tsv"))
+
+# display   
+gmkf_nbl_previous_gene_wise  
+```
+
+
+```{r previous table group wise}
+# ordered top 50 GMKF Neuroblastoma records from previous table
+gmkf_nbl_previous_group_wise <- previous_group_wise_table %>% 
+  dplyr::filter(cohort == "GMKF", Disease == "Neuroblastoma") %>% 
+  dplyr::arrange() %>% 
+  head(n = 50)
+
+# write to file
+gmkf_nbl_previous_group_wise %>% 
+  readr::write_tsv(file.path(results_dir, "previous_group_static_cancer_tpm_group_wise.tsv"))
+
+# display   
+gmkf_nbl_previous_group_wise  
+```
+

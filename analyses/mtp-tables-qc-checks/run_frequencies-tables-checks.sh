@@ -94,5 +94,22 @@ Rscript -e "rmarkdown::render(
 # remove intermediate files
 rm ${results_dir}/*.tsv
 
+
+######################### Checking gene wise table ##########################
+printf "Checking TPM Tables...\n\n"
+
+Rscript -e "rmarkdown::render(
+            '02-tpm-tables-checks-bash.Rmd',
+            params = list(
+              current_table_gene = 'current/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz',
+              current_table_group = 'current/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz',
+              previous_table_gene = 'previous/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz',
+              previous_table_group= 'previous/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz'),  
+              output_file = 'long_n_tpm_mean.nb.html',
+              clean = TRUE)"  
+              
+# remove intermediate files
+rm ${results_dir}/*.tsv
+
               
 printf "Analysis Done...\n"  
