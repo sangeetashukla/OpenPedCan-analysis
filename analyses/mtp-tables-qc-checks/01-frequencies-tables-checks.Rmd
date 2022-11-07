@@ -337,22 +337,22 @@ changes_mondo_ids
 ### Generate excel output for all QC checks and summaries
 ```{r}
 # read all QC  checks and summaries files 
-qc_files <- list.files(results_dir, pattern = "tsv$")
-qc_files_list <- lapply(qc_files, function(x) {
-  # read each file
-  qc_file_df <- readr::read_tsv(file.path(results_dir, x))
-  return(qc_file_df)
-})
-# get file names
-qc_files_names <- gsub(".tsv", "", qc_files)
-names(qc_files_list) <- qc_files_names
-# write results to excel workbook 
-qc_files_list %>% 
-  openxlsx::write.xlsx(file.path(results_dir, 
-                                 paste0(gsub(".tsv.gz", "", 
-                                             basename(params$current_table)), 
-                                        ".xlsx")), 
-                       overwrite = TRUE, keepNA = TRUE, na.string = "NA")
+# qc_files <- list.files(results_dir, pattern = "tsv$")
+# qc_files_list <- lapply(qc_files, function(x) {
+#   # read each file
+#   qc_file_df <- readr::read_tsv(file.path(results_dir, x))
+#   return(qc_file_df)
+# })
+# # get file names
+# qc_files_names <- gsub(".tsv", "", qc_files)
+# names(qc_files_list) <- qc_files_names
+# # write results to excel workbook 
+# qc_files_list %>% 
+#   openxlsx::write.xlsx(file.path(results_dir, 
+#                                  paste0(gsub(".tsv.gz", "", 
+#                                              basename(params$current_table)), 
+#                                         ".xlsx")), 
+#                        overwrite = TRUE, keepNA = TRUE, na.string = "NA")
 ```
 
 
