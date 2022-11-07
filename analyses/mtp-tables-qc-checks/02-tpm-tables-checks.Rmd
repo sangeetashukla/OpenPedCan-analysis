@@ -215,11 +215,75 @@ num_samples_group_wise
 ```
 
 
+### Cancer groups in the "All Cohorts" category
+```{r all cohorts cancer groups}
+# get All Cohorts" cancer groups
+all_cohorts_cancer_groups_tpm_genewise <- current_gene_wise_table %>% 
+  dplyr::select(cohort, Disease) %>% 
+  dplyr::filter(cohort == "All Cohorts") %>% 
+  dplyr::distinct() %>%
+  dplyr::rename(current_cohort = cohort) %>% 
+  dplyr::full_join(previous_gene_wise_table %>% 
+                     dplyr::select(cohort, Disease) %>% 
+                     dplyr::filter(cohort == "All Cohorts") %>% 
+                     dplyr::distinct() %>% 
+                     dplyr::rename(previous_cohort = cohort),
+                   by = "Disease") %>% 
+  dplyr::select(Disease, current_cohort, previous_cohort)
+
+# write to file
+all_cohorts_cancer_groups_tpm_genewise %>% 
+  readr::write_tsv(file.path(results_dir, 
+                             "all_cohorts_cancer_groups_tpm_genewise.tsv"), na = "NA")
+
+# display   
+all_cohorts_cancer_groups_tpm_genewise
+  
+```
+
+
+
+```{r all cohorts cancer groups}
+# get All Cohorts" cancer groups
+all_cohorts_cancer_groups_tpm_groupwise <- current_group_wise_table %>% 
+  dplyr::select(cohort, Disease) %>% 
+  dplyr::filter(cohort == "All Cohorts") %>% 
+  dplyr::distinct() %>%
+  dplyr::rename(current_cohort = cohort) %>% 
+  dplyr::full_join(previous_group_wise_table %>% 
+                     dplyr::select(cohort, Disease) %>% 
+                     dplyr::filter(cohort == "All Cohorts") %>% 
+                     dplyr::distinct() %>% 
+                     dplyr::rename(previous_cohort = cohort),
+                   by = "Disease") %>% 
+  dplyr::select(Disease, current_cohort, previous_cohort)
+
+# write to file
+all_cohorts_cancer_groups_tpm_groupwise %>% 
+  readr::write_tsv(file.path(results_dir, 
+                             "all_cohorts_cancer_groups_tpm_groupwise.tsv"), na = "NA")
+
+# display   
+all_cohorts_cancer_groups_tpm_groupwise
+  
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### Changes in common columns across tpm tables
 
 #### Check gene symbols
-```{r gene symbols}
+```{r gene symbols genewise}
 changes_gene_symbols_gene_wise <- 
   changes_in_columns(current_gene_wise_table,previous_gene_wise_table, "Gene_symbol")
 
@@ -232,12 +296,51 @@ changes_gene_symbols_gene_wise %>%
 changes_gene_symbols_gene_wise
 ```
 
+```{r gene symbols groupwise}
+changes_gene_symbols_group_wise <- 
+  changes_in_columns(current_group_wise_table,previous_group_wise_table, "Gene_symbol")
+
+# write to file
+changes_gene_symbols_group_wise %>% 
+  readr::write_tsv(file.path(results_dir, 
+                             "changes_in_gene_symbols_tpm_group_wise.tsv"), na = "NA")
+
+# display   
+changes_gene_symbols_group_wise
+```
 
 
 
 
 
 
+#### Check cancer groups
+```{r ensembl ids}
+changes_disease_gene_wise <- 
+  changes_in_columns(current_gene_wise_table,previous_gene_wise_table, "Disease")
+
+# write to file
+changes_disease_gene_wise %>% 
+  readr::write_tsv(file.path(results_dir, 
+                             "changes_in_disease_tpm_gene_wise.tsv"), na = "NA")
+
+# display   
+changes_disease_gene_wise
+```
+
+
+```{r ensembl ids}
+changes_disease_group_wise <- 
+  changes_in_columns(current_group_wise_table,previous_group_wise_table, "Disease")
+
+# write to file
+changes_disease_group_wise %>% 
+  readr::write_tsv(file.path(results_dir, 
+                             "changes_in_disease_tpm_group_wise.tsv"), na = "NA")
+
+# display   
+changes_disease_group_wise
+```
 
 
 
