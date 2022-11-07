@@ -55,7 +55,7 @@ get_num_samples <- function(freq_df) {
 
 # changes in common columns among MPT mutation frequencies  between 
 # current and previous tables
-changes_in_columns <- function(current_tables, previous_table, column_name) {
+changes_in_columns <- function(current_table, previous_table, column_name) {
   # values specific to current table
   specific_to_current <- current_table %>% 
   dplyr::select(cohort, column_name) %>% 
@@ -180,33 +180,57 @@ gmkf_nbl_previous_group %>%
 gmkf_nbl_previous_group  
 ```
 
-### Number of samples in each cohort
+### Number of samples in each cohort gene wise
 ```{r number of samples}
 # get number of samples in each cohort
-num_samples <- get_num_samples(current_table) %>% 
-  dplyr::rename(primary_samples_in_current = primary_samples, 
-                relapse_samples_in_current = relapse_samples) %>% 
-  dplyr::full_join(get_num_samples(previous_table) %>% 
-                    dplyr::rename(primary_samples_in_previous =
-                                    primary_samples, 
-                                  relapse_samples_in_previous = 
-                                     relapse_samples), by = "Dataset") %>% 
-  dplyr::select(Dataset, primary_samples_in_current, primary_samples_in_previous,
-               relapse_samples_in_current, relapse_samples_in_previous)
+num_samples_gene_wise <- get_num_samples(current_gene_wise_table) %>% 
+  dplyr::rename(samples_in_current_gene_wise = n_samples) %>% 
+  dplyr::full_join(get_num_samples(previous_gene_wise_table) %>% 
+                    dplyr::rename(samples_in_previous_gene_wise = n_samples), by = "cohort") %>% 
+  dplyr::select(cohort, samples_in_current_gene_wise, samples_in_previous_gene_wise)
 
 # write to file
-num_samples %>% 
-  readr::write_tsv(file.path(results_dir, "number_of_samples.tsv"), na = "NA")
+num_samples_gene_wise %>% 
+  readr::write_tsv(file.path(results_dir, "number_of_samples_genewise_tpm.tsv"), na = "NA")
 
 # display   
-num_samples
+num_samples_gene_wise
+```
+
+### Number of samples in each cohort group wise
+```{r number of samples}
+# get number of samples in each cohort
+num_samples_group_wise <- get_num_samples(current_group_wise_table) %>% 
+  dplyr::rename(samples_in_current_group_wise = n_samples) %>% 
+  dplyr::full_join(get_num_samples(previous_group_wise_table) %>% 
+                    dplyr::rename(samples_in_previous_group_wise = n_samples), by = "cohort") %>% 
+  dplyr::select(cohort, samples_in_current_group_wise, samples_in_previous_group_wise)
+
+# write to file
+num_samples_group_wise %>% 
+  readr::write_tsv(file.path(results_dir, "number_of_samples_groupwise_tpm.tsv"), na = "NA")
+
+# display   
+num_samples_group_wise
 ```
 
 
 
+### Changes in common columns across tpm tables
 
+#### Check gene symbols
+```{r gene symbols}
+changes_gene_symbols_gene_wise <- 
+  changes_in_columns(current_gene_wise_table,previous_gene_wise_table, "Gene_symbol")
 
+# write to file
+changes_gene_symbols_gene_wise %>% 
+  readr::write_tsv(file.path(results_dir, 
+                             "changes_in_gene_symbols_tpm_gene_wise.tsv"), na = "NA")
 
+# display   
+changes_gene_symbols_gene_wise
+```
 
 
 

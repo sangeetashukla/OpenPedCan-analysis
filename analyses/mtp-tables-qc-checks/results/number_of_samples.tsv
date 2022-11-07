@@ -1,4 +1,4 @@
-cohort	samples_in_current_gene_wise	samples_in_previous_gene_wise
-GMKF	207	209
-PBTA	725	736
-TARGET	1143	1036
+Dataset	primary_samples_in_current	primary_samples_in_previous	relapse_samples_in_current	relapse_samples_in_previous
+GMKF	190	190	0	0
+PBTA	432	432	90	93
+TARGET	1057	1002	37	36
