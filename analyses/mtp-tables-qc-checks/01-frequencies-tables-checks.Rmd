@@ -110,7 +110,7 @@ get_num_samples <- function(freq_df) {
 
 # changes in common columns among MPT mutation frequencies  between 
 # current and previous tables
-changes_in_columns <- function(current_tables, previous_table, column_name) {
+changes_in_columns <- function(current_table, previous_table, column_name) {
   # values specific to current table
   specific_to_current <- current_table %>% 
   dplyr::select(Dataset, column_name) %>% 
@@ -266,7 +266,7 @@ all_cohorts_cancer_groups
 #### Check gene symbols
 ```{r gene symbols}
 changes_gene_symbols <- 
-  changes_in_columns(current_tables, previous_table, "Gene_symbol")
+  changes_in_columns(current_table, previous_table, "Gene_symbol")
 
 # write to file
 changes_gene_symbols %>% 
@@ -281,7 +281,7 @@ changes_gene_symbols
 #### Check Ensembl IDs
 ```{r ensembl ids}
 changes_ensembl_ids <- 
-  changes_in_columns(current_tables, previous_table, "targetFromSourceId")
+  changes_in_columns(current_table, previous_table, "targetFromSourceId")
 
 # write to file
 changes_ensembl_ids %>% 
@@ -296,7 +296,7 @@ changes_ensembl_ids
 #### Check cancer groups
 ```{r cancer groups}
 changes_cancer_groups <- 
-  changes_in_columns(current_tables, previous_table, "Disease")
+  changes_in_columns(current_table, previous_table, "Disease")
 
 # write to file
 changes_cancer_groups %>% 
@@ -311,7 +311,7 @@ changes_cancer_groups
 #### Check EFO IDs
 ```{r efo ids}
 changes_efo_ids <- 
-  changes_in_columns(current_tables, previous_table, "diseaseFromSourceMappedId")
+  changes_in_columns(current_table, previous_table, "diseaseFromSourceMappedId")
 
 # write to file
 changes_efo_ids %>% 
@@ -325,7 +325,7 @@ changes_efo_ids
 #### Check MONDO IDs
 ```{r mondo ids}
 changes_mondo_ids <- 
-  changes_in_columns(current_tables, previous_table, "MONDO")
+  changes_in_columns(current_table, previous_table, "MONDO")
 
 # write to file
 changes_mondo_ids %>% 
