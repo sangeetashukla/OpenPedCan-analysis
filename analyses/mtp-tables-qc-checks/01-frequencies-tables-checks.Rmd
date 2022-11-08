@@ -31,7 +31,7 @@ To run this from the command line, use:
 Rscript -e "rmarkdown::render('01-frequencies-tables-checks.Rmd', clean = TRUE)"
 ```
 _This assumes you are in the analysis module directory of the repository,_
-_OpenPedCan-analysis/analyses/mutation-frequencies-tables-checks._
+_OpenPedCan-analysis/analyses/mtp-tables-qc-checks._
 
 
 ### Load packages
