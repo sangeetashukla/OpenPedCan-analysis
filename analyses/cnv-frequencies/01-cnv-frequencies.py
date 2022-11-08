@@ -197,11 +197,11 @@ def get_annotations(cnv_frequency_df, CNV_FILE):
      cnv_frequency_df.to_csv(cnv_freq_tsv, sep="\t", index=False, encoding="utf-8")
 
      # annotate full gene names, OncoKB categories, EFO and MONDO disease accessions, 
-     # and Relevant Molecular Target (PMTL) from the long-format-table-utils analysis module
+     # Oct 2022 - update - Removed existing Relevant Molecular Target (PMTL) captured from the long-format-table-utils analysis module
      log_file = "{}/annotator.log".format(results_dir)
      cnv_annot_freq_tsv = "{}/gene-level-cnv-consensus-annotated-mut-freq.tsv".format(results_dir)
      with open(log_file, "w") as log:
-          subprocess.run(["Rscript", "--vanilla", "../long-format-table-utils/annotator/annotator-cli.R", "-r", "-c", "Gene_full_name,PMTL,OncoKB_cancer_gene,OncoKB_oncogene_TSG,EFO,MONDO", "-i", cnv_freq_tsv, "-o", cnv_annot_freq_tsv, "-v"], stdout=log, check=True)
+          subprocess.run(["Rscript", "--vanilla", "../long-format-table-utils/annotator/annotator-cli.R", "-r", "-c", "Gene_full_name,OncoKB_cancer_gene,OncoKB_oncogene_TSG,EFO,MONDO", "-i", cnv_freq_tsv, "-o", cnv_annot_freq_tsv, "-v"], stdout=log, check=True)
 
      # columns changes proposed by the FNL:
      cnv_annot_freq_df = pd.read_csv(cnv_annot_freq_tsv, sep="\t", na_filter=False, dtype=str)
