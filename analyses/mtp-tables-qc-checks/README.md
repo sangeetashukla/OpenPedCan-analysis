@@ -25,6 +25,21 @@ Rscript -e "rmarkdown::render(
               clean = TRUE)" 
 ```
 
+#### 02-tpm-tables-checks.Rmd
+Performs summary and QC checks comparing the current and the previous OpenPedCan 
+tpm tables
+
+```
+Rscript -e "rmarkdown::render(
+            '02-tpm-tables-checks.Rmd',
+            params = list(
+              current_table = '<current file directory/current mutation frequencies file>', 
+              previous_table = '<previous file directory/previous mutation frequencies file>'),  
+              output_file = '<output RMD notebook file name>',
+              clean = TRUE)" 
+```
+
+
 ## Analysis input files
 Current and previous input mutation frequencies input files
 - `current/gene-level-cnv-consensus-annotated-mut-freq.tsv.gz`
@@ -37,7 +52,10 @@ Current and previous input mutation frequencies input files
 - `previous/putative-oncogene-fused-gene-freq.tsv.gz`
 - `current/putative-oncogene-fusion-freq.tsv.gz`
 - `previous/putative-oncogene-fusion-freq.tsv.gz`
-
+- `current/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz`
+- `previous/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz`
+- `current/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz`
+- `previous/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz`
 
 ## Analysis output files
 Results are similarly reported in both html notebooks and excel workbooks. Each excel workbook has sheet tabs with descriptive names of tables rendered in their corresponding html notebook. 
@@ -51,3 +69,7 @@ Results are similarly reported in both html notebooks and excel workbooks. Each 
 - `results/putative-oncogene-fused-gene-freq.xlsx`
 - `putative-oncogene-fusion-freq-checks.nb.html`
 - `results/putative-oncogene-fusion-freq.xlsx`
+- `long_n_tpm_mean_sd_quantile_gene_wise_zscore.nb.html`
+- `results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.xlsx`
+- `long_n_tpm_mean_sd_quantile_group_wise_zscore.nb.html`
+- `results/long_n_tpm_mean_sd_quantile_group_wise_zscore.xlsx`
