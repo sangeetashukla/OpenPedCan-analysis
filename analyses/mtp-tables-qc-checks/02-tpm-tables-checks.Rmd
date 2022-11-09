@@ -116,6 +116,7 @@ previous_table<-data.table::fread(params$previous_table_gene,
 
 ### First 50 records from a static cancer group (GMKF Neuroblastoma) 
 Records from a static cancer_group should not change between the current and previous mutation frequencies tables. There should be no changes in computed mutation frequencies. But other fields in the table will likely change if annotations are updated. 
+
 #### Current table
 ```{r current table}
 # ordered top 50 GMKF Neuroblastoma records from current tpm table
