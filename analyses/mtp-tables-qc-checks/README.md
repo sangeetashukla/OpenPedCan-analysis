@@ -2,12 +2,12 @@
  `01-frequencies-tables-checks.Rmd` performs summary and QC checks comparing the `current` and the `previous` OpenPedCan 
 mutation frequencies tables, including [CNV](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/cnv-frequencies), [SNV](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/snv-frequencies), and [Fusion](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/fusion-frequencies). Results include the 1) number of patients and samples in each cohort, 2) cancer groups represented in multiple cohorts, 3) a subset of sorted top 50 records from a static cancer group (`Neuroblastoma`) that should not change, 4) changes in common columns among mutation frequencies tables with non-dynamic values.
 
-`02-tp,-tables-checks.Rmd` performs summary and QC checks comparing the `current` and the `previous` OpenPedCan 
-group and gene wise tpm tables. Results includes 1) number of samples in each cohort, 2) cancer groups represented in multiple cohorts, 3) a subset of sorted top 50 records from a static cancer group (`Neuroblastoma`) that should not change, 4) changes in common columns among both gene and group wise TPM tables with non-dynamic values.
+`02-tpm-tables-checks.Rmd` performs summary and QC checks comparing the `current` and the `previous` OpenPedCan 
+ tpm tables (both group andgene wise). Results includes 1) number of samples in each cohort, 2) cancer groups represented in multiple cohorts, 3) a subset of sorted top 50 records from a static cancer group (`Neuroblastoma`) that should not change, 4) changes in common columns among both gene and group wise TPM tables with non-dynamic values.
 
 ## General usage of scripts
 #### `run_frequencies-tables-checks.sh`
-This is a batch bash script for running running main analysis script mutation, `01-frequencies-tables-checks.Rmd` over multiple pairs (current/previous) of mutation frequencies tables. All file paths set in this script are relative to the module directory. Therefore, this script should always run as if it were being called from the directory it lives in, the module directory (`OpenPedCan-analysis/analyses/mutation-frequencies-table-checks`).
+This is a batch bash script for running the analysis scripts `01-frequencies-tables-checks.Rmd` and `02-tpm-tables-checks.Rmd` over multiple pairs (current/previous) of mutation frequencies and tpm tables. All file paths set in this script are relative to the module directory. Therefore, this script should always run as if it were being called from the directory it lives in, the module directory (`OpenPedCan-analysis/analyses/mutation-frequencies-table-checks`).
 
 ```
 bash run_frequencies-tables-checks.sh
