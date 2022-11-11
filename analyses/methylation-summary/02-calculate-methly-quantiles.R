@@ -57,7 +57,8 @@ histologies <- data.table::fread(histologies, sep = "\t",
                                  select = required_cols, 
                                  showProgress = FALSE) %>% 
   tibble::as_tibble() %>% 
-  dplyr::filter(Kids_First_Biospecimen_ID %in% independent_samples)
+  dplyr::filter(!is.na(cancer_group),
+    Kids_First_Biospecimen_ID %in% independent_samples)
 
 # Get methyl values and only keep samples in independent sample list
 methyl_matrix_df <- readr::read_rds(methyl_matrix) %>%

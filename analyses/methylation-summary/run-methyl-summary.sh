@@ -31,7 +31,7 @@ TMP=./tmp TMPDIR=./tmp Rscript --vanilla 01-create-probe-annotations.R \
 TMP=./tmp TMPDIR=./tmp Rscript --vanilla 02-calculate-methly-quantiles.R \
 --histologies ${data_dir}/histologies.tsv \
 --methyl_matrix ${data_dir}/methyl-beta-values.rds \
---independent_samples ${data_dir}/independent-specimens.methyl.primary-plus.eachcohort.tsv \
+--independent_samples ${data_dir}/independent-specimens.methyl.primary.eachcohort.tsv \
 --methyl_values beta
 
 ###################### Calculate correlations between beta and gene tpm values ###############
@@ -39,8 +39,8 @@ python3 03-methyl-tpm-correlation.py \
 --methyl_values beta \
 --exp_values gene \
 ${data_dir}/histologies.tsv \
-${data_dir}/independent-specimens.rnaseqpanel.primary-plus.eachcohort.tsv \
-${data_dir}/independent-specimens.methyl.primary-plus.eachcohort.tsv \
+${data_dir}/independent-specimens.rnaseqpanel.primary.eachcohort.tsv \
+${data_dir}/independent-specimens.methyl.primary.eachcohort.tsv \
 ${data_dir}/methyl-beta-values.rds \
 ${data_dir}/gene-expression-rsem-tpm-collapsed.rds \
 ${results_dir}/methyl-probe-annotations.tsv.gz
@@ -50,8 +50,8 @@ python3 03-methyl-tpm-correlation.py \
 --methyl_values beta \
 --exp_values isoform \
 ${data_dir}/histologies.tsv \
-${data_dir}/independent-specimens.rnaseqpanel.primary-plus.eachcohort.tsv \
-${data_dir}/independent-specimens.methyl.primary-plus.eachcohort.tsv \
+${data_dir}/independent-specimens.rnaseqpanel.primary.eachcohort.tsv \
+${data_dir}/independent-specimens.methyl.primary.eachcohort.tsv \
 ${data_dir}/methyl-beta-values.rds \
 ${data_dir}/rna-isoform-expression-rsem-tpm.rds \
 ${results_dir}/methyl-probe-annotations.tsv.gz

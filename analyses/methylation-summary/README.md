@@ -6,7 +6,7 @@ Summarize preprocessed `Illumina Infinium HumanMethylation` array measurements p
 
 
 ## Analysis scripts
-1. **`01-create-probe-annotations.R`** script creates gene annotations (`results/methyl-probe-annotations.tsv.gz`) with the current GENCODE release utilized in the OpenPedCan data analyses for [Illumina infinium methylation probe arrays](https://support.illumina.com/array/array_kits/infinium-methylationepic-beadchip-kit/downloads.html).
+1. **`01-create-probe-annotations.R`** script creates gene annotations with the current GENCODE release utilized in the OpenPedCan data analyses for [Illumina infinium methylation probe arrays](https://support.illumina.com/array/array_kits/infinium-methylationepic-beadchip-kit/downloads.html).
 ```
 Usage: Rscript --vanilla 01-create-probe-annotations.R [options]
 
@@ -78,7 +78,7 @@ optional arguments:
     - **targetFromSourceId**: Ensemble locus ID
     - **transcript_id**: Ensemble locus-isoform ID (for isoform-level summary table only)
     - **Dataset**: OpenPedCan `cohort` i.e., TARGET
-    - **Disease**: OpenPedCan `cancer_group` from file i.e., Neuroblastoma
+    - **Disease**: OpenPedCan `cancer_group` i.e., Neuroblastoma
     - **diseaseFromSourceMappedId**: EFO ID of OpenPedCan `cancer_group`
     - **MONDO**: MONDO_ID of OpenPedCan `cancer_group`
     - **RNA_Correlation**: array probe-level correlation between `methylation Beta-values` and `RNA-Seq TPM values`
@@ -152,8 +152,8 @@ bash run-methylation-summary.sh
 The methylation `beta-values` and `M-values`matrices are available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-preprocessing/results/`). Please contact `Avin Farrel (@afarrel)` for access if not already available for download using the [OpenPedCan data release download script](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/download-data.sh). 
 - `input/infinium-methylationepic-v-1-0-b5-manifest-file-csv.zip`
 - `../../data/results/gencode.v39.primary_assembly.annotation.gtf.gz`
-- `../../data/independent-specimens.rnaseqpanel.primary-plus.eachcohort.tsv`
-- `../../data/independent-specimens.methyl.primary-plus.eachcohort.tsv`
+- `../../data/independent-specimens.rnaseqpanel.eachcohort.tsv`
+- `../../data/independent-specimens.methyl.eachcohort.tsv`
 - `../../data/gene-expression-rsem-tpm-collapsed.rds`
 - `../../data/rna-isoform-expression-rsem-tpm.rds`
 - `../../data/ensg-hugo-pmtl-mapping.tsv.tsv`

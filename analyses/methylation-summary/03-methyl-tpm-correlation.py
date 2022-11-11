@@ -137,6 +137,7 @@ def main():
 	# Get required columns from histologies file for rnaseq and methyl sample IDs
 	hist_cols = ["Kids_First_Biospecimen_ID", "Kids_First_Participant_ID", "experimental_strategy", "sample_type", "tumor_descriptor","cohort", "cancer_group"]
 	histologies = pd.read_csv(args.HISTOLOGY_FILE, usecols = hist_cols, sep="\t", na_filter=False, dtype=str)
+	histologies = histologies[histologies["cancer_group"] != "NA"]
 	rnaseq_histologies = histologies[histologies["Kids_First_Biospecimen_ID"].isin(rnaseq_independent_samples["Kids_First_Biospecimen_ID"].tolist())]
 	methyl_histologies = histologies[histologies["Kids_First_Biospecimen_ID"].isin(methyl_independent_samples["Kids_First_Biospecimen_ID"].tolist())]
 	del(histologies)
