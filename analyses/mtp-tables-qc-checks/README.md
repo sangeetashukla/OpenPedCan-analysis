@@ -1,4 +1,4 @@
-# Mutation Frequencies Table Summary and QC Checks
+# Mutation Frequencies and TPM Table Summary and QC Checks
  `01-frequencies-tables-checks.Rmd` performs summary and QC checks comparing the `current` and the `previous` OpenPedCan 
 mutation frequencies tables, including [CNV](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/cnv-frequencies), [SNV](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/snv-frequencies), and [Fusion](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/fusion-frequencies). Results include the 1) number of patients and samples in each cohort, 2) cancer groups represented in multiple cohorts, 3) a subset of sorted top 50 records from a static cancer group (`Neuroblastoma`) that should not change, 4) changes in common columns among mutation frequencies tables with non-dynamic values.
 
