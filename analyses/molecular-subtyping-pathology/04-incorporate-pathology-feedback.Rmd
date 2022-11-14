@@ -125,10 +125,6 @@ fusions_df <- read_tsv(fusions_file, guess_max = 100000)
 
 ## Revise subtyping calls based on pathology feedback
 
-### `PT_7E3V3JFX`
-
-```
-
 ### `BS_H1XPVS9A`
 
 `BS_H1XPVS9A` is from a sample with a BRAF V600E mutation that is H3 wildtype.
