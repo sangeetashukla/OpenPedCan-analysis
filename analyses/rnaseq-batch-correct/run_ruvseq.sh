@@ -1,7 +1,7 @@
-# molecular subtype differences
 #!/bin/bash
 # Module authors: Komal S. Rathi, Adam Kraya
-# 2022
+# molecular subtype differences
+# PediatricOpenTargets 2022
 
 # This script runs the steps for DESeq2 tumor-only analysis with and without RUVg batch correction.
 
