@@ -76,32 +76,22 @@ We filter the consensus_wgs_plus_cnvkit_wxs.tsv.gz and gene-expression-rsem-tpm-
 # Data Filtering
 ```{r Data filtering}
 # First filter the histology file based on diseases we are intereseted in neuroblastoma, ganglioneuroblastoma, and ganglioneuroma
-hist_filtered_df <- hist_df %>% filter(pathology_diagnosis=="Neuroblastoma"|
-                                       pathology_diagnosis=="Ganglioneuroblastoma"|
-                                       pathology_diagnosis=="Ganglioneuroblastoma, nodular"|
-                                       pathology_diagnosis =="Ganglioneuroblastoma, intermixed"|
-                                       pathology_diagnosis ==
-                                         "Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated",
-                                       sample_type=="Tumor",experimental_strategy %in%
-                                         c("WGS","WXS","Targeted Sequencing","RNA-Seq"))
+hist_filtered_df <- hist_df %>% 
+  filter(sample_type=="Tumor", 
+         experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing", "RNA-Seq")) %>%
+  filter(pathology_diagnosis== "Neuroblastoma" |
+           pathology_diagnosis== "Ganglioneuroblastoma" |
+           pathology_diagnosis== "Ganglioneuroblastoma, nodular" |
+           pathology_diagnosis == "Ganglioneuroblastoma, intermixed" |
+           pathology_diagnosis == "Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated")
+
 
 # The consensus_wgs_plus_cnvkit_wxs.tsv.gz file has all types of genes, we just need MYCN, so we filter the dataset as follows:
 consensus_filtered_df <- consensus_df %>% filter(gene_symbol=="MYCN")
 
-
-# Now get biospecimen dna ID for MYCN (but not necessarily belonging to NBL)
-MYCN_Consensus_ID <- consensus_filtered_df %>% select(biospecimen_id)
-
-# Get biospecimen rna ID for MYCN (but not necessarily belonging to NBL)
+# Get MYCN TPM Data
 MYCN_Index <- which(rownames(gene_expression_df)=="MYCN") # find which rows (contains gene names) corresponds to MYCN
 TPM_MYCN_data <- gene_expression_df[MYCN_Index,] # Get the TPM data for for MYCN
-MYCN_TPM_ID <- colnames(TPM_MYCN_data) # Get the column names which have biospecimen IDs
-MYCN_TPM_ID<-as.data.frame(MYCN_TPM_ID) # Converting to dataframe for ease of use for later
-
-colnames(MYCN_Consensus_ID)<- "Kids_First_Biospecimen_ID" #change biospecimen_ID to Kids_First_Biospecimen_ID
-colnames(MYCN_TPM_ID)<- "Kids_First_Biospecimen_ID" #change MYCN_TPM_ID to Kids_First_Biospecimen_ID
-# Store all the biospecimen IDs for MYCN both DNA and RNA in the following variable
-MYCN_Con_TPM_ID <- rbind(MYCN_Consensus_ID,MYCN_TPM_ID)
 ```
 
 Code Logic:
@@ -110,11 +100,8 @@ IDs but we are only concerned with NBL-MYCN IDs, so we use the filtered version 
 
 # Get TPM , Copy Number and Status
 ```{r Getting TPM, Copy Number and Status info}
-# Find which MYCN Biospecimen IDs in MYCN_Con_TPM_ID correspond to NBL as defined in hist_filtered_df. 
-MYCN_DF<- left_join(hist_filtered_df,MYCN_Con_TPM_ID,by="Kids_First_Biospecimen_ID") ##### 1508 samples 
-
-#Add the satus and copy Number to these samples. Adding the information if available, so we do a left join with respect to MYCN_DF as we don't want to discard any biospecimen of MYCN-NBL for which Status and copy number is not avaialable
-MYCN_DF<- left_join(MYCN_DF,consensus_filtered_df, by= c("Kids_First_Biospecimen_ID" = "biospecimen_id")) # Some rows increased likely copies , 1514 samples , there were 1508 samples
+#Add the satus and copy Number to these samples. Adding the information if available, so we do a left join with respect to hist_filtered_df as we don't want to discard any biospecimen of MYCN-NBL for which Status and copy number is not avaialable
+MYCN_DF<-left_join(hist_filtered_df,consensus_filtered_df,by= c("Kids_First_Biospecimen_ID" = "biospecimen_id"))
 
 #Add TPM in  a similar fashion as copy number and status 
 rownames(TPM_MYCN_data)<-"MYCN_TPM" # Defining the column names of tpm values
@@ -123,8 +110,6 @@ TPM_MYCN_data <-as.data.frame(TPM_MYCN_data) # Convert to data framte
 TPM_MYCN_data <- tibble::rownames_to_column(TPM_MYCN_data, "Kids_First_Biospecimen_ID") # Make ID rownames into a column 
 # Finally add the TPM data using left join
 MYCN_DF<- left_join(MYCN_DF,TPM_MYCN_data, by="Kids_First_Biospecimen_ID") 
-
-MYCN_DF<- distinct(MYCN_DF) # 1508 samples 
 ```
 
 Code logic: 
@@ -371,8 +356,6 @@ bar_plot2+ geom_hline(aes(yintercept=Suggested_Cutoff,linetype = "Suggested Amp 
 
 plot_file <- file.path(plot_dir, "TPM_Biospecimen_All_Samples_With_TMP.png")
 ggsave(filename = plot_file,width = 49, height = 20)
-
-
 ```
 Code Logic: Start the subtyping on alteration_df. Here are subtyping criteria: 
 case 1:
@@ -384,11 +367,13 @@ If pathology_free_text_diagnosis is non-amp and status is non-amp assign subtype
 ```{r Subtyping: when match is found and when call is amp and pathology free text is non amp}
 alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplification" & pathology_free_text_diagnosis=="MYCN amp"
                                                   ~ "NBL, MYCN amplified",status =="amplification" & 
-                                                    pathology_free_text_diagnosis %in% c("MYCN non-amp","ganglioneuroblastoma, stage ii favorable histology non n-myc amplified") ~ "NBL, MYCN amplified",
-                                       status %in% c("gain","loss","neutral") &  pathology_free_text_diagnosis %in% c("MYCN non-amp","ganglioneuroblastoma, stage ii favorable histology non n-myc amplified") ~ "NBL, MYCN non-amplified"))
-
-
-
+                                                    pathology_free_text_diagnosis %in% 
+                                                    c("MYCN non-amp","ganglioneuroblastoma, stage ii favorable histology non n-myc amplified")
+                                                  ~ "NBL, MYCN amplified",
+                                       status %in% c("gain","loss","neutral") &  
+                                         pathology_free_text_diagnosis %in% 
+                                         c("MYCN non-amp","ganglioneuroblastoma, stage ii favorable histology non n-myc amplified")
+                                       ~ "NBL, MYCN non-amplified"))
 ```
 
 
@@ -555,9 +540,15 @@ df_tpm <- df_tpm %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen
 ```{r}
 
 
-TARGET2<- hist_df %>% filter(cohort=="TARGET",pathology_diagnosis %in% c("Neuroblastoma", "Ganglioneuroblastoma","Ganglioneuroblastoma, nodular","Ganglioneuroblastoma, intermixed","Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated"),
+TARGET2<- hist_df %>% filter(cohort=="TARGET",pathology_diagnosis %in% 
+                               c("Neuroblastoma", "Ganglioneuroblastoma","Ganglioneuroblastoma, nodular",
+                                 "Ganglioneuroblastoma, intermixed","Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated"),
                             experimental_strategy=="WXS") 
-GMKF2<- hist_df %>% filter(cohort=="GMKF",pathology_diagnosis %in% c("Neuroblastoma", "Ganglioneuroblastoma","Ganglioneuroblastoma, nodular","Ganglioneuroblastoma, intermixed","Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated"), experimental_strategy=="WGS") 
+
+GMKF2<- hist_df %>% filter(cohort=="GMKF",pathology_diagnosis %in%
+                             c("Neuroblastoma", "Ganglioneuroblastoma","Ganglioneuroblastoma, nodular",
+                               "Ganglioneuroblastoma, intermixed","Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated"),
+                           experimental_strategy=="WGS") 
 
 TARGET2 <- TARGET2 %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,sample_id,
                               cohort,experimental_strategy)
@@ -566,7 +557,8 @@ GMKF2 <- GMKF2 %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,sa
 
 QC_df <- inner_join(GMKF2,TARGET2, by= c("Kids_First_Participant_ID","sample_id"))
 
-QC_df <-  QC_df %>% select(Kids_First_Biospecimen_ID.x,Kids_First_Biospecimen_ID.y,Kids_First_Participant_ID,sample_id,cohort.x,cohort.y,experimental_strategy.x,experimental_strategy.y)
+QC_df <-  QC_df %>% select(Kids_First_Biospecimen_ID.x,Kids_First_Biospecimen_ID.y,Kids_First_Participant_ID,sample_id,
+                           cohort.x,cohort.y,experimental_strategy.x,experimental_strategy.y)
 
 colnames(QC_df)<- c("Kids_First_Biospecimen_ID_GMKF","Kids_First_Biospecimen_ID_TARGET",
                         "Kids_First_Participant_ID","sample_id","cohort_GMKF","cohort_TARGET",
