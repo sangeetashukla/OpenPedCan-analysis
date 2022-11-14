@@ -100,7 +100,8 @@ IDs but we are only concerned with NBL-MYCN IDs, so we use the filtered version 
 
 # Get TPM , Copy Number and Status
 ```{r Getting TPM, Copy Number and Status info}
-#Add the satus and copy Number to these samples. Adding the information if available, so we do a left join with respect to hist_filtered_df as we don't want to discard any biospecimen of MYCN-NBL for which Status and copy number is not avaialable
+#Add the satus and copy Number to these samples. Adding the information if available, so we do a left join with 
+#respect to hist_filtered_df as we don't want to discard any biospecimen of MYCN-NBL for which Status and copy number is not avaialable
 MYCN_DF<-left_join(hist_filtered_df,consensus_filtered_df,by= c("Kids_First_Biospecimen_ID" = "biospecimen_id"))
 
 #Add TPM in  a similar fashion as copy number and status 
@@ -130,7 +131,8 @@ MYCN_DF <- MYCN_DF %>%mutate(match_id = paste(Kids_First_Participant_ID, sample_
 MYCN_dna_df<-MYCN_DF %>% filter(is.na(RNA_library),experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing")) # 1103 samples samples
 
 
-MYCN_rna_df<-MYCN_DF %>% filter( (experimental_strategy=="RNA-Seq") | (experimental_strategy=="Targeted Sequencing" & !is.na(RNA_library))) # 405 samples 374 rna-seq + 31 targeted_seq+exome_capture
+MYCN_rna_df<-MYCN_DF %>% filter( (experimental_strategy=="RNA-Seq") | (experimental_strategy=="Targeted Sequencing" & !is.na(RNA_library)))
+# 405 samples 374 rna-seq + 31 targeted_seq+exome_capture
 
 # Rename the columns
 colnames(MYCN_dna_df)[which(names(MYCN_dna_df) == "Kids_First_Biospecimen_ID")] <- "Kids_First_Biospecimen_ID_DNA"
@@ -138,13 +140,15 @@ colnames(MYCN_rna_df)[which(names(MYCN_rna_df) == "Kids_First_Biospecimen_ID")] 
 ```
 
 Code Logic:
-Now find the intersection of MYCN_dna_df and MYCN_rna_df, this will give us a dataframe of matching DNA and RNA biospecimen IDs. We then select specific columns from the joined dataframe for downstream analysis. 
+Now find the intersection of MYCN_dna_df and MYCN_rna_df, this will give us a dataframe 
+of matching DNA and RNA biospecimen IDs. We then select specific columns from the joined dataframe for downstream analysis. 
 
 ```{r Further filter the data to create alteration table}
 MYCN_DNA_RNA_DF <- inner_join(MYCN_dna_df,MYCN_rna_df, by="match_id")  # 342 samples 
 
 # Retain the information of RNA/DNA Biospecimen ID, gene symbol, cancer group, pathology free text diagnosis, copy number, TPM and status
-MYCN_DNA_RNA_FILTERED_DF <- MYCN_DNA_RNA_DF %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,Kids_First_Participant_ID.x,Kids_First_Participant_ID.y,
+MYCN_DNA_RNA_FILTERED_DF <- MYCN_DNA_RNA_DF %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,
+                                                       Kids_First_Participant_ID.x,Kids_First_Participant_ID.y,
                                               gene_symbol.x,gene_symbol.y,
                                               pathology_diagnosis.x,pathology_diagnosis.y,
                                               pathology_free_text_diagnosis.x,pathology_free_text_diagnosis.y,
@@ -206,7 +210,8 @@ rows_to_delete_MYCN <- c(which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_I
                                                                               MYCN_DNA_RNA_FILTERED_DF$copy_number==4))
 rows_to_delete_MYCN_DGD_1<-which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA=="BS_0XC02E11") [2] # remove ET_FD9T78QE_DGD_FUSIP_29
 rows_to_delete_MYCN_DGD_2<-which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA=="BS_1F8J25Q1") [2] # ET_FD9T78QE_DGD_FUSIP_29 
-MYCN_DNA_RNA_FILTERED_DF<- MYCN_DNA_RNA_FILTERED_DF[-c(rows_to_delete_MYCN,rows_to_delete_MYCN_DGD_1,rows_to_delete_MYCN_DGD_2),] # 338 samples 342- 4 (repeating samples) = 338
+MYCN_DNA_RNA_FILTERED_DF<- MYCN_DNA_RNA_FILTERED_DF[-c(rows_to_delete_MYCN,rows_to_delete_MYCN_DGD_1,rows_to_delete_MYCN_DGD_2),] 
+# 338 samples 342- 4 (repeating samples) = 338
 ```
 
 
@@ -235,12 +240,15 @@ that only have DNA IDs and RNA IDs. To do this we first create and exhaustive li
 the dataframe MYCN_DF. MYCN_DF contains all the IDs which are NBL from the histology file, and there are some
 repeating IDs in MYCN_DF. 
 
-Once we have a list of all unique IDs in MYCN_DF, we remove from them the Matched DNA and RNA IDs in MYCN_DNA_RNA_FILTERED_DF. This will leave us with only the IDs that only have a DNA ID or RNA ID but never both. 
+Once we have a list of all unique IDs in MYCN_DF, we remove from them the Matched DNA and RNA IDs in MYCN_DNA_RNA_FILTERED_DF. 
+This will leave us with only the IDs that only have a DNA ID or RNA ID but never both. 
 
 Add IDs that don't necessarily have both DNA and RNA 
 # Create dataframe of samples where DNA and RNA IDs dont match 
 ```{r Find DNA only and RNA only samples}
-MYCN_IDs_exhaustive <- as.data.frame(unique(MYCN_DF$Kids_First_Biospecimen_ID)) # Has every biospecimen ID of NBL-MYCN samples 1505 samples in total.  MYCN_DF has 1508 samples as we have the follwing repeating IDs with different copy numbers TARGET-30-PAMDAL-01A-01W, TARGET-30-PAPVFD-01A-01D, TARGET-30-PASXRG-01A-01D  
+MYCN_IDs_exhaustive <- as.data.frame(unique(MYCN_DF$Kids_First_Biospecimen_ID)) 
+# Has every biospecimen ID of NBL-MYCN samples 1505 samples in total.  MYCN_DF has 1508 samples as we have 
+# the follwing repeating IDs with different copy numbers TARGET-30-PAMDAL-01A-01W, TARGET-30-PAPVFD-01A-01D, TARGET-30-PASXRG-01A-01D  
 
 colnames(MYCN_IDs_exhaustive)<-"Kids_First_Biospecimen_ID"
 
@@ -252,7 +260,9 @@ MYCN_IDs_with_DNA_RNA <- as.data.frame(c(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Bio
                                MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_RNA)) # 676 samples but half of them are DNA and rest are corresponding RNA  
 colnames(MYCN_IDs_with_DNA_RNA)<-"Kids_First_Biospecimen_ID"
 
-MYCN_IDs_without_DNA_RNA_Match <- as.data.frame(MYCN_IDs_exhaustive[-(which(MYCN_IDs_exhaustive$Kids_First_Biospecimen_ID %in% MYCN_IDs_with_DNA_RNA$Kids_First_Biospecimen_ID)),]) # 830 samples here (# 1505-676= 829 => 829+1 =830)
+MYCN_IDs_without_DNA_RNA_Match <- as.data.frame(MYCN_IDs_exhaustive[-(which(MYCN_IDs_exhaustive$Kids_First_Biospecimen_ID %in% 
+                                                                              MYCN_IDs_with_DNA_RNA$Kids_First_Biospecimen_ID)),])
+# 830 samples here (# 1505-676= 829 => 829+1 =830)
 colnames(MYCN_IDs_without_DNA_RNA_Match)<- "Kids_First_Biospecimen_ID"
 ```
 
@@ -263,10 +273,15 @@ a dataframe of unmatched DNA and RNA IDs samples, this dataframe is : MYCN_non_m
 
 Now we need to identify which IDs in MYCN_IDs_without_DNA_RNA_Match are DNA IDs and Which are RNA IDs
 ```{r}
-DNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_dna_df$Kids_First_Biospecimen_ID_DNA),]) # 762 samples 
+DNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match
+                                        [which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in%
+                                                 MYCN_dna_df$Kids_First_Biospecimen_ID_DNA),]) # 762 samples 
 colnames(DNA_IDs_MYCN_Non_Match)<- "Kids_First_Biospecimen_ID_DNA"
 
-RNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_rna_df$Kids_First_Biospecimen_ID_RNA),]) # 68 samples  , 762+68= 830 samples as expected. 
+RNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match
+                                        [which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in%
+                                                 MYCN_rna_df$Kids_First_Biospecimen_ID_RNA),]) # 68 samples,
+                                                                                               #762+68= 830 samples as expected. 
 colnames(RNA_IDs_MYCN_Non_Match)<- "Kids_First_Biospecimen_ID_RNA"
 
 # Make dfs DNA and RNA IDs found here with  
@@ -279,7 +294,8 @@ colnames(DNA_only_MYCN_df)[1]<- "Kids_First_Biospecimen_ID_DNA"
 
 # An extra sample is created due to copy number and status variation TARGET-30-PAMDAL-01A-01W	
 # Retain the sample with high copy number 
-index_dna_only <- which(DNA_only_MYCN_df$Kids_First_Biospecimen_ID_DNA=="TARGET-30-PAMDAL-01A-01W" & DNA_only_MYCN_df$copy_number==3 &
+index_dna_only <- which(DNA_only_MYCN_df$Kids_First_Biospecimen_ID_DNA=="TARGET-30-PAMDAL-01A-01W" 
+                        & DNA_only_MYCN_df$copy_number==3 &
                         DNA_only_MYCN_df$status=="neutral")
 
 DNA_only_MYCN_df<- DNA_only_MYCN_df[-c(index_dna_only),]
