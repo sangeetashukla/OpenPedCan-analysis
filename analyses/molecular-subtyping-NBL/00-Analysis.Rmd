@@ -268,7 +268,10 @@ colnames(MYCN_IDs_without_DNA_RNA_Match)<- "Kids_First_Biospecimen_ID"
 
 
 Code Logic: We now need to identify with of the IDs in MYCN_IDs_without_DNA_RNA_Match are DNA IDs and which RNA IDs.
-If a sample in MYCN_IDs_without_DNA_RNA_Match is a DNA ID then it will be in  MYCN_dna_df which contains all the NBL DNA IDs, otherwise it will be an RNA ID which will be contained in MYCN_rna_df (contains all RNA NBL IDs). Then we create dataframes for DNA only and RNA only samples with relevant column information. These dataframes will specifically have a column for DNA ID and another for RNA ID. We then concatenate these two dataframes to create the 
+If a sample in MYCN_IDs_without_DNA_RNA_Match is a DNA ID then it will be in  MYCN_dna_df which contains all the NBL 
+DNA IDs, otherwise it will be an RNA ID which will be contained in MYCN_rna_df (contains all RNA NBL IDs). Then we 
+create dataframes for DNA only and RNA only samples with relevant column information. These dataframes will specifically 
+have a column for DNA ID and another for RNA ID. We then concatenate these two dataframes to create the 
 a dataframe of unmatched DNA and RNA IDs samples, this dataframe is : MYCN_non_match_df.
 
 Now we need to identify which IDs in MYCN_IDs_without_DNA_RNA_Match are DNA IDs and Which are RNA IDs
@@ -411,7 +414,8 @@ print("Biospecimens for which pathology (clinical) file says  amplified but call
 print(clincal_amplified_IDs)
 ```
 
-Adapting the plot function from https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/785c3224de29f701b1c1b62841d0f84d46f7eaca/analyses/molecular-subtyping-embryonal/03-clean-c19mc-data.Rmd#L56-L112
+Adapting the plot function from
+https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/785c3224de29f701b1c1b62841d0f84d46f7eaca/analyses/molecular-subtyping-embryonal/03-clean-c19mc-data.Rmd#L56-L112
 ```{r plot function loading}
 
 
