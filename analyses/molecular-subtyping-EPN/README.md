@@ -71,9 +71,9 @@ This above  script is designed to change to this directory to run, so it should 
                 </tr>
                 <tr>
                     <td>EPN, PF A</td>
-                    <td>(`1q_gain > 1` and `TKTL1_expr_zscore > 3`) or `CXorf67_expr_zscore > 3` or `(CNS_region == Posterior fossa and 
-      (H3F3A_HGVSp_Short == p.K28M or H3F3B_HGVSp_Short == p.K28M or HIST1H3B_HGVSp_Short == p.K28M or 
-         HIST1H3C_HGVSp_Short == p.K28M or HIST2H3C_HGVSp_Short == p.K28M))`</td>
+                    <td>(`1q_gain > 1` and `TKTL1_expr_zscore > 3`) or `CXorf67_expr_zscore > 3` or (`CNS_region == 'Posterior fossa'` and 
+      (`H3F3A_HGVSp_Short == 'p.K28M'` or `H3F3B_HGVSp_Short == 'p.K28M'` or `HIST1H3B_HGVSp_Short == 'p.K28M'` or 
+         `HIST1H3C_HGVSp_Short == 'p.K28M'` or `HIST2H3C_HGVSp_Short == 'p.K28M'`))</td>
                 </tr>
                 <tr>
                     <td>EPN, PF B</td>
