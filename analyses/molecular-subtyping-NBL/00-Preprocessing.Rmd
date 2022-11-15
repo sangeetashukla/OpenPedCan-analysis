@@ -68,16 +68,12 @@ if (!dir.exists(plot_dir)) {
 ```{r load the data files: this will take time}
 hist_df<-readr::read_tsv(file.path(dataDir, "histologies-base.tsv"),guess_max = 100000)
 consensus_df<-readr::read_tsv(file.path(dataDir, "consensus_wgs_plus_cnvkit_wxs.tsv.gz"),guess_max = 100000)
-cnv_cnvkit_df<-readr::read_tsv(file.path(dataDir, "cnv-cnvkit.seg.gz"),guess_max = 100000)
 cnv_controlfreec_df<-readr::read_tsv(file.path(dataDir, "cnv-controlfreec.tsv.gz"),guess_max = 100000)
 gene_expression_df<-as.data.frame(readRDS(paste(dataDir,"/","gene-expression-rsem-tpm-collapsed.rds",sep="")))
 gmkf_patient_clinical_mycn_status_df <- readr::read_tsv(file.path(moduleDir, "input/gmkf_patient_clinical_mycn_status.tsv"),guess_max = 100000)
 target_patient_clinical_mycn_status_df<- readr::read_tsv(file.path(moduleDir, "input/target_patient_clinical_mycn_status.tsv"),guess_max = 100000)
 ```
-# source function to  plot of the chromosome 2 segment mean for a particular biospecimen
-```{r source function to plot chromosome 2 segment mean for given biospecimen}
-source(file.path(moduleDir,"util", "plot_chr2.R"))
-```
+
 
 Background: 
 NBL is defined as neuroblastoma, ganglioneuroblastoma, and ganglioneuroma.These diseases are mentioned in the histology-base.tsv file. 

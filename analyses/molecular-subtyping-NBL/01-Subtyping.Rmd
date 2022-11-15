@@ -2,7 +2,7 @@
 title: "01-subtyping"
 author: "Aditya Lahiri, Eric Wafula, Jo Lynne Rokita"
 date: "11/14/2022"
-output: html_document
+output: html_notebook
 ---
 # Objective
 To molecularly subtype neuroblastoma, ganglioneuroblastoma, and ganglioneuroma samples into MYCN amplified or MYCN non-amplified. 
@@ -71,11 +71,16 @@ if (!dir.exists(plot_dir)) {
 
 
 
+# source function to  plot of the chromosome 2 segment mean for a particular biospecimen
+```{r source function to plot chromosome 2 segment mean for given biospecimen}
+source(file.path(moduleDir,"util", "plot_chr2.R"))
+```
 
-
-
+# Load files and set the cutoff based on the plot in TPM_Biospecimen_All_Samples_With_TMP.png
 ```{r}
 alteration_df<-readr::read_tsv(file.path(intermediate_dir, "Alteration_Table.tsv"),guess_max = 100000)
+cnv_cnvkit_df<-readr::read_tsv(file.path(dataDir, "cnv-cnvkit.seg.gz"),guess_max = 100000)
+hist_df<-readr::read_tsv(file.path(dataDir, "histologies-base.tsv"),guess_max = 100000)
 Suggested_Cutoff<-140.83 # TARGET-30-PAMEZH-01A-01R	
 ```
 
