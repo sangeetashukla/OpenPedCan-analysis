@@ -1,0 +1,279 @@
+---
+title: "01-subtyping"
+author: "Aditya Lahiri, Eric Wafula, Jo Lynne Rokita"
+date: "11/14/2022"
+output: html_document
+---
+# Objective
+To molecularly subtype neuroblastoma, ganglioneuroblastoma, and ganglioneuroma samples into MYCN amplified or MYCN non-amplified. 
+This script loads the table `Alteration_Table.tsv` from the intermediate folder and subtypes the biospecimens based on the six subtyping
+criteria (refer to the module readme). This script generates a table called `subtype_table`, which contains the subtypes for each of 
+the biospecimens in the table `alteration_df`. `subtype_table` is saved as `NBL_MYCN_Subtype.tsv` in the results directory. 
+
+Furthermore, this script also creates the following additional result files:
+1. `Alteration_Table.tsv`: this table is contains all the biospecimens  for neuroblastama, ganglioneuroblastoma, and ganglioneuroma 
+which need to be subptyped, however, the subtypes are annotated in this file. Unlike the table `NBL_MYCN_Subtype.tsv` which has `NA` 
+in the `subtype` column for biospecimens for which the subtyping could not be performed,this table (`Alteration_Table.tsv`) specifies 
+the reasons for why the particular biospecimen could not be subtyped. 
+
+2. `Subtypes_Based_On_Cutoff.tsv`: this table contains the biospecimens that were subtyped based on a TPM threshold (cutoff).
+
+3. `QC_table.tsv`: QC Check table for TARGET and GMKF samples
+ 
+
+#Load Libraries
+
+```{r load libraries}
+library(dplyr)
+library(data.table)
+library(tidyverse)
+library(ggplot2)
+```
+
+
+#Set up directories
+```{r setup directories}
+# root directory
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# data directory
+dataDir <- file.path(root_dir, "data")
+
+# module directory
+moduleDir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
+
+#results directory
+results_dir <- "results"
+# create if doesn't exist
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+
+#util directory
+util_dir <- "util"
+if (!dir.exists(util_dir)) {
+  dir.create(util_dir)
+}
+
+#intermediate directory
+intermediate_dir <- "intermediate"
+if (!dir.exists(intermediate_dir)) {
+  dir.create(intermediate_dir)
+}
+
+#plot directory
+plot_dir <- "plots"
+# create if doesn't exist
+if (!dir.exists(plot_dir)) {
+  dir.create(plot_dir)
+}
+```
+
+
+
+
+
+
+```{r}
+alteration_df<-readr::read_tsv(file.path(intermediate_dir, "Alteration_Table.tsv"),guess_max = 100000)
+Suggested_Cutoff<-140.83 # TARGET-30-PAMEZH-01A-01R	
+```
+
+
+
+Code Logic: Start the subtyping on alteration_df. Here are subtyping criteria: 
+case 1:
+If pathology_free_text_diagnosis is amplification and status is amplification assign subtype as "NBL, MYCN amplified"
+case 2:
+If pathology_free_text_diagnosis is non-amp and status is amplification assign subtype as "NBL, MYCN amplified"
+case 3:
+If pathology_free_text_diagnosis is non-amp and status is non-amp assign subtype as "NBL, MYCN non-amplified"
+```{r Subtyping: when match is found and when call is amp and pathology free text is non amp}
+alteration_df<-alteration_df %>%mutate(subtype = case_when(status =="amplification" & pathology_free_text_diagnosis=="MYCN amp"
+                                                  ~ "NBL, MYCN amplified",status =="amplification" & 
+                                                    pathology_free_text_diagnosis %in% 
+                                                    c("MYCN non-amp","ganglioneuroblastoma, stage ii favorable histology non n-myc amplified")
+                                                  ~ "NBL, MYCN amplified",
+                                       status %in% c("gain","loss","neutral") &  
+                                         pathology_free_text_diagnosis %in% 
+                                         c("MYCN non-amp","ganglioneuroblastoma, stage ii favorable histology non n-myc amplified")
+                                       ~ "NBL, MYCN non-amplified"))
+```
+
+
+Code Logic:
+If there is mismatch between pathology_free_text_diagnosis and status  
+case 4: pathology_free_text_diagnosis is amped and status is non amp
+First we find such cases and then plot thier segmean vs location plots. 
+
+```{r subtyping when call is not amp but pathology free text is amp}
+# If MYCN is called non-amplified but clinical file says amplified, plot the CNV data to visualize whether we see focal amplification but the CNV was not called. 
+
+index_clinical_amplified <- which(alteration_df$status %in% c("gain","loss","neutral")  
+                                  & alteration_df$pathology_free_text_diagnosis=="MYCN amp")
+
+clincal_amplified_IDs <- alteration_df$Kids_First_Biospecimen_ID_DNA[index_clinical_amplified]
+
+
+print("Biospecimens for which pathology (clinical) file says  amplified but call is loss, gain or netural")
+print(clincal_amplified_IDs)
+```
+
+
+
+Code Logic: For the case 4 create the plots. 
+```{r create the segmean vs location plots for samples where call is non-amp but pathology free text is amp}
+for (iter in 1: length(clincal_amplified_IDs)){
+  if(!is.na(clincal_amplified_IDs[iter])){
+    plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[iter])
+    plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"_Amp_Del",".png",sep=""))
+    ggsave(filename = plt_file,width = 10, height = 20)
+  }
+  else{
+    plot_chr2(cnv_cnvkit_df,alteration_df$Kids_First_Biospecimen_ID_RNA[index_clinical_amplified[iter]])
+    plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"_Amp_Del",".png",sep=""))
+    ggsave(filename = plt_file,width = 10, height = 20)
+  }
+  
+}
+```
+Code Logic:
+Case 4:pathology_free_text_diagnosis is amped and status is non amp
+For the samples that have a TPM value see if they are above or below the Suggested_Cutoff established in plot barplot of
+TPM_Biospecimen_All_Samples_With_TMP.png. If TPM values are above or equal to Suggested_Cutoff assign "NBL, MYCN amplified"
+otherwise, assign "NBL, MYCN non-amplified".  In case there is no TPM values then assign "Pathology-amp,Status-non-amp,TPM-NA," we 
+will change this to NA later.
+
+```{r : Assign Subtypes status non amp but pathology free text amp}
+index_clincal <- NA
+for (iter in index_clinical_amplified){
+  if(is.na(alteration_df$MYCN_TPM[iter])){
+    alteration_df$subtype[iter]<- "Pathology-amp,Status-non-amp,TPM-NA"
+
+  }
+  else if (alteration_df$MYCN_TPM[iter] >= Suggested_Cutoff){
+   alteration_df$subtype[iter]<- "NBL, MYCN amplified"
+   index_clincal <- c(index_clincal,iter)
+
+ }
+  else if (alteration_df$MYCN_TPM[iter] < Suggested_Cutoff) {
+    alteration_df$subtype[iter]<- "NBL, MYCN non-amplified"
+    index_clincal <- c(index_clincal,iter)
+
+  } 
+  
+}
+```
+
+Code Logic:
+Case 5: Find the samples where we don't have subtype but there is a TPM then assign subtype based on Suggested_Cutoff.
+
+```{r : Assign the remaining unclassified samples based of a suggested cutoff TPM }
+index_tpm_unsubtype_above<-which(is.na(alteration_df$subtype) & !is.na(alteration_df$MYCN_TPM)& alteration_df$MYCN_TPM >= Suggested_Cutoff)
+
+index_tpm_unsubtype_below<-which(is.na(alteration_df$subtype) & !is.na(alteration_df$MYCN_TPM)& alteration_df$MYCN_TPM < Suggested_Cutoff)
+
+alteration_df$subtype[index_tpm_unsubtype_above]<-"NBL, MYCN amplified"
+
+alteration_df$subtype[index_tpm_unsubtype_below]<-"NBL, MYCN non-amplified"
+
+```
+
+Code Logic:
+For the samples which are not assigned a subtype we will assign the subtype field as "Unclassified due to insufficient info". We will later change this to NA. 
+```{r :assign unclassified status to samples with low info}
+index_unclassified <- which(is.na(alteration_df$subtype))
+alteration_df$subtype[index_unclassified]<-"Unclassified due to insufficient info"
+
+```
+
+Code Logic: create a dataframe containing all the samples whose subtype was determined based on TPM.
+```{r Dataframe where all the sample subtype are determined based on TPM cutoff}
+index_clincal<- index_clincal[2:length(index_clincal)] # Remove NA at index 1
+
+TPM_index <- c(index_clincal,index_tpm_unsubtype_above,index_tpm_unsubtype_below)
+
+df_tpm <- alteration_df[TPM_index,]
+
+df_tpm <- df_tpm %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,copy_number,
+                            pathology_free_text_diagnosis,status,MYCN_TPM,subtype)
+```
+
+# QC Check
+```{r}
+
+
+TARGET2<- hist_df %>% filter(cohort=="TARGET",pathology_diagnosis %in% 
+                               c("Neuroblastoma", "Ganglioneuroblastoma","Ganglioneuroblastoma, nodular",
+                                 "Ganglioneuroblastoma, intermixed","Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated"),
+                            experimental_strategy=="WXS") 
+
+GMKF2<- hist_df %>% filter(cohort=="GMKF",pathology_diagnosis %in%
+                             c("Neuroblastoma", "Ganglioneuroblastoma","Ganglioneuroblastoma, nodular",
+                               "Ganglioneuroblastoma, intermixed","Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated"),
+                           experimental_strategy=="WGS") 
+
+TARGET2 <- TARGET2 %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,sample_id,
+                              cohort,experimental_strategy)
+GMKF2 <- GMKF2 %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,sample_id,
+                          cohort,experimental_strategy)
+
+QC_df <- inner_join(GMKF2,TARGET2, by= c("Kids_First_Participant_ID","sample_id"))
+
+QC_df <-  QC_df %>% select(Kids_First_Biospecimen_ID.x,Kids_First_Biospecimen_ID.y,Kids_First_Participant_ID,sample_id,
+                           cohort.x,cohort.y,experimental_strategy.x,experimental_strategy.y)
+
+colnames(QC_df)<- c("Kids_First_Biospecimen_ID_GMKF","Kids_First_Biospecimen_ID_TARGET",
+                        "Kids_First_Participant_ID","sample_id","cohort_GMKF","cohort_TARGET",
+                        "experimental_strategy_GMKF","experimental_strategy_Target")
+
+QC_df$TPM_GMKF<-NA
+QC_df$TPM_Target<-NA
+
+QC_df$status_GMKF<-NA
+QC_df$status_Target<-NA
+
+QC_df$subtype_GMKF<-NA
+QC_df$subtype_Target<-NA
+
+for (iter in 1:dim(QC_df)[1]){
+  index_gmkf <- which(alteration_df$Kids_First_Biospecimen_ID_DNA == QC_df$Kids_First_Biospecimen_ID_GMKF[iter])
+  index_target <- which(alteration_df$Kids_First_Biospecimen_ID_DNA == QC_df$Kids_First_Biospecimen_ID_TARGET[iter])
+
+  if(length(index_gmkf) ==0 ){
+    index_gmkf <- which(alteration_df$Kids_First_Biospecimen_ID_RNA == QC_df$Kids_First_Biospecimen_ID_GMKF[iter])
+  }
+  QC_df$TPM_GMKF[iter]<- alteration_df$MYCN_TPM[index_gmkf]
+  QC_df$status_GMKF[iter]<- alteration_df$status[index_gmkf]
+  QC_df$subtype_GMKF[iter]<- alteration_df$subtype[index_gmkf]
+  
+  if(length(index_target) ==0 ){
+    index_target <- which(alteration_df$Kids_First_Biospecimen_ID_RNA == 
+                            QC_df$Kids_First_Biospecimen_ID_TARGET[iter])
+  }
+  QC_df$TPM_Target[iter]<- alteration_df$MYCN_TPM[index_target]
+  QC_df$status_Target[iter]<- alteration_df$status[index_target]
+  QC_df$subtype_Target[iter]<- alteration_df$subtype[index_target]
+}
+
+```
+
+# Preprocess the final subtyping table.
+```{r subtype table}
+subtype_table <- alteration_df %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,subtype)
+index_NA<-which(subtype_table$subtype %in% c("Unclassified due to insufficient info","Pathology-amp,Status-non-amp,TPM-NA"))
+subtype_table$subtype[index_NA]<-NA_character_
+subtype_table<-subtype_table[order(subtype_table$subtype),]
+```
+
+ Write the table
+```{r write alteration table}
+alteration_df%>%readr::write_tsv(file.path(results_dir, "Alteration_Table.tsv"))
+df_tpm%>%readr::write_tsv(file.path(results_dir, "Subtypes_Based_On_Cutoff.tsv"))
+QC_df%>%readr::write_tsv(file.path(results_dir, "QC_table.tsv"))
+subtype_table%>%readr::write_tsv(file.path(results_dir, "NBL_MYCN_Subtype.tsv"))
+```
+
+
+
+
