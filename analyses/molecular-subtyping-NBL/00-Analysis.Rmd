@@ -35,6 +35,11 @@ if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
+#util directory
+util_dir <- "util"
+if (!dir.exists(util_dir)) {
+  dir.create(results_dir)
+}
 
 #plot directory
 plot_dir <- "plots"
@@ -46,7 +51,7 @@ if (!dir.exists(plot_dir)) {
 
 
 
-#Load all the datafiles in the ticket
+#Load all the datafiles in the ticket and plot function
 ```{r load the data files: this will take time}
 hist_df<-readr::read_tsv(file.path(dataDir, "histologies-base.tsv"),guess_max = 100000)
 consensus_df<-readr::read_tsv(file.path(dataDir, "consensus_wgs_plus_cnvkit_wxs.tsv.gz"),guess_max = 100000)
@@ -56,7 +61,10 @@ gene_expression_df<-as.data.frame(readRDS(paste(dataDir,"/","gene-expression-rse
 gmkf_patient_clinical_mycn_status_df <- readr::read_tsv(file.path(moduleDir, "input/gmkf_patient_clinical_mycn_status.tsv"),guess_max = 100000)
 target_patient_clinical_mycn_status_df<- readr::read_tsv(file.path(moduleDir, "input/target_patient_clinical_mycn_status.tsv"),guess_max = 100000)
 ```
-
+# source function to  plot of the chromosome 2 segment mean for a particular biospecimen
+```{r: source function to plot chromosome 2 segment mean for given biospecimen}
+source(file.path(analysis_dir, "util", "process_annotate_overlaps.R"))
+```
 
 Background: 
 NBL is defined as neuroblastoma, ganglioneuroblastoma, and ganglioneuroma.These diseases are mentioned in the histology-base.tsv file. 
@@ -414,69 +422,7 @@ print("Biospecimens for which pathology (clinical) file says  amplified but call
 print(clincal_amplified_IDs)
 ```
 
-Adapting the plot function from
-https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/785c3224de29f701b1c1b62841d0f84d46f7eaca/analyses/molecular-subtyping-embryonal/03-clean-c19mc-data.Rmd#L56-L112
-```{r plot function loading}
 
-
-
-# Apply this code to chromosome 2 since MYCN is on Chromosome 2
-
-plot_chr2 <- function(cn_df, biospecimen_id) {
- # This function takes a seg data.frame and a biospecimen identifier and 
- # returns a plot of the chromosome 2 segment mean for that biospecimen.
- # It fills missing seg.mean values with zeroes.
- # 
- # Args:
- #   cn_df: data.frame in SEG format
- #   biospecimen_id: A Kids First Biospecimen ID used to filter cn_df
- # 
- # Returns: essentially a barplot of the non-neutral segment means
-  
-  bsid_data <- cn_df %>%  
-    # For visualization purposes fill the missing seg.mean values with zeroes
-    tidyr::replace_na(list(seg.mean = 0)) %>%
-    # Reformat the chromosome variable to drop the "chr"
-    dplyr::mutate(chrom = factor(gsub("chr", "", chrom), 
-                                 levels = c(1:22, "X", "Y"))) %>%
-    # Only look at chr2 in the relevant sample
-    filter(ID == biospecimen_id,
-           chrom == 2) %>%
-    # Make Del/Amp variable
-    dplyr::mutate(Type = dplyr::case_when(
-      seg.mean < 0 ~ "Del",
-      seg.mean > 0 ~ "Amp",
-      seg.mean == 0 ~ "Neutral"
-    ))
-  
-  # Turn into a GRanges for easier mapping
-  bsid_ranges <- GenomicRanges::GRanges(
-    seqnames = bsid_data$chrom,
-    ranges = IRanges::IRanges(
-      start = bsid_data$loc.start,
-      end = bsid_data$loc.end
-    ),
-    score = bsid_data$seg.mean,
-    mcols = bsid_data$Type
-  )
-  
-  # Map this on a plot
-  bsid_plot <- 
-    ggbio::autoplot(bsid_ranges,
-                    ggplot2::aes(y = score, fill = mcols),
-                    geom = "bar") +
-    ggplot2::theme_bw() +
-    ggplot2::ylim(c(-2, 2)) +
-    colorblindr::scale_fill_OkabeIto(name = "Type") +
-    ggplot2::labs(
-      title = paste(biospecimen_id, "chr2"),
-      y = "segment mean"
-    )
-  
-  return(bsid_plot)
-}
-
-```
 
 Code Logic: For the case 4 create the plots. 
 ```{r create the segmean vs location plots for samples where call is non-amp but pathology free text is amp}
