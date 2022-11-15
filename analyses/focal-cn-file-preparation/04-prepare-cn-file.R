@@ -145,7 +145,7 @@ annotations_orgDb <- AnnotationDbi::select(org.Hs.eg.db::org.Hs.eg.db, # databas
                                            columns = c("MAP","ENSEMBL","SYMBOL"), # information to retrieve for given data
                                            keytype = "ENSEMBL")
 
-# join using both gene name and gene id combination to avoid discrepancies
+# join using both gene name and gene id combination to avoid discrepancies, and filter to retain only one cytoband annotation per gene 
 annotations_orgDb <- annotations_orgDb %>% 
   dplyr::filter(!is.na(SYMBOL)) %>%
   dplyr::rename("cytoband" = "MAP",
@@ -155,16 +155,19 @@ gencode_gtf <- gencode_gtf %>%
   dplyr::inner_join(annotations_orgDb, by = c("gene_id", "gene_name")) %>%
   dplyr::distinct(seqnames, start, end, gene_id, gene_name, .keep_all = T)
 
-# make GRanges object and sort by coordinates (592480 rows)
+# make GRanges object 
 gencode_gr <- makeGRangesFromDataFrame(gencode_gtf, keep.extra.columns = TRUE)
+
+# merge overlapping rows for each gene id
 gencode_gr <- unlist(GenomicRanges::reduce(split(gencode_gr, c(gencode_gr$gene_id, gencode_gr$gene_name))))
 
+# Create data frame of merged exon coordinates with gene id, gene name, and cytoband annotation
 gencode_df <- data.frame(gencode_gr) %>%
   add_column(gene_id = names(gencode_gr)) %>%
   merge(distinct(gencode_gtf, gene_id, .keep_all = T)[,c('gene_id', 'gene_name', 'cytoband')], by = 'gene_id') %>%
   dplyr::select(seqnames, start, end, width, strand, gene_id, gene_name, cytoband)
 
-# make GRanges object and sort by coordinates (592480 rows)
+# make GRanges object and sort by coordinates
 gencode_gr <- makeGRangesFromDataFrame(gencode_df, keep.extra.columns = TRUE)
 gencode_gr <- sort(gencode_gr)
 
@@ -179,7 +182,7 @@ slice_vector <- seq(1, length(cnv_df_ids), 100)
 
 # define combined dataframe
 autosome_annotated_cn <- data.frame()
-for (i in 1:length(slice_vector[1:5])){
+for (i in 1:length(slice_vector)){
   start_id <- as.numeric(slice_vector[i])
   if(i<length(slice_vector)){
     end_id <- as.numeric(slice_vector[i+1]-1)
@@ -209,6 +212,7 @@ for (i in 1:length(slice_vector[1:5])){
       copy_number > (2 * ploidy) ~ "amplification",
       copy_number == 0 ~ "deep deletion",
       TRUE ~ as.character(status)))
+  
   # Resolve cases of duplicate cn calls for genes
   autosome_annotated_cn_each <- resolve_duplicate_annotations(overlap_annotation = autosome_annotated_cn_each)
   
@@ -230,7 +234,7 @@ readr::write_tsv(autosome_annotated_cn, file.path(results_dir, autosome_output_f
 if(xy_flag){
   # define combined dataframe
   sex_chrom_annotated_cn <- data.frame()
-  for (j in 1:length(slice_vector[1:5])){
+  for (j in 1:length(slice_vector)){
     start_id <- as.numeric(slice_vector[j])
     if(j<length(slice_vector)){
       end_id <- as.numeric(slice_vector[j+1]-1)
