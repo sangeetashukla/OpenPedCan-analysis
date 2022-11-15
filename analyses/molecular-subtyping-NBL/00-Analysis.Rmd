@@ -38,7 +38,13 @@ if (!dir.exists(results_dir)) {
 #util directory
 util_dir <- "util"
 if (!dir.exists(util_dir)) {
-  dir.create(results_dir)
+  dir.create(util_dir)
+}
+
+#intermediate directory
+intermediate_dir <- "intermediate"
+if (!dir.exists(intermediate_dir)) {
+  dir.create(intermediate_dir)
 }
 
 #plot directory
@@ -62,8 +68,8 @@ gmkf_patient_clinical_mycn_status_df <- readr::read_tsv(file.path(moduleDir, "in
 target_patient_clinical_mycn_status_df<- readr::read_tsv(file.path(moduleDir, "input/target_patient_clinical_mycn_status.tsv"),guess_max = 100000)
 ```
 # source function to  plot of the chromosome 2 segment mean for a particular biospecimen
-```{r: source function to plot chromosome 2 segment mean for given biospecimen}
-source(file.path(analysis_dir, "util", "process_annotate_overlaps.R"))
+```{r source function to plot chromosome 2 segment mean for given biospecimen}
+source(file.path(moduleDir,"util", "plot_chr2.R"))
 ```
 
 Background: 
@@ -340,6 +346,8 @@ alteration_df <- MYCN_DNA_RNA_FILTERED_DF %>% select(Kids_First_Biospecimen_ID_D
 # concatenate matched DNA and RNA IDs with DNA only and RNA only dfs. 
 alteration_df <- rbind(alteration_df,MYCN_non_match_df)
 
+# Save the table for subtyping in second script
+alteration_df%>%readr::write_tsv(file.path(intermediate_dir, "Alteration_Table.tsv"))
 ```
 
 
@@ -359,8 +367,9 @@ alteration_df<-alteration_df%>% mutate(pathology=coalesce(pathology_free_text_di
 alteration_df<-alteration_df %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,                            
                                         MYCN_TPM,copy_number,MYCN_TPM,status,pathology)
 colnames(alteration_df)[6]<- "pathology_free_text_diagnosis"
-alteration_df$subtype<-NA # Create a subtype column 
+alteration_df$subtype<-NA_character_ # Create a subtype column 
 
+alteration_df%>%readr::write_tsv(file.path(intermediate_dir, "Alteration_Table.tsv"))
 ```
 
 
