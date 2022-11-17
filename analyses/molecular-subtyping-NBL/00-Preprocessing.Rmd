@@ -12,9 +12,10 @@ the following columns `Kids_First_Biospecimen_DNA_ID`, `Kids_First_Biospecimen_R
 
 This script preprocess the input files and collect all the relevant samples that need to subtpyed 
 and add them to the table `alteration_df`. We write the table `alteration_df` into the intermediate 
-folder at the end of this script as `Alteration_Table.tsv`.
+folder at the end of this script as `alteration_table_without_subtype.tsv`.
 
-The subtyping of all the samples in `Alteration_Table.tsv` is done in script 01-subtyping.Rmd.
+The subtyping of all the samples in `alteration_table_without_subtype.tsv` is done in 
+script 01-subtyping.Rmd.
 
 #Load Libraries
 
@@ -420,7 +421,7 @@ alteration_df <- MYCN_DNA_RNA_FILTERED_DF %>% select(Kids_First_Biospecimen_ID_D
 alteration_df <- rbind(alteration_df,MYCN_non_match_df)
 
 # Save the table for subtyping in second script
-alteration_df%>%readr::write_tsv(file.path(intermediate_dir, "Alteration_Table.tsv"))
+alteration_df%>%readr::write_tsv(file.path(results_dir, "Alteration_Table.tsv"))
 ```
 
 
