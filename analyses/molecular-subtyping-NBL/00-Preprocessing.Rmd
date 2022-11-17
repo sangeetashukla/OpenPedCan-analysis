@@ -357,11 +357,17 @@ unmatched DNA and RNA IDs samples, this dataframe is : MYCN_non_match_df.
 Now we need to identify which IDs in MYCN_IDs_without_DNA_RNA_Match are DNA IDs and Which are RNA IDs
 ```{r}
 # 762 samples 
-DNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_dna_df$Kids_First_Biospecimen_ID_DNA),]) 
+DNA_IDs_MYCN_Non_Match <- 
+  as.data.frame(MYCN_IDs_without_DNA_RNA_Match
+                [which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID 
+                       %in% MYCN_dna_df$Kids_First_Biospecimen_ID_DNA),]) 
 colnames(DNA_IDs_MYCN_Non_Match)<- "Kids_First_Biospecimen_ID_DNA"
 
 # 68 samples,762+68= 830 samples as expected.
-RNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_rna_df$Kids_First_Biospecimen_ID_RNA),])  
+RNA_IDs_MYCN_Non_Match <- 
+  as.data.frame(MYCN_IDs_without_DNA_RNA_Match
+                [which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID 
+                       %in% MYCN_rna_df$Kids_First_Biospecimen_ID_RNA),])  
 colnames(RNA_IDs_MYCN_Non_Match)<- "Kids_First_Biospecimen_ID_RNA"
 
 # Make dfs DNA and RNA IDs found here with  
@@ -442,7 +448,8 @@ alteration_df<- left_join(alteration_df,gmkf_patient_clinical_mycn_status_df,
 alteration_df<- left_join(alteration_df,target_patient_clinical_mycn_status_df,
                           by="Kids_First_Participant_ID")
 
-alteration_df<-alteration_df%>% mutate(pathology=coalesce(pathology_free_text_diagnosis,pathology_free_text_diagnosis_gmfk,
+alteration_df<-alteration_df%>% mutate(pathology=coalesce(pathology_free_text_diagnosis,
+                                                          pathology_free_text_diagnosis_gmfk,
                                                           pathology_free_text_diagnosis_target))
 
 alteration_df<-alteration_df %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,                            
@@ -474,7 +481,8 @@ bar_plot2<-plot_alteration_df %>%
 bar_plot2
 
 Suggested_Cutoff<-140.83 # TARGET-30-PAMEZH-01A-01R	
-bar_plot2+ geom_hline(aes(yintercept=Suggested_Cutoff,linetype = "Suggested Amp Cutoff"),color = "black",size=2) #TARGET-30-PAPKXS-01A-01D	
+bar_plot2+ geom_hline(aes(yintercept=Suggested_Cutoff,linetype = "Suggested Amp Cutoff"),
+                      color = "black",size=2) #TARGET-30-PAPKXS-01A-01D	
 
 plot_file <- file.path(plot_dir, "TPM_Biospecimen_All_Samples_With_TMP.png")
 ggsave(filename = plot_file,width = 49, height = 20)
