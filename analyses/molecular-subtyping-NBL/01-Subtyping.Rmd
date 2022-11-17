@@ -83,7 +83,7 @@ source(file.path(moduleDir,"util", "plot_chr2.R"))
 
 # Load files and set the cutoff based on the plot in TPM_Biospecimen_All_Samples_With_TMP.png
 ```{r}
-alteration_df<-readr::read_tsv(file.path(intermediate_dir, "Alteration_Table.tsv"),
+alteration_df<-readr::read_tsv(file.path(results_dir, "alteration_table_without_subtype.tsv"),
                                guess_max = 100000)
 cnv_cnvkit_df<-readr::read_tsv(file.path(dataDir, "cnv-cnvkit.seg.gz"),guess_max = 100000)
 hist_df<-readr::read_tsv(file.path(dataDir, "histologies-base.tsv"),guess_max = 100000)
@@ -103,6 +103,7 @@ case 3:
 If pathology_free_text_diagnosis is non-amp and status is non-amp assign subtype
 as "NBL, MYCN non-amplified"
 ```{r Subtyping: when match is found and when call is amp and pathology free text is non amp}
+alteration_df$subtype<-NA_character_ # Create a subtype column 
 alteration_df<-alteration_df %>%mutate(subtype = 
                                          case_when(status =="amplification" &
                                                      pathology_free_text_diagnosis=="MYCN amp"

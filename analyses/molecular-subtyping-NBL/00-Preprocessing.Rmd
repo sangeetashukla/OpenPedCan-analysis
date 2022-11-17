@@ -50,12 +50,6 @@ if (!dir.exists(util_dir)) {
   dir.create(util_dir)
 }
 
-#intermediate directory
-intermediate_dir <- "intermediate"
-if (!dir.exists(intermediate_dir)) {
-  dir.create(intermediate_dir)
-}
-
 #plot directory
 plot_dir <- "plots"
 # create if doesn't exist
@@ -456,9 +450,8 @@ alteration_df<-alteration_df %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First
                                         MYCN_TPM,copy_number,MYCN_TPM,status,pathology)
 
 colnames(alteration_df)[6]<- "pathology_free_text_diagnosis"
-alteration_df$subtype<-NA_character_ # Create a subtype column 
 
-alteration_df%>%readr::write_tsv(file.path(intermediate_dir, "Alteration_Table.tsv"))
+alteration_df%>%readr::write_tsv(file.path(results_dir, "alteration_table_without_subtype.tsv"))
 ```
 
 
