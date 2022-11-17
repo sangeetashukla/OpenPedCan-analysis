@@ -357,19 +357,11 @@ unmatched DNA and RNA IDs samples, this dataframe is : MYCN_non_match_df.
 Now we need to identify which IDs in MYCN_IDs_without_DNA_RNA_Match are DNA IDs and Which are RNA IDs
 ```{r}
 # 762 samples 
-DNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match
-                                        [which(
-                                          MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID 
-                                               %in%
-                                                 MYCN_dna_df$Kids_First_Biospecimen_ID_DNA),]) 
+DNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_dna_df$Kids_First_Biospecimen_ID_DNA),]) 
 colnames(DNA_IDs_MYCN_Non_Match)<- "Kids_First_Biospecimen_ID_DNA"
 
 # 68 samples,762+68= 830 samples as expected.
-RNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match
-                                        [which(
-                                          MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID 
-                                          %in%
-                                            MYCN_rna_df$Kids_First_Biospecimen_ID_RNA),])  
+RNA_IDs_MYCN_Non_Match <- as.data.frame(MYCN_IDs_without_DNA_RNA_Match[which(MYCN_IDs_without_DNA_RNA_Match$Kids_First_Biospecimen_ID %in% MYCN_rna_df$Kids_First_Biospecimen_ID_RNA),])  
 colnames(RNA_IDs_MYCN_Non_Match)<- "Kids_First_Biospecimen_ID_RNA"
 
 # Make dfs DNA and RNA IDs found here with  
