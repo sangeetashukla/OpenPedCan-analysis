@@ -131,9 +131,9 @@ TPM_MYCN_data <- gene_expression_df[MYCN_Index,] # Get the TPM data for for MYCN
 ```
 
 Code Logic:
-We will integrate the TMP and cnv data with the hist_filtered using left join. Histology file has 
-all the biospecimens but we are only concerned with NBL-biospecimens, so we use the filtered version 
-of histology file (`hist_filtered_df`). 
+We will integrate the TMP and consensus data with the hist_filtered using left join. Histology file 
+has all the biospecimens but we are only concerned with NBL-biospecimens, so we use the filtered 
+version of histology file (`hist_filtered_df`). 
 
 # Get TPM , Copy Number and Status
 ```{r Getting TPM, Copy Number and Status info}
@@ -160,7 +160,7 @@ RNA IDs, so we need to first find the matching DNA/RNA IDs.  To find matching RN
 IDs for DNA IDs, we create a match ID by combining Kids_First_Participant_ID + Sample_ID + Cohort. 
 To this end, we create a new column in MYCN_Df called match_id. 
 
-# Create dataframes of samples where DNA and RNA IDs match 
+# Create dataframe of samples where DNA and RNA IDs match 
 ```{r create match ID and dataframes of RNA and DNA}
 # Create Match_ID Kids_First_Participant_ID + Sample_ID + Cohort
 MYCN_DF <- MYCN_DF %>%mutate(match_id = paste(Kids_First_Participant_ID, 
@@ -287,7 +287,8 @@ MYCN_DNA_RNA_FILTERED_DF<- MYCN_DNA_RNA_FILTERED_DF[-c(rows_to_delete_MYCN,
 
 
 Code Logic:
-Plot TPMs vs Biospecimen for samples that have both DNA and RNA IDs. Only plot those biospecimens that have a TPM value. 
+Plot TPMs vs Biospecimen for samples that have both DNA and RNA IDs. Only plot those biospecimens 
+that have a TPM value. 
 ```{r make TPM vs Biospecimen plot for samples with matched DNA and RNA IDs}
 #Select relevant info
 MYCN_Plot_df <- MYCN_DNA_RNA_FILTERED_DF %>% filter(!is.na(MYCN_TPM)) %>%
@@ -309,7 +310,7 @@ ggsave(filename = plot_file,width = 45, height = 20)
 
 Code Logic: 
 Now that we have found the data for which containing matched DNA and RNA IDs. We need to identify 
-the data that only have DNA IDs and RNA IDs. To do this we first create and exhaustive list of all
+the data that only have DNA IDs or RNA IDs. To do this we first create and exhaustive list of all
 NBL-MYCN IDs from the dataframe MYCN_DF. MYCN_DF contains all the IDs which are NBL from the 
 histology file, and there are some repeating IDs in MYCN_DF. 
 
@@ -431,8 +432,9 @@ alteration_df%>%readr::write_tsv(file.path(intermediate_dir, "Alteration_Table.t
 ```
 
 
-Code Logic: pathology_free_text_diagnosis column has multiple of NA values in the alteration_df. To resolve this issue we use the files 
-input folder which are NBL MCYN clinical patient-status mapping files for GMKF and TARGET samples. These NA values will be integrated in the 
+Code Logic: pathology_free_text_diagnosis column has multiple of NA values in the alteration_df. 
+To resolve this issue we use the files in the input folder which are NBL MCYN clinical 
+patient-status mapping files for GMKF and TARGET samples. These NA values will be integrated in the 
 V12 version. 
 
 ```{r integrate new pathology free text diagnosis values from input folder}

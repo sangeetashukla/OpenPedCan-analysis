@@ -229,26 +229,26 @@ df_tpm <- df_tpm %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen
 ```{r}
 
 
-TARGET2<- hist_df %>% filter(cohort=="TARGET",pathology_diagnosis %in% 
+TARGET<- hist_df %>% filter(cohort=="TARGET",pathology_diagnosis %in% 
                                c("Neuroblastoma", "Ganglioneuroblastoma",
                                  "Ganglioneuroblastoma, nodular",
                                  "Ganglioneuroblastoma, intermixed",
                                  "Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated"),
                             experimental_strategy=="WXS") 
 
-GMKF2<- hist_df %>% filter(cohort=="GMKF",pathology_diagnosis %in%
+GMKF<- hist_df %>% filter(cohort=="GMKF",pathology_diagnosis %in%
                              c("Neuroblastoma", "Ganglioneuroblastoma",
                                "Ganglioneuroblastoma, nodular",
                                "Ganglioneuroblastoma, intermixed",
                                "Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated"),
                            experimental_strategy=="WGS") 
 
-TARGET2 <- TARGET2 %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,sample_id,
+TARGET <- TARGET %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,sample_id,
                               cohort,experimental_strategy)
-GMKF2 <- GMKF2 %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,sample_id,
+GMKF <- GMKF %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,sample_id,
                           cohort,experimental_strategy)
 
-QC_df <- inner_join(GMKF2,TARGET2, by= c("Kids_First_Participant_ID","sample_id"))
+QC_df <- inner_join(GMKF,TARGET, by= c("Kids_First_Participant_ID","sample_id"))
 
 QC_df <-  QC_df %>% select(Kids_First_Biospecimen_ID.x,Kids_First_Biospecimen_ID.y,
                            Kids_First_Participant_ID,sample_id,cohort.x,cohort.y,
