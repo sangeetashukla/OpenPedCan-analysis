@@ -13,11 +13,11 @@ which contains the subtypes for each of the biospecimens in the table `alteratio
 `subtype_table` is saved as `NBL_MYCN_Subtype.tsv` in the results directory. 
 
 Furthermore, this script also creates the following additional result files:
-1. `Alteration_Table.tsv`: this table is contains all the biospecimens  for neuroblastama,
+1. `alteration_table_without_subtype.tsv`: this table is contains all the biospecimens  for neuroblastama,
 ganglioneuroblastoma, and ganglioneuroma which need to be subptyped, however, the subtypes are 
 annotated in this file. Unlike the table `NBL_MYCN_Subtype.tsv` which has `NA` 
 in the `subtype` column for biospecimens for which the subtyping could not be performed,this 
-table (`Alteration_Table.tsv`) specifies the reasons for why the particular biospecimen could not 
+table (`alteration_table_without_subtype.tsv`) specifies the reasons for why the particular biospecimen could not 
 be subtyped. 
 
 2. `Subtypes_Based_On_Cutoff.tsv`: this table contains the biospecimens that were 
