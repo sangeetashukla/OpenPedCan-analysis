@@ -205,9 +205,10 @@ ggsave(filename = plot_file,width = 45, height = 20)
 ```
 
 
-Write the table containing mycn-nbl biospecimen with matched DNA and RNA Ids, dna only and rna only biospecimens files  into results dir
+Write the table containing mycn-nbl biospecimen with matched DNA and RNA Ids, dna only and rna only 
+biospecimens files  into results dir
 ```{r write alteration table}
-MYCN_DNA_RNA_FILTERED_DF%>%readr::write_tsv(file.path(results_dir, "mycn_nbl_matched_biospecimen.tsv"))
-MYCN_dna_df %>%readr::write_tsv(file.path(results_dir, "mycn_nbl_dna_biospecimen.tsv"))
-MYCN_rna_df %>%readr::write_tsv(file.path(results_dir, "mycn_nbl_rna_biospecimen.tsv"))
+MYCN_DNA_RNA_FILTERED_DF%>%readr::write_tsv(file.path(results_dir,"mycn_nbl_matched_biospecimen.tsv"))
+MYCN_dna_df %>%readr::write_tsv(file.path(results_dir,"mycn_nbl_dna_biospecimen.tsv"))
+MYCN_rna_df %>%readr::write_tsv(file.path(results_dir,"mycn_nbl_rna_biospecimen.tsv"))
 ```

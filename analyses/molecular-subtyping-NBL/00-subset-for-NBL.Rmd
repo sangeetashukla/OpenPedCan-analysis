@@ -4,6 +4,8 @@ author: "Aditya Lahiri, Eric Wafula, Jo Lynne Rokita"
 date: "10/13/2022"
 output: html_notebook
 ---
+Objective: This notebook loads the histology file and selects the NBL biospecimen by filtering for tumor only
+
 
 #Load Libraries
 
@@ -12,7 +14,6 @@ suppressPackageStartupMessages({
 library(dplyr)
 library(data.table)
 library(tidyverse)
-library(ggplot2)
 })
 ```
 
@@ -34,23 +35,10 @@ results_dir <- "results"
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
-
-#util directory
-util_dir <- "util"
-if (!dir.exists(util_dir)) {
-  dir.create(util_dir)
-}
-
-#plot directory
-plot_dir <- "plots"
-# create if doesn't exist
-if (!dir.exists(plot_dir)) {
-  dir.create(plot_dir)
-}
 ```
 
 
-#Load all the datafiles in the ticket and plot function
+#Load the files for histology, consensus, and tpm data
 ```{r load the data files: this will take time}
 hist_df<-readr::read_tsv(file.path(data_dir, "histologies-base.tsv"),guess_max = 100000)
 
@@ -59,10 +47,6 @@ consensus_df<-readr::read_tsv(file.path(data_dir, "consensus_wgs_plus_cnvkit_wxs
 
 gene_expression_df<-as.data.frame(readRDS(paste(data_dir,"/",
                                                 "gene-expression-rsem-tpm-collapsed.rds",sep="")))
-
-gmkf_patient_clinical_mycn_status_df <- readr::read_tsv(file.path(moduleDir, "input/gmkf_patient_clinical_mycn_status.tsv"),guess_max = 100000)
-
-target_patient_clinical_mycn_status_df<- readr::read_tsv(file.path(moduleDir, "input/target_patient_clinical_mycn_status.tsv"),guess_max = 100000)
 ```
 
 Background: 
