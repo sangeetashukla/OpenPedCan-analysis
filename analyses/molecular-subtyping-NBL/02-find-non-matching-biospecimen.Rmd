@@ -40,7 +40,13 @@ if (!dir.exists(plot_dir)) {
 ```
 
 
-# Read the mycn-nbl file and the clinical patient-status mapping files for GMKF and TARGET
+# Load files
+We will load the following files
+1. mycn-nbl file (mycn_nbl_subset_data.tsv)
+2. The clinical patient-status mapping files for GMKF  (gmkf_patient_clinical_mycn_status.tsv)
+3. The clinical patient-status mapping files for TARGET (target_patient_clinical_mycn_status.tsv)
+4. The DNA only biospecimens file
+5. The RNA only biospecimens file
 ```{r read the file containing mycn-nbl biospecimen}
 MYCN_DF<-readr::read_tsv(file.path(results_dir, "mycn_nbl_subset_data.tsv"),guess_max = 100000)
 MYCN_DNA_RNA_FILTERED_DF<-readr::read_tsv(file.path(results_dir,"mycn_nbl_matched_biospecimen.tsv"),guess_max = 100000)
@@ -48,6 +54,10 @@ MYCN_DNA_RNA_FILTERED_DF<-readr::read_tsv(file.path(results_dir,"mycn_nbl_matche
 gmkf_patient_clinical_mycn_status_df <- readr::read_tsv(file.path(moduleDir, "input/gmkf_patient_clinical_mycn_status.tsv"),guess_max = 100000)
 
 target_patient_clinical_mycn_status_df<- readr::read_tsv(file.path(moduleDir, "input/target_patient_clinical_mycn_status.tsv"),guess_max = 100000)
+
+MYCN_dna_df<-readr::read_tsv(file.path(results_dir, "mycn_nbl_dna_biospecimen.tsv"),guess_max = 100000)
+MYCN_rna_df<-readr::read_tsv(file.path(results_dir, "mycn_nbl_rna_biospecimen.tsv"),guess_max = 100000)
+
 ```
 
 
