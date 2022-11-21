@@ -139,12 +139,12 @@ Code Logic: For the case 4 create the plots.
 for (iter in 1: length(clincal_amplified_IDs)){
   if(!is.na(clincal_amplified_IDs[iter])){
     plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[iter])
-    plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"_Amp_Del",".png",sep=""))
+    plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"_chr2p",".png",sep=""))
     ggsave(filename = plt_file,width = 10, height = 20)
   }
   else{
     plot_chr2(cnv_cnvkit_df,alteration_df$Kids_First_Biospecimen_ID_RNA[index_clinical_amplified[iter]])
-    plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"_Amp_Del",".png",sep=""))
+    plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"_chr2p",".png",sep=""))
     ggsave(filename = plt_file,width = 10, height = 20)
   }
   
