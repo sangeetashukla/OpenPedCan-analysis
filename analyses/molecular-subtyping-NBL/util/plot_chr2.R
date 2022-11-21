@@ -52,7 +52,8 @@ plot_chr2 <- function(cn_df, biospecimen_id) {
     colorblindr::scale_fill_OkabeIto(name = "Type") +
     ggplot2::labs(
       title = paste(biospecimen_id, "chr2"),
-      y = "segment mean"
+      y = "segment mean",
+      x = "location"
     )
   
   return(bsid_plot)
