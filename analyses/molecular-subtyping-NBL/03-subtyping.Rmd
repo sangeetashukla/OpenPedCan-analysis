@@ -138,14 +138,14 @@ Code Logic: For the case 4 create the plots.
 ```{r create the segmean vs location plots for samples where call is non-amp but pathology free text is amp}
 for (iter in 1: length(clincal_amplified_IDs)){
   if(!is.na(clincal_amplified_IDs[iter])){
-    plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[iter])
+    plt<-plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[iter])
     plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"_chr2p",".png",sep=""))
-    ggsave(filename = plt_file,width = 10, height = 10)
+    ggsave(plot = plt,filename = plt_file,width = 10, height = 10)
   }
   else{
-    plot_chr2(cnv_cnvkit_df,alteration_df$Kids_First_Biospecimen_ID_RNA[index_clinical_amplified[iter]])
+    plt<-plot_chr2(cnv_cnvkit_df,alteration_df$Kids_First_Biospecimen_ID_RNA[index_clinical_amplified[iter]])
     plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"_chr2p",".png",sep=""))
-    ggsave(filename = plt_file,width = 10, height = 10)
+    ggsave( plot = plt,filename = plt_file,width = 10, height = 10)
   }
   
 }
