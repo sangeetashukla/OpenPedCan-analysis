@@ -55,6 +55,5 @@ plot_chr2 <- function(cn_df, biospecimen_id) {
       y = "segment mean",
       x = "position"
     )
-  
   return(bsid_plot)
 }
