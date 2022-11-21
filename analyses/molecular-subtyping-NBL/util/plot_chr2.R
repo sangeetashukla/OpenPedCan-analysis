@@ -53,7 +53,7 @@ plot_chr2 <- function(cn_df, biospecimen_id) {
     ggplot2::labs(
       title = paste(biospecimen_id, "chr2"),
       y = "segment mean",
-      x = "location"
+      x = "position"
     )
   
   return(bsid_plot)
