@@ -382,6 +382,8 @@ $(document).ready(function () {
 </div>
 
 
+<p>In this notebook we find the find the biospecimens which do not have matched DNA and RNA IDs. We create a dataframe for these biospecimens called <code>MYCN_non_match_df</code> which has all the necessary infromation required for performing subtyping. We concatenate this <code>MYCN_non_match_df</code> with the table <code>results/mycn_nbl_matched_biospecimen.tsv</code> and joined table called <code>results/alteration_table_without_subtype.tsv</code> which contains the list of all the NBL-MYCN biospecimens that need to subtpyped.</p>
+<p>The notebook also plots the TPM vs Kids_First_Biospecimen_IDs for all the biospecimens for which there is a TPM value. We overlay the consensus status call for each of the biospecimens in this plot and detemine a cut off for amplification.</p>
 <pre class="r"><code>suppressPackageStartupMessages({
 library(dplyr)
 library(data.table)
@@ -393,10 +395,10 @@ library(ggplot2)
 root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
 
 # data directory
-dataDir &lt;- file.path(root_dir, &quot;data&quot;)
+data_dir &lt;- file.path(root_dir, &quot;data&quot;)
 
 # module directory
-moduleDir &lt;- file.path(root_dir, &quot;analyses&quot;,&quot;molecular-subtyping-NBL&quot;)
+module_dir &lt;- file.path(root_dir, &quot;analyses&quot;,&quot;molecular-subtyping-NBL&quot;)
 
 #results directory
 results_dir &lt;- &quot;results&quot;
@@ -455,13 +457,13 @@ if (!dir.exists(plot_dir)) {
 ##   status = col_character(),
 ##   Match_ID = col_character()
 ## )</code></pre>
-<pre class="r"><code>gmkf_patient_clinical_mycn_status_df &lt;- readr::read_tsv(file.path(moduleDir, &quot;input/gmkf_patient_clinical_mycn_status.tsv&quot;),guess_max = 100000)</code></pre>
+<pre class="r"><code>gmkf_patient_clinical_mycn_status_df &lt;- readr::read_tsv(file.path(module_dir, &quot;input/gmkf_patient_clinical_mycn_status.tsv&quot;),guess_max = 100000)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   USI_ID = col_character(),
 ##   GMKF_MYCN_STATUS = col_character()
 ## )</code></pre>
-<pre class="r"><code>target_patient_clinical_mycn_status_df&lt;- readr::read_tsv(file.path(moduleDir, &quot;input/target_patient_clinical_mycn_status.tsv&quot;),guess_max = 100000)</code></pre>
+<pre class="r"><code>target_patient_clinical_mycn_status_df&lt;- readr::read_tsv(file.path(module_dir, &quot;input/target_patient_clinical_mycn_status.tsv&quot;),guess_max = 100000)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   USI_ID = col_character(),
