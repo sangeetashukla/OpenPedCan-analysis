@@ -1774,7 +1774,7 @@ $(document).ready(function () {
 <p>#Load Libraries</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKHtcbmxpYnJhcnkoZHBseXIpXG5saWJyYXJ5KGRhdGEudGFibGUpXG5saWJyYXJ5KHRpZHl2ZXJzZSlcbmxpYnJhcnkoZ2dwbG90Milcbn0pXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoic3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKHtcbmxpYnJhcnkoZHBseXIpXG5saWJyYXJ5KGRhdGEudGFibGUpXG5saWJyYXJ5KHRpZHl2ZXJzZSlcbmxpYnJhcnkoZ2dwbG90Milcbn0pIn0= -->
 <pre class="r"><code>suppressPackageStartupMessages({
 library(dplyr)
 library(data.table)
@@ -1787,25 +1787,25 @@ library(ggplot2)
 <p>#Set up directories</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByb290IGRpcmVjdG9yeVxucm9vdF9kaXIgPC0gcnByb2pyb290OjpmaW5kX3Jvb3QocnByb2pyb290OjpoYXNfZGlyKFxcLmdpdFxcKSlcblxuIyBkYXRhIGRpcmVjdG9yeVxuZGF0YURpciA8LSBmaWxlLnBhdGgocm9vdF9kaXIsIFxcZGF0YVxcKVxuXG4jIG1vZHVsZSBkaXJlY3Rvcnlcbm1vZHVsZURpciA8LSBmaWxlLnBhdGgocm9vdF9kaXIsIFxcYW5hbHlzZXNcXCxcXG1vbGVjdWxhci1zdWJ0eXBpbmctTkJMXFwpXG5cbiNyZXN1bHRzIGRpcmVjdG9yeVxucmVzdWx0c19kaXIgPC0gXFxyZXN1bHRzXFxcbiMgY3JlYXRlIGlmIGRvZXNuJ3QgZXhpc3RcbmlmICghZGlyLmV4aXN0cyhyZXN1bHRzX2RpcikpIHtcbiAgZGlyLmNyZWF0ZShyZXN1bHRzX2Rpcilcbn1cblxuI3Bsb3QgZGlyZWN0b3J5XG5wbG90X2RpciA8LSBcXHBsb3RzXFxcbiMgY3JlYXRlIGlmIGRvZXNuJ3QgZXhpc3RcbmlmICghZGlyLmV4aXN0cyhwbG90X2RpcikpIHtcbiAgZGlyLmNyZWF0ZShwbG90X2Rpcilcbn1cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgcm9vdCBkaXJlY3RvcnkiLCJyb290X2RpciA8LSBycHJvanJvb3Q6OmZpbmRfcm9vdChycHJvanJvb3Q6Omhhc19kaXIoXCIuZ2l0XCIpKSIsIiIsIiMgZGF0YSBkaXJlY3RvcnkiLCJkYXRhRGlyIDwtIGZpbGUucGF0aChyb290X2RpciwgXCJkYXRhXCIpIiwiIiwiIyBtb2R1bGUgZGlyZWN0b3J5IiwibW9kdWxlRGlyIDwtIGZpbGUucGF0aChyb290X2RpciwgXCJhbmFseXNlc1wiLFwibW9sZWN1bGFyLXN1YnR5cGluZy1OQkxcIikiLCIiLCIjcmVzdWx0cyBkaXJlY3RvcnkiLCJyZXN1bHRzX2RpciA8LSBcInJlc3VsdHNcIiIsIiMgY3JlYXRlIGlmIGRvZXNuJ3QgZXhpc3QiLCJpZiAoIWRpci5leGlzdHMocmVzdWx0c19kaXIpKSB7XG4gIGRpci5jcmVhdGUocmVzdWx0c19kaXIpXG59IiwiIiwiI3Bsb3QgZGlyZWN0b3J5IiwicGxvdF9kaXIgPC0gXCJwbG90c1wiIiwiIyBjcmVhdGUgaWYgZG9lc24ndCBleGlzdCIsImlmICghZGlyLmV4aXN0cyhwbG90X2RpcikpIHtcbiAgZGlyLmNyZWF0ZShwbG90X2Rpcilcbn0iXX0= -->
 <pre class="r"><code># root directory
-root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(\.git\))
+root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
 
 # data directory
-dataDir &lt;- file.path(root_dir, \data\)
+dataDir &lt;- file.path(root_dir, &quot;data&quot;)
 
 # module directory
-moduleDir &lt;- file.path(root_dir, \analyses\,\molecular-subtyping-NBL\)
+moduleDir &lt;- file.path(root_dir, &quot;analyses&quot;,&quot;molecular-subtyping-NBL&quot;)
 
 #results directory
-results_dir &lt;- \results\
+results_dir &lt;- &quot;results&quot;
 # create if doesn't exist
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
 #plot directory
-plot_dir &lt;- \plots\
+plot_dir &lt;- &quot;plots&quot;
 # create if doesn't exist
 if (!dir.exists(plot_dir)) {
   dir.create(plot_dir)
@@ -1818,9 +1818,39 @@ if (!dir.exists(plot_dir)) {
 <h1>Read the mycn-nbl file</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuTVlDTl9ERjwtcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChyZXN1bHRzX2RpciwgXFxteWNuX25ibF9zdWJzZXRfZGF0YS50c3ZcXCksZ3Vlc3NfbWF4ID0gMTAwMDAwKVxuYGBgIn0= -->
-<pre class="r"><code>MYCN_DF&lt;-readr::read_tsv(file.path(results_dir, \mycn_nbl_subset_data.tsv\),guess_max = 100000)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiTVlDTl9ERjwtcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChyZXN1bHRzX2RpciwgXCJteWNuX25ibF9zdWJzZXRfZGF0YS50c3ZcIiksZ3Vlc3NfbWF4ID0gMTAwMDAwKSJ9 -->
+<pre class="r"><code>MYCN_DF&lt;-readr::read_tsv(file.path(results_dir, &quot;mycn_nbl_subset_data.tsv&quot;),guess_max = 100000)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgYWdlX2F0X2RpYWdub3Npc19kYXlzID0gY29sX2RvdWJsZSgpLFxuICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IGNvbF9sb2dpY2FsKCksXG4gIE9TX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIFBGU19kYXlzID0gY29sX2RvdWJsZSgpLFxuICBhZ2VfbGFzdF91cGRhdGVfZGF5cyA9IGNvbF9kb3VibGUoKSxcbiAgbW9sZWN1bGFyX3N1YnR5cGUgPSBjb2xfbG9naWNhbCgpLFxuICBjbnNfbWV0aHlsYXRpb25fY2xhc3MgPSBjb2xfbG9naWNhbCgpLFxuICBjbnNfbWV0aHlsYXRpb25fc3ViY2xhc3MgPSBjb2xfbG9naWNhbCgpLFxuICBjbnNfbWV0aHlsYXRpb25fY2xhc3Nfc2NvcmUgPSBjb2xfbG9naWNhbCgpLFxuICBjbnNfbWV0aHlsYXRpb25fc3ViY2xhc3Nfc2NvcmUgPSBjb2xfbG9naWNhbCgpLFxuICBSRl9wdXJpdHlfQUJTT0xVVEUgPSBjb2xfbG9naWNhbCgpLFxuICBSRl9wdXJpdHlfRVNUSU1BVEUgPSBjb2xfbG9naWNhbCgpLFxuICBSRl9wdXJpdHlfTFVNUCA9IGNvbF9sb2dpY2FsKCksXG4gIGhhcm1vbml6ZWRfZGlhZ25vc2lzID0gY29sX2xvZ2ljYWwoKSxcbiAgTm90ZXMgPSBjb2xfbG9naWNhbCgpLFxuICBndGV4X2dyb3VwID0gY29sX2xvZ2ljYWwoKSxcbiAgZ3RleF9zdWJncm91cCA9IGNvbF9sb2dpY2FsKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuICAjIC4uLiB3aXRoIDMgbW9yZSBjb2x1bW5zXG4pXG4ifQ== -->
+<pre><code>Parsed with column specification:
+cols(
+  .default = col_character(),
+  age_at_diagnosis_days = col_double(),
+  integrated_diagnosis = col_logical(),
+  OS_days = col_double(),
+  PFS_days = col_double(),
+  age_last_update_days = col_double(),
+  molecular_subtype = col_logical(),
+  cns_methylation_class = col_logical(),
+  cns_methylation_subclass = col_logical(),
+  cns_methylation_class_score = col_logical(),
+  cns_methylation_subclass_score = col_logical(),
+  RF_purity_ABSOLUTE = col_logical(),
+  RF_purity_ESTIMATE = col_logical(),
+  RF_purity_LUMP = col_logical(),
+  harmonized_diagnosis = col_logical(),
+  Notes = col_logical(),
+  gtex_group = col_logical(),
+  gtex_subgroup = col_logical(),
+  normal_fraction = col_double(),
+  tumor_fraction = col_double(),
+  tumor_ploidy = col_double()
+  # ... with 3 more columns
+)</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<pre><code>See spec(...) for full column specifications.</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1828,36 +1858,36 @@ if (!dir.exists(plot_dir)) {
 <h1>Create dataframe of samples where DNA and RNA IDs match</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDcmVhdGUgTWF0Y2hfSUQgS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCArIFNhbXBsZV9JRCArIENvaG9ydFxuTVlDTl9ERiA8LSBNWUNOX0RGICU+JW11dGF0ZShtYXRjaF9pZCA9IHBhc3RlKEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNhbXBsZV9pZCxjb2hvcnQsc2VwID0gXFxfXFwpKVxuXG4jIEROQSBzYW1wbGVzIGFyZSB0aG9zZSBiZWxvbmdpbmcgdG8gZXhwZXJpbWVudGFsX3N0cmF0ZWd5OiBXR1MsIFdYUywgYW5kIFRhcmdldGVkIFNlcXVlbmNpbmcgIFxuIyBTb21lIHRhcmdldGVkIHNlcXVlbmNpbmcgYWxzbyBoYXZlIFJOQV9MaWJyYXJ5IGFzIFxcZXhvbWUgY2FwdHVyZVxcIHRob3NlIGJpb3NwZWNpbWVucyBhcmUgUk5Bcy5cblxuTVlDTl9kbmFfZGY8LU1ZQ05fREYgJT4lIGZpbHRlcihpcy5uYShSTkFfbGlicmFyeSksZXhwZXJpbWVudGFsX3N0cmF0ZWd5ICVpbiUgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYyhcXFdHU1xcLCBcXFdYU1xcLCBcXFRhcmdldGVkIFNlcXVlbmNpbmdcXCkpICMgMTEwMyBzYW1wbGVzIHNhbXBsZXNcblxuXG5NWUNOX3JuYV9kZjwtTVlDTl9ERiAlPiUgZmlsdGVyKCAoZXhwZXJpbWVudGFsX3N0cmF0ZWd5PT1cXFJOQS1TZXFcXCkgfCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGV4cGVyaW1lbnRhbF9zdHJhdGVneT09XFxUYXJnZXRlZCBTZXF1ZW5jaW5nXFwgJiBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIWlzLm5hKFJOQV9saWJyYXJ5KSkpXG4jIDQwNSBzYW1wbGVzIDM3NCBybmEtc2VxICsgMzEgdGFyZ2V0ZWRfc2VxK2V4b21lX2NhcHR1cmVcblxuIyBSZW5hbWUgdGhlIGNvbHVtbnNcbmNvbG5hbWVzKE1ZQ05fZG5hX2RmKVt3aGljaChuYW1lcyhNWUNOX2RuYV9kZilcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA9PSBcXEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcXCldIDwtIFxcS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkFcXFxuY29sbmFtZXMoTVlDTl9ybmFfZGYpW3doaWNoKG5hbWVzKE1ZQ05fcm5hX2RmKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgID09IFxcS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFxcKV0gPC0gXFxLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX1JOQVxcXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgQ3JlYXRlIE1hdGNoX0lEIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgKyBTYW1wbGVfSUQgKyBDb2hvcnQiLCJNWUNOX0RGIDwtIE1ZQ05fREYgJT4lbXV0YXRlKG1hdGNoX2lkID0gcGFzdGUoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2FtcGxlX2lkLGNvaG9ydCxzZXAgPSBcIl9cIikpIiwiIiwiIyBETkEgc2FtcGxlcyBhcmUgdGhvc2UgYmVsb25naW5nIHRvIGV4cGVyaW1lbnRhbF9zdHJhdGVneTogV0dTLCBXWFMsIGFuZCBUYXJnZXRlZCBTZXF1ZW5jaW5nICAiLCIjIFNvbWUgdGFyZ2V0ZWQgc2VxdWVuY2luZyBhbHNvIGhhdmUgUk5BX0xpYnJhcnkgYXMgXCJleG9tZSBjYXB0dXJlXCIgdGhvc2UgYmlvc3BlY2ltZW5zIGFyZSBSTkFzLiIsIiIsIk1ZQ05fZG5hX2RmPC1NWUNOX0RGICU+JSBmaWx0ZXIoaXMubmEoUk5BX2xpYnJhcnkpLGV4cGVyaW1lbnRhbF9zdHJhdGVneSAlaW4lIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGMoXCJXR1NcIiwgXCJXWFNcIiwgXCJUYXJnZXRlZCBTZXF1ZW5jaW5nXCIpKSAjIDExMDMgc2FtcGxlcyBzYW1wbGVzIiwiIiwiIiwiTVlDTl9ybmFfZGY8LU1ZQ05fREYgJT4lIGZpbHRlciggKGV4cGVyaW1lbnRhbF9zdHJhdGVneT09XCJSTkEtU2VxXCIpIHwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChleHBlcmltZW50YWxfc3RyYXRlZ3k9PVwiVGFyZ2V0ZWQgU2VxdWVuY2luZ1wiICYgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICFpcy5uYShSTkFfbGlicmFyeSkpKSIsIiMgNDA1IHNhbXBsZXMgMzc0IHJuYS1zZXEgKyAzMSB0YXJnZXRlZF9zZXErZXhvbWVfY2FwdHVyZSIsIiIsIiMgUmVuYW1lIHRoZSBjb2x1bW5zIiwiY29sbmFtZXMoTVlDTl9kbmFfZGYpW3doaWNoKG5hbWVzKE1ZQ05fZG5hX2RmKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgID09IFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiKV0gPC0gXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQVwiIiwiY29sbmFtZXMoTVlDTl9ybmFfZGYpW3doaWNoKG5hbWVzKE1ZQ05fcm5hX2RmKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgID09IFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiKV0gPC0gXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX1JOQVwiIl19 -->
 <pre class="r"><code># Create Match_ID Kids_First_Participant_ID + Sample_ID + Cohort
 MYCN_DF &lt;- MYCN_DF %&gt;%mutate(match_id = paste(Kids_First_Participant_ID, 
-                                              sample_id,cohort,sep = \_\))
+                                              sample_id,cohort,sep = &quot;_&quot;))
 
 # DNA samples are those belonging to experimental_strategy: WGS, WXS, and Targeted Sequencing  
-# Some targeted sequencing also have RNA_Library as \exome capture\ those biospecimens are RNAs.
+# Some targeted sequencing also have RNA_Library as &quot;exome capture&quot; those biospecimens are RNAs.
 
 MYCN_dna_df&lt;-MYCN_DF %&gt;% filter(is.na(RNA_library),experimental_strategy %in% 
-                                  c(\WGS\, \WXS\, \Targeted Sequencing\)) # 1103 samples samples
+                                  c(&quot;WGS&quot;, &quot;WXS&quot;, &quot;Targeted Sequencing&quot;)) # 1103 samples samples
 
 
-MYCN_rna_df&lt;-MYCN_DF %&gt;% filter( (experimental_strategy==\RNA-Seq\) | 
-                                   (experimental_strategy==\Targeted Sequencing\ &amp; 
+MYCN_rna_df&lt;-MYCN_DF %&gt;% filter( (experimental_strategy==&quot;RNA-Seq&quot;) | 
+                                   (experimental_strategy==&quot;Targeted Sequencing&quot; &amp; 
                                       !is.na(RNA_library)))
 # 405 samples 374 rna-seq + 31 targeted_seq+exome_capture
 
 # Rename the columns
 colnames(MYCN_dna_df)[which(names(MYCN_dna_df)
-                            == \Kids_First_Biospecimen_ID\)] &lt;- \Kids_First_Biospecimen_ID_DNA\
+                            == &quot;Kids_First_Biospecimen_ID&quot;)] &lt;- &quot;Kids_First_Biospecimen_ID_DNA&quot;
 colnames(MYCN_rna_df)[which(names(MYCN_rna_df)
-                            == \Kids_First_Biospecimen_ID\)] &lt;- \Kids_First_Biospecimen_ID_RNA\</code></pre>
+                            == &quot;Kids_First_Biospecimen_ID&quot;)] &lt;- &quot;Kids_First_Biospecimen_ID_RNA&quot;</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Code Logic: Now find the intersection of MYCN_dna_df and MYCN_rna_df, this will give us a dataframe of matching DNA and RNA biospecimen IDs. We then select specific columns from the joined dataframe for downstream analysis.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuTVlDTl9ETkFfUk5BX0RGIDwtIGlubmVyX2pvaW4oTVlDTl9kbmFfZGYsTVlDTl9ybmFfZGYsIGJ5PVxcbWF0Y2hfaWRcXCkgICMgMzQyIHNhbXBsZXMgXG5cbiAjIFJldGFpbiB0aGUgaW5mb3JtYXRpb24gb2YgUk5BL0ROQSBCaW9zcGVjaW1lbiBJRCwgZ2VuZSBzeW1ib2wsIGNhbmNlciBncm91cCwgXG4gIyBwYXRob2xvZ3kgZnJlZSB0ZXh0IGRpYWdub3NpcywgY29weSBudW1iZXIsIFRQTSBhbmQgc3RhdHVzXG5NWUNOX0ROQV9STkFfRklMVEVSRURfREYgPC0gTVlDTl9ETkFfUk5BX0RGICU+JSBzZWxlY3QoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkEsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9STkEsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRC54LFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQueSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZW5lX3N5bWJvbC54LGdlbmVfc3ltYm9sLnksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGF0aG9sb2d5X2RpYWdub3Npcy54LHBhdGhvbG9neV9kaWFnbm9zaXMueSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMueCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3Npcy55LCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb3B5X251bWJlci54LGNvcHlfbnVtYmVyLnksTVlDTl9UUE0ueCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBNWUNOX1RQTS55LHN0YXR1cy54LHN0YXR1cy55LCBtYXRjaF9pZClcbiMgUmVtb3ZlIGNvbHVtbnMgd2l0aCBubyBpbmZvLCB0aGUgZm9sbG93aW5nIGNvZGUgbG9naWMgaXMgYWRhcHRlZCBmcm9tIFsyXSBcbmVtcHR5X2NvbHVtbnMgPC0gY29sU3Vtcyhpcy5uYShNWUNOX0ROQV9STkFfRklMVEVSRURfREYpIFxuICAgICAgICAgICAgICAgICAgICAgICAgIHwgTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGID09IFxcXFwpID09IG5yb3coTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGKVxuXG4jUmVtb3ZlIGVtcHR5IGNvdWxtbnNcbk1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERjwtIE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERlshZW1wdHlfY29sdW1uc11cblxuI0NoZWNrIGlmIHRoZSBjb3BpZXMgb2YgcGF0aG9sb2d5X2RpYWdub3NpcywgcGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXNtIHN0YXR1cyBhcmUgaWRlbnRpdGljYWwuIFxuI1RoZXNlIGNvcGllcyBhcmUgY3JlYXRlZCBkdWUgdG8gaW5uZXIgam9pbiBvZiBNWUNOX2RuYV9kZiBhbmQgTVlDTl9ybmFfZGZcbnByaW50KGFsbC5lcXVhbChNWUNOX0ROQV9STkFfRklMVEVSRURfREYkcGF0aG9sb2d5X2RpYWdub3Npcy54LFxuICAgICAgICAgICAgICAgIE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiRwYXRob2xvZ3lfZGlhZ25vc2lzLnkpKVxuYGBgIn0= -->
-<pre class="r"><code>MYCN_DNA_RNA_DF &lt;- inner_join(MYCN_dna_df,MYCN_rna_df, by=\match_id\)  # 342 samples 
+<!-- rnb-source-begin eyJkYXRhIjpbIk1ZQ05fRE5BX1JOQV9ERiA8LSBpbm5lcl9qb2luKE1ZQ05fZG5hX2RmLE1ZQ05fcm5hX2RmLCBieT1cIm1hdGNoX2lkXCIpICAjIDM0MiBzYW1wbGVzICIsIiIsIiAjIFJldGFpbiB0aGUgaW5mb3JtYXRpb24gb2YgUk5BL0ROQSBCaW9zcGVjaW1lbiBJRCwgZ2VuZSBzeW1ib2wsIGNhbmNlciBncm91cCwgIiwiICMgcGF0aG9sb2d5IGZyZWUgdGV4dCBkaWFnbm9zaXMsIGNvcHkgbnVtYmVyLCBUUE0gYW5kIHN0YXR1cyIsIk1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiA8LSBNWUNOX0ROQV9STkFfREYgJT4lIHNlbGVjdChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX1JOQSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELngsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRC55LFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlbmVfc3ltYm9sLngsZ2VuZV9zeW1ib2wueSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwYXRob2xvZ3lfZGlhZ25vc2lzLngscGF0aG9sb2d5X2RpYWdub3Npcy55LCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3Npcy54LFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzLnksIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvcHlfbnVtYmVyLngsY29weV9udW1iZXIueSxNWUNOX1RQTS54LFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIE1ZQ05fVFBNLnksc3RhdHVzLngsc3RhdHVzLnksIG1hdGNoX2lkKSIsIiMgUmVtb3ZlIGNvbHVtbnMgd2l0aCBubyBpbmZvLCB0aGUgZm9sbG93aW5nIGNvZGUgbG9naWMgaXMgYWRhcHRlZCBmcm9tIFsyXSAiLCJlbXB0eV9jb2x1bW5zIDwtIGNvbFN1bXMoaXMubmEoTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGKSBcbiAgICAgICAgICAgICAgICAgICAgICAgICB8IE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiA9PSBcIlwiKSA9PSBucm93KE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERikiLCIiLCIjUmVtb3ZlIGVtcHR5IGNvdWxtbnMiLCJNWUNOX0ROQV9STkFfRklMVEVSRURfREY8LSBNWUNOX0ROQV9STkFfRklMVEVSRURfREZbIWVtcHR5X2NvbHVtbnNdIiwiIiwiI0NoZWNrIGlmIHRoZSBjb3BpZXMgb2YgcGF0aG9sb2d5X2RpYWdub3NpcywgcGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXNtIHN0YXR1cyBhcmUgaWRlbnRpdGljYWwuICIsIiNUaGVzZSBjb3BpZXMgYXJlIGNyZWF0ZWQgZHVlIHRvIGlubmVyIGpvaW4gb2YgTVlDTl9kbmFfZGYgYW5kIE1ZQ05fcm5hX2RmIiwicHJpbnQoYWxsLmVxdWFsKE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiRwYXRob2xvZ3lfZGlhZ25vc2lzLngsXG4gICAgICAgICAgICAgICAgTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGJHBhdGhvbG9neV9kaWFnbm9zaXMueSkpIl19 -->
+<pre class="r"><code>MYCN_DNA_RNA_DF &lt;- inner_join(MYCN_dna_df,MYCN_rna_df, by=&quot;match_id&quot;)  # 342 samples 
 
  # Retain the information of RNA/DNA Biospecimen ID, gene symbol, cancer group, 
  # pathology free text diagnosis, copy number, TPM and status
@@ -1873,7 +1903,7 @@ MYCN_DNA_RNA_FILTERED_DF &lt;- MYCN_DNA_RNA_DF %&gt;% select(Kids_First_Biospeci
                                                        MYCN_TPM.y,status.x,status.y, match_id)
 # Remove columns with no info, the following code logic is adapted from [2] 
 empty_columns &lt;- colSums(is.na(MYCN_DNA_RNA_FILTERED_DF) 
-                         | MYCN_DNA_RNA_FILTERED_DF == \\) == nrow(MYCN_DNA_RNA_FILTERED_DF)
+                         | MYCN_DNA_RNA_FILTERED_DF == &quot;&quot;) == nrow(MYCN_DNA_RNA_FILTERED_DF)
 
 #Remove empty coulmns
 MYCN_DNA_RNA_FILTERED_DF&lt;- MYCN_DNA_RNA_FILTERED_DF[!empty_columns]
@@ -1886,46 +1916,46 @@ print(all.equal(MYCN_DNA_RNA_FILTERED_DF$pathology_diagnosis.x,
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRSVUVcbiJ9 -->
 <pre><code>[1] TRUE</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoYWxsLmVxdWFsKE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiRwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3Npcy54LFxuICAgICAgICAgICAgICAgIE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiRwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3Npcy55KSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoicHJpbnQoYWxsLmVxdWFsKE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiRwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3Npcy54LFxuICAgICAgICAgICAgICAgIE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiRwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3Npcy55KSkifQ== -->
 <pre class="r"><code>print(all.equal(MYCN_DNA_RNA_FILTERED_DF$pathology_free_text_diagnosis.x,
                 MYCN_DNA_RNA_FILTERED_DF$pathology_free_text_diagnosis.y))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRSVUVcbiJ9 -->
 <pre><code>[1] TRUE</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoYWxsLmVxdWFsKE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiRLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELngsXG4gICAgICAgICAgICAgICAgTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGJEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQueSkpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoicHJpbnQoYWxsLmVxdWFsKE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiRLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELngsXG4gICAgICAgICAgICAgICAgTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGJEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQueSkpIn0= -->
 <pre class="r"><code>print(all.equal(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Participant_ID.x,
                 MYCN_DNA_RNA_FILTERED_DF$Kids_First_Participant_ID.y))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRSVUVcbiJ9 -->
 <pre><code>[1] TRUE</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBzaW5jZSB0aGV5IGFyZSBpZGVudGljYWwgd2UgY2FuIHJlbW92ZSB0aGUgZHVwbGljYXRlZCBjb2x1bW5zLlxuXG4jIFJlbW92ZSBkdXBsaWNhdGUgY29sdW1ucyBhZnRlciBpbnNwZWN0aW9uXG5kdXBsaWNhdGVfY29sdW1ucyA8LSBjKFxccGF0aG9sb2d5X2RpYWdub3Npcy55XFwsXFxwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3Npcy55XFwsXG4gICAgICAgICAgICAgICAgICAgICAgIFxcS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRC55XFwpXG5NWUNOX0ROQV9STkFfRklMVEVSRURfREY8LU1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERlsgLCAtd2hpY2gobmFtZXMoTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICVpbiUgZHVwbGljYXRlX2NvbHVtbnMpXSAjIDM0MiBzYW1wbGVzIFxuXG5cbiMgUmVuYW1lIHRoZSBjb2x1bW5zIGFwcHJvcHJpYXRlbHkuXG5jb2xuYW1lcyhNWUNOX0ROQV9STkFfRklMVEVSRURfREYpPC1jKFxcS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkFcXCxcXEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfUk5BXFwsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxcS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRFxcLFxcZ2VuZV9zeW1ib2xcXCxcXGNhbmNlcl9ncm91cFxcLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcXHBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzXFwsXFxjb3B5X251bWJlclxcLFxcTVlDTl9UUE1cXCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXFxzdGF0dXNcXCxcXE1hdGNoX0lEXFwpICAgIFxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgc2luY2UgdGhleSBhcmUgaWRlbnRpY2FsIHdlIGNhbiByZW1vdmUgdGhlIGR1cGxpY2F0ZWQgY29sdW1ucy4iLCIiLCIjIFJlbW92ZSBkdXBsaWNhdGUgY29sdW1ucyBhZnRlciBpbnNwZWN0aW9uIiwiZHVwbGljYXRlX2NvbHVtbnMgPC0gYyhcInBhdGhvbG9neV9kaWFnbm9zaXMueVwiLFwicGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMueVwiLFxuICAgICAgICAgICAgICAgICAgICAgICBcIktpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQueVwiKSIsIk1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERjwtTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGWyAsIC13aGljaChuYW1lcyhNWUNOX0ROQV9STkFfRklMVEVSRURfREYpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJWluJSBkdXBsaWNhdGVfY29sdW1ucyldICMgMzQyIHNhbXBsZXMgIiwiIiwiIiwiIyBSZW5hbWUgdGhlIGNvbHVtbnMgYXBwcm9wcmlhdGVseS4iLCJjb2xuYW1lcyhNWUNOX0ROQV9STkFfRklMVEVSRURfREYpPC1jKFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkFcIixcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfUk5BXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRFwiLFwiZ2VuZV9zeW1ib2xcIixcImNhbmNlcl9ncm91cFwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcInBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzXCIsXCJjb3B5X251bWJlclwiLFwiTVlDTl9UUE1cIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJzdGF0dXNcIixcIk1hdGNoX0lEXCIpICAgICJdfQ== -->
 <pre class="r"><code># since they are identical we can remove the duplicated columns.
 
 # Remove duplicate columns after inspection
-duplicate_columns &lt;- c(\pathology_diagnosis.y\,\pathology_free_text_diagnosis.y\,
-                       \Kids_First_Participant_ID.y\)
+duplicate_columns &lt;- c(&quot;pathology_diagnosis.y&quot;,&quot;pathology_free_text_diagnosis.y&quot;,
+                       &quot;Kids_First_Participant_ID.y&quot;)
 MYCN_DNA_RNA_FILTERED_DF&lt;-MYCN_DNA_RNA_FILTERED_DF[ , -which(names(MYCN_DNA_RNA_FILTERED_DF)
                                                              %in% duplicate_columns)] # 342 samples 
 
 
 # Rename the columns appropriately.
-colnames(MYCN_DNA_RNA_FILTERED_DF)&lt;-c(\Kids_First_Biospecimen_ID_DNA\,\Kids_First_Biospecimen_ID_RNA\,
-                                      \Kids_First_Participant_ID\,\gene_symbol\,\cancer_group\,
-                                      \pathology_free_text_diagnosis\,\copy_number\,\MYCN_TPM\,
-                                      \status\,\Match_ID\)    </code></pre>
+colnames(MYCN_DNA_RNA_FILTERED_DF)&lt;-c(&quot;Kids_First_Biospecimen_ID_DNA&quot;,&quot;Kids_First_Biospecimen_ID_RNA&quot;,
+                                      &quot;Kids_First_Participant_ID&quot;,&quot;gene_symbol&quot;,&quot;cancer_group&quot;,
+                                      &quot;pathology_free_text_diagnosis&quot;,&quot;copy_number&quot;,&quot;MYCN_TPM&quot;,
+                                      &quot;status&quot;,&quot;Match_ID&quot;)    </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Code Logic: In MYCN_DNA_RNA_FILTERED_DF we want to find the repeating Kids_First_Biospecimen_ID_DNA We do not need to check for repeating Kids_First_Biospecimen_ID_RNA as all the DNA and RNA IDs are matched in MYCN_DNA_RNA_FILTERED_DF. Therefore if we find a repeating DNA ID, we will also find its corresponding RNA ID which will also be repeating.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBXZSB3aWxsIGNoZWNrIG9ubHkgcmVwZWF0aW5nIEROQSBJRHMgYXMgdGhlIHJlY29yZHMgdW5pcXVlIGluIE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiBcbiMgd2hlbiB3ZSBxdWVyeSB0aGVtIHdpdGggRE5BIElEcyArIFJOQSBJRHMuIFxuTVlDTl9UYWJsZSA8LSBhcy5kYXRhLmZyYW1lKHRhYmxlKE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiRLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQSkpXG5jb2xuYW1lcyhNWUNOX1RhYmxlKTwtIGMoXFxLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQVxcLCBcXEZyZXFcXClcbk1ZQ05fVGFibGUkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkE8LWFzLmNoYXJhY3RlcihNWUNOX1RhYmxlJEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfRE5BKVxuaW5kZXhfcmVwZWF0cyA8LSB3aGljaChNWUNOX1RhYmxlJEZyZXE+MSlcbnJlcGVhdGVkX2lkcyA8LSBNWUNOX1RhYmxlJEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfRE5BW2luZGV4X3JlcGVhdHNdXG5mb3IgKGl0ZXIgaW4gMTpsZW5ndGgocmVwZWF0ZWRfaWRzKSlcbiAgcHJpbnQoTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGW01ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiRLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPT1yZXBlYXRlZF9pZHNbaXRlcl0sXSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgV2Ugd2lsbCBjaGVjayBvbmx5IHJlcGVhdGluZyBETkEgSURzIGFzIHRoZSByZWNvcmRzIHVuaXF1ZSBpbiBNWUNOX0ROQV9STkFfRklMVEVSRURfREYgIiwiIyB3aGVuIHdlIHF1ZXJ5IHRoZW0gd2l0aCBETkEgSURzICsgUk5BIElEcy4gIiwiTVlDTl9UYWJsZSA8LSBhcy5kYXRhLmZyYW1lKHRhYmxlKE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiRLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQSkpIiwiY29sbmFtZXMoTVlDTl9UYWJsZSk8LSBjKFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkFcIiwgXCJGcmVxXCIpIiwiTVlDTl9UYWJsZSRLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQTwtYXMuY2hhcmFjdGVyKE1ZQ05fVGFibGUkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkEpIiwiaW5kZXhfcmVwZWF0cyA8LSB3aGljaChNWUNOX1RhYmxlJEZyZXE+MSkiLCJyZXBlYXRlZF9pZHMgPC0gTVlDTl9UYWJsZSRLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQVtpbmRleF9yZXBlYXRzXSIsImZvciAoaXRlciBpbiAxOmxlbmd0aChyZXBlYXRlZF9pZHMpKVxuICBwcmludChNWUNOX0ROQV9STkFfRklMVEVSRURfREZbTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGJEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfRE5BXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9PXJlcGVhdGVkX2lkc1tpdGVyXSxdKSJdfQ== -->
 <pre class="r"><code># We will check only repeating DNA IDs as the records unique in MYCN_DNA_RNA_FILTERED_DF 
 # when we query them with DNA IDs + RNA IDs. 
 MYCN_Table &lt;- as.data.frame(table(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA))
-colnames(MYCN_Table)&lt;- c(\Kids_First_Biospecimen_ID_DNA\, \Freq\)
+colnames(MYCN_Table)&lt;- c(&quot;Kids_First_Biospecimen_ID_DNA&quot;, &quot;Freq&quot;)
 MYCN_Table$Kids_First_Biospecimen_ID_DNA&lt;-as.character(MYCN_Table$Kids_First_Biospecimen_ID_DNA)
 index_repeats &lt;- which(MYCN_Table$Freq&gt;1)
 repeated_ids &lt;- MYCN_Table$Kids_First_Biospecimen_ID_DNA[index_repeats]
@@ -1972,19 +2002,19 @@ for (iter in 1:length(repeated_ids))
 <p>Code Logic: We find that there are four DNA IDs which are repeating. For the record TARGET-30-PAPVFD-01A-01D retaining the record with status Neutral and copynumber 3 For the record TARGET-30-PASXRG-01A-01D retaining the record with copy number 14 For the records BS_0XC02E11 and BS_1F8J25Q1 we see that in their repeating copies all column values except for their aliquot_id are different. We remove the rows with aliquot_ids of ET_FD9T78QE_DGD_FUSIP_29 for the time being, in each sample.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGb3IgcmVjb3JkcyBCU18wWEMwMkUxMSBhbmQgQlNfMUY4SjI1UTEgdHdvIHNhbXBsZXMgYXJlIHRoZXJlLCBkaWZmZXJpbmcgaW4gYWxpcXVvdF9pZC55XG5yb3dzX3RvX2RlbGV0ZV9NWUNOIDwtIGMod2hpY2goTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGJEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfRE5BXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPT1cXFRBUkdFVC0zMC1QQVBWRkQtMDFBLTAxRFxcICYgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBNWUNOX0ROQV9STkFfRklMVEVSRURfREYkY29weV9udW1iZXI9PTIpLFxuICAgICAgICAgICAgICAgICAgICAgICAgd2hpY2goTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGJEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfRE5BXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9PVxcVEFSR0VULTMwLVBBU1hSRy0wMUEtMDFEXFwgJiBNWUNOX0ROQV9STkFfRklMVEVSRURfREYkY29weV9udW1iZXI9PTQpKVxuXG5yb3dzX3RvX2RlbGV0ZV9NWUNOX0RHRF8xPC13aGljaChNWUNOX0ROQV9STkFfRklMVEVSRURfREYkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkFcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgID09XFxCU18wWEMwMkUxMVxcKSBbMl0gIyByZW1vdmUgRVRfRkQ5VDc4UUVfREdEX0ZVU0lQXzI5XG5cbnJvd3NfdG9fZGVsZXRlX01ZQ05fREdEXzI8LXdoaWNoKE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiRLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPT1cXEJTXzFGOEoyNVExXFwpIFsyXSAjIEVUX0ZEOVQ3OFFFX0RHRF9GVVNJUF8yOSBcblxuIyAzMzggc2FtcGxlcyAzNDItIDQgKHJlcGVhdGluZyBzYW1wbGVzKSA9IDMzOFxuTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGPC0gTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGWy1jKHJvd3NfdG9fZGVsZXRlX01ZQ04sXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcm93c190b19kZWxldGVfTVlDTl9ER0RfMSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByb3dzX3RvX2RlbGV0ZV9NWUNOX0RHRF8yKSxdIFxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgRm9yIHJlY29yZHMgQlNfMFhDMDJFMTEgYW5kIEJTXzFGOEoyNVExIHR3byBzYW1wbGVzIGFyZSB0aGVyZSwgZGlmZmVyaW5nIGluIGFsaXF1b3RfaWQueSIsInJvd3NfdG9fZGVsZXRlX01ZQ04gPC0gYyh3aGljaChNWUNOX0ROQV9STkFfRklMVEVSRURfREYkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkFcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9PVwiVEFSR0VULTMwLVBBUFZGRC0wMUEtMDFEXCIgJiBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiRjb3B5X251bWJlcj09MiksXG4gICAgICAgICAgICAgICAgICAgICAgICB3aGljaChNWUNOX0ROQV9STkFfRklMVEVSRURfREYkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkFcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgID09XCJUQVJHRVQtMzAtUEFTWFJHLTAxQS0wMURcIiAmIE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiRjb3B5X251bWJlcj09NCkpIiwiIiwicm93c190b19kZWxldGVfTVlDTl9ER0RfMTwtd2hpY2goTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGJEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfRE5BXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9PVwiQlNfMFhDMDJFMTFcIikgWzJdICMgcmVtb3ZlIEVUX0ZEOVQ3OFFFX0RHRF9GVVNJUF8yOSIsIiIsInJvd3NfdG9fZGVsZXRlX01ZQ05fREdEXzI8LXdoaWNoKE1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiRLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPT1cIkJTXzFGOEoyNVExXCIpIFsyXSAjIEVUX0ZEOVQ3OFFFX0RHRF9GVVNJUF8yOSAiLCIiLCIjIDMzOCBzYW1wbGVzIDM0Mi0gNCAocmVwZWF0aW5nIHNhbXBsZXMpID0gMzM4IiwiTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGPC0gTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGWy1jKHJvd3NfdG9fZGVsZXRlX01ZQ04sXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcm93c190b19kZWxldGVfTVlDTl9ER0RfMSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByb3dzX3RvX2RlbGV0ZV9NWUNOX0RHRF8yKSxdICJdfQ== -->
 <pre class="r"><code># For records BS_0XC02E11 and BS_1F8J25Q1 two samples are there, differing in aliquot_id.y
 rows_to_delete_MYCN &lt;- c(which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA
-                               ==\TARGET-30-PAPVFD-01A-01D\ &amp; 
+                               ==&quot;TARGET-30-PAPVFD-01A-01D&quot; &amp; 
                                  MYCN_DNA_RNA_FILTERED_DF$copy_number==2),
                         which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA
-                              ==\TARGET-30-PASXRG-01A-01D\ &amp; MYCN_DNA_RNA_FILTERED_DF$copy_number==4))
+                              ==&quot;TARGET-30-PASXRG-01A-01D&quot; &amp; MYCN_DNA_RNA_FILTERED_DF$copy_number==4))
 
 rows_to_delete_MYCN_DGD_1&lt;-which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA
-                                 ==\BS_0XC02E11\) [2] # remove ET_FD9T78QE_DGD_FUSIP_29
+                                 ==&quot;BS_0XC02E11&quot;) [2] # remove ET_FD9T78QE_DGD_FUSIP_29
 
 rows_to_delete_MYCN_DGD_2&lt;-which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA
-                                 ==\BS_1F8J25Q1\) [2] # ET_FD9T78QE_DGD_FUSIP_29 
+                                 ==&quot;BS_1F8J25Q1&quot;) [2] # ET_FD9T78QE_DGD_FUSIP_29 
 
 # 338 samples 342- 4 (repeating samples) = 338
 MYCN_DNA_RNA_FILTERED_DF&lt;- MYCN_DNA_RNA_FILTERED_DF[-c(rows_to_delete_MYCN,
@@ -1996,7 +2026,7 @@ MYCN_DNA_RNA_FILTERED_DF&lt;- MYCN_DNA_RNA_FILTERED_DF[-c(rows_to_delete_MYCN,
 <p>Code Logic: Plot TPMs vs Biospecimen for samples that have both DNA and RNA IDs. Only plot those biospecimens that have a TPM value.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI1NlbGVjdCByZWxldmFudCBpbmZvXG5NWUNOX1Bsb3RfZGYgPC0gTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGICU+JSBmaWx0ZXIoIWlzLm5hKE1ZQ05fVFBNKSkgJT4lXG4gIHNlbGVjdCAoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkEsTVlDTl9UUE0sc3RhdHVzKSBcblxuIyBSZWZlcmVkIGNvZGUgZnJvbSBbNV1cbmJhcl9wbG90MTwtTVlDTl9QbG90X2RmICU+JSBcbiAgYXJyYW5nZShNWUNOX1RQTSkgJT4lIFxuICBtdXRhdGUoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkEgPSBmYWN0b3IoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkEsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdW5pcXVlKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfRE5BKSkpICU+JVxuICBnZ3Bsb3QoKSArYWVzKHg9S2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkEsIHk9TVlDTl9UUE0sIGZpbGw9c3RhdHVzKStcbiAgZ2VvbV9iYXIocG9zaXRpb249XFxkb2RnZVxcLHN0YXQ9XFxpZGVudGl0eVxcKStcbiAgdGhlbWUoYXhpcy50ZXh0LnggPSBlbGVtZW50X3RleHQoc2l6ZSA9IDUsIGFuZ2xlID0gNDUsIGhqdXN0ID0gMSkpXG5cblxucGxvdF9maWxlIDwtIGZpbGUucGF0aChwbG90X2RpciwgXFxUUE1fQmlvc3BlY2ltZW5fTWF0Y2hpbmcucG5nXFwpXG5nZ3NhdmUoZmlsZW5hbWUgPSBwbG90X2ZpbGUsd2lkdGggPSA0NSwgaGVpZ2h0ID0gMjApXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiNTZWxlY3QgcmVsZXZhbnQgaW5mbyIsIk1ZQ05fUGxvdF9kZiA8LSBNWUNOX0ROQV9STkFfRklMVEVSRURfREYgJT4lIGZpbHRlcighaXMubmEoTVlDTl9UUE0pKSAlPiVcbiAgc2VsZWN0IChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQSxNWUNOX1RQTSxzdGF0dXMpICIsIiIsIiMgUmVmZXJlZCBjb2RlIGZyb20gWzVdIiwiYmFyX3Bsb3QxPC1NWUNOX1Bsb3RfZGYgJT4lIFxuICBhcnJhbmdlKE1ZQ05fVFBNKSAlPiUgXG4gIG11dGF0ZShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQSA9IGZhY3RvcihLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1bmlxdWUoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkEpKSkgJT4lXG4gIGdncGxvdCgpICthZXMoeD1LaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQSwgeT1NWUNOX1RQTSwgZmlsbD1zdGF0dXMpK1xuICBnZW9tX2Jhcihwb3NpdGlvbj1cImRvZGdlXCIsc3RhdD1cImlkZW50aXR5XCIpK1xuICB0aGVtZShheGlzLnRleHQueCA9IGVsZW1lbnRfdGV4dChzaXplID0gNSwgYW5nbGUgPSA0NSwgaGp1c3QgPSAxKSkiLCIiLCIiLCJwbG90X2ZpbGUgPC0gZmlsZS5wYXRoKHBsb3RfZGlyLCBcIlRQTV9CaW9zcGVjaW1lbl9NYXRjaGluZy5wbmdcIikiLCJnZ3NhdmUoZmlsZW5hbWUgPSBwbG90X2ZpbGUsd2lkdGggPSA0NSwgaGVpZ2h0ID0gMjApIl19 -->
 <pre class="r"><code>#Select relevant info
 MYCN_Plot_df &lt;- MYCN_DNA_RNA_FILTERED_DF %&gt;% filter(!is.na(MYCN_TPM)) %&gt;%
   select (Kids_First_Biospecimen_ID_DNA,MYCN_TPM,status) 
@@ -2007,11 +2037,11 @@ bar_plot1&lt;-MYCN_Plot_df %&gt;%
   mutate(Kids_First_Biospecimen_ID_DNA = factor(Kids_First_Biospecimen_ID_DNA, 
                                                 unique(Kids_First_Biospecimen_ID_DNA))) %&gt;%
   ggplot() +aes(x=Kids_First_Biospecimen_ID_DNA, y=MYCN_TPM, fill=status)+
-  geom_bar(position=\dodge\,stat=\identity\)+
+  geom_bar(position=&quot;dodge&quot;,stat=&quot;identity&quot;)+
   theme(axis.text.x = element_text(size = 5, angle = 45, hjust = 1))
 
 
-plot_file &lt;- file.path(plot_dir, \TPM_Biospecimen_Matching.png\)
+plot_file &lt;- file.path(plot_dir, &quot;TPM_Biospecimen_Matching.png&quot;)
 ggsave(filename = plot_file,width = 45, height = 20)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -2019,10 +2049,10 @@ ggsave(filename = plot_file,width = 45, height = 20)</code></pre>
 <p>Write the table containing mycn-nbl biospecimen with matched DNA and RNA Ids, dna only and rna only biospecimens files into results dir</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuTVlDTl9ETkFfUk5BX0ZJTFRFUkVEX0RGJT4lcmVhZHI6OndyaXRlX3RzdihmaWxlLnBhdGgocmVzdWx0c19kaXIsIFxcbXljbl9uYmxfbWF0Y2hlZF9iaW9zcGVjaW1lbi50c3ZcXCkpXG5NWUNOX2RuYV9kZiAlPiVyZWFkcjo6d3JpdGVfdHN2KGZpbGUucGF0aChyZXN1bHRzX2RpciwgXFxteWNuX25ibF9kbmFfYmlvc3BlY2ltZW4udHN2XFwpKVxuTVlDTl9ybmFfZGYgJT4lcmVhZHI6OndyaXRlX3RzdihmaWxlLnBhdGgocmVzdWx0c19kaXIsIFxcbXljbl9uYmxfcm5hX2Jpb3NwZWNpbWVuLnRzdlxcKSlcbmBgYCJ9 -->
-<pre class="r"><code>MYCN_DNA_RNA_FILTERED_DF%&gt;%readr::write_tsv(file.path(results_dir, \mycn_nbl_matched_biospecimen.tsv\))
-MYCN_dna_df %&gt;%readr::write_tsv(file.path(results_dir, \mycn_nbl_dna_biospecimen.tsv\))
-MYCN_rna_df %&gt;%readr::write_tsv(file.path(results_dir, \mycn_nbl_rna_biospecimen.tsv\))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbIk1ZQ05fRE5BX1JOQV9GSUxURVJFRF9ERiU+JXJlYWRyOjp3cml0ZV90c3YoZmlsZS5wYXRoKHJlc3VsdHNfZGlyLFwibXljbl9uYmxfbWF0Y2hlZF9iaW9zcGVjaW1lbi50c3ZcIikpIiwiTVlDTl9kbmFfZGYgJT4lcmVhZHI6OndyaXRlX3RzdihmaWxlLnBhdGgocmVzdWx0c19kaXIsXCJteWNuX25ibF9kbmFfYmlvc3BlY2ltZW4udHN2XCIpKSIsIk1ZQ05fcm5hX2RmICU+JXJlYWRyOjp3cml0ZV90c3YoZmlsZS5wYXRoKHJlc3VsdHNfZGlyLFwibXljbl9uYmxfcm5hX2Jpb3NwZWNpbWVuLnRzdlwiKSkiXX0= -->
+<pre class="r"><code>MYCN_DNA_RNA_FILTERED_DF%&gt;%readr::write_tsv(file.path(results_dir,&quot;mycn_nbl_matched_biospecimen.tsv&quot;))
+MYCN_dna_df %&gt;%readr::write_tsv(file.path(results_dir,&quot;mycn_nbl_dna_biospecimen.tsv&quot;))
+MYCN_rna_df %&gt;%readr::write_tsv(file.path(results_dir,&quot;mycn_nbl_rna_biospecimen.tsv&quot;))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 </div>

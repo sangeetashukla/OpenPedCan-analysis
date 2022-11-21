@@ -4,6 +4,20 @@ author: "Aditya Lahiri, Eric Wafula, Jo Lynne Rokita"
 date: "10/13/2022"
 output: html_notebook
 ---
+In this notebook we load the table `results/mycn_nbl_subset_data.tsv` and find the biospecimens which
+have matched DNA and RNA IDs. We store these biospecimens as a table in 
+`results/mycn_nbl_matched_biospecimen.tsv`.  The script also creates two tables 
+`results/mycn_nbl_dna_biospecimen.tsv` and `results/mycn_nbl_rna_biospecimen.tsv` which contain 
+biospecimens whose `Kids_First_Biospecimen_ID` are either DNA or RNA respectively. 
+
+The notebook also plots the TPMs vs Kids_First_Biospecimen_ID for biospecimens with matched DNA and
+RNA IDs. We overlay the consensus status call for each of the biospecimens in this plot.
+
+Line 148-198 of the script locate the biospecimens which exactly the same DNA nad RNA IDs 
+but differing copy number, status or aliquot_id. We retain only the relevant datapoints, as in 
+the final subtyping table we would like to have only unique biospecimens. 
+
+
 #Load Libraries
 
 ```{r load libraries}

@@ -4,8 +4,16 @@ author: "Aditya Lahiri, Eric Wafula, Jo Lynne Rokita"
 date: "10/13/2022"
 output: html_notebook
 ---
-Objective: This notebook loads the histology file and selects the NBL biospecimen by filtering for tumor only
+Objective: This notebook loads the histology file and selects the NBL biospecimen by filtering the
+following columns for specific values:
+`sample_type`: `Tumor`
+`experimental_strategy`:`WGS`, `WXS`,`Targeted Sequencing` and `RNA-Seq`
+`pathology_diagnosis`: `Neuroblastoma`, `Ganglioneuroblastoma`,`Ganglioneuroblastoma, nodular`,
+`Ganglioneuroblastoma, intermixed`, and 
+`Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated`
 
+After filtering the histology file, for the resultant biospecimens we integrate the MYCN consensus 
+and TPM infortmation in the table `results/mycn_nbl_subset_data.tsv`.
 
 #Load Libraries
 
@@ -27,7 +35,7 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 
 # module directory
-moduleDir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
+module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
 
 #results directory
 results_dir <- "results"

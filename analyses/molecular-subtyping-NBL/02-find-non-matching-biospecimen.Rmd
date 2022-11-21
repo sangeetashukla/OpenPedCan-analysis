@@ -4,6 +4,18 @@ output: html_document
 author: "Aditya Lahiri, Eric Wafula, Jo Lynne Rokita"
 date: "10/13/2022"
 ---
+In this notebook we find the find the biospecimens which do not have matched DNA and RNA IDs. 
+We create a dataframe for these biospecimens called `MYCN_non_match_df` which has all the necessary
+infromation required for performing subtyping. We concatenate this `MYCN_non_match_df` with the table
+`results/mycn_nbl_matched_biospecimen.tsv` and joined table called 
+`results/alteration_table_without_subtype.tsv` which contains the list of all the NBL-MYCN 
+biospecimens that need to subtpyped. 
+
+The notebook also plots the TPM vs Kids_First_Biospecimen_IDs for all the biospecimens for which there
+is a TPM value. We overlay the consensus status call for each of the biospecimens in this plot and
+detemine a cut off for amplification. 
+
+
 ```{r load libraries}
 suppressPackageStartupMessages({
 library(dplyr)
@@ -19,10 +31,10 @@ library(ggplot2)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # data directory
-dataDir <- file.path(root_dir, "data")
+data_dir <- file.path(root_dir, "data")
 
 # module directory
-moduleDir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
+module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
 
 #results directory
 results_dir <- "results"
@@ -51,9 +63,9 @@ We will load the following files
 MYCN_DF<-readr::read_tsv(file.path(results_dir, "mycn_nbl_subset_data.tsv"),guess_max = 100000)
 MYCN_DNA_RNA_FILTERED_DF<-readr::read_tsv(file.path(results_dir,"mycn_nbl_matched_biospecimen.tsv"),guess_max = 100000)
 
-gmkf_patient_clinical_mycn_status_df <- readr::read_tsv(file.path(moduleDir, "input/gmkf_patient_clinical_mycn_status.tsv"),guess_max = 100000)
+gmkf_patient_clinical_mycn_status_df <- readr::read_tsv(file.path(module_dir, "input/gmkf_patient_clinical_mycn_status.tsv"),guess_max = 100000)
 
-target_patient_clinical_mycn_status_df<- readr::read_tsv(file.path(moduleDir, "input/target_patient_clinical_mycn_status.tsv"),guess_max = 100000)
+target_patient_clinical_mycn_status_df<- readr::read_tsv(file.path(module_dir, "input/target_patient_clinical_mycn_status.tsv"),guess_max = 100000)
 
 MYCN_dna_df<-readr::read_tsv(file.path(results_dir, "mycn_nbl_dna_biospecimen.tsv"),guess_max = 100000)
 MYCN_rna_df<-readr::read_tsv(file.path(results_dir, "mycn_nbl_rna_biospecimen.tsv"),guess_max = 100000)

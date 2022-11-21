@@ -1,0 +1,115 @@
+---
+title: "04-QC Checks"
+author: "Aditya Lahiri, Eric Wafula, Jo Lynne Rokita"
+date: "11/14/2022"
+output: html_notebook
+---
+
+This notebook performs QC check for TARGET and GMKF samples and stores results in the table
+`results/qc_table.tsv
+
+#Load Libraries
+
+```{r load libraries}
+library(dplyr)
+library(data.table)
+library(tidyverse)
+```
+
+#Set up directories
+```{r setup directories}
+# root directory
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# data directory
+data_dir <- file.path(root_dir, "data")
+
+# module directory
+module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
+
+#results directory
+results_dir <- "results"
+# create if doesn't exist
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+
+```
+
+# QC Check
+```{r}
+hist_df<-readr::read_tsv(file.path(data_dir, "histologies-base.tsv"),guess_max = 100000)
+alteration_subtyped_df<-readr::read_tsv(file.path(results_dir, "alteration_table_with_subtype.tsv"),
+                               guess_max = 100000)
+
+TARGET<- hist_df %>% filter(cohort=="TARGET",pathology_diagnosis %in% 
+                               c("Neuroblastoma", "Ganglioneuroblastoma",
+                                 "Ganglioneuroblastoma, nodular",
+                                 "Ganglioneuroblastoma, intermixed",
+                                 "Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated"),
+                            experimental_strategy=="WXS") 
+
+GMKF<- hist_df %>% filter(cohort=="GMKF",pathology_diagnosis %in%
+                             c("Neuroblastoma", "Ganglioneuroblastoma",
+                               "Ganglioneuroblastoma, nodular",
+                               "Ganglioneuroblastoma, intermixed",
+                               "Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated"),
+                           experimental_strategy=="WGS") 
+
+TARGET <- TARGET %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,sample_id,
+                              cohort,experimental_strategy)
+GMKF <- GMKF %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,sample_id,
+                          cohort,experimental_strategy)
+
+QC_df <- inner_join(GMKF,TARGET, by= c("Kids_First_Participant_ID","sample_id"))
+
+QC_df <-  QC_df %>% select(Kids_First_Biospecimen_ID.x,Kids_First_Biospecimen_ID.y,
+                           Kids_First_Participant_ID,sample_id,cohort.x,cohort.y,
+                           experimental_strategy.x,experimental_strategy.y)
+
+colnames(QC_df)<- c("Kids_First_Biospecimen_ID_GMKF","Kids_First_Biospecimen_ID_TARGET",
+                        "Kids_First_Participant_ID","sample_id","cohort_GMKF","cohort_TARGET",
+                        "experimental_strategy_GMKF","experimental_strategy_Target")
+
+QC_df$TPM_GMKF<-NA
+QC_df$TPM_Target<-NA
+
+QC_df$status_GMKF<-NA
+QC_df$status_Target<-NA
+
+QC_df$subtype_GMKF<-NA
+QC_df$subtype_Target<-NA
+
+for (iter in 1:dim(QC_df)[1]){
+  index_gmkf <- which(alteration_subtyped_df$Kids_First_Biospecimen_ID_DNA == 
+                        QC_df$Kids_First_Biospecimen_ID_GMKF[iter])
+  index_target <- which(alteration_subtyped_df$Kids_First_Biospecimen_ID_DNA == 
+                          QC_df$Kids_First_Biospecimen_ID_TARGET[iter])
+
+  if(length(index_gmkf) ==0 ){
+    index_gmkf <- which(alteration_subtyped_df$Kids_First_Biospecimen_ID_RNA ==
+                          QC_df$Kids_First_Biospecimen_ID_GMKF[iter])
+  }
+  QC_df$TPM_GMKF[iter]<- alteration_subtyped_df$MYCN_TPM[index_gmkf]
+  QC_df$status_GMKF[iter]<- alteration_subtyped_df$status[index_gmkf]
+  QC_df$subtype_GMKF[iter]<- alteration_subtyped_df$subtype[index_gmkf]
+  
+  if(length(index_target) ==0 ){
+    index_target <- which(alteration_subtyped_df$Kids_First_Biospecimen_ID_RNA == 
+                            QC_df$Kids_First_Biospecimen_ID_TARGET[iter])
+  }
+  QC_df$TPM_Target[iter]<- alteration_subtyped_df$MYCN_TPM[index_target]
+  QC_df$status_Target[iter]<- alteration_subtyped_df$status[index_target]
+  QC_df$subtype_Target[iter]<- alteration_subtyped_df$subtype[index_target]
+}
+
+```
+
+
+ Write the table
+```{r write alteration table}
+QC_df%>%readr::write_tsv(file.path(results_dir, "qc_table.tsv"))
+```
+
+
+

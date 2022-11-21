@@ -1,29 +1,28 @@
 ---
-title: "01-subtyping"
+title: "03-subtyping"
 author: "Aditya Lahiri, Eric Wafula, Jo Lynne Rokita"
 date: "11/14/2022"
 output: html_notebook
 ---
 # Objective
 To molecularly subtype neuroblastoma, ganglioneuroblastoma, and ganglioneuroma samples into MYCN 
-amplified or MYCN non-amplified. This script loads the table `Alteration_Table.tsv` from the 
-intermediate folder and subtypes the biospecimens based on the six subtyping
-criteria (refer to the module readme). This script generates a table called `subtype_table`, 
+amplified or MYCN non-amplified. This script loads the table 
+`results/alteration_table_without_subtype.tsv`and subtypes the biospecimens based on the six
+subtyping criteria (refer to the module readme). This script generates a table called `subtype_table`, 
 which contains the subtypes for each of the biospecimens in the table `alteration_df`.
-`subtype_table` is saved as `NBL_MYCN_Subtype.tsv` in the results directory. 
+`subtype_table` is saved as `neuroblastoma_molecular_subtypes.tsv` in the results directory. 
 
 Furthermore, this script also creates the following additional result files:
-1. `alteration_table_without_subtype.tsv`: this table is contains all the biospecimens  for neuroblastama,
-ganglioneuroblastoma, and ganglioneuroma which need to be subptyped, however, the subtypes are 
-annotated in this file. Unlike the table `NBL_MYCN_Subtype.tsv` which has `NA` 
-in the `subtype` column for biospecimens for which the subtyping could not be performed,this 
-table (`alteration_table_without_subtype.tsv`) specifies the reasons for why the particular biospecimen could not 
-be subtyped. 
+1. `results/alteration_table_with_subtype.tsv`: this table is contains all the biospecimens  
+for neuroblastama, ganglioneuroblastoma, and ganglioneuroma which need to be subptyped, however, 
+the subtypes for some the biospecimens are annotated in a more descriptive manner in this file. 
+Unlike the table `neuroblastoma_molecular_subtypes.tsv` which has `NA` in the `subtype` column 
+for biospecimens for which the subtyping could not be performed, this table specifies the reasons 
+for why the particular biospecimen could not be subtyped. 
 
 2. `Subtypes_Based_On_Cutoff.tsv`: this table contains the biospecimens that were 
 subtyped based on a TPM threshold (cutoff).
 
-3. `QC_table.tsv`: QC Check table for TARGET and GMKF samples
  
 
 #Load Libraries
@@ -42,10 +41,10 @@ library(ggplot2)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # data directory
-dataDir <- file.path(root_dir, "data")
+data_dir <- file.path(root_dir, "data")
 
 # module directory
-moduleDir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
+module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
 
 #results directory
 results_dir <- "results"
@@ -60,12 +59,6 @@ if (!dir.exists(util_dir)) {
   dir.create(util_dir)
 }
 
-#intermediate directory
-intermediate_dir <- "intermediate"
-if (!dir.exists(intermediate_dir)) {
-  dir.create(intermediate_dir)
-}
-
 #plot directory
 plot_dir <- "plots"
 # create if doesn't exist
@@ -78,15 +71,15 @@ if (!dir.exists(plot_dir)) {
 
 # source function to  plot of the chromosome 2 segment mean for a particular biospecimen
 ```{r source function to plot chromosome 2 segment mean for given biospecimen}
-source(file.path(moduleDir,"util", "plot_chr2.R"))
+source(file.path(module_dir,"util", "plot_chr2.R"))
 ```
 
 # Load files and set the cutoff based on the plot in TPM_Biospecimen_All_Samples_With_TMP.png
 ```{r}
 alteration_df<-readr::read_tsv(file.path(results_dir, "alteration_table_without_subtype.tsv"),
                                guess_max = 100000)
-cnv_cnvkit_df<-readr::read_tsv(file.path(dataDir, "cnv-cnvkit.seg.gz"),guess_max = 100000)
-hist_df<-readr::read_tsv(file.path(dataDir, "histologies-base.tsv"),guess_max = 100000)
+cnv_cnvkit_df<-readr::read_tsv(file.path(data_dir, "cnv-cnvkit.seg.gz"),guess_max = 100000)
+hist_df<-readr::read_tsv(file.path(data_dir, "histologies-base.tsv"),guess_max = 100000)
 Suggested_Cutoff<-140.83 # TARGET-30-PAMEZH-01A-01R	
 ```
 
@@ -305,10 +298,10 @@ subtype_table<-subtype_table[order(subtype_table$subtype),]
 
  Write the table
 ```{r write alteration table}
-alteration_df%>%readr::write_tsv(file.path(results_dir, "Alteration_Table.tsv"))
+alteration_df%>%readr::write_tsv(file.path(results_dir, "alteration_table_with_subtype.tsv"))
 df_tpm%>%readr::write_tsv(file.path(results_dir, "Subtypes_Based_On_Cutoff.tsv"))
 QC_df%>%readr::write_tsv(file.path(results_dir, "QC_table.tsv"))
-subtype_table%>%readr::write_tsv(file.path(results_dir, "NBL_MYCN_Subtype.tsv"))
+subtype_table%>%readr::write_tsv(file.path(results_dir, "neuroblastoma_molecular_subtypes.tsv"))
 ```
 
 
