@@ -420,7 +420,7 @@ stopifnot(all(rna_ec_htl_df$Kids_First_Biospecimen_ID %in% colnames(tpm_df)))
 
 
 # gene symbol to ENSG id table
-gid_gsb_tbl <- read_tsv('../../data/ensg-hugo-pmtl-mapping.tsv',
+gid_gsb_tbl <- read_tsv('../../data/ensg-hugo-mapping.tsv',
                         col_types = cols(.default = col_guess()),
                         guess_max = 10000) %>%
   filter(ensg_id != "Symbol_Not_Found") %>%
