@@ -117,7 +117,7 @@ annotate_long_format_table <- function(
     # no column to add, so return the input table
     return(long_format_table)
   }
-  available_ann_columns <- c(Gene_type", "OncoKB_cancer_gene",
+  available_ann_columns <- c("Gene_type", "OncoKB_cancer_gene",
                              "OncoKB_oncogene_TSG", "Gene_full_name",
                              "Protein_RefSeq_ID", "EFO", "MONDO",
                              "GTEx_tissue_group_UBERON",
