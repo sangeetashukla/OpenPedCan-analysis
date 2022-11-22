@@ -7,18 +7,19 @@ output: html_notebook
 # Objective
 To molecularly subtype neuroblastoma, ganglioneuroblastoma, and ganglioneuroma samples into MYCN 
 amplified or MYCN non-amplified. This script loads the table 
-`results/alteration_table_without_molecular_subtype.tsv`and molecular_subtypes the biospecimens based on the six
-subtyping criteria (refer to the module readme). This script generates a table called `molecular_subtype_table`, 
-which contains the molecular_subtypes for each of the biospecimens in the table `alteration_df`.
-`molecular_subtype_table` is saved as `neuroblastoma_molecular_molecular_subtypes.tsv` in the results directory. 
+`results/alteration_table_without_molecular_subtype.tsv`and molecular_subtypes the biospecimens based
+on the six subtyping criteria (refer to the module readme). This script generates a table 
+called `molecular_subtype_table`, which contains the molecular_subtypes for each of the biospecimens
+in the table `alteration_df`.`molecular_subtype_table` is saved as 
+`neuroblastoma_molecular_molecular_subtypes.tsv` in the results directory. 
 
 Furthermore, this script also creates the following additional result files:
 1. `results/alteration_table_with_molecular_subtype.tsv`: this table is contains all the biospecimens  
 for neuroblastama, ganglioneuroblastoma, and ganglioneuroma which need to be subptyped, however, 
-the molecular_subtypes for some the biospecimens are annotated in a more descriptive manner in this file. 
-Unlike the table `neuroblastoma_molecular_molecular_subtypes.tsv` which has `NA` in the `molecular_subtype` column 
-for biospecimens for which the subtyping could not be performed, this table specifies the reasons 
-for why the particular biospecimen could not be molecular_subtyped. 
+the molecular_subtypes for some the biospecimens are annotated in a more descriptive manner in this
+file. Unlike the table `neuroblastoma_molecular_molecular_subtypes.tsv` which has `NA` in
+the `molecular_subtype` column for biospecimens for which the subtyping could not be performed,
+this table specifies the reasons for why the particular biospecimen could not be molecular_subtyped. 
 
 2. `molecular_subtypes_Based_On_Cutoff.tsv`: this table contains the biospecimens that were 
 molecular_subtyped based on a TPM threshold (cutoff).
@@ -88,16 +89,19 @@ Suggested_Cutoff<-140.83 # TARGET-30-PAMEZH-01A-01R
 
 Code Logic: Start the subtyping on alteration_df. Here are subtyping criteria: 
 case 1:
-If pathology_free_text_diagnosis is amplification and MYCN_CN_status is amplification assign molecular_subtype 
-as "NBL, MYCN amplified"
+If pathology_free_text_diagnosis is amplification and MYCN_CN_status is amplification assign 
+molecular_subtype as "NBL, MYCN amplified"
 case 2:
-If pathology_free_text_diagnosis is non-amp and MYCN_CN_status is amplification assign molecular_subtype 
-as "NBL, MYCN amplified"
+If pathology_free_text_diagnosis is non-amp and MYCN_CN_status is amplification assign 
+molecular_subtype as "NBL, MYCN amplified"
 case 3:
 If pathology_free_text_diagnosis is non-amp and MYCN_CN_status is non-amp assign molecular_subtype
 as "NBL, MYCN non-amplified"
 ```{r Subtyping: when match is found and when call is amp and pathology free text is non amp}
+
 alteration_df$molecular_subtype<-NA_character_ # Create a molecular_subtype column 
+
+#Assign subtypes for case 1, case 2, and case 3
 alteration_df<-alteration_df %>%mutate(molecular_subtype = 
                                          case_when(MYCN_CN_status =="amplification" &
                                                      pathology_free_text_diagnosis=="MYCN amp"
@@ -122,9 +126,10 @@ First we find such cases and then plot thier segmean vs location plots.
 # If MYCN is called non-amplified but clinical file says amplified, plot the CNV data 
 # to visualize whether we see focal amplification but the CNV was not called. 
 
+#Find indices for case 4 when `MYCN_CN_status` is non-amp and `pathology_free_text_diagnosis` is amp
 index_clinical_amplified <- which(alteration_df$MYCN_CN_status %in% c("gain","loss","neutral")  
                                   & alteration_df$pathology_free_text_diagnosis=="MYCN amp")
-
+# Find the biospecimen IDs for case 4
 clincal_amplified_IDs <- alteration_df$Kids_First_Biospecimen_ID_DNA[index_clinical_amplified]
 
 
