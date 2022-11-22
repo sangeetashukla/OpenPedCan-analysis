@@ -89,7 +89,7 @@ jobs:
             openpbta_subset: 0
             
           - name: Molecular Subtyping - NBL
-            entrypoint: molecular-subtyping-NBL/run_nbl_subtyping.sh
+            entrypoint: molecular-subtyping-NBL/run-molecular-subtyping-NBL.sh
 
           - name: Molecular Subtyping - PATHOLOGY/COMPILE
             entrypoint: molecular-subtyping-pathology/run-subtyping-aggregation.sh
