@@ -1,4 +1,4 @@
-Kids_First_Biospecimen_ID_GMKF	Kids_First_Biospecimen_ID_TARGET	Kids_First_Participant_ID	sample_id	cohort_GMKF	cohort_TARGET	experimental_strategy_GMKF	experimental_strategy_Target	TPM_GMKF	TPM_Target	status_GMKF	status_Target	subtype_GMKF	subtype_Target
+Kids_First_Biospecimen_ID_GMKF	Kids_First_Biospecimen_ID_TARGET	Kids_First_Participant_ID	sample_id	cohort_GMKF	cohort_TARGET	experimental_strategy_GMKF	experimental_strategy_Target	MYCN_TPM_GMKF	MYCN_TPM_Target	MYCN_status_GMKF	MYCN_status_Target	molecular_subtype_GMKF	molecular_subtype_Target
 BS_2N95EW0G	TARGET-30-PASXIE-01A-01D	PASXIE	01	GMKF	TARGET	WGS	WXS	485.27	1399.01	NA	gain	NBL, MYCN amplified	NBL, MYCN amplified
 BS_2P6MH05V	TARGET-30-PATGLU-01A-01D	PATGLU	01	GMKF	TARGET	WGS	WXS	NA	56.8	gain	gain	NBL, MYCN non-amplified	NBL, MYCN non-amplified
 BS_8XDZQKSD	TARGET-30-PASWYR-01A-01D	PASWYR	01	GMKF	TARGET	WGS	WXS	334.91	1165.28	gain	amplification	NBL, MYCN amplified	NBL, MYCN amplified

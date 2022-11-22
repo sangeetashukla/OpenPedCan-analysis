@@ -39,7 +39,7 @@ if (!dir.exists(results_dir)) {
 # QC Check
 ```{r}
 hist_df<-readr::read_tsv(file.path(data_dir, "histologies-base.tsv"),guess_max = 100000)
-alteration_subtyped_df<-readr::read_tsv(file.path(results_dir, "alteration_table_with_subtype.tsv"),
+alteration_subtyped_df<-readr::read_tsv(file.path(results_dir, "alteration_table_with_molecular_subtype.tsv"),
                                guess_max = 100000)
 
 TARGET<- hist_df %>% filter(cohort=="TARGET",pathology_diagnosis %in% 
@@ -71,14 +71,14 @@ colnames(QC_df)<- c("Kids_First_Biospecimen_ID_GMKF","Kids_First_Biospecimen_ID_
                         "Kids_First_Participant_ID","sample_id","cohort_GMKF","cohort_TARGET",
                         "experimental_strategy_GMKF","experimental_strategy_Target")
 
-QC_df$TPM_GMKF<-NA
-QC_df$TPM_Target<-NA
+QC_df$MYCN_TPM_GMKF<-NA
+QC_df$MYCN_TPM_Target<-NA
 
-QC_df$status_GMKF<-NA
-QC_df$status_Target<-NA
+QC_df$MYCN_status_GMKF<-NA
+QC_df$MYCN_status_Target<-NA
 
-QC_df$subtype_GMKF<-NA
-QC_df$subtype_Target<-NA
+QC_df$MYCN_subtype_GMKF<-NA
+QC_df$MYCN_subtype_Target<-NA
 
 for (iter in 1:dim(QC_df)[1]){
   index_gmkf <- which(alteration_subtyped_df$Kids_First_Biospecimen_ID_DNA == 
@@ -90,17 +90,17 @@ for (iter in 1:dim(QC_df)[1]){
     index_gmkf <- which(alteration_subtyped_df$Kids_First_Biospecimen_ID_RNA ==
                           QC_df$Kids_First_Biospecimen_ID_GMKF[iter])
   }
-  QC_df$TPM_GMKF[iter]<- alteration_subtyped_df$MYCN_TPM[index_gmkf]
-  QC_df$status_GMKF[iter]<- alteration_subtyped_df$status[index_gmkf]
-  QC_df$subtype_GMKF[iter]<- alteration_subtyped_df$subtype[index_gmkf]
+  QC_df$MYCN_TPM_GMKF[iter]<- alteration_subtyped_df$MYCN_TPM[index_gmkf]
+  QC_df$MYCN_status_GMKF[iter]<- alteration_subtyped_df$MYCN_CN_status[index_gmkf]
+  QC_df$molecular_subtype_GMKF[iter]<- alteration_subtyped_df$molecular_subtype[index_gmkf]
   
   if(length(index_target) ==0 ){
     index_target <- which(alteration_subtyped_df$Kids_First_Biospecimen_ID_RNA == 
                             QC_df$Kids_First_Biospecimen_ID_TARGET[iter])
   }
-  QC_df$TPM_Target[iter]<- alteration_subtyped_df$MYCN_TPM[index_target]
-  QC_df$status_Target[iter]<- alteration_subtyped_df$status[index_target]
-  QC_df$subtype_Target[iter]<- alteration_subtyped_df$subtype[index_target]
+  QC_df$MYCN_TPM_Target[iter]<- alteration_subtyped_df$MYCN_TPM[index_target]
+  QC_df$MYCN_status_Target[iter]<- alteration_subtyped_df$MYCN_CN_status[index_target]
+  QC_df$molecular_subtype_Target[iter]<- alteration_subtyped_df$molecular_subtype[index_target]
 }
 
 ```

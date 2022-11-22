@@ -1,4 +1,4 @@
-Kids_First_Biospecimen_ID_DNA	Kids_First_Biospecimen_ID_RNA	Kids_First_Participant_ID	gene_symbol	cancer_group	pathology_free_text_diagnosis	copy_number	MYCN_TPM	status	Match_ID
+Kids_First_Biospecimen_ID_DNA	Kids_First_Biospecimen_ID_RNA	Kids_First_Participant_ID	gene_symbol	cancer_group	pathology_free_text_diagnosis	MYCN_CN	MYCN_TPM	MYCN_CN_status	Match_ID
 BS_4NPEMNAD	BS_DY88N5ZT	PT_DFCZAG9T	MYCN	Neuroblastoma	Metastatic secondary tumors;Neuroblastoma	100	83.29	amplification	PT_DFCZAG9T_7316-224_PBTA
 BS_5J5VH3X0	BS_2SHWPB5P	PT_FZHGKJ0H	NA	Ganglioneuroblastoma	ganglioneuroblastoma, stage ii favorable histology non n-myc amplified	NA	0.13	NA	PT_FZHGKJ0H_7316-4034_PBTA
 BS_CK7CPM73	BS_NFRXNAFE	PT_RXT6KRR6	NA	Ganglioneuroblastoma	ganglioneuroblastoma	NA	4.08	NA	PT_RXT6KRR6_7316-3147_PBTA

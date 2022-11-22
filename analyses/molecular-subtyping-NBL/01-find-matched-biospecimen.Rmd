@@ -35,10 +35,10 @@ library(ggplot2)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # data directory
-dataDir <- file.path(root_dir, "data")
+data_dir <- file.path(root_dir, "data")
 
 # module directory
-moduleDir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
+module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
 
 #results directory
 results_dir <- "results"
@@ -111,8 +111,8 @@ MYCN_DNA_RNA_FILTERED_DF <- MYCN_DNA_RNA_DF %>% select(Kids_First_Biospecimen_ID
                                                        pathology_diagnosis.x,pathology_diagnosis.y, 
                                                        pathology_free_text_diagnosis.x,
                                                        pathology_free_text_diagnosis.y, 
-                                                       copy_number.x,copy_number.y,MYCN_TPM.x,
-                                                       MYCN_TPM.y,status.x,status.y, match_id)
+                                                       MYCN_CN.x,MYCN_CN.y,MYCN_TPM.x,
+                                                       MYCN_TPM.y,MYCN_CN_status.x,MYCN_CN_status.y, match_id)
 # Remove columns with no info, the following code logic is adapted from [2] 
 empty_columns <- colSums(is.na(MYCN_DNA_RNA_FILTERED_DF) 
                          | MYCN_DNA_RNA_FILTERED_DF == "") == nrow(MYCN_DNA_RNA_FILTERED_DF)
@@ -142,8 +142,8 @@ MYCN_DNA_RNA_FILTERED_DF<-MYCN_DNA_RNA_FILTERED_DF[ , -which(names(MYCN_DNA_RNA_
 # Rename the columns appropriately.
 colnames(MYCN_DNA_RNA_FILTERED_DF)<-c("Kids_First_Biospecimen_ID_DNA","Kids_First_Biospecimen_ID_RNA",
                                       "Kids_First_Participant_ID","gene_symbol","cancer_group",
-                                      "pathology_free_text_diagnosis","copy_number","MYCN_TPM",
-                                      "status","Match_ID")    
+                                      "pathology_free_text_diagnosis","MYCN_CN","MYCN_TPM",
+                                      "MYCN_CN_status","Match_ID")    
 ```
 
 
@@ -180,9 +180,9 @@ ET_FD9T78QE_DGD_FUSIP_29 for the time being, in each sample.
 # For records BS_0XC02E11 and BS_1F8J25Q1 two samples are there, differing in aliquot_id.y
 rows_to_delete_MYCN <- c(which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA
                                =="TARGET-30-PAPVFD-01A-01D" & 
-                                 MYCN_DNA_RNA_FILTERED_DF$copy_number==2),
+                                 MYCN_DNA_RNA_FILTERED_DF$MYCN_CN==2),
                         which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA
-                              =="TARGET-30-PASXRG-01A-01D" & MYCN_DNA_RNA_FILTERED_DF$copy_number==4))
+                              =="TARGET-30-PASXRG-01A-01D" & MYCN_DNA_RNA_FILTERED_DF$MYCN_CN==4))
 
 rows_to_delete_MYCN_DGD_1<-which(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA
                                  =="BS_0XC02E11") [2] # remove ET_FD9T78QE_DGD_FUSIP_29
@@ -202,19 +202,19 @@ that have a TPM value.
 ```{r make TPM vs Biospecimen plot for samples with matched DNA and RNA IDs}
 #Select relevant info
 MYCN_Plot_df <- MYCN_DNA_RNA_FILTERED_DF %>% filter(!is.na(MYCN_TPM)) %>%
-  select (Kids_First_Biospecimen_ID_DNA,MYCN_TPM,status) 
+  select (Kids_First_Biospecimen_ID_DNA,MYCN_TPM,MYCN_CN_status) 
 
 # Refered code from [5]
 bar_plot1<-MYCN_Plot_df %>% 
   arrange(MYCN_TPM) %>% 
   mutate(Kids_First_Biospecimen_ID_DNA = factor(Kids_First_Biospecimen_ID_DNA, 
                                                 unique(Kids_First_Biospecimen_ID_DNA))) %>%
-  ggplot() +aes(x=Kids_First_Biospecimen_ID_DNA, y=MYCN_TPM, fill=status)+
+  ggplot() +aes(x=Kids_First_Biospecimen_ID_DNA, y=MYCN_TPM, fill=MYCN_CN_status)+
   geom_bar(position="dodge",stat="identity")+
   theme(axis.text.x = element_text(size = 5, angle = 45, hjust = 1))
 
 
-plot_file <- file.path(plot_dir, "TPM_Biospecimen_Matching.png")
+plot_file <- file.path(plot_dir, "tpm_biospecimen_matching.png")
 ggsave(filename = plot_file,width = 45, height = 20)
 ```
 

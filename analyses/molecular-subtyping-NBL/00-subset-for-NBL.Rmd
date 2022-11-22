@@ -129,6 +129,12 @@ TPM_MYCN_data <- tibble::rownames_to_column(TPM_MYCN_data, "Kids_First_Biospecim
 MYCN_DF<- left_join(MYCN_DF,TPM_MYCN_data, by="Kids_First_Biospecimen_ID") 
 ```
 
+```{r rename columns to make tables informative}
+MYCN_DF <- MYCN_DF %>% rename(MYCN_CN_status= status)
+MYCN_DF <- MYCN_DF %>% rename(MYCN_CN= copy_number)
+```
+
+
 # Write the mycn-nbl biospecimen file into results dir
 ```{r write alteration table}
 MYCN_DF%>%readr::write_tsv(file.path(results_dir, "mycn_nbl_subset_data.tsv"))

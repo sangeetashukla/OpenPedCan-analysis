@@ -1,4 +1,4 @@
-Kids_First_Biospecimen_ID_DNA	Kids_First_Biospecimen_ID_RNA	MYCN_TPM	copy_number	status	pathology_free_text_diagnosis	subtype
+Kids_First_Biospecimen_ID_DNA	Kids_First_Biospecimen_ID_RNA	MYCN_TPM	MYCN_CN	MYCN_CN_status	pathology_free_text_diagnosis	molecular_subtype
 BS_4NPEMNAD	BS_DY88N5ZT	83.29	100	amplification	Metastatic secondary tumors;Neuroblastoma	NBL, MYCN non-amplified
 BS_5J5VH3X0	BS_2SHWPB5P	0.13	NA	NA	ganglioneuroblastoma, stage ii favorable histology non n-myc amplified	NBL, MYCN non-amplified
 BS_CK7CPM73	BS_NFRXNAFE	4.08	NA	NA	ganglioneuroblastoma	NBL, MYCN non-amplified
@@ -354,7 +354,7 @@ BS_42Y9E1Q8	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
 BS_4D9SK48F	NA	NA	75	amplification	MYCN amp	NBL, MYCN amplified
 BS_4G4PK2D4	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
 BS_4J4MVGTR	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
-BS_4WSW3X49	NA	NA	3	gain	MYCN amp	Pathology-amp,Status-non-amp,TPM-NA
+BS_4WSW3X49	NA	NA	3	gain	MYCN amp	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 BS_4ZE1R1FW	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
 BS_55AHFCX4	NA	NA	NA	NA	MYCN amp	Unclassified due to insufficient info
 BS_55PH1SAS	NA	NA	4	gain	MYCN non-amp	NBL, MYCN non-amplified
@@ -362,7 +362,7 @@ BS_56CA6BFQ	NA	NA	72	amplification	MYCN amp	NBL, MYCN amplified
 BS_59BAHXTQ	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
 BS_5PEA35TB	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
 BS_65F8T6N7	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
-BS_6K2SSJ77	NA	NA	3	gain	MYCN amp	Pathology-amp,Status-non-amp,TPM-NA
+BS_6K2SSJ77	NA	NA	3	gain	MYCN amp	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 BS_75HW641M	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
 BS_7NXB23C9	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
 BS_7S8KSFRC	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
@@ -398,7 +398,7 @@ BS_D9BP1QN2	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
 BS_DAX3YVG0	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
 BS_DHC9SHF6	NA	NA	3	gain	MYCN non-amp	NBL, MYCN non-amplified
 BS_E2EXBFN7	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
-BS_E4V8XN3G	NA	NA	3	gain	MYCN amp	Pathology-amp,Status-non-amp,TPM-NA
+BS_E4V8XN3G	NA	NA	3	gain	MYCN amp	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 BS_E7CRT00M	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
 BS_EE2YW499	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
 BS_EQE447QB	NA	NA	3	gain	MYCN non-amp	NBL, MYCN non-amplified
@@ -460,7 +460,7 @@ BS_VGAKW5G6	NA	NA	3	gain	MYCN non-amp	NBL, MYCN non-amplified
 BS_W05MC7QG	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
 BS_W2BC0CVT	NA	NA	622	amplification	MYCN amp	NBL, MYCN amplified
 BS_WKPJ7S74	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
-BS_WMM0MP1J	NA	NA	4	gain	MYCN amp	Pathology-amp,Status-non-amp,TPM-NA
+BS_WMM0MP1J	NA	NA	4	gain	MYCN amp	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 BS_WSD8PV27	NA	NA	NA	NA	MYCN amp	Unclassified due to insufficient info
 BS_WSK7MH3C	NA	NA	NA	NA	MYCN amp	Unclassified due to insufficient info
 BS_WVMWHF4P	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
@@ -490,7 +490,7 @@ TARGET-30-PAKHCF-01A-01W	NA	NA	3	gain	MYCN non-amp	NBL, MYCN non-amplified
 TARGET-30-PAKHHB-01A-01W	NA	NA	84	amplification	MYCN amp	NBL, MYCN amplified
 TARGET-30-PAKIPY-01A-01W	NA	NA	2	neutral	MYCN non-amp	NBL, MYCN non-amplified
 TARGET-30-PAKJRE-01A-01W	NA	NA	2	neutral	MYCN non-amp	NBL, MYCN non-amplified
-TARGET-30-PAKVUY-01A-01D	NA	NA	2	neutral	MYCN amp	Pathology-amp,Status-non-amp,TPM-NA
+TARGET-30-PAKVUY-01A-01D	NA	NA	2	neutral	MYCN amp	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 TARGET-30-PAKXDZ-01A-01W	NA	NA	37	amplification	MYCN amp	NBL, MYCN amplified
 TARGET-30-PAKZRE-01A-01W	NA	NA	43	amplification	MYCN amp	NBL, MYCN amplified
 TARGET-30-PAKZRF-01A-01W	NA	NA	3	loss	NA	Unclassified due to insufficient info
@@ -512,7 +512,7 @@ TARGET-30-PALXMM-01A-01W	NA	NA	1	loss	MYCN non-amp	NBL, MYCN non-amplified
 TARGET-30-PALZRG-01A-01W	NA	NA	57	amplification	MYCN amp	NBL, MYCN amplified
 TARGET-30-PALZSL-01A-01W	NA	NA	69	amplification	MYCN amp	NBL, MYCN amplified
 TARGET-30-PAMBAC-01A-01W	NA	NA	101	amplification	MYCN amp	NBL, MYCN amplified
-TARGET-30-PAMCXF-01A-01W	NA	NA	2	loss	MYCN amp	Pathology-amp,Status-non-amp,TPM-NA
+TARGET-30-PAMCXF-01A-01W	NA	NA	2	loss	MYCN amp	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 TARGET-30-PAMDAL-01A-01W	NA	NA	50	amplification	MYCN amp	NBL, MYCN amplified
 TARGET-30-PAMMWD-01A-01W	NA	NA	260	amplification	MYCN amp	NBL, MYCN amplified
 TARGET-30-PAMNYX-01A-01D	NA	NA	2	loss	MYCN non-amp	NBL, MYCN non-amplified
@@ -521,7 +521,7 @@ TARGET-30-PAMVLG-01A-01D	NA	NA	3	neutral	MYCN non-amp	NBL, MYCN non-amplified
 TARGET-30-PANBCI-01A-01W	NA	NA	28	amplification	MYCN amp	NBL, MYCN amplified
 TARGET-30-PANIPC-06A-01W	NA	NA	35	amplification	MYCN amp	NBL, MYCN amplified
 TARGET-30-PANPVI-01A-01W	NA	NA	2	loss	MYCN non-amp	NBL, MYCN non-amplified
-TARGET-30-PANUKV-01A-01W	NA	NA	2	neutral	MYCN amp	Pathology-amp,Status-non-amp,TPM-NA
+TARGET-30-PANUKV-01A-01W	NA	NA	2	neutral	MYCN amp	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 TARGET-30-PANYBL-01A-01W	NA	NA	2	neutral	MYCN non-amp	NBL, MYCN non-amplified
 TARGET-30-PAPBJT-01A-01W	NA	NA	2	loss	MYCN non-amp	NBL, MYCN non-amplified
 TARGET-30-PAPNEP-01A-01W	NA	NA	42	amplification	MYCN amp	NBL, MYCN amplified
@@ -545,11 +545,11 @@ TARGET-30-PARCRR-01A-01D	NA	NA	3	gain	MYCN non-amp	NBL, MYCN non-amplified
 TARGET-30-PARDVT-01A-01D	NA	NA	3	neutral	MYCN non-amp	NBL, MYCN non-amplified
 TARGET-30-PARDYU-01A-01D	NA	NA	213	amplification	MYCN amp	NBL, MYCN amplified
 TARGET-30-PAREAG-01A-01D	NA	NA	2	neutral	MYCN non-amp	NBL, MYCN non-amplified
-TARGET-30-PARETE-01A-01D	NA	NA	2	loss	MYCN amp	Pathology-amp,Status-non-amp,TPM-NA
+TARGET-30-PARETE-01A-01D	NA	NA	2	loss	MYCN amp	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 TARGET-30-PARGHY-01A-01D	NA	NA	2	neutral	MYCN non-amp	NBL, MYCN non-amplified
-TARGET-30-PARGZK-01A-01D	NA	NA	2	neutral	MYCN amp	Pathology-amp,Status-non-amp,TPM-NA
-TARGET-30-PARHDE-01A-01D	NA	NA	2	neutral	MYCN amp	Pathology-amp,Status-non-amp,TPM-NA
-TARGET-30-PARHUX-01A-01D	NA	NA	3	gain	MYCN amp	Pathology-amp,Status-non-amp,TPM-NA
+TARGET-30-PARGZK-01A-01D	NA	NA	2	neutral	MYCN amp	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
+TARGET-30-PARHDE-01A-01D	NA	NA	2	neutral	MYCN amp	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
+TARGET-30-PARHUX-01A-01D	NA	NA	3	gain	MYCN amp	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 TARGET-30-PARJEN-01A-01D	NA	NA	35	amplification	MYCN amp	NBL, MYCN amplified
 TARGET-30-PARJMX-01A-01D	NA	NA	2	neutral	MYCN non-amp	NBL, MYCN non-amplified
 TARGET-30-PARKAG-01A-01D	NA	NA	99	amplification	MYCN amp	NBL, MYCN amplified
@@ -684,7 +684,7 @@ TARGET-30-PASJWA-01A-01D	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficie
 TARGET-30-PASJWG-01A-01D	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
 TARGET-30-PASJWU-01A-01D	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
 TARGET-30-PASKCS-01A-01D	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
-TARGET-30-PASKFV-01A-01D	NA	NA	3	gain	MYCN amp	Pathology-amp,Status-non-amp,TPM-NA
+TARGET-30-PASKFV-01A-01D	NA	NA	3	gain	MYCN amp	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 TARGET-30-PASKKZ-01A-01D	NA	NA	NA	NA	MYCN amp	Unclassified due to insufficient info
 TARGET-30-PASKNK-01A-01D	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info
 TARGET-30-PASKPC-01A-01D	NA	NA	NA	NA	MYCN non-amp	Unclassified due to insufficient info

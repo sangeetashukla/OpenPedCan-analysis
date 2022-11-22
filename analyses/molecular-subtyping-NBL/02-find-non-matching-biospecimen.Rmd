@@ -141,15 +141,15 @@ DNA_only_MYCN_df<- MYCN_DF %>% filter(Kids_First_Biospecimen_ID %in%
                                         DNA_IDs_MYCN_Non_Match$Kids_First_Biospecimen_ID_DNA)
 
 DNA_only_MYCN_df <- DNA_only_MYCN_df %>% select(Kids_First_Biospecimen_ID,
-                                                Kids_First_Participant_ID,MYCN_TPM,copy_number,
-                                                status,pathology_free_text_diagnosis)  # 763 samples 
+                                                Kids_First_Participant_ID,MYCN_TPM,MYCN_CN,
+                                                MYCN_CN_status,pathology_free_text_diagnosis)  # 763 samples 
 colnames(DNA_only_MYCN_df)[1]<- "Kids_First_Biospecimen_ID_DNA"
 
 # An extra sample is created due to copy number and status variation TARGET-30-PAMDAL-01A-01W	
 # Retain the sample with high copy number 
 index_dna_only <- which(DNA_only_MYCN_df$Kids_First_Biospecimen_ID_DNA=="TARGET-30-PAMDAL-01A-01W" 
-                        & DNA_only_MYCN_df$copy_number==3 &
-                        DNA_only_MYCN_df$status=="neutral")
+                        & DNA_only_MYCN_df$MYCN_CN==3 &
+                        DNA_only_MYCN_df$MYCN_CN_status=="neutral")
 
 DNA_only_MYCN_df<- DNA_only_MYCN_df[-c(index_dna_only),]
 
@@ -157,7 +157,7 @@ RNA_only_MYCN_df<- MYCN_DF %>% filter(Kids_First_Biospecimen_ID %in%
                                         RNA_IDs_MYCN_Non_Match$Kids_First_Biospecimen_ID_RNA)
 
 RNA_only_MYCN_df <- RNA_only_MYCN_df %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,
-                                                MYCN_TPM,copy_number,status,
+                                                MYCN_TPM,MYCN_CN,MYCN_CN_status,
                                                 pathology_free_text_diagnosis) # 68 samples
 colnames(RNA_only_MYCN_df)[1]<- "Kids_First_Biospecimen_ID_RNA"
 
@@ -184,7 +184,7 @@ the dataframe containing matched DNA and RNA IDs in MYCN_DNA_RNA_FILTERED_DF.
 alteration_df <- MYCN_DNA_RNA_FILTERED_DF %>% select(Kids_First_Biospecimen_ID_DNA,
                                                      Kids_First_Biospecimen_ID_RNA,
                                                      Kids_First_Participant_ID,
-                                                     MYCN_TPM,copy_number,MYCN_TPM,status,
+                                                     MYCN_TPM,MYCN_CN,MYCN_TPM,MYCN_CN_status,
                                                      pathology_free_text_diagnosis) 
 
 # concatenate matched DNA and RNA IDs with DNA only and RNA only dfs. 
@@ -215,7 +215,7 @@ alteration_df<-alteration_df%>% mutate(pathology=coalesce(pathology_free_text_di
                                                           pathology_free_text_diagnosis_target))
 
 alteration_df<-alteration_df %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,                            
-                                        MYCN_TPM,copy_number,MYCN_TPM,status,pathology)
+                                        MYCN_TPM,MYCN_CN,MYCN_TPM,MYCN_CN_status,pathology)
 
 colnames(alteration_df)[6]<- "pathology_free_text_diagnosis"
 
@@ -235,7 +235,7 @@ bar_plot2<-plot_alteration_df %>%
   arrange(MYCN_TPM) %>% 
   mutate(Kids_First_Biospecimen_ID = factor(Kids_First_Biospecimen_ID, 
                                             unique(Kids_First_Biospecimen_ID))) %>%
-  ggplot() +aes(x=Kids_First_Biospecimen_ID, y=MYCN_TPM, fill=status)+
+  ggplot() +aes(x=Kids_First_Biospecimen_ID, y=MYCN_TPM, fill=MYCN_CN_status)+
   geom_bar(position="dodge",stat="identity")+
   theme(axis.text.x = element_text(size = 2, angle = 45, hjust = 1))
 bar_plot2
@@ -244,12 +244,12 @@ Suggested_Cutoff<-140.83 # TARGET-30-PAMEZH-01A-01R
 bar_plot2+ geom_hline(aes(yintercept=Suggested_Cutoff,linetype = "Suggested Amp Cutoff"),
                       color = "black",size=2) #TARGET-30-PAPKXS-01A-01D	
 
-plot_file <- file.path(plot_dir, "TPM_Biospecimen_All_Samples_With_TMP.png")
+plot_file <- file.path(plot_dir, "tpm_biospecimen_all_samples_with_tpm.png")
 ggsave(filename = plot_file,width = 49, height = 20)
 ```
 
 
 Write NBL-MYCN biospecimen to subtyped into the results folder
 ```{r}
-alteration_df%>%readr::write_tsv(file.path(results_dir, "alteration_table_without_subtype.tsv"))
+alteration_df%>%readr::write_tsv(file.path(results_dir, "alteration_table_without_molecular_subtype.tsv"))
 ```
