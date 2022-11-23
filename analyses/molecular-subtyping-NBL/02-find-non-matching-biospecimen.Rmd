@@ -194,13 +194,16 @@ RNA_only_MYCN_df <- RNA_only_MYCN_df %>% select(Kids_First_Biospecimen_ID,Kids_F
                                                 MYCN_TPM,MYCN_CN,MYCN_CN_status,
                                                 pathology_free_text_diagnosis) # 68 samples
 colnames(RNA_only_MYCN_df)[1]<- "Kids_First_Biospecimen_ID_RNA"
+```
 
-
+```{r chunk 6}
 # Add biospecimen_dna_id and biospecimen_rna_id accordingly
 
-DNA_only_MYCN_df$Kids_First_Biospecimen_ID_RNA<- NA_character_
-RNA_only_MYCN_df$Kids_First_Biospecimen_ID_DNA<- NA_character_
+DNA_only_MYCN_df$Kids_First_Biospecimen_ID_RNA<- NA
+RNA_only_MYCN_df$Kids_First_Biospecimen_ID_DNA<- NA
+```
 
+```{r}
 # Rearrange the columns to make it look like MYCN_DNA_RNA_FILTERED_DF
 DNA_only_MYCN_df<- DNA_only_MYCN_df[,c(1,7,2:6)] 
 RNA_only_MYCN_df<- RNA_only_MYCN_df[,c(7,1:6)] 
