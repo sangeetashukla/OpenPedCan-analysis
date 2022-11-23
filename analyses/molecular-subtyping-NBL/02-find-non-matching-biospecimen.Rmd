@@ -198,9 +198,10 @@ colnames(RNA_only_MYCN_df)[1]<- "Kids_First_Biospecimen_ID_RNA"
 
 ```{r chunk 6}
 # Add biospecimen_dna_id and biospecimen_rna_id accordingly
-
-DNA_only_MYCN_df$Kids_First_Biospecimen_ID_RNA<- NA
-RNA_only_MYCN_df$Kids_First_Biospecimen_ID_DNA<- NA
+DNA_only_MYCN_df <- DNA_only_MYCN_df %>% mutate(Kids_First_Biospecimen_ID_RNA=NA_character_)
+RNA_only_MYCN_df<- RNA_only_MYCN_df %>% mutate(Kids_First_Biospecimen_ID_DNA=NA_character_)
+#DNA_only_MYCN_df$Kids_First_Biospecimen_ID_RNA<- NA
+#RNA_only_MYCN_df$Kids_First_Biospecimen_ID_DNA<- NA
 ```
 
 ```{r}
