@@ -36,8 +36,8 @@ if (!dir.exists(results_dir)) {
 
 ```
 
-# QC Check
-```{r}
+Code Logic and background: load the TARGET and GMKF data , also slect relevant columns. 
+```{r get TARGET GMKF Data}
 hist_df<-readr::read_tsv(file.path(data_dir, "histologies-base.tsv"),guess_max = 100000)
 alteration_subtyped_df<-readr::read_tsv(file.path(results_dir, "alteration_table_with_molecular_subtype.tsv"),
                                guess_max = 100000)
@@ -60,7 +60,9 @@ TARGET <- TARGET %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,
                               cohort,experimental_strategy)
 GMKF <- GMKF %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,sample_id,
                           cohort,experimental_strategy)
-
+```
+Create a QC data frame
+```{r QC dataframe being created}
 QC_df <- inner_join(GMKF,TARGET, by= c("Kids_First_Participant_ID","sample_id"))
 
 QC_df <-  QC_df %>% select(Kids_First_Biospecimen_ID.x,Kids_First_Biospecimen_ID.y,
@@ -70,15 +72,17 @@ QC_df <-  QC_df %>% select(Kids_First_Biospecimen_ID.x,Kids_First_Biospecimen_ID
 colnames(QC_df)<- c("Kids_First_Biospecimen_ID_GMKF","Kids_First_Biospecimen_ID_TARGET",
                         "Kids_First_Participant_ID","sample_id","cohort_GMKF","cohort_TARGET",
                         "experimental_strategy_GMKF","experimental_strategy_Target")
+# 
+# QC_df <- QC_df %>% mutate(MYCN_TPM_GMKF=NA,MYCN_TPM_Target=NA,MYCN_status_GMKF=NA,
+#                           MYCN_status_Target=NA,molecular_subtype_GMKF=NA,molecular_subtype_Target=NA)
+```
 
-QC_df$MYCN_TPM_GMKF<-NA
-QC_df$MYCN_TPM_Target<-NA
+Add status, tpm and subtype infromation from the table results/alteration_table_with_molecular_subtype.tsv
+```{r import values molecular subtype table into QC dataframe}
+#Iterate through each element of QC_df and find its corresponding TPM, Status, and Subtype from
+# results/alteration_table_with_molecular_subtype.tsv
 
-QC_df$MYCN_status_GMKF<-NA
-QC_df$MYCN_status_Target<-NA
-
-QC_df$MYCN_subtype_GMKF<-NA
-QC_df$MYCN_subtype_Target<-NA
+values_from_subtype_table <- matrix(ncol=6)
 
 for (iter in 1:dim(QC_df)[1]){
   index_gmkf <- which(alteration_subtyped_df$Kids_First_Biospecimen_ID_DNA == 
@@ -90,19 +94,31 @@ for (iter in 1:dim(QC_df)[1]){
     index_gmkf <- which(alteration_subtyped_df$Kids_First_Biospecimen_ID_RNA ==
                           QC_df$Kids_First_Biospecimen_ID_GMKF[iter])
   }
-  QC_df$MYCN_TPM_GMKF[iter]<- alteration_subtyped_df$MYCN_TPM[index_gmkf]
-  QC_df$MYCN_status_GMKF[iter]<- alteration_subtyped_df$MYCN_CN_status[index_gmkf]
-  QC_df$molecular_subtype_GMKF[iter]<- alteration_subtyped_df$molecular_subtype[index_gmkf]
+  gmkf_values <- c(alteration_subtyped_df$MYCN_TPM[index_gmkf],
+                   alteration_subtyped_df$MYCN_CN_status[index_gmkf],
+                   alteration_subtyped_df$molecular_subtype[index_gmkf])
   
   if(length(index_target) ==0 ){
     index_target <- which(alteration_subtyped_df$Kids_First_Biospecimen_ID_RNA == 
                             QC_df$Kids_First_Biospecimen_ID_TARGET[iter])
   }
-  QC_df$MYCN_TPM_Target[iter]<- alteration_subtyped_df$MYCN_TPM[index_target]
-  QC_df$MYCN_status_Target[iter]<- alteration_subtyped_df$MYCN_CN_status[index_target]
-  QC_df$molecular_subtype_Target[iter]<- alteration_subtyped_df$molecular_subtype[index_target]
+  
+  target_values <- c(alteration_subtyped_df$MYCN_TPM[index_target],
+                     alteration_subtyped_df$MYCN_CN_status[index_target],
+                     alteration_subtyped_df$molecular_subtype[index_target])
+ values_from_subtype_table<- rbind(values_from_subtype_table,c(gmkf_values,target_values))
 }
+values_from_subtype_table <- values_from_subtype_table[-1,]
+```
 
+
+```{r assign QC values}
+QC_df <- QC_df %>% mutate(MYCN_TPM_GMKF=values_from_subtype_table[,1],
+                          MYCN_TPM_Target=values_from_subtype_table[,3],
+                          MYCN_status_GMKF=values_from_subtype_table[,2],
+                          MYCN_status_Target=values_from_subtype_table[,5],
+                          molecular_subtype_GMKF=values_from_subtype_table[,3],
+                          molecular_subtype_Target=values_from_subtype_table[,6])
 ```
 
 
