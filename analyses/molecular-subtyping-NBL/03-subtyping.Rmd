@@ -11,7 +11,7 @@ amplified or MYCN non-amplified. This script loads the table
 on the six subtyping criteria (refer to the module readme). This script generates a table 
 called `molecular_subtype_table`, which contains the molecular_subtypes for each of the biospecimens
 in the table `alteration_df`.`molecular_subtype_table` is saved as 
-`neuroblastoma_molecular_molecular_subtypes.tsv` in the results directory. 
+`neuroblastoma_molecular_subtypes.tsv` in the results directory. 
 
 Furthermore, this script also creates the following additional result files:
 1. `results/alteration_table_with_molecular_subtype.tsv`: this table is contains all the biospecimens  
@@ -130,7 +130,9 @@ First we find such cases and then plot thier segmean vs location plots.
 index_clinical_amplified <- which(alteration_df$MYCN_CN_status %in% c("gain","loss","neutral")  
                                   & alteration_df$pathology_free_text_diagnosis=="MYCN amp")
 # Find the biospecimen IDs for case 4
-clincal_amplified_IDs <- alteration_df$Kids_First_Biospecimen_ID_DNA[index_clinical_amplified]
+clincal_amplified_IDs <- alteration_df$Kids_First_Biospecimen_ID_DNA[index_clinical_amplified] 
+# clincal_amplified_IDs are biospecimen IDs which are DNA IDs, there might be cases when the 
+# index in index_clinical_amplified is a RNA ID in those cases clincal_amplified_IDs will have an NA
 
 
 print("Biospecimens for which pathology (clinical) file says 
@@ -142,14 +144,17 @@ print(clincal_amplified_IDs)
 
 Code Logic: For the case 4 create the plots. 
 ```{r create the segmean vs location plots for samples where call is non-amp but pathology free text is amp}
+#Iterate through the biospecimen list in clincal_amplified_IDs which belong to case 4
 for (iter in 1: length(clincal_amplified_IDs)){
   plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"_chr2p",".png",sep=""))
+  # Check if clincal_amplified_IDs is NA,which will happen for biospecimen ID which are RNA IDs
   if(!is.na(clincal_amplified_IDs[iter])){
     plt1<-plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[iter])
     plt1
     ggsave(filename = plt_file,plot =plt1@ggplot)
   }
   else{
+    #If clincal_amplified_IDs is NA we need to find corresponding RNA ID
     plt1<-plot_chr2(cnv_cnvkit_df,alteration_df$Kids_First_Biospecimen_ID_RNA[index_clinical_amplified[iter]])
     plt1
     ggsave(filename = plt_file,plot = plt1@ggplot)
@@ -166,20 +171,32 @@ In case there is no TPM values then assign "Pathology-amp,MYCN_CN_status-non-amp
 this to NA later.
 
 ```{r : Assign molecular_subtypes MYCN_CN_status non amp but pathology free text amp}
-index_clincal <- NA
+index_case_4 <- NA # We will store the location of biospecimens belonging to case 4 here. This will
+# be used later to identify cases where molecular_subtypes were assigned using TPM values. We are
+# initializing this array to NA at moment, we will remove this NA value in later sections of the code.
+
+# Assign subtypes to each of the biospecimens belonging to case 4. We iterate through the biospecimen
+# indices stored in index_clinical_amplified and perform the subtype assignment
 for (iter in index_clinical_amplified){
+  # First check if these have a TPM value , if they don't have one assign molecular subtype as 
+  # Pathology-amp,MYCN_CN_status-non-amp,TPM-NA. For the final subtyping table 
+  # `results/neuroblastoma_molecular_subtypes.tsv` this subtype is overwritten to simply NA. 
   if(is.na(alteration_df$MYCN_TPM[iter])){
     alteration_df$molecular_subtype[iter]<- "Pathology-amp,MYCN_CN_status-non-amp,TPM-NA"
 
   }
+  # If there is a TPM value and is greater than equal to the Suggested_Cutoff TPM value assign 
+  # NBL, MYCN amplified
   else if (alteration_df$MYCN_TPM[iter] >= Suggested_Cutoff){
    alteration_df$molecular_subtype[iter]<- "NBL, MYCN amplified"
-   index_clincal <- c(index_clincal,iter)
+   index_case_4 <- c(index_case_4,iter)
 
- }
+  }
+  # If there is a TPM value and is greater than equal to the Suggested_Cutoff TPM value assign 
+  # NBL, MYCN amplified
   else if (alteration_df$MYCN_TPM[iter] < Suggested_Cutoff) {
     alteration_df$molecular_subtype[iter]<- "NBL, MYCN non-amplified"
-    index_clincal <- c(index_clincal,iter)
+    index_case_4 <- c(index_case_4,iter)
 
   } 
   
@@ -187,20 +204,24 @@ for (iter in index_clinical_amplified){
 ```
 
 Code Logic:
-Case 5: Find the samples where we don't have molecular_subtype but there is a TPM then assign molecular_subtype based
-on Suggested_Cutoff.
+Case 5: Find the samples which don't belong to case 1-4, but have a TPM value,  
+assign molecular_subtype based on Suggested_Cutoff. 
 
 ```{r : Assign the remaining unclassified samples based of a suggested cutoff TPM }
+# To find the biospecimen belonging to case 5, we need to find the biospecimens which currently 
+# don't have a subtype but have a tpm value
+
+# We find the cases where the TPM values are greater than or equal to the Suggested_Cutoff
 index_tpm_unmolecular_subtype_above<-which(is.na(alteration_df$molecular_subtype) & 
                                    !is.na(alteration_df$MYCN_TPM)& 
                                    alteration_df$MYCN_TPM >= Suggested_Cutoff)
-
+# We find the cases where the TPM values are below the Suggested_Cutoff
 index_tpm_unmolecular_subtype_below<-which(is.na(alteration_df$molecular_subtype) & 
                                    !is.na(alteration_df$MYCN_TPM)& 
                                    alteration_df$MYCN_TPM < Suggested_Cutoff)
-
+# if TPM is greater assign NBL, MYCN amplified
 alteration_df$molecular_subtype[index_tpm_unmolecular_subtype_above]<-"NBL, MYCN amplified"
-
+# if TPM is greater assign NBL, MYCN non-amplified
 alteration_df$molecular_subtype[index_tpm_unmolecular_subtype_below]<-"NBL, MYCN non-amplified"
 
 ```
@@ -211,17 +232,18 @@ For the samples which are not assigned a molecular_subtype we will assign the mo
 ```{r :assign unclassified MYCN_CN_status to samples with low info}
 index_unclassified <- which(is.na(alteration_df$molecular_subtype))
 alteration_df$molecular_subtype[index_unclassified]<-"Unclassified due to insufficient info"
-
+# There subtypes will be assigned as NA in the table results/alteration_table_with_molecular_subtype.tsv
 ```
 
 Code Logic: create a dataframe containing all the samples whose molecular_subtype was determined based on TPM.
 ```{r Dataframe where all the sample molecular_subtype are determined based on TPM cutoff}
-index_clincal<- index_clincal[2:length(index_clincal)] # Remove NA at index 1
+index_case_4<- index_case_4[2:length(index_case_4)] # Remove NA at index 1
+# TPM_index contains index of biospecimens that were assigned a molecular subtyped based on TPM. 
+# These are samples which belong to case 4 and case 5. 
+TPM_index <- c(index_case_4,index_tpm_unmolecular_subtype_above,index_tpm_unmolecular_subtype_below) 
 
-TPM_index <- c(index_clincal,index_tpm_unmolecular_subtype_above,index_tpm_unmolecular_subtype_below)
-
-df_tpm <- alteration_df[TPM_index,]
-
+df_tpm <- alteration_df[TPM_index,] # Create a data frame for samples subtyped based on TPM values
+# Select relevant information 
 df_tpm <- df_tpm %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen_ID_RNA,MYCN_CN,
                             pathology_free_text_diagnosis,MYCN_CN_status,MYCN_TPM,molecular_subtype)
 ```
@@ -229,8 +251,10 @@ df_tpm <- df_tpm %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen
 
 # Preprocess the final subtyping table.
 ```{r molecular_subtype table}
+# create the finale molecular_subtype_table 
 molecular_subtype_table <- alteration_df %>% select(Kids_First_Biospecimen_ID_DNA,
                                           Kids_First_Biospecimen_ID_RNA,molecular_subtype)
+# find the biospecimens that need to be assigned NA 
 index_NA<-which(molecular_subtype_table$molecular_subtype %in% c("Unclassified due to insufficient info",
                                              "Pathology-amp,MYCN_CN_status-non-amp,TPM-NA"))
 molecular_subtype_table$molecular_subtype[index_NA]<-NA_character_
