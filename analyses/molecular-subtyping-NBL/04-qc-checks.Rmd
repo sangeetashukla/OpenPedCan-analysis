@@ -120,8 +120,8 @@ colnames(values_from_subtype_table)<-c("MYCN_TPM_GMKF","MYCN_TPM_Target","MYCN_s
 
 
 ```{r assign QC values}
-
-QC_df <- cbind(QC_df,values_from_subtype_table)
+QC_df <-bind_cols(QC_df,values_from_subtype_table)
+#QC_df <- cbind(QC_df,values_from_subtype_table)
 # QC_df <- QC_df %>% mutate(MYCN_TPM_GMKF=values_from_subtype_table[,1],
 #                           MYCN_TPM_Target=values_from_subtype_table[,3],
 #                           MYCN_status_GMKF=values_from_subtype_table[,2],
