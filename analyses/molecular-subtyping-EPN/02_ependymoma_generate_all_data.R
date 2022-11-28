@@ -184,7 +184,7 @@ fill_df <- function(sample, ref_df, col_name, included_samples = NULL, default =
 EPN_notebook$NFKB_pathway_GSEAscore <- sapply(EPN_notebook$Kids_First_Biospecimen_ID_RNA, function(x) fill_df(sample = x, ref_df = gsva_NFKB, col_name = "gsea_score"))
 
 # Fill appropriate fusion summary information under each fusion
-fusions_list = c("C11orf95--RELA", "LTBP3--RELA", "PTEN--TAS2R1",  "C11orf95--YAP1", "YAP1--MAMLD1", "YAP1--FAM118B", "C11orf95--MAML2")
+fusions_list = c("C11orf95--RELA", "C11orf95--MAML2", "C11orf95--YAP1", "YAP1--MAMLD1", "YAP1--FAM118B", "YAP1--MAML2", "LTBP3--RELA", "PTEN--TAS2R1")
 fusion_df <- fusion_df[,fusions_list]
 for(i in 1:length(fusions_list)){
   fusion <- fusions_list[i]
