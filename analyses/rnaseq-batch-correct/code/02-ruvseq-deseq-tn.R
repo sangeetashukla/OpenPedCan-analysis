@@ -111,13 +111,10 @@ pos_neg_ctrl_genes <- c(neg_ctrl_genes, pos_ctrl_genes)
 
 # filter histology
 selected_htl_df <- htl_df %>%
-  dplyr::filter(
-    experimental_strategy == "RNA-Seq",
-    cohort %in% cohort_values,
-    cancer_group %in% cancer_group_values |
-      gtex_subgroup %in% gtex_subgroups
-  ) %>%
-  mutate(DESeqGroup = ifelse(!is.na(gtex_subgroup), 'N', 'T'))
+  .[experimental_strategy == "RNA-Seq"] %>%
+  .[grepl(paste0(cohort_values, collapse = '|'), cohort, ignore.case = T)] %>%
+  .[cancer_group %in% cancer_group_values | gtex_subgroup %in% gtex_subgroups] %>%
+  .[,'DESeqGroup' := ifelse(!is.na(gtex_subgroup), 'N', 'T')]
 
 # filter expression
 cnt_df <- cnt_df %>%
