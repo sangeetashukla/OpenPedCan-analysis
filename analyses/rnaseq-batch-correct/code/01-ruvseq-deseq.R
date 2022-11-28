@@ -52,7 +52,7 @@ opt <- parse_args(OptionParser(option_list = option_list))
 dataset <- opt$dataset
 cancer_group_values <-
   unlist(stringr::str_split(opt$cancer_group_values, ','))
-cohort_values <- opt$cohort_values
+cohort_values <- unlist(stringr::str_split(opt$cohort_values, ','))
 k_value <- as.numeric(opt$k_value)
 neg_ctrl_genes.f <- opt$neg_c
 pos_ctrl_genes.f <- opt$pos_c
@@ -97,13 +97,12 @@ neg_ctrl_genes <- readRDS(file.path(input_dir, neg_ctrl_genes.f))
 pos_neg_ctrl_genes <- c(neg_ctrl_genes, pos_ctrl_genes)
 
 # filter histology
+
 selected_htl_df <- htl_df %>%
-  dplyr::filter(
-    experimental_strategy == "RNA-Seq",
-    sample_type == "Tumor",
-    cancer_group %in% cancer_group_values,
-    !is.na(molecular_subtype)
-  )
+  .[experimental_strategy == "RNA-Seq"] %>%
+  .[sample_type == "Tumor"] %>%
+  .[cancer_group %in% cancer_group_values] %>%
+  .[!is.na(molecular_subtype)]
 
 # filter expression
 cnt_df <- cnt_df %>%
