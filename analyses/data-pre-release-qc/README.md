@@ -1,4 +1,4 @@
-## Filter Mutation Frequencies Tables
+## OpenPedCan Data Pre-release QC
 
 ### Purpose
 Performs QC on data pre-release files with requirements which should pass before hand off between BIXU Engineering team to the OpenPedCan team.
