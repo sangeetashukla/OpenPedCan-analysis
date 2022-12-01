@@ -95,38 +95,35 @@ Rscript -e "rmarkdown::render(
 rm ${results_dir}/*.tsv
 
 
-######################### Checking TPM table ##########################
-printf "Checking TPM Tables...\n\n"
-
+######################### Checking gene wise TPM table ###########################################
 printf "Checking gene wise TPM Tables...\n\n"
 
 Rscript -e "rmarkdown::render(
             '02-tpm-tables-checks.Rmd',
             params = list(
-              current_table_gene = 'current/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz',
-              previous_table_gene = 'previous/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz'),
-              output_file = 'long_n_tpm_mean_sd_quantile_gene_wise_zscore.nb.html',
+              current_table = 'current/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz',
+              previous_table = 'previous/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz'),
+              output_file = 'long_n_tpm_mean_sd_quantile_gene_wise_zscore_checks.nb.html',
               clean = TRUE)"  
               
               
 # remove intermediate files
 rm ${results_dir}/*.tsv
 
-printf "Checking group wise TPM Tables...\n\n"
+######################### Checking group wise TPM table ###########################################
+printf "Checking gene wise TPM Tables...\n\n"
 
 Rscript -e "rmarkdown::render(
             '02-tpm-tables-checks.Rmd',
             params = list(
-              current_table_gene = 'current/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz',
-              previous_table_gene = 'previous/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz'),
-              output_file='long_n_tpm_mean_sd_quantile_group_wise_zscore.nb.html',
+              current_table = 'current/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz',
+              previous_table = 'previous/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz'),
+              output_file = 'long_n_tpm_mean_sd_quantile_group_wise_zscore_checks.nb.html',
               clean = TRUE)"  
               
               
 # remove intermediate files
 rm ${results_dir}/*.tsv
-
-              
 
               
 printf "Analysis Done...\n"  

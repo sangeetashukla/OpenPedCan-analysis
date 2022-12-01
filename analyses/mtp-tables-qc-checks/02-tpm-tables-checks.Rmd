@@ -1,5 +1,5 @@
 ---
-title: "02-tpm-tables-checks"
+title: "Gene Expression TPM Table Summary and QC Checks"
 output:
   html_notebook:
     toc: TRUE
@@ -8,12 +8,12 @@ output:
 author: Aditya Lahiri and Eric Wafula
 date: 2022-11-07
 params:
-  current_table_gene:
-    label: "current tpm gene wise table"
+  current_table:
+    label: "current expression tpm table"
     value: current/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz
     input: file
-  previous_table_gene:
-    label: "previous tpm gene wise table"
+  previous_table:
+    label: "previous expression tpm table"
     value: previous/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz
     input: file
 ---
@@ -63,8 +63,8 @@ if (!dir.exists(results_dir)) {
 ### Functions
 ```{r functions}
 # get number of samples in cohorts
-get_num_samples <- function(freq_df) {
-  primary_samples <- freq_df %>% 
+get_num_samples <- function(tpm_df) {
+  samples <- tpm_df %>% 
     dplyr::filter(cohort != "All Cohorts") %>%
     dplyr::select(cohort, Disease,
                   n_samples) %>%
@@ -73,7 +73,7 @@ get_num_samples <- function(freq_df) {
     dplyr::group_by(cohort) %>% 
     dplyr::summarise(n_samples = 
                        sum(as.integer(n_samples, na.rm = TRUE)))
-    return(primary_samples)
+    return(samples)
 }
 
 # changes in common columns among MPT mutation frequencies  between 
@@ -104,13 +104,15 @@ changes_in_columns <- function(current_table, previous_table, column_name) {
 
 ### Read in current and previous tpm files
 ```{r load files}
-current_table <- data.table::fread(params$current_table_gene, 
-                                    data.table = FALSE, 
-                                   showProgress = FALSE) %>% purrr::discard(~all(is.na(.))) 
+current_table <- data.table::fread(params$current_table, 
+                                   data.table = FALSE, 
+                                   showProgress = FALSE) %>% 
+  purrr::discard(~all(is.na(.))) 
 
-previous_table<-data.table::fread(params$previous_table_gene, 
+previous_table <- data.table::fread(params$previous_table, 
                                     data.table = FALSE, 
-                                   showProgress = FALSE) %>% purrr::discard(~all(is.na(.))) 
+                                    showProgress = FALSE) %>% 
+  purrr::discard(~all(is.na(.))) 
 ```
 
 
@@ -174,7 +176,7 @@ num_samples
 ### Cancer groups in the "All Cohorts" category
 ```{r all cohorts cancer groups}
 # get All Cohorts cancer groups
-all_cohorts_cancer<- current_table %>% 
+all_cohorts_cancer_groups <- current_table %>% 
   dplyr::select(cohort, Disease) %>% 
   dplyr::filter(cohort == "All Cohorts") %>% 
   dplyr::distinct() %>%
@@ -188,12 +190,12 @@ all_cohorts_cancer<- current_table %>%
   dplyr::select(Disease, current_cohort, previous_cohort)
 
 # write to file
-all_cohorts_cancer %>% 
+all_cohorts_cancer_groups %>% 
   readr::write_tsv(file.path(results_dir, 
-                             "all_cohorts_cancer.tsv"), na = "NA")
+                             "all_cohorts_cancer_groups.tsv"), na = "NA")
 
 # display   
-all_cohorts_cancer
+all_cohorts_cancer_groups
 ```
 
 
@@ -202,7 +204,7 @@ all_cohorts_cancer
 #### Check gene symbols
 ```{r gene symbols}
 changes_gene_symbols <- 
-  changes_in_columns(current_table,previous_table, "Gene_symbol")
+  changes_in_columns(current_table, previous_table, "Gene_symbol")
 
 # write to file
 changes_gene_symbols %>% 
@@ -218,7 +220,7 @@ changes_gene_symbols
 #### Check Ensembl IDs
 ```{r ensembl ids}
 changes_ensembl_ids <- 
-  changes_in_columns(current_table,previous_table,"Gene_Ensembl_ID")
+  changes_in_columns(current_table, previous_table, "Gene_Ensembl_ID")
 
 # write to file
 changes_ensembl_ids %>% 
@@ -231,17 +233,17 @@ changes_ensembl_ids
 
 
 #### Check cancer groups
-```{r disease}
-changes_disease <- 
-  changes_in_columns(current_table,previous_table, "Disease")
+```{r cancer groups}
+changes_cancer_groups <- 
+  changes_in_columns(current_table, previous_table, "Disease")
 
 # write to file
-changes_disease %>% 
+changes_cancer_groups %>% 
   readr::write_tsv(file.path(results_dir, 
-                             "changes_in_disease.tsv"), na = "NA")
+                             "changes_in_cancer_groups.tsv"), na = "NA")
 
 # display   
-changes_disease
+changes_cancer_groups
 ```
 
 
@@ -249,7 +251,7 @@ changes_disease
 #### Check EFO IDs
 ```{r efo ids}
 changes_efo_ids <- 
-  changes_in_columns(current_table,previous_table,"EFO")
+  changes_in_columns(current_table, previous_table, "EFO")
 
 # write to file
 changes_efo_ids %>% 
@@ -263,7 +265,7 @@ changes_efo_ids
 #### Check MONDO IDs
 ```{r mondo ids}
 changes_mondo_ids <- 
-  changes_in_columns(current_table,previous_table,"MONDO")
+  changes_in_columns(current_table, previous_table, "MONDO")
 
 # write to file
 changes_mondo_ids %>% 

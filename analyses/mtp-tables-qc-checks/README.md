@@ -1,13 +1,12 @@
-# Mutation Frequencies and TPM Table Summary and QC Checks
- `01-frequencies-tables-checks.Rmd` performs summary and QC checks comparing the `current` and the `previous` OpenPedCan 
-mutation frequencies tables, including [CNV](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/cnv-frequencies), [SNV](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/snv-frequencies), and [Fusion](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/fusion-frequencies). Results include the 1) number of patients and samples in each cohort, 2) cancer groups represented in multiple cohorts, 3) a subset of sorted top 50 records from a static cancer group (`Neuroblastoma`) that should not change, 4) changes in common columns among mutation frequencies tables with non-dynamic values.
+# Mutation Frequencies and Gene Expression TPM Table Summary and QC Checks
+ `01-frequencies-tables-checks.Rmd` performs summary and QC checks comparing the `current` and the `previous` OpenPedCan mutation frequencies tables, including [CNV](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/cnv-frequencies), [SNV](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/snv-frequencies), and [Fusion](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/fusion-frequencies). Results include the 1) number of patients and samples in each cohort, 2) cancer groups represented in multiple cohorts, 3) a subset of sorted top 50 records from a static cancer group (`Neuroblastoma`) that should not change, 4) changes in common columns among mutation frequencies tables with non-dynamic values.
 
 `02-tpm-tables-checks.Rmd` performs summary and QC checks comparing the `current` and the `previous` OpenPedCan 
- tpm tables (both group andgene wise). Results includes 1) number of samples in each cohort, 2) cancer groups represented in multiple cohorts, 3) a subset of sorted top 50 records from a static cancer group (`Neuroblastoma`) that should not change, 4) changes in common columns among both gene and group wise TPM tables with non-dynamic values.
+ [gene expression tpm tables](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/mtp-tables-qc-checks). Results includes 1) number of samples in each cohort, 2) cancer groups represented in multiple cohorts, 3) a subset of sorted top 50 records from a static cancer group (`Neuroblastoma`) that should not change, 4) changes in common columns among gene expression TPM tables with non-dynamic values.
 
 ## General usage of scripts
 #### `run_frequencies-tables-checks.sh`
-This is a batch bash script for running the analysis scripts `01-frequencies-tables-checks.Rmd` and `02-tpm-tables-checks.Rmd` over multiple pairs (current/previous) of mutation frequencies and tpm tables. All file paths set in this script are relative to the module directory. Therefore, this script should always run as if it were being called from the directory it lives in, the module directory (`OpenPedCan-analysis/analyses/mutation-frequencies-table-checks`).
+This is a batch bash script for running the analysis scripts `01-frequencies-tables-checks.Rmd` and `02-tpm-tables-checks.Rmd` over multiple pairs (current/previous) of mutation frequencies and tpm tables. All file paths set in this script are relative to the module directory. Therefore, this script should always run as if it were being called from the directory it lives in, the module directory (`OpenPedCan-analysis/analyses/mtp-tables-qc-checks`).
 
 ```
 bash run_frequencies-tables-checks.sh
@@ -29,7 +28,7 @@ Rscript -e "rmarkdown::render(
 
 #### 02-tpm-tables-checks.Rmd
 Performs summary and QC checks comparing the current and the previous OpenPedCan 
-tpm tables
+gene expression tpm tables
 
 ```
 Rscript -e "rmarkdown::render(
@@ -43,7 +42,7 @@ Rscript -e "rmarkdown::render(
 
 
 ## Analysis input files
-Current and previous input mutation frequencies input files
+Current and previous input mutation frequencies and gene expression tpm input files
 - `current/gene-level-cnv-consensus-annotated-mut-freq.tsv.gz`
 - `previous/gene-level-cnv-consensus-annotated-mut-freq.tsv.gz`
 - `current/gene-level-snv-consensus-annotated-mut-freq.tsv.gz`
@@ -71,7 +70,7 @@ Results are similarly reported in both html notebooks and excel workbooks. Each 
 - `results/putative-oncogene-fused-gene-freq.xlsx`
 - `putative-oncogene-fusion-freq-checks.nb.html`
 - `results/putative-oncogene-fusion-freq.xlsx`
-- `long_n_tpm_mean_sd_quantile_gene_wise_zscore.nb.html`
+- `long_n_tpm_mean_sd_quantile_gene_wise_zscore_checks.nb.html`
 - `results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.xlsx`
-- `long_n_tpm_mean_sd_quantile_group_wise_zscore.nb.html`
+- `long_n_tpm_mean_sd_quantile_group_wise_zscore_checks.nb.html`
 - `results/long_n_tpm_mean_sd_quantile_group_wise_zscore.xlsx`
