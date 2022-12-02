@@ -19,6 +19,10 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     libbz2-dev \
     liblzma-dev \
     libreadline-dev
+    
+# libgmp3-dev is needed for signature.tools.lib to install
+RUN apt-get -y --no-install-recommends install \
+    libgmp3-dev
 
 # libmagick++-dev is needed for coloblindr to install
 RUN apt-get -y --no-install-recommends install \
@@ -252,6 +256,9 @@ RUN R -e "remotes::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223d
 
 # Need this specific version of circlize so it has hg38
 RUN R -e "remotes::install_github('jokergoo/circlize', ref = 'b7d86409d7f893e881980b705ba1dbc758df847d', dependencies = TRUE)"
+
+# signature.tools.lib needed for mutational-signatures 
+RUN R -e "remotes::install_github('Nik-Zainal-Group/signature.tools.lib', ref = 'a54e5d904d091b90ad3b0f9663133e178c36b9aa', dependencies = TRUE)"
 
 # Install python packages
 ##########################
