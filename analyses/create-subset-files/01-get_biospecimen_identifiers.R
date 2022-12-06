@@ -75,7 +75,7 @@ get_biospecimen_ids <- function(filename, id_mapping_df) {
     biospecimen_ids <- unique(snv_file$Tumor_Sample_Barcode)
   } else if (grepl("biospecimen", filename)) {
     # list of sample IDs with their corresponding bed files
-    bed_file <- readr::read_tsv(filename, show_col_types = FALSE)
+    bed_file <- readr::read_tsv(filename)
     biospecimen_ids <- unique(bed_file$Kids_First_Biospecimen_ID)
   } else if (grepl("cnv", filename)) {
     # the two CNV files now have different structures
