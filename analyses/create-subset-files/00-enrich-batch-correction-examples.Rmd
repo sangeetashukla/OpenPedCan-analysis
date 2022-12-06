@@ -8,7 +8,8 @@ date: 2022
 To run and fully test the `rnaseq-batch-correct` module in continuous integration, we must ensure that there are examples in the RNA-Seq gene expression counts subset matrix required for tumor-only (`molecular_subtype`) and tumor-normal (`cancer_group` and `gtex_subgroup`) RNA-Seq batch correction analyses.
 
 ```{r}
-library(tidyverse)
+suppressPackageStartupMessages(library(tidyverse))
+options(readr.show_col_types = FALSE)
 ```
 
 ```{r}
