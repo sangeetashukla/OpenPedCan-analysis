@@ -30,6 +30,8 @@ Certain analysis modules have required modifications to the subset file creation
 * `tp53_nf1_module` requires us to include a set of biospecimen IDs for samples that have _TP53_ and _NF1_ mutations and are present in the `stranded` RNA-seq dataset.
 See the `00-enrich-positive-examples` notebook for more information.
 * `fusion-summary` requires us to include _FGFR1--TACC1_, _MYB--QKI_, fusions or fusions that involve _BRAF_, _MN1_, _RELA_, or _EWSR1_.
+* `rnaseq-batch-correct` requires us to include _MYCN amp_ and _MYCN non-amp_ Neuroblastoma subtypes and _Diffuse midline glioma_ and _High-grade glioma/astrocytoma_ `cancer groups` balanced for RNA-Seq library types (`stranded`, `poly-A`, and `ploy-A stranded`) for `tumor-only` batch correction. In addition, _Brain Cortex_ and _Brain Cerebellum_ normal samples are required for `tumor-normal` batch correction.
+See the `00-enrich-batch-correction-examples.Rmd` notebook for more information.
 
 ### Local development
 
