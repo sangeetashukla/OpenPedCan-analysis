@@ -109,7 +109,7 @@ relapse_indp_sdf_each <- read_tsv(relapse_independence_each,
                                   col_types = cols(.default = col_guess()))
 
 # read ENSEMBL, Hugo Symbol mapping file
-ensg_hugo_df <- read_tsv(file.path(data_dir,'ensg-hugo-mapping.tsv'),
+ensg_hugo_df <- read_tsv(file.path(data_dir,'ensg-hugo-pmtl-mapping.tsv'),
                               col_types = cols(.default = col_guess())) %>%
   filter(ensg_id != "Symbol_Not_Found") %>% 
   distinct()
