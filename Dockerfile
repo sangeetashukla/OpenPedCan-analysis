@@ -397,7 +397,7 @@ RUN R -e "remotes::install_github('stan-dev/rstantools', ref = 'd43bf9fb6120d40a
 # Build arguments are according to the sigfit instructions
 RUN R -e "remotes::install_github('kgori/sigfit', ref = '209776ee1d2193ad4b682b2e2472f848bd7c67a6', build_vignettes = TRUE, build_opts = c('--no-resave-data', '--no-manual'), dependencies = TRUE)"
 
-# This is needed to create the interactive pie chart
+# This is needed for mutational signatures analysis
 RUN R -e "remotes::install_github('raerose01/deconstructSigs', ref = '41a705c5d80848121347d448cf9e2c58ff6b81ac', dependencies = TRUE)"
 
 # Package for kinase domain retention for fusions
