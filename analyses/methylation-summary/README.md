@@ -22,6 +22,7 @@ Options:
 	-h, --help
 		Show this help message and exit
 ```
+
 2. **`02-calculate-methly-quantiles.R`** script calculates probe-level quantiles for either Beta-values or M-values methylation matrix.
 ```
 Usage: Rscript --vanilla 02-calculate-methly-quantiles.R [options]
@@ -42,6 +43,7 @@ Options:
 	-h, --help
 		Show this help message and exit
 ```
+
 3. **`03-methyl-tpm-correlation.py`** script calculates representative `array probe` to `gene locus` correlations and `array probe` to `gene locus-isoforms` correlations between `RNA-Seq TPM-values` and either`Beta-values` or `M-values` for each cancer group within a cohort for patients who have both datasets.
 ```
 usage: python3 03-methyl-tpm-correlation.py [-h] [-m {beta,m}] [-e {gene,isoform}] 
@@ -73,24 +75,27 @@ optional arguments:
                         
   -v, --version         Print the current 03-methyl-tpm-correlation.py version and exit
 ```
+
 4. **`04-tpm-transcript-representation.py`** script Calculate rna-seq expression (tpm) gene isoform (transcript) representation for patients who have samples in both rna-seq and methylation datasets as follows:
-1) First calculate a Z score for each sample
+  
+  a) First calculate a Z score for each sample
 
-**Z<sub>s</sub>= S<sub>G_TPM</sub> - µ<sub>G_TPM</sub>/sd<sub>G_TPM</sub>**
+  **Z<sub>s</sub>= S<sub>G_TPM</sub> - µ<sub>G_TPM</sub>/sd<sub>G_TPM</sub>**
 
-Where Z<sub>s</sub> is the Sample gene expression Z Score, S<sub>G_TPM</sub> is the gene expression value of that sample in TPM, µ<sub>G_TPM</sub> is the mean TPM expression of the gene in that cancer group, and sd<sub>G_TPM</sub> is the standard deviation of the TPM expression of the gene in that cancer group.
+  Where Z<sub>s</sub> is the Sample gene expression Z Score, S<sub>G_TPM</sub> is the gene expression value of that sample in TPM, µ<sub>G_TPM</sub> is the mean TPM expression of the gene in that cancer group, and sd<sub>G_TPM</sub> is the standard deviation of the TPM expression of the gene in that cancer group.
 
-2) Then Calculate the Weight. The inverse exponential function of the absolute Z-score will give us a weight that decreases the further the sample's gene expression deviates from the mean. This way, weird outliers will not distort the calculation.
+  b) Then Calculate the Weight. The inverse exponential function of the absolute Z-score will give us a weight that decreases the further the sample's gene expression deviates from the mean. This way, weird outliers will not distort the calculation.
 
-**W<sub>s</sub> = 1/e<sup>|Z<sub>s</sub>|</sup>**
+  **W<sub>s</sub> = 1/e<sup>|Z<sub>s</sub>|</sup>**
 
-Where W<sub>s</sub> is the weight assigned to the sample, and Z<sub>s</sub> is the sample's gene expression Z score calculated in the previous step.
+  Where W<sub>s</sub> is the weight assigned to the sample, and Z<sub>s</sub> is the sample's gene expression Z score calculated in the previous step.
 
-3) Finally, apply the weights to the Transcript expressions and sum them to calculate the percent expression.
+  c) Finally, apply the weights to the Transcript expressions and sum them to calculate the percent expression.
 
-**Transcript_Representation = (∑ W<sub>s</sub>•TPM<sub>S_transcript</sub>)/ (∑ W<sub>s</sub>• TPM<sub>S_Total(All transcripts)</sub>)**
+  **Transcript_Representation = (∑ W<sub>s</sub>•TPM<sub>S_transcript</sub>)/ (∑ W<sub>s</sub>• TPM<sub>S_Total(All transcripts)</sub>)**
 
-Where W<sub>s</sub> is the weight assigned to the sample calculated in the previous step, TPM<sub>S_transcript</sub> is expression of each Sample's individual transcript in TPM, and TPM<sub>S_Total(All transcripts)</sub> is the total expression in TPM  of transcripts of that gene in that sample.
+  Where W<sub>s</sub> is the weight assigned to the sample calculated in the previous step, TPM<sub>S_transcript</sub> is expression of each Sample's individual transcript in TPM, and TPM<sub>S_Total(All transcripts)</sub> is the total expression in TPM  of transcripts of that gene in that sample.
+
 ```
 usage: python3 04-tpm-transcript-representation.py [-h] [-m {beta,m}] [-e {gene,isoform}] 
             [-v] HISTOLOGY_FILE RNA_INDEPENDENT_SAMPLES METHYL_INDEPENDENT_SAMPLES 
@@ -113,6 +118,7 @@ positional arguments:
                         
   -v, --version         Print the current 04-tpm-transcript-representation.py version and exit
 ```
+
 5. **`05-create-methyl-summary-table.R`** script summarizes `array probe quantiles`, `Beta/M-values correlations` and `gene annotations` into gene locus and gene locus-isoforms methylation summary tables. The OPenPedCan API utilizes the summary tables to dynamically generate methylation plots displayed on the NCI MTP portal with the following columns:
     - **Gene_Symbol**: gene symbol
     - **targetFromSourceId**: Ensemble locus ID
@@ -162,6 +168,7 @@ Options:
 	-h, --help
 		Show this help message and exit
 ```
+
 6. **`06-methly-summary-tsv2jsonl.py `** script transforms tab-delimited methylation summary tables to JSONL (JSON-Line) format required for usage on the NCI MTP portal.
 ```
 usage: python3 06-methly-summary-tsv2jsonl.py [-h] [-m {beta,m}] [-v] 
