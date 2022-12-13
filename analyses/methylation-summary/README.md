@@ -73,7 +73,47 @@ optional arguments:
                         
   -v, --version         Print the current 03-methyl-tpm-correlation.py version and exit
 ```
-4. **`04-create-methyl-summary-table.R`** script summarizes `array probe quantiles`, `Beta/M-values correlations` and `gene annotations` into gene locus and gene locus-isoforms methylation summary tables. The OPenPedCan API utilizes the summary tables to dynamically generate methylation plots displayed on the NCI MTP portal with the following columns:
+4. **`04-tpm-transcript-representation.py`** script Calculate rna-seq expression (tpm) gene isoform (transcript) representation for patients who have samples in both rna-seq and methylation datasets as follows:
+1) First calculate a Z score for each sample
+
+**Z<sub>s</sub>= S<sub>G_TPM</sub> - µ<sub>G_TPM</sub>/sd<sub>G_TPM</sub>**
+
+Where Z<sub>s</sub> is the Sample gene expression Z Score, S<sub>G_TPM</sub> is the gene expression value of that sample in TPM, µ<sub>G_TPM</sub> is the mean TPM expression of the gene in that cancer group, and sd<sub>G_TPM</sub> is the standard deviation of the TPM expression of the gene in that cancer group.
+
+2) Then Calculate the Weight. The inverse exponential function of the absolute Z-score will give us a weight that decreases the further the sample's gene expression deviates from the mean. This way, weird outliers will not distort the calculation.
+
+**W<sub>s</sub> = 1/e<sup>|Z<sub>s</sub>|</sup>**
+
+Where W<sub>s</sub> is the weight assigned to the sample, and Z<sub>s</sub> is the sample's gene expression Z score calculated in the previous step.
+
+3) Finally, apply the weights to the Transcript expressions and sum them to calculate the percent expression.
+
+**Transcript_Representation = (∑ W<sub>s</sub>•TPM<sub>S_transcript</sub>)/ (∑ W<sub>s</sub>• TPM<sub>S_Total(All transcripts)</sub>)**
+
+Where W<sub>s</sub> is the weight assigned to the sample calculated in the previous step, TPM<sub>S_transcript</sub> is expression of each Sample's individual transcript in TPM, and TPM<sub>S_Total(All transcripts)</sub> is the total expression in TPM  of transcripts of that gene in that sample.
+```
+usage: python3 04-tpm-transcript-representation.py [-h] [-m {beta,m}] [-e {gene,isoform}] 
+            [-v] HISTOLOGY_FILE RNA_INDEPENDENT_SAMPLES METHYL_INDEPENDENT_SAMPLES 
+            GENE_EXP_MATRIX ISOFORM_EXP_MATRIX PROBE_ANNOT
+
+positional arguments:
+  HISTOLOGY_FILE        OPenPedCan histologies file
+                        
+  RNA_INDEPENDENT_SAMPLES
+                        OPenPedCan rnaseq independent biospecimen list file
+                        
+  METHYL_INDEPENDENT_SAMPLES
+                        OPenPedCan methyl independent biospecimen list file
+                        
+  GENE_EXP_MATRIX       OPenPedCan gene expression matrix file
+                        
+  ISOFORM_EXP_MATRIX    OPenPedCan isoform expression matrix file
+                        
+  PROBE_ANNOT           Methylation aaray probe gencode annotation results file
+                        
+  -v, --version         Print the current 04-tpm-transcript-representation.py version and exit
+```
+5. **`05-create-methyl-summary-table.R`** script summarizes `array probe quantiles`, `Beta/M-values correlations` and `gene annotations` into gene locus and gene locus-isoforms methylation summary tables. The OPenPedCan API utilizes the summary tables to dynamically generate methylation plots displayed on the NCI MTP portal with the following columns:
     - **Gene_Symbol**: gene symbol
     - **targetFromSourceId**: Ensemble locus ID
     - **transcript_id**: Ensemble locus-isoform ID (for isoform-level summary table only)
@@ -82,6 +122,7 @@ optional arguments:
     - **diseaseFromSourceMappedId**: EFO ID of OpenPedCan `cancer_group`
     - **MONDO**: MONDO_ID of OpenPedCan `cancer_group`
     - **RNA_Correlation**: array probe-level correlation between `methylation Beta-values` and `RNA-Seq TPM values`
+    - **Transcript_Representation**: RNA-Seq expression (tpm) transcript representation (for isoform-level summary table only)
     - **Probe_ID**: `Illumina Infinium HumanMethylation` array probe ID for the CpG site
     - **Chromosome**: chromosome for CpG site eg. chr1
     - **Location**: genomic location of the CpG site
@@ -94,7 +135,7 @@ optional arguments:
     - **chop_uuid**: generate UUID
     - **datasourceId**: chop_gene_level_methylation
 ```
-Usage: 04-create-methyl-summary-table.R [options]
+Usage: 05-create-methyl-summary-table.R [options]
 
 Options:
 	--methyl_tpm_corr=CHARACTER
@@ -115,12 +156,15 @@ Options:
 	--methyl_values=CHARACTER
 		OpenPedCan methly matrix values: beta (default) and m
 
+  --tpm_transcript_rep=CHARACTER
+    RNA-Seq expression (tpm) gene isoform (transcript) representation results file
+
 	-h, --help
 		Show this help message and exit
 ```
-5. **`05-methly-summary-tsv2jsonl.py `** script transforms tab-delimited methylation summary tables to JSONL (JSON-Line) format required for usage on the NCI MTP portal.
+6. **`06-methly-summary-tsv2jsonl.py `** script transforms tab-delimited methylation summary tables to JSONL (JSON-Line) format required for usage on the NCI MTP portal.
 ```
-usage: python3 05-methly-summary-tsv2jsonl.py [-h] [-m {beta,m}] [-v] 
+usage: python3 06-methly-summary-tsv2jsonl.py [-h] [-m {beta,m}] [-v] 
             GENE_SUMMARY_FILE ISOFORM_SUMMARY_FILE
 
 positional arguments:
@@ -133,19 +177,18 @@ optional arguments:
   -m {beta,m}, --methyl_values {beta,m}
                         OpenPedCan methly matrix values: beta (default) and m
                         
-  -v, --version         Print the current 05-methly-summary-tsv2jsonl.py version and exit
+  -v, --version         Print the current 06-methly-summary-tsv2jsonl.py version and exit
 ```
 
 
 
 ## General usage of scripts
 1. `run-methylation-summary.sh` is a wrapper bash script for execruing all the other analysis scripts in the module. All file paths set in this script relative to the module directory. Therefore, this script should always run as if it were being called from the directory it lives in, the module directory (`OpenPedCan-analysis/analyses/methylation-summary`).
-
 ```
 bash run-methylation-summary.sh
 ```
 2. Analyses involving 850k arrays with large number of samples representing OPenPedCan cancer groups (as in the CBTN cohort) will utlize of memory to run successfully.Where possible we utlized `Rsqlite3` to reduce memory footprint. 
-2. In some computers the computer system `/tmp` is too small to hold temporary files generated during analysis by R scripts. Users are advised to create a `./tmp` in the module directory then execute R script by prepending with TMP/TMPDIR environmental variable as illustrated in the wrapper module bash script, `run-methy-summary.sh`.
+3. In some computers the computer system `/tmp` is too small to hold temporary files generated during analysis by R scripts. Users are advised to create a `./tmp` in the module directory then execute R script by prepending with TMP/TMPDIR environmental variable as illustrated in the wrapper module bash script, `run-methy-summary.sh`.
 
 
 ## Input datasets
@@ -167,6 +210,7 @@ Analysis result files sizes exceed the limit allowable to push on to a GitHub re
 - `results/methyl-probe-beta-quantiles.tsv.gz`
 - `results/gene-methyl-probe-beta-tpm-correlations.tsv.gz`
 - `results/isoform-methyl-probe-beta-tpm-correlations.tsv.gz`
+- `results/methyl-tpm-transcript-representation.tsv.gz`
 - `results/gene-methyl-beta-values-summary.rds` 
 - `results/gene-methyl-beta-values-summary.tsv.gz` 
 - `results/gene-methyl-beta-values-summary.jsonl.gz`

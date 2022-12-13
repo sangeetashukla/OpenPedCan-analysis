@@ -43,8 +43,8 @@ def read_parameters():
 
 
 
-def compute_correlation (methyl_histologies, rnaseq_histologies, meth_values, tpm_values):
-	"""Calculates robe-level correlations between RNA-Seq (TPM) and preprocessed methyl (beta/m-values) samples
+def compute_correlation(methyl_histologies, rnaseq_histologies, meth_values, tpm_values):
+	"""Calculates probe-level correlations between RNA-Seq (TPM) and preprocessed methyl (beta/m-values) samples
 	Parameters
 	----------
 	methyl_histologies : str
@@ -183,7 +183,7 @@ def main():
 		tpm_values = tpm_values.drop(columns = ["Probe_ID", "transcript_id"]) 
 
 	# Calculating probe-level correlations between methyl beta/m-values and expression tpm values
-	merging_list = compute_correlation (methyl_histologies, rnaseq_histologies, meth_values, tpm_values)
+	merging_list = compute_correlation(methyl_histologies, rnaseq_histologies, meth_values, tpm_values)
 
 	# Write probe-level correlations between methyl beta/m-values RNA-Seq expression tpm values to output file
 	if args.methyl_values == "beta":

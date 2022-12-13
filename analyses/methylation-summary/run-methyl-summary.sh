@@ -45,7 +45,7 @@ ${data_dir}/methyl-beta-values.rds \
 ${data_dir}/gene-expression-rsem-tpm-collapsed.rds \
 ${results_dir}/methyl-probe-annotations.tsv.gz
 
-###################### Calculate correlations between beta and isoform tpm  values ###########
+###################### Calculate correlations between beta and isoform tpm values ###########
 python3 03-methyl-tpm-correlation.py \
 --methyl_values beta \
 --exp_values isoform \
@@ -56,8 +56,17 @@ ${data_dir}/methyl-beta-values.rds \
 ${data_dir}/rna-isoform-expression-rsem-tpm.rds \
 ${results_dir}/methyl-probe-annotations.tsv.gz
 
+############################ Create expression tpm transcript representation ################
+python3 04-tpm-transcript-representation.py \
+${data_dir}/histologies.tsv \
+${data_dir}/independent-specimens.rnaseqpanel.primary.eachcohort.tsv \
+${data_dir}/independent-specimens.methyl.primary.eachcohort.tsv \
+${data_dir}/gene-expression-rsem-tpm-collapsed.rds \
+${data_dir}/rna-isoform-expression-rsem-tpm.rds \
+${results_dir}/methyl-probe-annotations.tsv.gz
+
 ############################ Create gene-level beta methylation summary table ################
-TMP=./tmp TMPDIR=./tmp Rscript --vanilla 04-create-methyl-summary-table.R \
+TMP=./tmp TMPDIR=./tmp Rscript --vanilla 05-create-methyl-summary-table.R \
 --methyl_tpm_corr ${results_dir}/gene-methyl-probe-beta-tpm-correlations.tsv.gz \
 --methyl_probe_qtiles ${results_dir}/methyl-probe-beta-quantiles.tsv.gz \
 --methyl_probe_annot ${results_dir}/methyl-probe-annotations.tsv.gz \
@@ -66,16 +75,17 @@ TMP=./tmp TMPDIR=./tmp Rscript --vanilla 04-create-methyl-summary-table.R \
 --methyl_values beta
 
 ############################ Create isoform-level beta methylation summary table ##############
-TMP=./tmp TMPDIR=./tmp Rscript --vanilla 04-create-methyl-summary-table.R \
+TMP=./tmp TMPDIR=./tmp Rscript --vanilla 05-create-methyl-summary-table.R \
 --methyl_tpm_corr ${results_dir}/isoform-methyl-probe-beta-tpm-correlations.tsv.gz \
 --methyl_probe_qtiles ${results_dir}/methyl-probe-beta-quantiles.tsv.gz \
 --methyl_probe_annot ${results_dir}/methyl-probe-annotations.tsv.gz \
 --efo_mondo_annot ${data_dir}/efo-mondo-map.tsv \
 --exp_values isoform \
---methyl_values beta
+--methyl_values beta \
+--tpm_transcript_rep ${results_dir}/methyl-tpm-transcript-representation.tsv.gz
 
 ########################### Convert methytion summary table from TSV to (JSONL) ###############
-python3 05-methly-summary-tsv2jsonl.py \
+python3 06-methly-summary-tsv2jsonl.py \
 --methyl_values beta \
 ${results_dir}/gene-methyl-beta-values-summary.tsv.gz \
 ${results_dir}/isoform-methyl-beta-values-summary.tsv.gz
