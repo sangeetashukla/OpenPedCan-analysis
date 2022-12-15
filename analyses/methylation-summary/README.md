@@ -128,7 +128,7 @@ positional arguments:
     - **diseaseFromSourceMappedId**: EFO ID of OpenPedCan `cancer_group`
     - **MONDO**: MONDO_ID of OpenPedCan `cancer_group`
     - **RNA_Correlation**: array probe-level correlation between `methylation Beta-values` and `RNA-Seq TPM values`
-    - **Transcript_Representation**: RNA-Seq expression (tpm) transcript representation (for isoform-level summary table only)
+    - **Transcript_Representation**: RNA-Seq expression (tpm) percent transcript representation (for isoform-level summary table only)
     - **Probe_ID**: `Illumina Infinium HumanMethylation` array probe ID for the CpG site
     - **Chromosome**: chromosome for CpG site eg. chr1
     - **Location**: genomic location of the CpG site

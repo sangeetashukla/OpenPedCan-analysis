@@ -66,7 +66,7 @@ def compute_transcript_representation(methyl_histologies, rnaseq_histologies, pr
 	for cohort in methyl_histologies.cohort.unique():
 		cohort_type_methyl_ids = methyl_histologies.loc[methyl_histologies.cohort == cohort]
 		for cancer_type in cohort_type_methyl_ids.cancer_group.unique():
-			print("Calculating probe-level correlations between beta/m-values and tpm values for {} cancer group samples in {} cohort...\n".format(cancer_type, cohort))
+			print("Calculating rna-seq expression (tpm) gene isoform (transcript) representation for {} cancer group samples in {} cohort...\n".format(cancer_type, cohort))
 			# Get cancer type patients with both methyl and RNA-Seq data
 			cancer_type_rnaseq_ids = rnaseq_histologies.loc[(rnaseq_histologies.cohort == cohort) & (rnaseq_histologies.cancer_group == cancer_type)]
 			cancer_type_rnaseq_ids = cancer_type_rnaseq_ids[["Kids_First_Biospecimen_ID", "Kids_First_Participant_ID"]]
@@ -78,15 +78,12 @@ def compute_transcript_representation(methyl_histologies, rnaseq_histologies, pr
 			cancer_type_ids.rename(columns={"Kids_First_Participant_ID": "Patient_ID"}, inplace = True)
 			if cancer_type_ids.empty:
 				continue
-			print(cancer_type_ids)
-
 
 			# Get cancer type gene expression tpm values
 			sample_ids = np.append(["Gene_symbol"], cancer_type_ids.RNASeq_ID.unique()).tolist()
 			gene_tpm = gene_tpm_values.loc[:,gene_tpm_values.columns.isin(sample_ids)]
 			gene_tpm = pd.merge(probe_annot, gene_tpm, how = "inner", on = "Gene_symbol")
 			gene_tpm = gene_tpm.drop(columns = ["targetFromSourceId", "Gene_symbol"])
-			print(gene_tpm)
 
 			# Get cancer type isoform expresion tpm values
 			sample_ids = np.append(["transcript_id"], cancer_type_ids.RNASeq_ID.unique()).tolist()
@@ -95,23 +92,20 @@ def compute_transcript_representation(methyl_histologies, rnaseq_histologies, pr
 			isoform_tpm = isoform_tpm.drop(columns = ["targetFromSourceId", "Gene_symbol"])
 			isoform_tpm = pd.merge(isoform_tpm, gene_tpm["transcript_id"], how = "inner", on = "transcript_id")
 			isoform_tpm = isoform_tpm.set_index("transcript_id").rename_axis(None)
-			isoform_tpm = isoform_tpm.sort_index(axis = 0)
-			isoform_tpm = isoform_tpm.sort_index(axis = 1)
-			print(isoform_tpm)
+			isoform_tpm = isoform_tpm.sort_index(axis=0)
+			isoform_tpm = isoform_tpm.sort_index(axis=1)
 
 			# Compute weights for cancer type gene expression tpm values
 			gene_tpm = gene_tpm.set_index("transcript_id").rename_axis(None)
-			gene_zscore = gene_tpm.apply(zscore, axis = 1).apply(abs, axis = 1)
-			gene_weights = gene_zscore.apply(lambda x: 1/np.exp(x), axis = 1)
-			gene_weights = gene_weights.sort_index(axis = 0)
-			gene_weights = gene_weights.sort_index(axis = 1)
+			gene_zscore = gene_tpm.apply(zscore, axis = 1).abs()
+			gene_weights = gene_zscore.apply(lambda x: 1/np.exp(x))
+			gene_weights = gene_weights.sort_index(axis=0)
+			gene_weights = gene_weights.sort_index(axis=1)
 			gene_weights.fillna(0.00, inplace = True)
-			print(gene_weights)
 
 			# Compute weighted sum for cancer group isoform expression tpm values
 			weigted_isoform_tpm = gene_weights.mul(isoform_tpm, fill_value = 0.00)
-			weigted_isoform_tpm["weighted_sum"] = weigted_isoform_tpm.sum(axis = 1)
-			print(weigted_isoform_tpm)
+			weigted_isoform_tpm["weighted_sum"] = weigted_isoform_tpm.sum(axis=1)
 
 			# Compute weighted sum for cancer type sum of isoform expression tpm values
 			isoform_tpm.reset_index(inplace=True)
@@ -122,29 +116,27 @@ def compute_transcript_representation(methyl_histologies, rnaseq_histologies, pr
 			sum_isoform_tpm = pd.merge(probe_annot, sum_isoform_tpm, how = "inner", on = "targetFromSourceId")
 			sum_isoform_tpm = sum_isoform_tpm.drop(columns = ["targetFromSourceId", "Gene_symbol"])
 			sum_isoform_tpm = sum_isoform_tpm.set_index("transcript_id").rename_axis(None)
-			sum_isoform_tpm = sum_isoform_tpm.sort_index(axis = 0)
-			sum_isoform_tpm = sum_isoform_tpm.sort_index(axis = 1)
+			sum_isoform_tpm = sum_isoform_tpm.sort_index(axis=0)
+			sum_isoform_tpm = sum_isoform_tpm.sort_index(axis=1)
 			weighted_sum_isoform_tpm = gene_weights.mul(sum_isoform_tpm, fill_value = 0.00)
-			weighted_sum_isoform_tpm["weighted_sum"] = weighted_sum_isoform_tpm.sum(axis = 1)
-			print(weighted_sum_isoform_tpm)
+			weighted_sum_isoform_tpm["weighted_sum"] = weighted_sum_isoform_tpm.sum(axis=1)
 
 			# Compute isoform gene expression tpm representation
 			transcript_representation = weigted_isoform_tpm["weighted_sum"].div(weighted_sum_isoform_tpm["weighted_sum"], fill_value = 0.00)
 			transcript_representation = pd.Series.to_frame(transcript_representation, name="Transcript_Representation")
 			transcript_representation.fillna(0.000000, inplace = True)
-			transcript_representation.reset_index(inplace=True)
+			transcript_representation.reset_index(inplace = True)
 			transcript_representation.rename(columns={"index": "transcript_id"}, inplace = True)
 			transcript_representation["Dataset"] = cohort
 			transcript_representation["Disease"] = cancer_type
 			gene_transcript_representation = pd.merge(probe_annot, transcript_representation, how = "inner", on = "transcript_id")
 			gene_transcript_representation = gene_transcript_representation.drop(columns = ["Gene_symbol"])
-			gene_transcript_representation = gene_transcript_representation.groupby(["targetFromSourceId", "Dataset", "Disease"], as_index=False).sum().round({"Transcript_Representation": 2})
+			gene_transcript_representation = gene_transcript_representation.groupby(["targetFromSourceId", "Dataset", "Disease"], as_index=False).sum(numeric_only = True).round({"Transcript_Representation": 2})
 			gene_transcript_representation = gene_transcript_representation.loc[gene_transcript_representation["Transcript_Representation"] != 0.00]
 			gene_transcript_representation = pd.merge(probe_annot, gene_transcript_representation, how = "inner", on = "targetFromSourceId")
 			transcript_representation = pd.merge(transcript_representation, gene_transcript_representation[["transcript_id"]], how = "inner", on = "transcript_id")
 			transcript_representation["Transcript_Representation"] = transcript_representation["Transcript_Representation"] * 100
 			transcript_representation = transcript_representation.round({"Transcript_Representation": 2})
-			print(transcript_representation)
 			if not transcript_representation.empty:
 				merging_list.append(transcript_representation)
 	return(merging_list)
