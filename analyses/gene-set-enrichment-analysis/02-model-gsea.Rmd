@@ -167,7 +167,7 @@ for(i in 1:length(rna_library_list)){
   
   # write out results
   readr::write_tsv(harmonized_diagnosis_model_results[["anova"]], harmonized_diagnosis_anova_outpaths[[i]])
-  readr::write_tsv(harmonized_diagnosis_model_results[["tukey"]], harmonized_diagnosis_anova_outpaths[[i]])
+  readr::write_tsv(harmonized_diagnosis_model_results[["tukey"]], harmonized_diagnosis_tukey_outpaths[[i]])
   
   # print results for viewing
   print(rna_library)
