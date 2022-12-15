@@ -162,7 +162,7 @@ for(i in 1:length(rna_library_list)){
   }
   
   # anova can only be run on factors with >=2 levels, so to avoid error, we give a if statement
-  if(harmonized_diagnosis_n>=2){
+  #if(harmonized_diagnosis_n>=2){
   harmonized_diagnosis_model_results <- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, rna_library, SIGNIFICANCE_THRESHOLD)
   
   # write out results
@@ -172,7 +172,7 @@ for(i in 1:length(rna_library_list)){
   # print results for viewing
   print(rna_library)
   print(head(harmonized_diagnosis_model_results))
-  }
+  #}
 }
 
 # CI part is commented out since we want to run in CAVATICA later
@@ -233,14 +233,14 @@ for(i in 1:length(rna_library_list)){
     pull(harmonized_diagnosis) %>% 
     unique() %>% length()
   
-  if(harmonized_diagnosis_n>=2){
+  #if(harmonized_diagnosis_n>=2){
     harmonized_diagnosis_model_results <- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, rna_library, SIGNIFICANCE_THRESHOLD)
     # count the number of significant 
     num_sig <- harmonized_diagnosis_model_results[["anova"]] %>% 
       count(significant_anova) 
   # print out information
   num_sig
-  }
+  #}
 }
 
 # CI part is commented out since we want to run in CAVATICA later
