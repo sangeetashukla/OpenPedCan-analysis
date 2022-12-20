@@ -181,7 +181,10 @@ cnv_df_ids <- cnv_df %>%
 slice_vector <- seq(1, length(cnv_df_ids), 100) 
 
 # define combined dataframe
-autosome_annotated_cn <- data.frame()
+#autosome_annotated_cn <- data.frame()
+autosome_annotated_cn_resolved <- data.frame()
+autosome_annotated_cn_unresolved <- data.frame()
+
 for (i in 1:length(slice_vector)){
   start_id <- as.numeric(slice_vector[i])
   if(i<length(slice_vector)){
@@ -214,26 +217,44 @@ for (i in 1:length(slice_vector)){
       TRUE ~ as.character(status)))
   
   # Resolve cases of duplicate cn calls for genes
-  autosome_annotated_cn_each <- resolve_duplicate_annotations(overlap_annotation = autosome_annotated_cn_each)
+#  autosome_annotated_cn_each <- resolve_duplicate_annotations(overlap_annotation = autosome_annotated_cn_each)
   
-  autosome_annotated_cn <- bind_rows(autosome_annotated_cn, autosome_annotated_cn_each)
+#  autosome_annotated_cn <- bind_rows(autosome_annotated_cn, autosome_annotated_cn_each)
+  
+  resolve <- resolve_duplicate_annotations(overlap_annotation = autosome_annotated_cn_each)
+  
+  autosome_resolved <- resolve$resolved_calls
+  autosome_unresolved <- resolve$unresolved_calls
+  
+  autosome_annotated_cn_resolved <- bind_rows(autosome_annotated_cn_resolved, autosome_resolved)
+  autosome_annotated_cn_unresolved <- bind_rows(autosome_annotated_cn_unresolved, autosome_unresolved)
+
 }
 
 # Output file name
 if(runWXSonly){
-  autosome_output_file <- paste0(filename_lead, "_wxs_autosomes.tsv.gz")
+#  autosome_output_file <- paste0(filename_lead, "_wxs_autosomes.tsv.gz")
+  autosome_resolved_output_file <- paste0(filename_lead, "_wxs_autosomes.tsv.gz")
+  autosome_unresolved_output_file <- paste0(filename_lead, "_wxs_autosomes_unresolved.tsv.gz")
 } else {
-  autosome_output_file <- paste0(filename_lead, "_autosomes.tsv.gz")
+#  autosome_output_file <- paste0(filename_lead, "_autosomes.tsv.gz")
+  autosome_resolved_output_file <- paste0(filename_lead, "_autosomes.tsv.gz")
+  autosome_unresolved_output_file <- paste0(filename_lead, "_autosomes_unresolved.tsv.gz")
 }
 
 # Save final data.frame to a tsv file
-readr::write_tsv(autosome_annotated_cn, file.path(results_dir, autosome_output_file))
+#readr::write_tsv(autosome_annotated_cn, file.path(results_dir, autosome_output_file))
+readr::write_tsv(autosome_annotated_cn_resolved, file.path(results_dir, autosome_resolved_output_file))
+readr::write_tsv(autosome_annotated_cn_unresolved, file.path(results_dir, autosome_unresolved_output_file))
+
 
 #### X&Y -----------------------------------------------------------------------
 
 if(xy_flag){
   # define combined dataframe
-  sex_chrom_annotated_cn <- data.frame()
+  #sex_chrom_annotated_cn <- data.frame()
+  sex_chrom_annotated_cn_resolved <- data.frame()
+  sex_chrom_annotated_cn_unresolved <- data.frame()
   for (j in 1:length(slice_vector)){
     start_id <- as.numeric(slice_vector[j])
     if(j<length(slice_vector)){
@@ -264,27 +285,57 @@ if(xy_flag){
       )
     
     # Resolve cases of duplicate cn calls for genes
-    sex_chrom_annotated_cn_each <- resolve_duplicate_annotations(overlap_annotation = sex_chrom_annotated_cn_each)
+    #sex_chrom_annotated_cn_each <- resolve_duplicate_annotations(overlap_annotation = sex_chrom_annotated_cn_each)
+    
+    resolve <- resolve_duplicate_annotations(overlap_annotation = sex_chrom_annotated_cn_each)
+    
+    sex_chrom_resolved <- resolve$resolved_calls
+    sex_chrom_unresolved <- resolve$unresolved_calls
     
     # Add germline sex estimate into this data.frame
-    sex_chrom_annotated_cn_each <- sex_chrom_annotated_cn_each %>%
+    #sex_chrom_annotated_cn_each <- sex_chrom_annotated_cn_each %>%
+    #  dplyr::inner_join(dplyr::select(histologies_df,
+    #                                  Kids_First_Biospecimen_ID,
+    #                                  germline_sex_estimate),
+    #                    by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
+    #  dplyr::select(-germline_sex_estimate, dplyr::everything())
+    
+     #Add germline sex estimate into this data.frame
+     sex_chrom_resolved <- sex_chrom_resolved %>%
       dplyr::inner_join(dplyr::select(histologies_df,
                                       Kids_First_Biospecimen_ID,
                                       germline_sex_estimate),
                         by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
       dplyr::select(-germline_sex_estimate, dplyr::everything())
+     
+     sex_chrom_unresolved <- sex_chrom_unresolved %>%
+       dplyr::inner_join(dplyr::select(histologies_df,
+                                       Kids_First_Biospecimen_ID,
+                                       germline_sex_estimate),
+                         by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
+       dplyr::select(-germline_sex_estimate, dplyr::everything())
     
     # combine the results
-    sex_chrom_annotated_cn <- bind_rows(sex_chrom_annotated_cn, sex_chrom_annotated_cn_each)
+    #sex_chrom_annotated_cn <- bind_rows(sex_chrom_annotated_cn, sex_chrom_annotated_cn_each)
+    
+    sex_chrom_annotated_cn_resolved <- bind_rows(sex_chrom_annotated_cn_resolved, sex_chrom_resolved)
+    sex_chrom_annotated_cn_unresolved <- bind_rows(sex_chrom_annotated_cn_unresolved, sex_chrom_unresolved)
+    
   }
   
   # Output file name
   if(runWXSonly){
-    sex_chrom_output_file <- paste0(filename_lead, "_wxs_x_and_y.tsv.gz")
+#    sex_chrom_output_file <- paste0(filename_lead, "_wxs_x_and_y.tsv.gz")
+    sex_chrom_resolved_output_file <- paste0(filename_lead, "_wxs_x_and_y.tsv.gz")
+    sex_chrom_unresolved_output_file <- paste0(filename_lead, "_wxs_x_and_y_unresolved.tsv.gz")
   } else {
-    sex_chrom_output_file <- paste0(filename_lead, "_x_and_y.tsv.gz")
+#    sex_chrom_output_file <- paste0(filename_lead, "_x_and_y.tsv.gz")
+    sex_chrom_resolved_output_file <- paste0(filename_lead, "_x_and_y.tsv.gz")
+    sex_chrom_unresolved_output_file <- paste0(filename_lead, "_x_and_y_unresolved.tsv.gz")
   }
   
   # Save final data.frame to a tsv file
-  readr::write_tsv(sex_chrom_annotated_cn, file.path(results_dir, sex_chrom_output_file))
+#  readr::write_tsv(sex_chrom_annotated_cn, file.path(results_dir, sex_chrom_output_file))
+  readr::write_tsv(sex_chrom_annotated_cn_resolved, file.path(results_dir, sex_chrom_resolved_output_file))
+  readr::write_tsv(sex_chrom_annotated_cn_unresolved, file.path(results_dir, sex_chrom_unresolved_output_file))
 }

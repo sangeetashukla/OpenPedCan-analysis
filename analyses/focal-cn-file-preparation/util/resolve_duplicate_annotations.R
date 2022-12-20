@@ -174,8 +174,12 @@ resolve_duplicate_annotations <- function(overlap_annotation = overlap_annotatio
   ## Identify amplification/gain and deep deletion/loss duplicate calls, and only retain amplification and deep deletion calls, respectively. 
   if (nrow(dup_calls) > 0){
     
+#    dup_ampGain_delLoss <- dup_calls %>%
+#      filter((id %in% id[status == 'gain'] & id %in% id[status == 'amplification']) | (id %in% id[status == 'loss'] & id %in% id[status == 'deep deletion'])) %>%
+#      filter(status == 'amplification' | status == 'deep deletion')
+    
     dup_ampGain_delLoss <- dup_calls %>%
-      filter((id %in% id[status == 'gain'] & id %in% id[status == 'amplification']) | (id %in% id[status == 'loss'] & id %in% id[status == 'deep deletion'])) %>%
+      filter((id %in% id[status %in% c('gain', 'loss')] & id %in% id[status == 'amplification']) | (id %in% id[status %in% c('gain', 'loss')] & id %in% id[status == 'deep deletion'])) %>%
       filter(status == 'amplification' | status == 'deep deletion')
     
     # remove resolved calls from duplicated calls
@@ -190,13 +194,16 @@ resolve_duplicate_annotations <- function(overlap_annotation = overlap_annotatio
     
   }
   ## Add remaining unresolved calls to unique_calls data frame
-  dup_calls <- dup_calls %>%
-    dplyr::select(-id)
-  unique_calls <- suppressWarnings(unique_calls %>%
-    bind_rows(dup_calls) %>%
-    arrange(biospecimen_id, gene_symbol)) %>%
-    distinct(biospecimen_id, status, ensembl, .keep_all = T)
-  return(unique_calls)
+#  dup_calls <- dup_calls %>%
+#    dplyr::select(-id)
+#  unique_calls <- suppressWarnings(unique_calls %>%
+#    bind_rows(dup_calls) %>%
+#    arrange(biospecimen_id, gene_symbol)) %>%
+#    distinct(biospecimen_id, status, ensembl, .keep_all = T)
+
+#  return(unique_calls)
+  return(list(resolved_calls = unique_calls, 
+              unresolved_calls = dup_calls))
 }
 
 
