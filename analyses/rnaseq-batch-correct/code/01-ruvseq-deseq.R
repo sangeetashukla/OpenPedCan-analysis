@@ -105,9 +105,12 @@ selected_htl_df <- htl_df %>%
   .[!is.na(molecular_subtype)]
 
 # filter expression
-cnt_df = cnt_df %>%
-  dplyr::select(selected_htl_df$Kids_First_Biospecimen_ID)
+cnt_df <- cnt_df %>%
+  dplyr::select(intersect(selected_htl_df$Kids_First_Biospecimen_ID, colnames(cnt_df)))
 cnt_df <- cnt_df[rowSums(cnt_df) > 0, ]
+
+selected_htl_df <- selected_htl_df %>%
+  dplyr::filter(Kids_First_Biospecimen_ID %in% colnames(cnt_df))
 
 # filter by expression and convert to DGElist
 bs_id <-
