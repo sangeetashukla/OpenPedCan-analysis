@@ -1,5 +1,5 @@
 #!/bin/bash
-# Module authors: Aditya Lahiri,Eric Wafula and Jo Lynne Rokita
+# Module author: Aditya Lahiri
 # Shell script author: Jo Lynne Rokita
 # 2022
 
