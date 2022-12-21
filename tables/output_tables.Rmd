@@ -1,6 +1,6 @@
 ---
 title: "Tables output for manuscript"
-author: "Aditya Lahiri,Eric Wafula and Jo Lynne Rokita"
+author: "Aditya Lahiri"
 date: "2021-2022"
 output: 
   html_notebook:
