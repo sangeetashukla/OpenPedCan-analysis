@@ -1666,7 +1666,7 @@ $(document).ready(function () {
 <p>The purpose of this analysis is to assess significant differences in GSVA scores for each hallmark pathways. Using ANOVA and subsequent Tukey tests, we ask:</p>
 <ul>
 <li><p>For each pathway, are GSVA scores significantly different across <code>cancer_group</code>? If so, which histologies are significantly different?</p></li>
-<li><p>For each pathway, are GSVA scores significantly different across <code>harmonized_diagnosis</code>? If so, which types are significantly different?</p></li>
+<li><p>For each pathway, are GSVA scores significantly different across <code>broad_histology</code>? If so, which types are significantly different?</p></li>
 </ul>
 <p>We perform this using both GSVA scores calculated from RNA-seq libraries. Code is also flexible enough to test a different variable besides <code>cancer_group</code>, etc.</p>
 </div>
@@ -1735,21 +1735,21 @@ cancer_group_tukey_outpaths &lt;- lapply(rna_library_list, function(x){
   file.path(results_dir, paste0(&quot;gsva_tukey_&quot;, x, &quot;_cancer_group.tsv&quot;))
 })
 
-harmonized_diagnosis_anova_outpaths &lt;- lapply(rna_library_list, function(x){
+broad_histology_anova_outpaths &lt;- lapply(rna_library_list, function(x){
   x&lt;-gsub(&quot; &quot;, &quot;_&quot;, x)
   x&lt;-stringr::str_to_lower(gsub(&quot;-&quot;, &quot;&quot;, x))
-  file.path(results_dir, paste0(&quot;gsva_anova_&quot;, x, &quot;_harmonized_diagnosis.tsv&quot;))
+  file.path(results_dir, paste0(&quot;gsva_anova_&quot;, x, &quot;_broad_histology.tsv&quot;))
 })
 
-harmonized_diagnosis_tukey_outpaths &lt;- lapply(rna_library_list, function(x){
+broad_histology_tukey_outpaths &lt;- lapply(rna_library_list, function(x){
   x&lt;-gsub(&quot; &quot;, &quot;_&quot;, x)
   x&lt;-stringr::str_to_lower(gsub(&quot;-&quot;, &quot;&quot;, x))
-  file.path(results_dir, paste0(&quot;gsva_tukey_&quot;, x, &quot;_harmonized_diagnosis.tsv&quot;))
+  file.path(results_dir, paste0(&quot;gsva_tukey_&quot;, x, &quot;_broad_histology.tsv&quot;))
 })</code></pre>
 </div>
 <div id="anova-and-tukey-analysis-of-gsva-scores" class="section level3">
 <h3>ANOVA and Tukey analysis of GSVA scores</h3>
-<p>Here we perform a series of ANOVAs, for polyA and stranded libraries separately, to determine whether mean GSVA scores for a given grouping are significantly different across hallmarks (pathways). The given groupings examined here are <code>cancer_group</code> and <code>harmonized_diagnosis</code>. In other words, we perform an ANOVA (and associated posthoc Tukey test) for each hallmark as, <code>hallmark ~ grouping</code>. Users can specify the grouping variable.</p>
+<p>Here we perform a series of ANOVAs, for polyA and stranded libraries separately, to determine whether mean GSVA scores for a given grouping are significantly different across hallmarks (pathways). The given groupings examined here are <code>cancer_group</code> and <code>broad_histology</code>. In other words, we perform an ANOVA (and associated posthoc Tukey test) for each hallmark as, <code>hallmark ~ grouping</code>. Users can specify the grouping variable.</p>
 <p>First, prepare the data for modeling:</p>
 <pre class="r"><code>### Merge histology metadata with each set of gsea scores
 
@@ -1766,9 +1766,9 @@ metadata_with_gsva &lt;- metadata %&gt;%
     unique() %&gt;% length()
   
   # find out the number of harmonized diagnosis with this RNA library
-  harmonized_diagnosis_n &lt;- metadata_with_gsva %&gt;%
+  broad_histology_n &lt;- metadata_with_gsva %&gt;%
     filter(data_type == rna_library) %&gt;%
-    pull(harmonized_diagnosis) %&gt;% 
+    pull(broad_histology) %&gt;% 
     unique() %&gt;% length()
   
   # anova can only be run on factors with &gt;=2 levels, so to avoid error, we give a if statement 
@@ -1785,375 +1785,205 @@ metadata_with_gsva &lt;- metadata %&gt;%
   }
   
   # anova can only be run on factors with &gt;=2 levels, so to avoid error, we give a if statement
-  if(harmonized_diagnosis_n&gt;=2){
-  harmonized_diagnosis_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, rna_library, SIGNIFICANCE_THRESHOLD)
+  if(broad_histology_n&gt;=2){
+  broad_histology_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, broad_histology, rna_library, SIGNIFICANCE_THRESHOLD)
   
   # write out results
-  readr::write_tsv(harmonized_diagnosis_model_results[[&quot;anova&quot;]], harmonized_diagnosis_anova_outpaths[[i]])
-  readr::write_tsv(harmonized_diagnosis_model_results[[&quot;tukey&quot;]], harmonized_diagnosis_anova_outpaths[[i]])
+  readr::write_tsv(broad_histology_model_results[[&quot;anova&quot;]], broad_histology_anova_outpaths[[i]])
+  readr::write_tsv(broad_histology_model_results[[&quot;tukey&quot;]], broad_histology_tukey_outpaths[[i]])
   
   # print results for viewing
   print(rna_library)
-  print(head(harmonized_diagnosis_model_results))
+  print(head(broad_histology_model_results))
   }
 }</code></pre>
-<pre><code>## [1] 50</code></pre>
-<pre><code>## Warning: The `...` argument of `group_keys()` is deprecated as of dplyr 1.0.0.
-## Please `group_by()` first</code></pre>
-<pre><code>## [1] &quot;stranded&quot;
-## $anova</code></pre>
-<pre><code>## Warning: `...` is not empty.
-## 
-## We detected these problematic arguments:
-## * `needs_dots`
-## 
-## These dots only exist to allow future extensions and should be empty.
-## Did you misspecify an argument?</code></pre>
-<pre><code>## # A tibble: 50 x 5
-##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
-##    &lt;chr&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI…             23.1     8.69e-169        4.34e-167
-##  2 HALLMARK_ALL…             30.9     2.69e-215        1.34e-213
-##  3 HALLMARK_AND…             15.4     7.61e-115        3.81e-113
-##  4 HALLMARK_ANG…             52.4     0                0        
-##  5 HALLMARK_API…             66.1     0                0        
-##  6 HALLMARK_API…             42.8     2.55e-276        1.28e-274
-##  7 HALLMARK_APO…             15.9     8.08e-119        4.04e-117
-##  8 HALLMARK_BIL…             46.3     0                0        
-##  9 HALLMARK_CHO…             27.5     6.75e-196        3.37e-194
-## 10 HALLMARK_COA…             52.8     0                0        
-## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
-## 
-## $tukey</code></pre>
-<pre><code>## Warning: `...` is not empty.
-## 
-## We detected these problematic arguments:
-## * `needs_dots`
-## 
-## These dots only exist to allow future extensions and should be empty.
-## Did you misspecify an argument?</code></pre>
-<pre><code>## # A tibble: 88,500 x 7
-##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
-##    &lt;chr&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI… Adenoma-A…           0.241      1.00               1      
-##  2 HALLMARK_ADI… Arteriove…           0.0908     1                  1      
-##  3 HALLMARK_ADI… Atypical …           0.262      1.00               1      
-##  4 HALLMARK_ADI… Atypical …           0.234      0.0000223          0.00111
-##  5 HALLMARK_ADI… Cavernoma…           0.523      0.984              1      
-##  6 HALLMARK_ADI… Chordoma-…           0.267      0.717              1      
-##  7 HALLMARK_ADI… Choroid p…           0.392      0.223              1      
-##  8 HALLMARK_ADI… Choroid p…           0.235      1                  1      
-##  9 HALLMARK_ADI… Choroid p…           0.264      0.0103             0.517  
-## 10 HALLMARK_ADI… Clear cel…           0.129      0.999              1      
-## # … with 88,490 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
-## #   significant_tukey_bonf &lt;lgl&gt;
-## 
-## [1] 50
-## [1] &quot;stranded&quot;
-## $anova</code></pre>
-<pre><code>## Warning: `...` is not empty.
-## 
-## We detected these problematic arguments:
-## * `needs_dots`
-## 
-## These dots only exist to allow future extensions and should be empty.
-## Did you misspecify an argument?</code></pre>
-<pre><code>## # A tibble: 50 x 5
-##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
-##    &lt;chr&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI…             6.19     1.81e- 61        9.07e- 60
-##  2 HALLMARK_ALL…             9.42     1.13e- 97        5.63e- 96
-##  3 HALLMARK_AND…             7.73     2.15e- 79        1.08e- 77
-##  4 HALLMARK_ANG…             6.90     7.00e- 70        3.50e- 68
-##  5 HALLMARK_API…             9.79     1.68e-101        8.42e-100
-##  6 HALLMARK_API…            13.0      7.44e-132        3.72e-130
-##  7 HALLMARK_APO…             9.23     9.42e- 96        4.71e- 94
-##  8 HALLMARK_BIL…            11.3      1.04e-116        5.22e-115
-##  9 HALLMARK_CHO…             8.58     8.40e- 89        4.20e- 87
-## 10 HALLMARK_COA…            11.7      1.79e-120        8.93e-119
-## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
-## 
-## $tukey</code></pre>
-<pre><code>## Warning: `...` is not empty.
-## 
-## We detected these problematic arguments:
-## * `needs_dots`
-## 
-## These dots only exist to allow future extensions and should be empty.
-## Did you misspecify an argument?</code></pre>
-<pre><code>## # A tibble: 387,500 x 7
-##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
-##    &lt;chr&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI… Adenoma-A…          -0.139           1                   1
-##  2 HALLMARK_ADI… Anaplasti…           0.175           1                   1
-##  3 HALLMARK_ADI… Arteriove…          -0.289           1                   1
-##  4 HALLMARK_ADI… Atypical …          -0.117           1                   1
-##  5 HALLMARK_ADI… Atypical …           0.173           1.00                1
-##  6 HALLMARK_ADI… Atypical …          -0.145           1.00                1
-##  7 HALLMARK_ADI… Benign tu…           0.0231          1                   1
-##  8 HALLMARK_ADI… Benign tu…          -0.154           1                   1
-##  9 HALLMARK_ADI… Benign tu…           0.298           1.00                1
-## 10 HALLMARK_ADI… Benign tu…           0.201           1                   1
-## # … with 387,490 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
-## #   significant_tukey_bonf &lt;lgl&gt;
-## 
-## [1] 50
-## [1] &quot;polya&quot;
-## $anova</code></pre>
-<pre><code>## Warning: `...` is not empty.
-## 
-## We detected these problematic arguments:
-## * `needs_dots`
-## 
-## These dots only exist to allow future extensions and should be empty.
-## Did you misspecify an argument?</code></pre>
-<pre><code>## # A tibble: 50 x 5
-##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
-##    &lt;chr&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI…            45.4       4.12e-37         2.06e-35
-##  2 HALLMARK_ALL…             4.22      4.62e- 4         2.31e- 2
-##  3 HALLMARK_AND…            15.3       7.17e-15         3.58e-13
-##  4 HALLMARK_ANG…            14.2       7.42e-14         3.71e-12
-##  5 HALLMARK_API…            25.8       1.12e-23         5.58e-22
-##  6 HALLMARK_API…            11.7       1.46e-11         7.32e-10
-##  7 HALLMARK_APO…             5.05      6.73e- 5         3.36e- 3
-##  8 HALLMARK_BIL…            46.2       1.42e-37         7.09e-36
-##  9 HALLMARK_CHO…            33.3       3.12e-29         1.56e-27
-## 10 HALLMARK_COA…            13.5       3.07e-13         1.53e-11
-## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
-## 
-## $tukey</code></pre>
-<pre><code>## Warning: `...` is not empty.
-## 
-## We detected these problematic arguments:
-## * `needs_dots`
-## 
-## These dots only exist to allow future extensions and should be empty.
-## Did you misspecify an argument?</code></pre>
-<pre><code>## # A tibble: 1,050 x 7
-##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
-##    &lt;chr&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI… CNS Embry…           0.522     0.00000959         0.000479
-##  2 HALLMARK_ADI… Diffuse m…           0.667     0                  0       
-##  3 HALLMARK_ADI… Embryonal…           0.492     0.149              1       
-##  4 HALLMARK_ADI… High-grad…           0.705     0                  0       
-##  5 HALLMARK_ADI… Medullobl…           0.487     0.158              1       
-##  6 HALLMARK_ADI… Neuroblas…           0.427     0                  0       
-##  7 HALLMARK_ADI… Diffuse m…           0.145     0.780              1       
-##  8 HALLMARK_ADI… Embryonal…          -0.0292    1.00               1       
-##  9 HALLMARK_ADI… High-grad…           0.183     0.594              1       
-## 10 HALLMARK_ADI… Medullobl…          -0.0341    1.00               1       
-## # … with 1,040 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
-## #   significant_tukey_bonf &lt;lgl&gt;
-## 
-## [1] 50
-## [1] &quot;polya&quot;
-## $anova</code></pre>
-<pre><code>## Warning: `...` is not empty.
-## 
-## We detected these problematic arguments:
-## * `needs_dots`
-## 
-## These dots only exist to allow future extensions and should be empty.
-## Did you misspecify an argument?</code></pre>
-<pre><code>## # A tibble: 50 x 5
-##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
-##    &lt;chr&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI…             1.21     0.315              1      
-##  2 HALLMARK_ALL…             1.95     0.0910             1      
-##  3 HALLMARK_AND…             1.18     0.330              1      
-##  4 HALLMARK_ANG…             2.11     0.0679             1      
-##  5 HALLMARK_API…             1.53     0.189              1      
-##  6 HALLMARK_API…             1.58     0.171              1      
-##  7 HALLMARK_APO…             2.50     0.0338             1      
-##  8 HALLMARK_BIL…             5.99     0.0000854          0.00427
-##  9 HALLMARK_CHO…             2.88     0.0172             0.860  
-## 10 HALLMARK_COA…             3.55     0.00515            0.258  
-## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
-## 
-## $tukey</code></pre>
-<pre><code>## Warning: `...` is not empty.
-## 
-## We detected these problematic arguments:
-## * `needs_dots`
-## 
-## These dots only exist to allow future extensions and should be empty.
-## Did you misspecify an argument?</code></pre>
-<pre><code>## # A tibble: 1,050 x 7
-##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
-##    &lt;chr&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI… Diffuse m…          0.145           0.708                1
-##  2 HALLMARK_ADI… Embryonal…         -0.0292          1.00                 1
-##  3 HALLMARK_ADI… High-grad…          0.163           0.705                1
-##  4 HALLMARK_ADI… High-grad…          0.237           0.346                1
-##  5 HALLMARK_ADI… High-grad…          0.00774         1.00                 1
-##  6 HALLMARK_ADI… Medullobl…         -0.0341          1.00                 1
-##  7 HALLMARK_ADI… Embryonal…         -0.175           0.957                1
-##  8 HALLMARK_ADI… High-grad…          0.0179          1.00                 1
-##  9 HALLMARK_ADI… High-grad…          0.0912          0.872                1
-## 10 HALLMARK_ADI… High-grad…         -0.138           0.987                1
-## # … with 1,040 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
-## #   significant_tukey_bonf &lt;lgl&gt;
-## 
-## [1] 50
+<pre><code>## [1] 50
 ## [1] &quot;exome_capture&quot;
-## $anova</code></pre>
-<pre><code>## Warning: `...` is not empty.
-## 
-## We detected these problematic arguments:
-## * `needs_dots`
-## 
-## These dots only exist to allow future extensions and should be empty.
-## Did you misspecify an argument?</code></pre>
-<pre><code>## # A tibble: 50 x 5
+## $anova
+## # A tibble: 50 x 5
 ##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
 ##    &lt;chr&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI…           0.265          0.619                1
-##  2 HALLMARK_ALL…           0.279          0.610                1
-##  3 HALLMARK_AND…           0.0475         0.832                1
-##  4 HALLMARK_ANG…           0.114          0.744                1
-##  5 HALLMARK_API…           0.0148         0.906                1
-##  6 HALLMARK_API…           0.222          0.649                1
-##  7 HALLMARK_APO…           0.0104         0.921                1
-##  8 HALLMARK_BIL…           2.76           0.131                1
-##  9 HALLMARK_CHO…           0.236          0.638                1
-## 10 HALLMARK_COA…           0.0688         0.799                1
+##  1 HALLMARK_ADI…         0.179            0.682                1
+##  2 HALLMARK_ALL…         0.457            0.516                1
+##  3 HALLMARK_AND…         0.0186           0.895                1
+##  4 HALLMARK_ANG…         0.114            0.744                1
+##  5 HALLMARK_API…         0.000495         0.983                1
+##  6 HALLMARK_API…         0.249            0.630                1
+##  7 HALLMARK_APO…         0.00404          0.951                1
+##  8 HALLMARK_BIL…         2.80             0.128                1
+##  9 HALLMARK_CHO…         0.180            0.681                1
+## 10 HALLMARK_COA…         0.166            0.693                1
 ## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
 ## 
-## $tukey</code></pre>
-<pre><code>## Warning: `...` is not empty.
-## 
-## We detected these problematic arguments:
-## * `needs_dots`
-## 
-## These dots only exist to allow future extensions and should be empty.
-## Did you misspecify an argument?</code></pre>
-<pre><code>## # A tibble: 50 x 7
+## $tukey
+## # A tibble: 50 x 7
 ##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
 ##    &lt;chr&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI… High-grad…           0.0826         0.619                1
-##  2 HALLMARK_ALL… High-grad…          -0.0606         0.610                1
-##  3 HALLMARK_AND… High-grad…          -0.0375         0.832                1
-##  4 HALLMARK_ANG… High-grad…          -0.0884         0.744                1
-##  5 HALLMARK_API… High-grad…           0.0147         0.906                1
-##  6 HALLMARK_API… High-grad…           0.0820         0.649                1
-##  7 HALLMARK_APO… High-grad…           0.0195         0.921                1
-##  8 HALLMARK_BIL… High-grad…          -0.160          0.131                1
-##  9 HALLMARK_CHO… High-grad…          -0.0678         0.638                1
-## 10 HALLMARK_COA… High-grad…          -0.0393         0.799                1
+##  1 HALLMARK_ADI… High-grad…          0.0713          0.682                1
+##  2 HALLMARK_ALL… High-grad…         -0.172           0.516                1
+##  3 HALLMARK_AND… High-grad…         -0.0244          0.895                1
+##  4 HALLMARK_ANG… High-grad…         -0.0884          0.744                1
+##  5 HALLMARK_API… High-grad…          0.00319         0.983                1
+##  6 HALLMARK_API… High-grad…          0.0866          0.630                1
+##  7 HALLMARK_APO… High-grad…          0.0151          0.951                1
+##  8 HALLMARK_BIL… High-grad…         -0.165           0.128                1
+##  9 HALLMARK_CHO… High-grad…         -0.0653          0.681                1
+## 10 HALLMARK_COA… High-grad…         -0.0818          0.693                1
 ## # … with 40 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
 ## #   significant_tukey_bonf &lt;lgl&gt;
 ## 
 ## [1] 50
-## [1] &quot;exome_capture&quot;
-## $anova</code></pre>
-<pre><code>## Warning: `...` is not empty.
-## 
-## We detected these problematic arguments:
-## * `needs_dots`
-## 
-## These dots only exist to allow future extensions and should be empty.
-## Did you misspecify an argument?</code></pre>
-<pre><code>## # A tibble: 50 x 5
+## [1] &quot;stranded&quot;
+## $anova
+## # A tibble: 50 x 5
 ##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
 ##    &lt;chr&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI…           0.329          0.729                1
-##  2 HALLMARK_ALL…           0.183          0.836                1
-##  3 HALLMARK_AND…           0.0594         0.943                1
-##  4 HALLMARK_ANG…           0.0549         0.947                1
-##  5 HALLMARK_API…           0.0759         0.928                1
-##  6 HALLMARK_API…           0.105          0.902                1
-##  7 HALLMARK_APO…           0.0175         0.983                1
-##  8 HALLMARK_BIL…           1.30           0.325                1
-##  9 HALLMARK_CHO…           0.183          0.836                1
-## 10 HALLMARK_COA…           0.129          0.881                1
+##  1 HALLMARK_ADI…            11.3      6.05e- 69        3.03e- 67
+##  2 HALLMARK_ALL…            14.9      1.43e- 90        7.16e- 89
+##  3 HALLMARK_AND…            13.0      4.50e- 79        2.25e- 77
+##  4 HALLMARK_ANG…            10.00     3.17e- 60        1.59e- 58
+##  5 HALLMARK_API…            15.1      2.50e- 91        1.25e- 89
+##  6 HALLMARK_API…            20.9      1.10e-122        5.52e-121
+##  7 HALLMARK_APO…            15.1      1.21e- 91        6.06e- 90
+##  8 HALLMARK_BIL…            21.9      1.83e-127        9.17e-126
+##  9 HALLMARK_CHO…            13.8      8.07e- 84        4.04e- 82
+## 10 HALLMARK_COA…            17.3      8.19e-104        4.09e-102
 ## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
 ## 
-## $tukey</code></pre>
-<pre><code>## Warning: `...` is not empty.
-## 
-## We detected these problematic arguments:
-## * `needs_dots`
-## 
-## These dots only exist to allow future extensions and should be empty.
-## Did you misspecify an argument?</code></pre>
-<pre><code>## # A tibble: 150 x 7
+## $tukey
+## # A tibble: 71,550 x 7
 ##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
 ##    &lt;chr&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI… High-grad…          -0.0187         0.996                1
-##  2 HALLMARK_ADI… High-grad…           0.133          0.756                1
-##  3 HALLMARK_ADI… High-grad…           0.152          0.803                1
-##  4 HALLMARK_ALL… High-grad…          -0.0994         0.826                1
-##  5 HALLMARK_ALL… High-grad…          -0.0412         0.949                1
-##  6 HALLMARK_ALL… High-grad…           0.0582         0.940                1
-##  7 HALLMARK_AND… High-grad…          -0.0853         0.939                1
-##  8 HALLMARK_AND… High-grad…          -0.0136         0.997                1
-##  9 HALLMARK_AND… High-grad…           0.0717         0.959                1
-## 10 HALLMARK_ANG… High-grad…          -0.0638         0.985                1
-## # … with 140 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
+##  1 HALLMARK_ADI… Atypical …          -0.139          0.998                1
+##  2 HALLMARK_ADI… Cavernoma…           0.164          1                    1
+##  3 HALLMARK_ADI… Central n…           0.0670         1                    1
+##  4 HALLMARK_ADI… Chordoma-…          -0.103          1                    1
+##  5 HALLMARK_ADI… Choroid p…           0.0310         1                    1
+##  6 HALLMARK_ADI… Choroid p…          -0.139          1                    1
+##  7 HALLMARK_ADI… CNS Burki…          -0.194          1                    1
+##  8 HALLMARK_ADI… CNS Embry…          -0.0979         1.000                1
+##  9 HALLMARK_ADI… CNS neuro…          -0.272          1.000                1
+## 10 HALLMARK_ADI… Craniopha…          -0.0727         1                    1
+## # … with 71,540 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
 ## #   significant_tukey_bonf &lt;lgl&gt;
 ## 
 ## [1] 50
-## [1] &quot;polya_stranded&quot;
-## $anova</code></pre>
-<pre><code>## Warning: `...` is not empty.
-## 
-## We detected these problematic arguments:
-## * `needs_dots`
-## 
-## These dots only exist to allow future extensions and should be empty.
-## Did you misspecify an argument?</code></pre>
-<pre><code>## # A tibble: 50 x 5
+## [1] &quot;stranded&quot;
+## $anova
+## # A tibble: 50 x 5
 ##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
 ##    &lt;chr&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI…            334.      4.02e-164        2.01e-162
-##  2 HALLMARK_ALL…            493.      3.40e-207        1.70e-205
-##  3 HALLMARK_AND…             68.2     3.68e- 49        1.84e- 47
-##  4 HALLMARK_ANG…            514.      3.28e-212        1.64e-210
-##  5 HALLMARK_API…            519.      2.78e-213        1.39e-211
-##  6 HALLMARK_API…            150.      9.46e- 94        4.73e- 92
-##  7 HALLMARK_APO…            185.      4.22e-110        2.11e-108
-##  8 HALLMARK_BIL…            264.      5.01e-141        2.50e-139
-##  9 HALLMARK_CHO…            218.      8.84e-124        4.42e-122
-## 10 HALLMARK_COA…            346.      4.86e-168        2.43e-166
+##  1 HALLMARK_ADI…             20.0     3.48e- 62        1.74e- 60
+##  2 HALLMARK_ALL…             27.0     1.15e- 82        5.76e- 81
+##  3 HALLMARK_AND…             22.8     1.10e- 70        5.51e- 69
+##  4 HALLMARK_ANG…             17.3     7.46e- 54        3.73e- 52
+##  5 HALLMARK_API…             26.6     1.84e- 81        9.21e- 80
+##  6 HALLMARK_API…             36.3     1.99e-107        9.94e-106
+##  7 HALLMARK_APO…             26.4     4.80e- 81        2.40e- 79
+##  8 HALLMARK_BIL…             45.4     2.76e-129        1.38e-127
+##  9 HALLMARK_CHO…             23.7     2.18e- 73        1.09e- 71
+## 10 HALLMARK_COA…             31.6     2.27e- 95        1.13e- 93
 ## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
 ## 
-## $tukey</code></pre>
-<pre><code>## Warning: `...` is not empty.
-## 
-## We detected these problematic arguments:
-## * `needs_dots`
-## 
-## These dots only exist to allow future extensions and should be empty.
-## Did you misspecify an argument?</code></pre>
-<pre><code>## # A tibble: 500 x 7
+## $tukey
+## # A tibble: 11,550 x 7
 ##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
 ##    &lt;chr&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI… Acute Mye…           0.255      0                  0      
-##  2 HALLMARK_ADI… Osteosarc…           0.576      0                  0      
-##  3 HALLMARK_ADI… Rhabdoid …           0.458      0                  0      
-##  4 HALLMARK_ADI… Wilms tum…           0.428      0                  0      
-##  5 HALLMARK_ADI… Osteosarc…           0.321      0                  0      
-##  6 HALLMARK_ADI… Rhabdoid …           0.202      0                  0      
-##  7 HALLMARK_ADI… Wilms tum…           0.172      0                  0      
-##  8 HALLMARK_ADI… Rhabdoid …          -0.118      0.0000365          0.00182
-##  9 HALLMARK_ADI… Wilms tum…          -0.148      0                  0      
-## 10 HALLMARK_ADI… Wilms tum…          -0.0300     0.708              1      
+##  1 HALLMARK_ADI… Chordoma-…         -0.0929      1.000              1      
+##  2 HALLMARK_ADI… Choroid p…         -0.0151      1                  1      
+##  3 HALLMARK_ADI… Diffuse a…         -0.0115      1                  1      
+##  4 HALLMARK_ADI… Embryonal…         -0.253       0.0000469          0.00234
+##  5 HALLMARK_ADI… Ependymal…         -0.00699     1                  1      
+##  6 HALLMARK_ADI… Germ cell…         -0.169       0.912              1      
+##  7 HALLMARK_ADI… Histiocyt…         -0.259       0.768              1      
+##  8 HALLMARK_ADI… Low-grade…          0.201       0.00390            0.195  
+##  9 HALLMARK_ADI… Lymphoma-…         -0.183       1.000              1      
+## 10 HALLMARK_ADI… Melanocyt…         -0.430       0.989              1      
+## # … with 11,540 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
+## #   significant_tukey_bonf &lt;lgl&gt;
+## 
+## [1] 50
+## [1] &quot;polya&quot;
+## $anova
+## # A tibble: 50 x 5
+##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
+##    &lt;chr&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
+##  1 HALLMARK_ADI…            1.74         0.154                 1
+##  2 HALLMARK_ALL…            1.59         0.189                 1
+##  3 HALLMARK_AND…            1.93         0.118                 1
+##  4 HALLMARK_ANG…            1.66         0.173                 1
+##  5 HALLMARK_API…            2.14         0.0885                1
+##  6 HALLMARK_API…            0.866        0.490                 1
+##  7 HALLMARK_APO…            1.80         0.142                 1
+##  8 HALLMARK_BIL…            2.96         0.0278                1
+##  9 HALLMARK_CHO…            2.55         0.0495                1
+## 10 HALLMARK_COA…            2.40         0.0614                1
+## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
+## 
+## $tukey
+## # A tibble: 500 x 7
+##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
+##    &lt;chr&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
+##  1 HALLMARK_ADI… Diffuse m…          0.196           0.572                1
+##  2 HALLMARK_ADI… Embryonal…          0.0138          1.000                1
+##  3 HALLMARK_ADI… High-grad…          0.308           0.181                1
+##  4 HALLMARK_ADI… Medullobl…          0.0184          1.000                1
+##  5 HALLMARK_ADI… Embryonal…         -0.182           0.950                1
+##  6 HALLMARK_ADI… High-grad…          0.112           0.539                1
+##  7 HALLMARK_ADI… Medullobl…         -0.178           0.955                1
+##  8 HALLMARK_ADI… High-grad…          0.294           0.778                1
+##  9 HALLMARK_ADI… Medullobl…          0.00459         1.000                1
+## 10 HALLMARK_ADI… Medullobl…         -0.289           0.788                1
 ## # … with 490 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
+## #   significant_tukey_bonf &lt;lgl&gt;
+## 
+## [1] 50
+## [1] &quot;polya&quot;
+## $anova
+## # A tibble: 50 x 5
+##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
+##    &lt;chr&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
+##  1 HALLMARK_ADI…            4.64        0.0356            1     
+##  2 HALLMARK_ALL…            5.91        0.0183            0.916 
+##  3 HALLMARK_AND…            7.41        0.00863           0.432 
+##  4 HALLMARK_ANG…            0.903       0.346             1     
+##  5 HALLMARK_API…            2.87        0.0959            1     
+##  6 HALLMARK_API…            1.01        0.318             1     
+##  7 HALLMARK_APO…            5.85        0.0189            0.944 
+##  8 HALLMARK_BIL…           11.7         0.00118           0.0591
+##  9 HALLMARK_CHO…            7.35        0.00888           0.444 
+## 10 HALLMARK_COA…            8.69        0.00466           0.233 
+## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
+## 
+## $tukey
+## # A tibble: 50 x 7
+##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
+##    &lt;chr&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
+##  1 HALLMARK_ADI… Embryonal…          -0.229        0.0356            1     
+##  2 HALLMARK_ALL… Embryonal…          -0.336        0.0183            0.916 
+##  3 HALLMARK_AND… Embryonal…          -0.281        0.00863           0.432 
+##  4 HALLMARK_ANG… Embryonal…          -0.144        0.346             1     
+##  5 HALLMARK_API… Embryonal…          -0.130        0.0959            1     
+##  6 HALLMARK_API… Embryonal…          -0.0876       0.318             1     
+##  7 HALLMARK_APO… Embryonal…          -0.276        0.0189            0.944 
+##  8 HALLMARK_BIL… Embryonal…          -0.294        0.00118           0.0591
+##  9 HALLMARK_CHO… Embryonal…          -0.286        0.00888           0.444 
+## 10 HALLMARK_COA… Embryonal…          -0.319        0.00466           0.233 
+## # … with 40 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
 ## #   significant_tukey_bonf &lt;lgl&gt;</code></pre>
 <pre class="r"><code># CI part is commented out since we want to run in CAVATICA later
 ### Don't run polyA samples in CI due to data limitations, won't be enough levels for ANOVA
 # if (!(running_in_ci)){
 #   cancer_group_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, cancer_group, 'polya', SIGNIFICANCE_THRESHOLD)
-#   harmonized_diagnosis_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, 'polya', SIGNIFICANCE_THRESHOLD)
+#   broad_histology_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, broad_histology, 'polya', SIGNIFICANCE_THRESHOLD)
 #   head(cancer_group_polya_model_results)
-#   head(harmonized_diagnosis_polya_model_results)
+#   head(broad_histology_polya_model_results)
 # 
 #   ### Save polya library results
 #   write_tsv(cancer_group_polya_model_results[[&quot;anova&quot;]],     file_anova_polya_cancer_group)
-#   write_tsv(harmonized_diagnosis_polya_model_results[[&quot;anova&quot;]],    file_anova_polya_harmonized_diagnosis)
+#   write_tsv(broad_histology_polya_model_results[[&quot;anova&quot;]],    file_anova_polya_broad_histology)
 #   write_tsv(cancer_group_polya_model_results[[&quot;tukey&quot;]],     file_tukey_polya_cancer_group)
-#   write_tsv(harmonized_diagnosis_polya_model_results[[&quot;tukey&quot;]],    file_tukey_polya_harmonized_diagnosis)
+#   write_tsv(broad_histology_polya_model_results[[&quot;tukey&quot;]],    file_tukey_polya_broad_histology)
 #   }</code></pre>
 <p><strong>How many <code>cancer_group</code> have significant ANOVAs across hallmark pathways, for each library?</strong></p>
 <pre class="r"><code>for(i in 1:length(rna_library_list)){
@@ -2175,7 +2005,6 @@ metadata_with_gsva &lt;- metadata %&gt;%
 }</code></pre>
 <pre><code>## [1] 50
 ## [1] 50
-## [1] 50
 ## [1] 50</code></pre>
 <pre class="r"><code># CI part is commented out since we want to run in CAVATICA later
 # if (!(running_in_ci))
@@ -2185,36 +2014,32 @@ metadata_with_gsva &lt;- metadata %&gt;%
 <blockquote>
 <p>All are significantly different for stranded, none for polya. Likely due to data/power limitations.</p>
 </blockquote>
-<p><strong>How many <code>harmonized_diagnosis</code> have significant ANOVAs across hallmark pathways, for each library?</strong></p>
+<p><strong>How many <code>broad_histology</code> have significant ANOVAs across hallmark pathways, for each library?</strong></p>
 <pre class="r"><code>for(i in 1:length(rna_library_list)){
   # model for each library type
   rna_library = rna_library_list[i]
   
-  harmonized_diagnosis_n &lt;- metadata_with_gsva %&gt;%
+  broad_histology_n &lt;- metadata_with_gsva %&gt;%
     filter(data_type == rna_library) %&gt;%
-    pull(harmonized_diagnosis) %&gt;% 
+    pull(broad_histology) %&gt;% 
     unique() %&gt;% length()
   
-  if(harmonized_diagnosis_n&gt;=2){
-    harmonized_diagnosis_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, rna_library, SIGNIFICANCE_THRESHOLD)
+  if(broad_histology_n&gt;=2){
+    broad_histology_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, broad_histology, rna_library, SIGNIFICANCE_THRESHOLD)
     # count the number of significant 
-    num_sig &lt;- harmonized_diagnosis_model_results[[&quot;anova&quot;]] %&gt;% 
+    num_sig &lt;- broad_histology_model_results[[&quot;anova&quot;]] %&gt;% 
       count(significant_anova) 
   # print out information
   num_sig
   }
 }</code></pre>
 <pre><code>## [1] 50
-## [1] 50
 ## [1] 50</code></pre>
 <pre class="r"><code># CI part is commented out since we want to run in CAVATICA later
 # if (!(running_in_ci))
 # {
-#   harmonized_diagnosis_polya_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
+#   broad_histology_polya_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
 # }</code></pre>
-<blockquote>
-<p>Again, all are significantly different for stranded, none for polya. Likely due to data/power limitations.</p>
-</blockquote>
 </div>
 
 

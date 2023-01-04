@@ -78,8 +78,6 @@ gsva_anova_tukey <- function(df, predictor_variable, library_type, significance_
   fitted_results %>%
     dplyr::select(hallmark_name, anova_fit) %>%
     mutate(anova_tidy = map(anova_fit, broom::tidy)) %>%
-    mutate(comparison=map(anova_fit ,~.[["xlevels"]][["cancer_group"]])) %>%
-    mutate(comparison=paste(unlist(comparison),collapse = '-')) %>%
     dplyr::select(-anova_fit) %>%
     unnest() %>%
     ungroup() %>%
@@ -95,8 +93,6 @@ gsva_anova_tukey <- function(df, predictor_variable, library_type, significance_
   fitted_results %>%
     dplyr::select(hallmark_name, tukey_fit) %>%
     mutate(tukey_tidy = map(tukey_fit, broom::tidy)) %>%
-    mutate(comparison=map(tukey_fit ,~.[["xlevels"]][["cancer_group"]])) %>%
-    mutate(comparison=paste(unlist(comparison),collapse = '-')) %>%
     dplyr::select(-tukey_fit) %>%
     unnest() %>%
     dplyr::select(hallmark_name, comparison, estimate, adj.p.value) %>%
