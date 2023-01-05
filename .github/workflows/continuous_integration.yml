@@ -40,7 +40,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         env:
-          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_PAT: ${{ secrets.GH_TOKEN }}
         with:
           context: .
           push: true
