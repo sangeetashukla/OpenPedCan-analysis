@@ -2,6 +2,8 @@ FROM rocker/tidyverse:3.6.0
 MAINTAINER ccdl@alexslemonade.org
 WORKDIR /rocker-build/
 
+ENV GITHUB_PAT
+
 RUN RSPM="https://packagemanager.rstudio.com/cran/2019-07-07" \
     && echo "options(repos = c(CRAN='$RSPM'), download.file.method = 'libcurl')" >> /usr/local/lib/R/etc/Rprofile.site
 
