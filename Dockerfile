@@ -241,7 +241,7 @@ RUN R -e "remotes::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad0
 RUN R -e "remotes::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9260c3079e5b0b0366420', dependencies = TRUE, auth_token = $GITHUB_PAT)"
 
 # package required for shatterseek
-RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remotes::install_github('parklab/ShatterSeek', ref = '83ab3effaf9589cc391ecc2ac45a6eaf578b5046', dependencies = TRUE))"
+RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remotes::install_github('parklab/ShatterSeek', ref = '83ab3effaf9589cc391ecc2ac45a6eaf578b5046', dependencies = TRUE, auth_token = $GITHUB_PAT))"
 
 # Packages required for rna-seq-composition
 RUN ./install_bioc.r \
@@ -249,7 +249,7 @@ RUN ./install_bioc.r \
     janitor 
 
 # Patchwork for plot compositions
-RUN R -e "remotes::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
+RUN R -e "remotes::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4', auth_token = $GITHUB_PAT)"
 
 # This is required for creating a treemap of the broad histology and integrated diagnoses
 RUN R -e "remotes::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223de8146458db9bef97f872cb', dependencies = TRUE, auth_token = $GITHUB_PAT)"
@@ -390,10 +390,10 @@ RUN ./install_bioc.r \
     gplots
 
 # Molecular subtyping MB
-RUN R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref = 'e3d12f64e2e4e00f5ea884f3353eb8c4b612abe8', dependencies = TRUE, upgrade = FALSE)" \
+RUN R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref = 'e3d12f64e2e4e00f5ea884f3353eb8c4b612abe8', dependencies = TRUE, upgrade = FALSE, auth_token = $GITHUB_PAT)" \
     && ./install_bioc.r MM2S
 # More recent version of sva required for molecular subtyping MB
-RUN R -e "remotes::install_github('jtleek/sva-devel@123be9b2b9fd7c7cd495fab7d7d901767964ce9e', dependencies = FALSE, upgrade = FALSE)"
+RUN R -e "remotes::install_github('jtleek/sva-devel@123be9b2b9fd7c7cd495fab7d7d901767964ce9e', dependencies = FALSE, upgrade = FALSE, auth_token = $GITHUB_PAT)"
 
 # Packages required for de novo mutational signatures
 RUN install2.r --error --deps TRUE \
