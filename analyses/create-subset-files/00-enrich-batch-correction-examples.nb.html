@@ -9,11 +9,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Jaclyn Taroni for ALSF CCDL" />
+<meta name="author" content="Eric Wafula for Pedaitric Open Target" />
 
-<meta name="date" content="2020-01-01" />
+<meta name="date" content="2022-01-01" />
 
-<title>Identify samples with TP53 and NF1 mutations in the stranded RNA-seq dataset</title>
+<title>Identify samples suitable for the RNA-Seq batch correction module</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1748,25 +1748,26 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Identify samples with <em>TP53</em> and
-<em>NF1</em> mutations in the stranded RNA-seq dataset</h1>
-<h4 class="author">Jaclyn Taroni for ALSF CCDL</h4>
-<h4 class="date">2020</h4>
+<h1 class="title toc-ignore">Identify samples suitable for the RNA-Seq
+batch correction module</h1>
+<h4 class="author">Eric Wafula for Pedaitric Open Target</h4>
+<h4 class="date">2022</h4>
 
 </div>
 
 
 <!-- rnb-text-begin -->
-<p>To run and fully test the <code>tp53_nf1_score</code> module in
-continuous integration, we must ensure that there are positive examples
-of <em>TP53</em> and <em>NF1</em> mutations. Furthermore, we need to
-include the same samples in the RNA-seq data. Because we skip running
-the <code>tp53_nf1_score</code> classifier and evaluation steps on the
-poly-A dataset in CI, we can focus on the stranded data.</p>
+<p>To run and fully test the <code>rnaseq-batch-correct</code> module in
+continuous integration, we must ensure that there are examples in the
+RNA-Seq gene expression counts subset matrix required for tumor-only
+(<code>molecular_subtype</code>) and tumor-normal
+(<code>cancer_group</code> and <code>gtex_subgroup</code>) RNA-Seq batch
+correction analyses.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
-<pre class="r"><code>library(tidyverse)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkodGlkeXZlcnNlKSlcbm9wdGlvbnMocmVhZHIuc2hvd19jb2xfdHlwZXMgPSBGQUxTRSlcbmBgYCJ9 -->
+<pre class="r"><code>suppressPackageStartupMessages(library(tidyverse))
+options(readr.show_col_types = FALSE)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1777,224 +1778,200 @@ poly-A dataset in CI, we can focus on the stranded data.</p>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>The table prepped in <code>tp53_nf1_score</code> contains all of the
-information we need regarding positive examples. The histologies file
-contains the information we need for identifying samples that are in the
-stranded RNA-seq dataset.</p>
+<p>The histologies file contains the information we need for identifying
+samples to perform batch correction for poly-A/poly-A stranded and
+stranded samples with one cancer_group-cohort cohort cpmbination</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubXV0YXRpb25zX3RhYmxlIDwtIHJlYWRfdHN2KGZpbGUucGF0aChcXC4uXFwsIFxcdHA1M19uZjFfc2NvcmVcXCwgXFxyZXN1bHRzXFwsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcXFRQNTNfTkYxX3Nudl9hbHRlcmF0aW9uLnRzdlxcKSlcbmhpc3RvbG9naWVzX2RmIDwtIHJlYWRfdHN2KGZpbGUucGF0aChcXC4uXFwsIFxcLi5cXCwgXFxkYXRhXFwsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxcaGlzdG9sb2dpZXMudHN2XFwpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sX3R5cGVzID0gY29scyhcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbW9sZWN1bGFyX3N1YnR5cGUgPSBjb2xfY2hhcmFjdGVyKClcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICkpXG5gYGAifQ== -->
-<pre class="r"><code>mutations_table &lt;- read_tsv(file.path(\..\, \tp53_nf1_score\, \results\, 
-                                      \TP53_NF1_snv_alteration.tsv\))
-histologies_df &lt;- read_tsv(file.path(\..\, \..\, \data\, 
-                                     \histologies.tsv\),
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdG9sb2dpZXNfZGYgPC0gcmVhZF90c3YoZmlsZS5wYXRoKFwiLi5cIiwgXCIuLlwiLCBcImRhdGFcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJoaXN0b2xvZ2llcy50c3ZcIiksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xfdHlwZXMgPSBjb2xzKFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBtb2xlY3VsYXJfc3VidHlwZSA9IGNvbF9jaGFyYWN0ZXIoKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgKSkgJT4lIFxuICBmaWx0ZXIoUk5BX2xpYnJhcnkgPT0gXCJzdHJhbmRlZFwiIHwgXG4gICAgICAgICAgIFJOQV9saWJyYXJ5ID09IFwicG9seS1BIHN0cmFuZGVkXCIgfCBcbiAgICAgICAgICAgUk5BX2xpYnJhcnkgPT0gXCJwb2x5LUFcIilcbmBgYCJ9 -->
+<pre class="r"><code>histologies_df &lt;- read_tsv(file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;, 
+                                     &quot;histologies.tsv&quot;),
                            col_types = cols(
                              molecular_subtype = col_character()
-                           ))</code></pre>
+                           )) %&gt;% 
+  filter(RNA_library == &quot;stranded&quot; | 
+           RNA_library == &quot;poly-A stranded&quot; | 
+           RNA_library == &quot;poly-A&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Get biospecimen identifiers for samples with mutations of
+<p>Get biospecimen identifiers for samples with histologies of
 interest.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudHA1M19leGFtcGxlcyA8LSBtdXRhdGlvbnNfdGFibGUgJT4lXG4gIGZpbHRlcihIdWdvX1N5bWJvbCA9PSBcXFRQNTNcXCkgJT4lXG4gIHB1bGwoVHVtb3JfU2FtcGxlX0JhcmNvZGUpXG5uZjFfZXhhbXBsZXMgPC0gbXV0YXRpb25zX3RhYmxlICU+JVxuICBmaWx0ZXIoSHVnb19TeW1ib2wgPT0gXFxORjFcXCkgJT4lXG4gIHB1bGwoVHVtb3JfU2FtcGxlX0JhcmNvZGUpXG5gYGAifQ== -->
-<pre class="r"><code>tp53_examples &lt;- mutations_table %&gt;%
-  filter(Hugo_Symbol == \TP53\) %&gt;%
-  pull(Tumor_Sample_Barcode)
-nf1_examples &lt;- mutations_table %&gt;%
-  filter(Hugo_Symbol == \NF1\) %&gt;%
-  pull(Tumor_Sample_Barcode)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUQVJHRVQgRGlmZnVzZSBNWUNOIGFtcCBhbmQgSGlnaC1ncmFkZSBNWUNOIG5vbi1hbXAgaGlzdG9sb2dpZXNcbm15Y25fZXhhbXBsZXMgPC0gaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGZpbHRlcihzYW1wbGVfdHlwZSA9PSBcIlR1bW9yXCIsXG4gICAgICAgICBtb2xlY3VsYXJfc3VidHlwZSA9PSBcIk1ZQ04gYW1wXCIgfCBcbiAgICAgICAgICAgbW9sZWN1bGFyX3N1YnR5cGUgPT0gXCJNWUNOIG5vbi1hbXBcIiwgXG4gICAgICAgICBjb2hvcnQgPT0gXCJUQVJHRVRcIilcblxuIyBQQlRBIERpZmZ1c2UgbWlkbGluZSBnbGlvbWEgYW5kIEhpZ2gtZ3JhZGUgZ2xpb21hL2FzdHJvY3l0b21hIGhpc3RvbG9naWVzXG5nbGlvbWFfZXhhbXBsZXMgPC0gaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGZpbHRlcihzYW1wbGVfdHlwZSA9PSBcIlR1bW9yXCIsXG4gICAgICAgICBjYW5jZXJfZ3JvdXAgPT0gXCJEaWZmdXNlIG1pZGxpbmUgZ2xpb21hXCIgfCBcbiAgICAgICAgICAgY2FuY2VyX2dyb3VwID09IFwiSGlnaC1ncmFkZSBnbGlvbWEvYXN0cm9jeXRvbWFcIixcbiAgICAgICAgIGNvaG9ydCA9PSBcIlBCVEFcIilcbiAgXG4jIEdURXggQnJhaW4gQ29ydGV4IGFuZCBCcmFpbiBDZXJlYmVsbHVtIGhpc3RvbG9naWVzXG5ndGV4X2V4YW1wbGVzIDwtIGhpc3RvbG9naWVzX2RmICU+JVxuICBmaWx0ZXIoZ3RleF9zdWJncm91cCA9PSBcIkJyYWluIC0gQ29ydGV4XCIgfCBcbiAgICAgICAgICAgZ3RleF9zdWJncm91cCA9PSBcIkJyYWluIC0gQ2VyZWJlbGx1bVwiKSBcbmBgYCJ9 -->
+<pre class="r"><code># TARGET Diffuse MYCN amp and High-grade MYCN non-amp histologies
+mycn_examples &lt;- histologies_df %&gt;%
+  filter(sample_type == &quot;Tumor&quot;,
+         molecular_subtype == &quot;MYCN amp&quot; | 
+           molecular_subtype == &quot;MYCN non-amp&quot;, 
+         cohort == &quot;TARGET&quot;)
+
+# PBTA Diffuse midline glioma and High-grade glioma/astrocytoma histologies
+glioma_examples &lt;- histologies_df %&gt;%
+  filter(sample_type == &quot;Tumor&quot;,
+         cancer_group == &quot;Diffuse midline glioma&quot; | 
+           cancer_group == &quot;High-grade glioma/astrocytoma&quot;,
+         cohort == &quot;PBTA&quot;)
+  
+# GTEx Brain Cortex and Brain Cerebellum histologies
+gtex_examples &lt;- histologies_df %&gt;%
+  filter(gtex_subgroup == &quot;Brain - Cortex&quot; | 
+           gtex_subgroup == &quot;Brain - Cerebellum&quot;) </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<div id="tp53-positive-examples" class="section level3">
-<h3><em>TP53</em> positive examples</h3>
+<div id="target-poly-a-mycn-amp-rna-seq-examples" class="section level3">
+<h3>TARGET <em>poly-A MYCN amp</em> RNA-Seq examples</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBzYW1wbGVzIHRoYXQgYWxzbyBoYXZlIFJOQS1zZXEgZGF0YVxudHA1M19zYW1wbGVzIDwtIGhpc3RvbG9naWVzX2RmICU+JVxuICBmaWx0ZXIoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCAlaW4lIHRwNTNfZXhhbXBsZXMpICU+JVxuICBncm91cF9ieShncm91cF9pZCA9IHBhc3RlKHNhbXBsZV9pZCwgS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgc2VwID1cXC1cXCkpICU+JVxuICB1bmdyb3VwKCkgJT4lIFxuICBpbm5lcl9qb2luKGhpc3RvbG9naWVzX2RmICU+JVxuICAgICAgICAgICAgICAgZmlsdGVyKFJOQV9saWJyYXJ5ID09IFxcc3RyYW5kZWRcXCB8IFxuICAgICAgICAgICAgICAgICAgICAgICAgUk5BX2xpYnJhcnkgPT0gXFxwb2x5LUEgc3RyYW5kZWRcXCB8XG4gICAgICAgICAgICAgICAgICAgICAgICBSTkFfbGlicmFyeSA9PSBcXHBvbHktQVxcLFxuICAgICAgICAgICAgICAgICAgICAgIHNhbXBsZV90eXBlID09IFxcVHVtb3JcXCwgXG4gICAgICAgICAgICAgICAgICAgICAgZXhwZXJpbWVudGFsX3N0cmF0ZWd5ICE9IFxcTWV0aHlsYXRpb25cXCkgJT4lXG4gICAgICAgICAgICAgICBncm91cF9ieShncm91cF9pZCA9IHBhc3RlKHNhbXBsZV9pZCwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIHNlcCA9XFwtXFwpKSAlPiVcbiAgICAgICAgICAgICAgIHVuZ3JvdXAoKSAlPiUgXG4gICAgICAgICAgICAgICBzZWxlY3QoZ3JvdXBfaWQpKSAlPiVcbiAgZGlzdGluY3QoKVxuYGBgIn0= -->
-<pre class="r"><code># samples that also have RNA-seq data
-tp53_samples &lt;- histologies_df %&gt;%
-  filter(Kids_First_Biospecimen_ID %in% tp53_examples) %&gt;%
-  group_by(group_id = paste(sample_id, Kids_First_Participant_ID, sep =\-\)) %&gt;%
-  ungroup() %&gt;% 
-  inner_join(histologies_df %&gt;%
-               filter(RNA_library == \stranded\ | 
-                        RNA_library == \poly-A stranded\ |
-                        RNA_library == \poly-A\,
-                      sample_type == \Tumor\, 
-                      experimental_strategy != \Methylation\) %&gt;%
-               group_by(group_id = paste(sample_id, 
-                                         Kids_First_Participant_ID, sep =\-\)) %&gt;%
-               ungroup() %&gt;% 
-               select(group_id)) %&gt;%
-  distinct()</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<div id="pbta-tp53-positive-examples" class="section level4">
-<h4>PBTA <em>TP53</em> positive examples</h4>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByYW5kb21seSBzZWxlY3RlZCBQQlRBIHBvc2l0aXZlIGV4YW1wbGVzXG5oaXN0b2xvZ2llc19kZiAlPiVcbiAgZmlsdGVyKGNvaG9ydCA9PSBcXFBCVEFcXCxcbiAgICAgICAgIHNhbXBsZV90eXBlID09IFxcVHVtb3JcXCxcbiAgICAgICAgIGV4cGVyaW1lbnRhbF9zdHJhdGVneSAhPSBcXE1ldGh5bGF0aW9uXFwpICU+JSBcbiAgZ3JvdXBfYnkoZ3JvdXBfaWQgPSBwYXN0ZShzYW1wbGVfaWQsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIHNlcCA9XFwtXFwpKSAlPiUgXG4gIHVuZ3JvdXAoKSAlPiUgXG4gIGZpbHRlcihncm91cF9pZCAlaW4lIHNhbXBsZSh0cDUzX3NhbXBsZXMgJT4lIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZmlsdGVyKGNvaG9ydCA9PSBcXFBCVEFcXCkgJT4lIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcHVsbChncm91cF9pZCkgJT4lIHVuaXF1ZSgpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDMpXG4gICAgICAgICApICU+JSBcbiAgYXJyYW5nZShncm91cF9pZClcbmBgYCJ9 -->
-<pre class="r"><code># randomly selected PBTA positive examples
-histologies_df %&gt;%
-  filter(cohort == \PBTA\,
-         sample_type == \Tumor\,
-         experimental_strategy != \Methylation\) %&gt;% 
-  group_by(group_id = paste(sample_id, 
-                            Kids_First_Participant_ID, sep =\-\)) %&gt;% 
-  ungroup() %&gt;% 
-  filter(group_id %in% sample(tp53_samples %&gt;% 
-                                 filter(cohort == \PBTA\) %&gt;% 
-                                 pull(group_id) %&gt;% unique(),
-                                 size = 3)
-         ) %&gt;% 
-  arrange(group_id)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByYW5kb21seSBzZWxlY3QgVEFSR0VUIHBvbHktQSBNWUNOIGFtcGxpZmllZCBzYW1wbGVzIFxubXljbl9leGFtcGxlcyAlPiVcbiAgZmlsdGVyKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBcbiAgICAgICAgICAgc2FtcGxlKG15Y25fZXhhbXBsZXMgJT4lIFxuICAgICAgICAgICAgICAgICAgICBmaWx0ZXIobW9sZWN1bGFyX3N1YnR5cGUgPT0gXCJNWUNOIGFtcFwiLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgIFJOQV9saWJyYXJ5ID09IFwicG9seS1BXCIpICU+JSBcbiAgICAgICAgICAgICAgICAgICAgcHVsbChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiUgXG4gICAgICAgICAgICAgICAgICAgIHVuaXF1ZSgpLCBcbiAgICAgICAgICAgICAgICAgIHNpemUgPSA1KSkgJT4lIFxuICBhcnJhbmdlKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpXG5gYGAifQ== -->
+<pre class="r"><code># randomly select TARGET poly-A MYCN amplified samples 
+mycn_examples %&gt;%
+  filter(Kids_First_Biospecimen_ID %in% 
+           sample(mycn_examples %&gt;% 
+                    filter(molecular_subtype == &quot;MYCN amp&quot;, 
+                           RNA_library == &quot;poly-A&quot;) %&gt;% 
+                    pull(Kids_First_Biospecimen_ID) %&gt;% 
+                    unique(), 
+                  size = 5)) %&gt;% 
+  arrange(Kids_First_Biospecimen_ID)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="gmkf-tp53-positive-examples" class="section level4">
-<h4>GMKF <em>TP53</em> positive examples</h4>
+<div id="target-poly-a-mycn-non-amp-rna-seq-examples" class="section level3">
+<h3>TARGET <em>poly-A MYCN non-amp</em> RNA-Seq examples</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByYW5kb21seSBzZWxlY3RlZCBHTUtGIHBvc2l0aXZlIGV4YW1wbGVzXG5oaXN0b2xvZ2llc19kZiAlPiVcbiAgZmlsdGVyKGNvaG9ydCA9PSBcXEdNS0ZcXCxcbiAgICAgICAgIHNhbXBsZV90eXBlID09IFxcVHVtb3JcXCxcbiAgICAgICAgIGV4cGVyaW1lbnRhbF9zdHJhdGVneSAhPSBcXE1ldGh5bGF0aW9uXFwpICU+JSBcbiAgZ3JvdXBfYnkoZ3JvdXBfaWQgPSBwYXN0ZShzYW1wbGVfaWQsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIHNlcCA9XFwtXFwpKSAlPiUgXG4gIHVuZ3JvdXAoKSAlPiUgXG4gIGZpbHRlcihncm91cF9pZCAlaW4lIHNhbXBsZSh0cDUzX3NhbXBsZXMgJT4lIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZmlsdGVyKGNvaG9ydCA9PSBcXEdNS0ZcXCkgJT4lIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcHVsbChncm91cF9pZCkgJT4lIHVuaXF1ZSgpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpXG4gICAgICAgICApICU+JSBcbiAgYXJyYW5nZShncm91cF9pZClcbmBgYCJ9 -->
-<pre class="r"><code># randomly selected GMKF positive examples
-histologies_df %&gt;%
-  filter(cohort == \GMKF\,
-         sample_type == \Tumor\,
-         experimental_strategy != \Methylation\) %&gt;% 
-  group_by(group_id = paste(sample_id, 
-                            Kids_First_Participant_ID, sep =\-\)) %&gt;% 
-  ungroup() %&gt;% 
-  filter(group_id %in% sample(tp53_samples %&gt;% 
-                                 filter(cohort == \GMKF\) %&gt;% 
-                                 pull(group_id) %&gt;% unique(),
-                                 size = 1)
-         ) %&gt;% 
-  arrange(group_id)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByYW5kb21seSBzZWxlY3QgVEFSR0VUIHBvbHktQSBNWUNOIG5vbi1hbXBsaWZpZWQgc2FtcGxlc1xubXljbl9leGFtcGxlcyAlPiVcbiAgZmlsdGVyKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBcbiAgICAgICAgICAgc2FtcGxlKG15Y25fZXhhbXBsZXMgJT4lIFxuICAgICAgICAgICAgICAgICAgICBmaWx0ZXIobW9sZWN1bGFyX3N1YnR5cGUgPT0gXCJNWUNOIG5vbi1hbXBcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgIFJOQV9saWJyYXJ5ID09IFwicG9seS1BXCIpICU+JSBcbiAgICAgICAgICAgICAgICAgICAgcHVsbChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiUgXG4gICAgICAgICAgICAgICAgICAgIHVuaXF1ZSgpLCBcbiAgICAgICAgICAgICAgICAgIHNpemUgPSA1KSkgJT4lIFxuICBhcnJhbmdlKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpXG5gYGAifQ== -->
+<pre class="r"><code># randomly select TARGET poly-A MYCN non-amplified samples
+mycn_examples %&gt;%
+  filter(Kids_First_Biospecimen_ID %in% 
+           sample(mycn_examples %&gt;% 
+                    filter(molecular_subtype == &quot;MYCN non-amp&quot;,
+                           RNA_library == &quot;poly-A&quot;) %&gt;% 
+                    pull(Kids_First_Biospecimen_ID) %&gt;% 
+                    unique(), 
+                  size = 5)) %&gt;% 
+  arrange(Kids_First_Biospecimen_ID)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="target-tp53-positive-examples" class="section level4">
-<h4>TARGET <em>TP53</em> positive examples</h4>
+<div id="pbta-stranded-diffuse-midline-glioma-rna-seq-examples" class="section level3">
+<h3>PBTA <em>stranded Diffuse midline glioma</em> RNA-Seq examples</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByYW5kb21seSBzZWxlY3RlZCBUQVJHRVQgcG9zaXRpdmUgZXhhbXBsZXNcbmhpc3RvbG9naWVzX2RmICU+JVxuICBmaWx0ZXIoY29ob3J0ID09IFxcVEFSR0VUXFwsXG4gICAgICAgICBzYW1wbGVfdHlwZSA9PSBcXFR1bW9yXFwsXG4gICAgICAgICBleHBlcmltZW50YWxfc3RyYXRlZ3kgIT0gXFxNZXRoeWxhdGlvblxcKSAlPiUgXG4gIGdyb3VwX2J5KGdyb3VwX2lkID0gcGFzdGUoc2FtcGxlX2lkLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELCBzZXAgPVxcLVxcKSkgJT4lIFxuICB1bmdyb3VwKCkgJT4lIFxuICBmaWx0ZXIoZ3JvdXBfaWQgJWluJSBzYW1wbGUodHA1M19zYW1wbGVzICU+JSBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpbHRlcihjb2hvcnQgPT0gXFxUQVJHRVRcXCkgJT4lIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcHVsbChncm91cF9pZCkgJT4lIHVuaXF1ZSgpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDMpXG4gICAgICAgICApICU+JSBcbiAgYXJyYW5nZShncm91cF9pZClcbmBgYCJ9 -->
-<pre class="r"><code># randomly selected TARGET positive examples
-histologies_df %&gt;%
-  filter(cohort == \TARGET\,
-         sample_type == \Tumor\,
-         experimental_strategy != \Methylation\) %&gt;% 
-  group_by(group_id = paste(sample_id, 
-                            Kids_First_Participant_ID, sep =\-\)) %&gt;% 
-  ungroup() %&gt;% 
-  filter(group_id %in% sample(tp53_samples %&gt;% 
-                                 filter(cohort == \TARGET\) %&gt;% 
-                                 pull(group_id) %&gt;% unique(),
-                                 size = 3)
-         ) %&gt;% 
-  arrange(group_id)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByYW5kb21seSBzZWxlY3QgUEJUQSBzdHJhbmRlZCBEaWZmdXNlIG1pZGxpbmUgZ2xpb21hIHNhbXBsZXNcbmdsaW9tYV9leGFtcGxlcyAlPiVcbiAgZmlsdGVyKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBcbiAgICAgICAgICAgc2FtcGxlKGdsaW9tYV9leGFtcGxlcyAlPiUgXG4gICAgICAgICAgICAgICAgICAgIGZpbHRlcihjYW5jZXJfZ3JvdXAgPT0gXCJEaWZmdXNlIG1pZGxpbmUgZ2xpb21hXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBSTkFfbGlicmFyeSA9PSBcInN0cmFuZGVkXCIpICU+JSBcbiAgICAgICAgICAgICAgICAgICAgcHVsbChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiUgXG4gICAgICAgICAgICAgICAgICAgIHVuaXF1ZSgpLCBcbiAgICAgICAgICAgICAgICAgIHNpemUgPSA1KSkgJT4lIFxuICBhcnJhbmdlKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpXG5gYGAifQ== -->
+<pre class="r"><code># randomly select PBTA stranded Diffuse midline glioma samples
+glioma_examples %&gt;%
+  filter(Kids_First_Biospecimen_ID %in% 
+           sample(glioma_examples %&gt;% 
+                    filter(cancer_group == &quot;Diffuse midline glioma&quot;,
+                           RNA_library == &quot;stranded&quot;) %&gt;% 
+                    pull(Kids_First_Biospecimen_ID) %&gt;% 
+                    unique(), 
+                  size = 5)) %&gt;% 
+  arrange(Kids_First_Biospecimen_ID)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-</div>
-<div id="nf1-positive-examples" class="section level3">
-<h3><em>NF1</em> positive examples</h3>
+<div id="pbta-poly-a-diffuse-midline-glioma-rna-seq-examples" class="section level3">
+<h3>PBTA <em>poly-A Diffuse midline glioma</em> RNA-Seq examples</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByYW5kb21seSBzZWxlY3Qgc2FtcGxlcyB0aGF0IGFsc28gaGF2ZSBzdHJhbmRlZCBSTkEtc2VxIGRhdGFcbiMgc2FtcGxlcyB0aGF0IGFsc28gaGF2ZSBSTkEtc2VxIGRhdGFcbm5mMV9zYW1wbGVzIDwtIGhpc3RvbG9naWVzX2RmICU+JVxuICBmaWx0ZXIoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCAlaW4lIG5mMV9leGFtcGxlcykgJT4lXG4gIGdyb3VwX2J5KGdyb3VwX2lkID0gcGFzdGUoc2FtcGxlX2lkLCBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELCBzZXAgPVxcLVxcKSkgJT4lXG4gIHVuZ3JvdXAoKSAlPiUgXG4gIGlubmVyX2pvaW4oaGlzdG9sb2dpZXNfZGYgJT4lXG4gICAgICAgICAgICAgICBmaWx0ZXIoUk5BX2xpYnJhcnkgPT0gXFxzdHJhbmRlZFxcIHwgXG4gICAgICAgICAgICAgICAgICAgICAgICBSTkFfbGlicmFyeSA9PSBcXHBvbHktQSBzdHJhbmRlZFxcIHxcbiAgICAgICAgICAgICAgICAgICAgICAgIFJOQV9saWJyYXJ5ID09IFxccG9seS1BXFwsXG4gICAgICAgICAgICAgICAgICAgICAgc2FtcGxlX3R5cGUgPT0gXFxUdW1vclxcLCBcbiAgICAgICAgICAgICAgICAgICAgICBleHBlcmltZW50YWxfc3RyYXRlZ3kgIT0gXFxNZXRoeWxhdGlvblxcKSAlPiVcbiAgICAgICAgICAgICAgIGdyb3VwX2J5KGdyb3VwX2lkID0gcGFzdGUoc2FtcGxlX2lkLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgc2VwID1cXC1cXCkpICU+JSBcbiAgICAgICAgICAgICAgIHVuZ3JvdXAoKSAlPiUgXG4gICAgICAgICAgICAgICBzZWxlY3QoZ3JvdXBfaWQpKSAlPiVcbiAgZGlzdGluY3QoKVxuYGBgIn0= -->
-<pre class="r"><code># randomly select samples that also have stranded RNA-seq data
-# samples that also have RNA-seq data
-nf1_samples &lt;- histologies_df %&gt;%
-  filter(Kids_First_Biospecimen_ID %in% nf1_examples) %&gt;%
-  group_by(group_id = paste(sample_id, Kids_First_Participant_ID, sep =\-\)) %&gt;%
-  ungroup() %&gt;% 
-  inner_join(histologies_df %&gt;%
-               filter(RNA_library == \stranded\ | 
-                        RNA_library == \poly-A stranded\ |
-                        RNA_library == \poly-A\,
-                      sample_type == \Tumor\, 
-                      experimental_strategy != \Methylation\) %&gt;%
-               group_by(group_id = paste(sample_id, 
-                                         Kids_First_Participant_ID, sep =\-\)) %&gt;% 
-               ungroup() %&gt;% 
-               select(group_id)) %&gt;%
-  distinct()</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<div id="pbta-nf1-positive-examples" class="section level4">
-<h4>PBTA <em>NF1</em> positive examples</h4>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByYW5kb21seSBzZWxlY3RlZCBQQlRBIHBvc2l0aXZlIGV4YW1wbGVzXG5oaXN0b2xvZ2llc19kZiAlPiVcbiAgZmlsdGVyKGNvaG9ydCA9PSBcXFBCVEFcXCxcbiAgICAgICAgIHNhbXBsZV90eXBlID09IFxcVHVtb3JcXCxcbiAgICAgICAgIGV4cGVyaW1lbnRhbF9zdHJhdGVneSAhPSBcXE1ldGh5bGF0aW9uXFwpICU+JSBcbiAgZ3JvdXBfYnkoZ3JvdXBfaWQgPSBwYXN0ZShzYW1wbGVfaWQsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIHNlcCA9XFwtXFwpKSAlPiUgXG4gIHVuZ3JvdXAoKSAlPiVcbiAgZmlsdGVyKGdyb3VwX2lkICVpbiUgc2FtcGxlKG5mMV9zYW1wbGVzICU+JSBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpbHRlcihjb2hvcnQgPT0gXFxQQlRBXFwpICU+JSBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHB1bGwoZ3JvdXBfaWQpICU+JSB1bmlxdWUoKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemUgPSAzKVxuICAgICAgICAgKSAlPiUgXG4gIGFycmFuZ2UoZ3JvdXBfaWQpXG5gYGAifQ== -->
-<pre class="r"><code># randomly selected PBTA positive examples
-histologies_df %&gt;%
-  filter(cohort == \PBTA\,
-         sample_type == \Tumor\,
-         experimental_strategy != \Methylation\) %&gt;% 
-  group_by(group_id = paste(sample_id, 
-                            Kids_First_Participant_ID, sep =\-\)) %&gt;% 
-  ungroup() %&gt;%
-  filter(group_id %in% sample(nf1_samples %&gt;% 
-                                 filter(cohort == \PBTA\) %&gt;% 
-                                 pull(group_id) %&gt;% unique(),
-                                 size = 3)
-         ) %&gt;% 
-  arrange(group_id)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByYW5kb21seSBzZWxlY3QgUEJUQSBwb2x5LUEgRGlmZnVzZSBtaWRsaW5lIGdsaW9tYSBzYW1wbGVzXG5nbGlvbWFfZXhhbXBsZXMgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgXG4gICAgICAgICAgIHNhbXBsZShnbGlvbWFfZXhhbXBsZXMgJT4lIFxuICAgICAgICAgICAgICAgICAgICBmaWx0ZXIoY2FuY2VyX2dyb3VwID09IFwiRGlmZnVzZSBtaWRsaW5lIGdsaW9tYVwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgUk5BX2xpYnJhcnkgPT0gXCJwb2x5LUFcIikgJT4lIFxuICAgICAgICAgICAgICAgICAgICBwdWxsKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JSBcbiAgICAgICAgICAgICAgICAgICAgdW5pcXVlKCksIFxuICAgICAgICAgICAgICAgICAgc2l6ZSA9IDUpKSAlPiUgXG4gIGFycmFuZ2UoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRClcbmBgYCJ9 -->
+<pre class="r"><code># randomly select PBTA poly-A Diffuse midline glioma samples
+glioma_examples %&gt;%
+  filter(Kids_First_Biospecimen_ID %in% 
+           sample(glioma_examples %&gt;% 
+                    filter(cancer_group == &quot;Diffuse midline glioma&quot;,
+                           RNA_library == &quot;poly-A&quot;) %&gt;% 
+                    pull(Kids_First_Biospecimen_ID) %&gt;% 
+                    unique(), 
+                  size = 5)) %&gt;% 
+  arrange(Kids_First_Biospecimen_ID)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="gmkf-nf1-positive-examples" class="section level4">
-<h4>GMKF <em>NF1</em> positive examples</h4>
+<div id="pbta-stranded-high-grade-gliomaastrocytoma-rna-seq-examples" class="section level3">
+<h3>PBTA <em>stranded High-grade glioma/astrocytoma</em> RNA-Seq
+examples</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByYW5kb21seSBzZWxlY3RlZCBHTUtGIHBvc2l0aXZlIGV4YW1wbGVzXG5oaXN0b2xvZ2llc19kZiAlPiVcbiAgZmlsdGVyKGNvaG9ydCA9PSBcXEdNS0ZcXCxcbiAgICAgICAgIHNhbXBsZV90eXBlID09IFxcVHVtb3JcXCxcbiAgICAgICAgIGV4cGVyaW1lbnRhbF9zdHJhdGVneSAhPSBcXE1ldGh5bGF0aW9uXFwpICU+JSBcbiAgZ3JvdXBfYnkoZ3JvdXBfaWQgPSBwYXN0ZShzYW1wbGVfaWQsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIHNlcCA9XFwtXFwpKSAlPiUgXG4gIHVuZ3JvdXAoKSAlPiVcbiAgZmlsdGVyKGdyb3VwX2lkICVpbiUgKG5mMV9zYW1wbGVzICU+JSBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpbHRlcihjb2hvcnQgPT0gXFxHTUtGXFwpICU+JSBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHB1bGwoZ3JvdXBfaWQpICU+JSB1bmlxdWUoKSlcbiAgICAgICAgICkgJT4lIFxuICBhcnJhbmdlKGdyb3VwX2lkKVxuYGBgIn0= -->
-<pre class="r"><code># randomly selected GMKF positive examples
-histologies_df %&gt;%
-  filter(cohort == \GMKF\,
-         sample_type == \Tumor\,
-         experimental_strategy != \Methylation\) %&gt;% 
-  group_by(group_id = paste(sample_id, 
-                            Kids_First_Participant_ID, sep =\-\)) %&gt;% 
-  ungroup() %&gt;%
-  filter(group_id %in% (nf1_samples %&gt;% 
-                                 filter(cohort == \GMKF\) %&gt;% 
-                                 pull(group_id) %&gt;% unique())
-         ) %&gt;% 
-  arrange(group_id)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByYW5kb21seSBzZWxlY3QgUEJUQSBzdHJhbmRlZCBIaWdoLWdyYWRlIGdsaW9tYS9hc3Ryb2N5dG9tYSBzYW1wbGVzXG5nbGlvbWFfZXhhbXBsZXMgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgXG4gICAgICAgICAgIHNhbXBsZShnbGlvbWFfZXhhbXBsZXMgJT4lIFxuICAgICAgICAgICAgICAgICAgICBmaWx0ZXIoY2FuY2VyX2dyb3VwID09IFwiSGlnaC1ncmFkZSBnbGlvbWEvYXN0cm9jeXRvbWFcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgIFJOQV9saWJyYXJ5ID09IFwic3RyYW5kZWRcIikgJT4lIFxuICAgICAgICAgICAgICAgICAgICBwdWxsKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JSBcbiAgICAgICAgICAgICAgICAgICAgdW5pcXVlKCksIFxuICAgICAgICAgICAgICAgICAgc2l6ZSA9IDUpKSAlPiUgXG4gIGFycmFuZ2UoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRClcbmBgYCJ9 -->
+<pre class="r"><code># randomly select PBTA stranded High-grade glioma/astrocytoma samples
+glioma_examples %&gt;%
+  filter(Kids_First_Biospecimen_ID %in% 
+           sample(glioma_examples %&gt;% 
+                    filter(cancer_group == &quot;High-grade glioma/astrocytoma&quot;,
+                           RNA_library == &quot;stranded&quot;) %&gt;% 
+                    pull(Kids_First_Biospecimen_ID) %&gt;% 
+                    unique(), 
+                  size = 5)) %&gt;% 
+  arrange(Kids_First_Biospecimen_ID)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="target-nf1-positive-examples" class="section level4">
-<h4>TARGET <em>NF1</em> positive examples</h4>
+<div id="pbta-poly-a-high-grade-gliomaastrocytoma-rna-seq-examples" class="section level3">
+<h3>PBTA <em>poly-A High-grade glioma/astrocytoma</em> RNA-Seq
+examples</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByYW5kb21seSBzZWxlY3RlZCBUQVJHRVQgcG9zaXRpdmUgZXhhbXBsZXNcbmhpc3RvbG9naWVzX2RmICU+JVxuICBmaWx0ZXIoY29ob3J0ID09IFxcVEFSR0VUXFwsXG4gICAgICAgICBzYW1wbGVfdHlwZSA9PSBcXFR1bW9yXFwsXG4gICAgICAgICBleHBlcmltZW50YWxfc3RyYXRlZ3kgIT0gXFxNZXRoeWxhdGlvblxcKSAlPiUgXG4gIGdyb3VwX2J5KGdyb3VwX2lkID0gcGFzdGUoc2FtcGxlX2lkLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELCBzZXAgPVxcLVxcKSkgJT4lIFxuICB1bmdyb3VwKCkgJT4lXG4gIGZpbHRlcihncm91cF9pZCAlaW4lIHNhbXBsZShuZjFfc2FtcGxlcyAlPiUgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmaWx0ZXIoY29ob3J0ID09IFxcVEFSR0VUXFwpICU+JSBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHB1bGwoZ3JvdXBfaWQpICU+JSB1bmlxdWUoKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemUgPSAzKVxuICAgICAgICAgKSAlPiUgXG4gIGFycmFuZ2UoZ3JvdXBfaWQpXG5gYGAifQ== -->
-<pre class="r"><code># randomly selected TARGET positive examples
-histologies_df %&gt;%
-  filter(cohort == \TARGET\,
-         sample_type == \Tumor\,
-         experimental_strategy != \Methylation\) %&gt;% 
-  group_by(group_id = paste(sample_id, 
-                            Kids_First_Participant_ID, sep =\-\)) %&gt;% 
-  ungroup() %&gt;%
-  filter(group_id %in% sample(nf1_samples %&gt;% 
-                                 filter(cohort == \TARGET\) %&gt;% 
-                                 pull(group_id) %&gt;% unique(),
-                                 size = 3)
-         ) %&gt;% 
-  arrange(group_id)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByYW5kb21seSBzZWxlY3QgUEJUQSBwb2x5LUEgSGlnaC1ncmFkZSBnbGlvbWEvYXN0cm9jeXRvbWEgc2FtcGxlc1xuZ2xpb21hX2V4YW1wbGVzICU+JVxuICBmaWx0ZXIoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCAlaW4lIFxuICAgICAgICAgICBzYW1wbGUoZ2xpb21hX2V4YW1wbGVzICU+JSBcbiAgICAgICAgICAgICAgICAgICAgZmlsdGVyKGNhbmNlcl9ncm91cCA9PSBcIkhpZ2gtZ3JhZGUgZ2xpb21hL2FzdHJvY3l0b21hXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBSTkFfbGlicmFyeSA9PSBcInBvbHktQVwiKSAlPiVcbiAgICAgICAgICAgICAgICAgICAgcHVsbChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiUgXG4gICAgICAgICAgICAgICAgICAgIHVuaXF1ZSgpLCBcbiAgICAgICAgICAgICAgICAgIHNpemUgPSA1KSkgJT4lIFxuICBhcnJhbmdlKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpXG5gYGAifQ== -->
+<pre class="r"><code># randomly select PBTA poly-A High-grade glioma/astrocytoma samples
+glioma_examples %&gt;%
+  filter(Kids_First_Biospecimen_ID %in% 
+           sample(glioma_examples %&gt;% 
+                    filter(cancer_group == &quot;High-grade glioma/astrocytoma&quot;,
+                           RNA_library == &quot;poly-A&quot;) %&gt;%
+                    pull(Kids_First_Biospecimen_ID) %&gt;% 
+                    unique(), 
+                  size = 5)) %&gt;% 
+  arrange(Kids_First_Biospecimen_ID)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
+<div id="gtex-brain-cortex-rna-seq-examples" class="section level3">
+<h3>GTEx <em>Brain Cortex</em> RNA-Seq examples</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByYW5kb21seSBzZWxlY3QgR1RFeCBCcmFpbiBDb3J0ZXggc2FtcGxlc1xuZ3RleF9leGFtcGxlcyAlPiVcbiAgZmlsdGVyKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBcbiAgICAgICAgICAgc2FtcGxlKGd0ZXhfZXhhbXBsZXMgJT4lIFxuICAgICAgICAgICAgICAgICAgICBmaWx0ZXIoZ3RleF9zdWJncm91cCA9PSBcIkJyYWluIC0gQ29ydGV4XCIpICU+JVxuICAgICAgICAgICAgICAgICAgICBwdWxsKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JSBcbiAgICAgICAgICAgICAgICAgICAgdW5pcXVlKCksIFxuICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEwKSkgJT4lIFxuICBhcnJhbmdlKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpXG5gYGAifQ== -->
+<pre class="r"><code># randomly select GTEx Brain Cortex samples
+gtex_examples %&gt;%
+  filter(Kids_First_Biospecimen_ID %in% 
+           sample(gtex_examples %&gt;% 
+                    filter(gtex_subgroup == &quot;Brain - Cortex&quot;) %&gt;%
+                    pull(Kids_First_Biospecimen_ID) %&gt;% 
+                    unique(), 
+                  size = 10)) %&gt;% 
+  arrange(Kids_First_Biospecimen_ID)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="gtex-brain-cerebellum-rna-seq-examples" class="section level3">
+<h3>GTEx <em>Brain Cerebellum</em> RNA-Seq examples</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByYW5kb21seSBzZWxlY3QgR1RFeCBCcmFpbiBDZXJlYmVsbHVtIHNhbXBsZXNcbmd0ZXhfZXhhbXBsZXMgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgXG4gICAgICAgICAgIHNhbXBsZShndGV4X2V4YW1wbGVzICU+JSBcbiAgICAgICAgICAgICAgICAgICAgZmlsdGVyKGd0ZXhfc3ViZ3JvdXAgPT0gXCJCcmFpbiAtIENlcmViZWxsdW1cIikgJT4lXG4gICAgICAgICAgICAgICAgICAgIHB1bGwoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lIFxuICAgICAgICAgICAgICAgICAgICB1bmlxdWUoKSwgXG4gICAgICAgICAgICAgICAgICBzaXplID0gMTApKSAlPiUgXG4gIGFycmFuZ2UoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRClcbmBgYCJ9 -->
+<pre class="r"><code># randomly select GTEx Brain Cerebellum samples
+gtex_examples %&gt;%
+  filter(Kids_First_Biospecimen_ID %in% 
+           sample(gtex_examples %&gt;% 
+                    filter(gtex_subgroup == &quot;Brain - Cerebellum&quot;) %&gt;%
+                    pull(Kids_First_Biospecimen_ID) %&gt;% 
+                    unique(), 
+                  size = 10)) %&gt;% 
+  arrange(Kids_First_Biospecimen_ID)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 </div>
 <div id="session-info" class="section level3">
 <h3>Session Info</h3>
@@ -2003,49 +1980,12 @@ histologies_df %&gt;%
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDQuMS4wICgyMDIxLTA1LTE4KVxuUGxhdGZvcm06IHg4Nl82NC1hcHBsZS1kYXJ3aW4xNy4wICg2NC1iaXQpXG5SdW5uaW5nIHVuZGVyOiBtYWNPUyBDYXRhbGluYSAxMC4xNS43XG5cbk1hdHJpeCBwcm9kdWN0czogZGVmYXVsdFxuQkxBUzogICAvTGlicmFyeS9GcmFtZXdvcmtzL1IuZnJhbWV3b3JrL1ZlcnNpb25zLzQuMS9SZXNvdXJjZXMvbGliL2xpYlJibGFzLmR5bGliXG5MQVBBQ0s6IC9MaWJyYXJ5L0ZyYW1ld29ya3MvUi5mcmFtZXdvcmsvVmVyc2lvbnMvNC4xL1Jlc291cmNlcy9saWIvbGliUmxhcGFjay5keWxpYlxuXG5sb2NhbGU6XG5bMV0gQ1xuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNS4xICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzEuMC45ICAgICBwdXJycl8wLjMuNCAgICBcbls1XSByZWFkcl8yLjEuMiAgICAgdGlkeXJfMS4yLjAgICAgIHRpYmJsZV8zLjEuNyAgICBnZ3Bsb3QyXzMuMy42ICBcbls5XSB0aWR5dmVyc2VfMS4zLjFcblxubG9hZGVkIHZpYSBhIG5hbWVzcGFjZSAoYW5kIG5vdCBhdHRhY2hlZCk6XG4gWzFdIHRpZHlzZWxlY3RfMS4xLjIgeGZ1bl8wLjMxICAgICAgICBic2xpYl8wLjMuMSAgICAgIGhhdmVuXzIuNS4wICAgICBcbiBbNV0gY29sb3JzcGFjZV8yLjAtMyB2Y3Ryc18wLjQuMSAgICAgIGdlbmVyaWNzXzAuMS4yICAgaHRtbHRvb2xzXzAuNS4yIFxuIFs5XSB5YW1sXzIuMy41ICAgICAgIHV0ZjhfMS4yLjIgICAgICAgcmxhbmdfMS4wLjMgICAgICBqcXVlcnlsaWJfMC4xLjQgXG5bMTNdIHBpbGxhcl8xLjcuMCAgICAgd2l0aHJfMi41LjAgICAgICBnbHVlXzEuNi4yICAgICAgIERCSV8xLjEuMyAgICAgICBcblsxN10gYml0NjRfNC4wLjUgICAgICBkYnBseXJfMi4yLjEgICAgIG1vZGVscl8wLjEuOCAgICAgcmVhZHhsXzEuNC4wICAgIFxuWzIxXSBsaWZlY3ljbGVfMS4wLjEgIG11bnNlbGxfMC41LjAgICAgZ3RhYmxlXzAuMy4wICAgICBjZWxscmFuZ2VyXzEuMS4wXG5bMjVdIHJ2ZXN0XzEuMC4yICAgICAgZXZhbHVhdGVfMC4xNSAgICBrbml0cl8xLjM5ICAgICAgIHR6ZGJfMC4zLjAgICAgICBcblsyOV0gZmFzdG1hcF8xLjEuMCAgICBwYXJhbGxlbF80LjEuMCAgIGZhbnNpXzEuMC4zICAgICAgYnJvb21fMC44LjAgICAgIFxuWzMzXSBiYWNrcG9ydHNfMS40LjEgIHNjYWxlc18xLjIuMCAgICAgdnJvb21fMS41LjcgICAgICBqc29ubGl0ZV8xLjguMCAgXG5bMzddIGJpdF80LjAuNCAgICAgICAgZnNfMS41LjIgICAgICAgICBobXNfMS4xLjEgICAgICAgIGRpZ2VzdF8wLjYuMjkgICBcbls0MV0gc3RyaW5naV8xLjcuNiAgICBncmlkXzQuMS4wICAgICAgIGNsaV8zLjMuMCAgICAgICAgdG9vbHNfNC4xLjAgICAgIFxuWzQ1XSBtYWdyaXR0cl8yLjAuMyAgIHNhc3NfMC40LjEgICAgICAgY3JheW9uXzEuNS4xICAgICBwa2djb25maWdfMi4wLjMgXG5bNDldIGVsbGlwc2lzXzAuMy4yICAgeG1sMl8xLjMuMyAgICAgICByZXByZXhfMi4wLjEgICAgIGx1YnJpZGF0ZV8xLjguMCBcbls1M10gcnN0dWRpb2FwaV8wLjEzICBhc3NlcnR0aGF0XzAuMi4xIHJtYXJrZG93bl8yLjE0ICAgaHR0cl8xLjQuMyAgICAgIFxuWzU3XSBSNl8yLjUuMSAgICAgICAgIGNvbXBpbGVyXzQuMS4wICBcbiJ9 -->
-<pre><code>R version 4.1.0 (2021-05-18)
-Platform: x86_64-apple-darwin17.0 (64-bit)
-Running under: macOS Catalina 10.15.7
-
-Matrix products: default
-BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.dylib
-LAPACK: /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRlapack.dylib
-
-locale:
-[1] C
-
-attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
-
-other attached packages:
-[1] forcats_0.5.1   stringr_1.4.0   dplyr_1.0.9     purrr_0.3.4    
-[5] readr_2.1.2     tidyr_1.2.0     tibble_3.1.7    ggplot2_3.3.6  
-[9] tidyverse_1.3.1
-
-loaded via a namespace (and not attached):
- [1] tidyselect_1.1.2 xfun_0.31        bslib_0.3.1      haven_2.5.0     
- [5] colorspace_2.0-3 vctrs_0.4.1      generics_0.1.2   htmltools_0.5.2 
- [9] yaml_2.3.5       utf8_1.2.2       rlang_1.0.3      jquerylib_0.1.4 
-[13] pillar_1.7.0     withr_2.5.0      glue_1.6.2       DBI_1.1.3       
-[17] bit64_4.0.5      dbplyr_2.2.1     modelr_0.1.8     readxl_1.4.0    
-[21] lifecycle_1.0.1  munsell_0.5.0    gtable_0.3.0     cellranger_1.1.0
-[25] rvest_1.0.2      evaluate_0.15    knitr_1.39       tzdb_0.3.0      
-[29] fastmap_1.1.0    parallel_4.1.0   fansi_1.0.3      broom_0.8.0     
-[33] backports_1.4.1  scales_1.2.0     vroom_1.5.7      jsonlite_1.8.0  
-[37] bit_4.0.4        fs_1.5.2         hms_1.1.1        digest_0.6.29   
-[41] stringi_1.7.6    grid_4.1.0       cli_3.3.0        tools_4.1.0     
-[45] magrittr_2.0.3   sass_0.4.1       crayon_1.5.1     pkgconfig_2.0.3 
-[49] ellipsis_0.3.2   xml2_1.3.3       reprex_2.0.1     lubridate_1.8.0 
-[53] rstudioapi_0.13  assertthat_0.2.1 rmarkdown_2.14   httr_1.4.3      
-[57] R6_2.5.1         compiler_4.1.0  </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiSWRlbnRpZnkgc2FtcGxlcyB3aXRoIF9UUDUzXyBhbmQgX05GMV8gbXV0YXRpb25zIGluIHRoZSBzdHJhbmRlZCBSTkEtc2VxIGRhdGFzZXQiCm91dHB1dDogaHRtbF9ub3RlYm9vawphdXRob3I6IEphY2x5biBUYXJvbmkgZm9yIEFMU0YgQ0NETApkYXRlOiAyMDIwCi0tLQoKVG8gcnVuIGFuZCBmdWxseSB0ZXN0IHRoZSBgdHA1M19uZjFfc2NvcmVgIG1vZHVsZSBpbiBjb250aW51b3VzIGludGVncmF0aW9uLCB3ZSBtdXN0IGVuc3VyZSB0aGF0IHRoZXJlIGFyZSBwb3NpdGl2ZSBleGFtcGxlcyBvZiBfVFA1M18gYW5kIF9ORjFfIG11dGF0aW9ucy4KRnVydGhlcm1vcmUsIHdlIG5lZWQgdG8gaW5jbHVkZSB0aGUgc2FtZSBzYW1wbGVzIGluIHRoZSBSTkEtc2VxIGRhdGEuCkJlY2F1c2Ugd2Ugc2tpcCBydW5uaW5nIHRoZSBgdHA1M19uZjFfc2NvcmVgIGNsYXNzaWZpZXIgYW5kIGV2YWx1YXRpb24gc3RlcHMgb24gdGhlIHBvbHktQSBkYXRhc2V0IGluIENJLCB3ZSBjYW4gZm9jdXMgb24gdGhlIHN0cmFuZGVkIGRhdGEuCgpgYGB7cn0Kc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkodGlkeXZlcnNlKSkKb3B0aW9ucyhyZWFkci5zaG93X2NvbF90eXBlcyA9IEZBTFNFKQpgYGAKCmBgYHtyfQpzZXQuc2VlZCgyMDIyKQpgYGAKClRoZSB0YWJsZSBwcmVwcGVkIGluIGB0cDUzX25mMV9zY29yZWAgY29udGFpbnMgYWxsIG9mIHRoZSBpbmZvcm1hdGlvbiB3ZSBuZWVkIHJlZ2FyZGluZyBwb3NpdGl2ZSBleGFtcGxlcy4KVGhlIGhpc3RvbG9naWVzIGZpbGUgY29udGFpbnMgdGhlIGluZm9ybWF0aW9uIHdlIG5lZWQgZm9yIGlkZW50aWZ5aW5nIHNhbXBsZXMgdGhhdCBhcmUgaW4gdGhlIHN0cmFuZGVkIFJOQS1zZXEgZGF0YXNldC4KCmBgYHtyfQptdXRhdGlvbnNfdGFibGUgPC0gcmVhZF90c3YoZmlsZS5wYXRoKCIuLiIsICJ0cDUzX25mMV9zY29yZSIsICJyZXN1bHRzIiwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIlRQNTNfTkYxX3Nudl9hbHRlcmF0aW9uLnRzdiIpKQpoaXN0b2xvZ2llc19kZiA8LSByZWFkX3RzdihmaWxlLnBhdGgoIi4uIiwgIi4uIiwgImRhdGEiLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJoaXN0b2xvZ2llcy50c3YiKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sX3R5cGVzID0gY29scygKICAgICAgICAgICAgICAgICAgICAgICAgICAgICBtb2xlY3VsYXJfc3VidHlwZSA9IGNvbF9jaGFyYWN0ZXIoKQogICAgICAgICAgICAgICAgICAgICAgICAgICApKQpgYGAKCkdldCBiaW9zcGVjaW1lbiBpZGVudGlmaWVycyBmb3Igc2FtcGxlcyB3aXRoIG11dGF0aW9ucyBvZiBpbnRlcmVzdC4KCmBgYHtyfQp0cDUzX2V4YW1wbGVzIDwtIG11dGF0aW9uc190YWJsZSAlPiUKICBmaWx0ZXIoSHVnb19TeW1ib2wgPT0gIlRQNTMiKSAlPiUKICBwdWxsKFR1bW9yX1NhbXBsZV9CYXJjb2RlKQpuZjFfZXhhbXBsZXMgPC0gbXV0YXRpb25zX3RhYmxlICU+JQogIGZpbHRlcihIdWdvX1N5bWJvbCA9PSAiTkYxIikgJT4lCiAgcHVsbChUdW1vcl9TYW1wbGVfQmFyY29kZSkKYGBgCgojIyMgX1RQNTNfIHBvc2l0aXZlIGV4YW1wbGVzCgpgYGB7cn0KIyBzYW1wbGVzIHRoYXQgYWxzbyBoYXZlIFJOQS1zZXEgZGF0YQp0cDUzX3NhbXBsZXMgPC0gaGlzdG9sb2dpZXNfZGYgJT4lCiAgZmlsdGVyKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSB0cDUzX2V4YW1wbGVzKSAlPiUKICBncm91cF9ieShncm91cF9pZCA9IHBhc3RlKHNhbXBsZV9pZCwgS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgc2VwID0iLSIpKSAlPiUKICB1bmdyb3VwKCkgJT4lIAogIGlubmVyX2pvaW4oaGlzdG9sb2dpZXNfZGYgJT4lCiAgICAgICAgICAgICAgIGZpbHRlcihSTkFfbGlicmFyeSA9PSAic3RyYW5kZWQiIHwgCiAgICAgICAgICAgICAgICAgICAgICAgIFJOQV9saWJyYXJ5ID09ICJwb2x5LUEgc3RyYW5kZWQiIHwKICAgICAgICAgICAgICAgICAgICAgICAgUk5BX2xpYnJhcnkgPT0gInBvbHktQSIsCiAgICAgICAgICAgICAgICAgICAgICBzYW1wbGVfdHlwZSA9PSAiVHVtb3IiLCAKICAgICAgICAgICAgICAgICAgICAgIGV4cGVyaW1lbnRhbF9zdHJhdGVneSAhPSAiTWV0aHlsYXRpb24iKSAlPiUKICAgICAgICAgICAgICAgZ3JvdXBfYnkoZ3JvdXBfaWQgPSBwYXN0ZShzYW1wbGVfaWQsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIHNlcCA9Ii0iKSkgJT4lCiAgICAgICAgICAgICAgIHVuZ3JvdXAoKSAlPiUgCiAgICAgICAgICAgICAgIHNlbGVjdChncm91cF9pZCkpICU+JQogIGRpc3RpbmN0KCkKYGBgCgojIyMjIFBCVEEgX1RQNTNfIHBvc2l0aXZlIGV4YW1wbGVzCgpgYGB7cn0KIyByYW5kb21seSBzZWxlY3RlZCBQQlRBIHBvc2l0aXZlIGV4YW1wbGVzCmhpc3RvbG9naWVzX2RmICU+JQogIGZpbHRlcihjb2hvcnQgPT0gIlBCVEEiLAogICAgICAgICBzYW1wbGVfdHlwZSA9PSAiVHVtb3IiLAogICAgICAgICBleHBlcmltZW50YWxfc3RyYXRlZ3kgIT0gIk1ldGh5bGF0aW9uIikgJT4lIAogIGdyb3VwX2J5KGdyb3VwX2lkID0gcGFzdGUoc2FtcGxlX2lkLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIHNlcCA9Ii0iKSkgJT4lIAogIHVuZ3JvdXAoKSAlPiUgCiAgZmlsdGVyKGdyb3VwX2lkICVpbiUgc2FtcGxlKHRwNTNfc2FtcGxlcyAlPiUgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpbHRlcihjb2hvcnQgPT0gIlBCVEEiKSAlPiUgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHB1bGwoZ3JvdXBfaWQpICU+JSB1bmlxdWUoKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDMpCiAgICAgICAgICkgJT4lIAogIGFycmFuZ2UoZ3JvdXBfaWQpCmBgYAoKIyMjIyBHTUtGIF9UUDUzXyBwb3NpdGl2ZSBleGFtcGxlcwoKYGBge3J9CiMgcmFuZG9tbHkgc2VsZWN0ZWQgR01LRiBwb3NpdGl2ZSBleGFtcGxlcwpoaXN0b2xvZ2llc19kZiAlPiUKICBmaWx0ZXIoY29ob3J0ID09ICJHTUtGIiwKICAgICAgICAgc2FtcGxlX3R5cGUgPT0gIlR1bW9yIiwKICAgICAgICAgZXhwZXJpbWVudGFsX3N0cmF0ZWd5ICE9ICJNZXRoeWxhdGlvbiIpICU+JSAKICBncm91cF9ieShncm91cF9pZCA9IHBhc3RlKHNhbXBsZV9pZCwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELCBzZXAgPSItIikpICU+JSAKICB1bmdyb3VwKCkgJT4lIAogIGZpbHRlcihncm91cF9pZCAlaW4lIHNhbXBsZSh0cDUzX3NhbXBsZXMgJT4lIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmaWx0ZXIoY29ob3J0ID09ICJHTUtGIikgJT4lIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwdWxsKGdyb3VwX2lkKSAlPiUgdW5pcXVlKCksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemUgPSAxKQogICAgICAgICApICU+JSAKICBhcnJhbmdlKGdyb3VwX2lkKQpgYGAKCiMjIyMgVEFSR0VUIF9UUDUzXyBwb3NpdGl2ZSBleGFtcGxlcwoKYGBge3J9CiMgcmFuZG9tbHkgc2VsZWN0ZWQgVEFSR0VUIHBvc2l0aXZlIGV4YW1wbGVzCmhpc3RvbG9naWVzX2RmICU+JQogIGZpbHRlcihjb2hvcnQgPT0gIlRBUkdFVCIsCiAgICAgICAgIHNhbXBsZV90eXBlID09ICJUdW1vciIsCiAgICAgICAgIGV4cGVyaW1lbnRhbF9zdHJhdGVneSAhPSAiTWV0aHlsYXRpb24iKSAlPiUgCiAgZ3JvdXBfYnkoZ3JvdXBfaWQgPSBwYXN0ZShzYW1wbGVfaWQsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgc2VwID0iLSIpKSAlPiUgCiAgdW5ncm91cCgpICU+JSAKICBmaWx0ZXIoZ3JvdXBfaWQgJWluJSBzYW1wbGUodHA1M19zYW1wbGVzICU+JSAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZmlsdGVyKGNvaG9ydCA9PSAiVEFSR0VUIikgJT4lIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwdWxsKGdyb3VwX2lkKSAlPiUgdW5pcXVlKCksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemUgPSAzKQogICAgICAgICApICU+JSAKICBhcnJhbmdlKGdyb3VwX2lkKQpgYGAKCiMjIyBfTkYxXyBwb3NpdGl2ZSBleGFtcGxlcwoKYGBge3J9CiMgcmFuZG9tbHkgc2VsZWN0IHNhbXBsZXMgdGhhdCBhbHNvIGhhdmUgc3RyYW5kZWQgUk5BLXNlcSBkYXRhCiMgc2FtcGxlcyB0aGF0IGFsc28gaGF2ZSBSTkEtc2VxIGRhdGEKbmYxX3NhbXBsZXMgPC0gaGlzdG9sb2dpZXNfZGYgJT4lCiAgZmlsdGVyKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBuZjFfZXhhbXBsZXMpICU+JQogIGdyb3VwX2J5KGdyb3VwX2lkID0gcGFzdGUoc2FtcGxlX2lkLCBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELCBzZXAgPSItIikpICU+JQogIHVuZ3JvdXAoKSAlPiUgCiAgaW5uZXJfam9pbihoaXN0b2xvZ2llc19kZiAlPiUKICAgICAgICAgICAgICAgZmlsdGVyKFJOQV9saWJyYXJ5ID09ICJzdHJhbmRlZCIgfCAKICAgICAgICAgICAgICAgICAgICAgICAgUk5BX2xpYnJhcnkgPT0gInBvbHktQSBzdHJhbmRlZCIgfAogICAgICAgICAgICAgICAgICAgICAgICBSTkFfbGlicmFyeSA9PSAicG9seS1BIiwKICAgICAgICAgICAgICAgICAgICAgIHNhbXBsZV90eXBlID09ICJUdW1vciIsIAogICAgICAgICAgICAgICAgICAgICAgZXhwZXJpbWVudGFsX3N0cmF0ZWd5ICE9ICJNZXRoeWxhdGlvbiIpICU+JQogICAgICAgICAgICAgICBncm91cF9ieShncm91cF9pZCA9IHBhc3RlKHNhbXBsZV9pZCwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgc2VwID0iLSIpKSAlPiUgCiAgICAgICAgICAgICAgIHVuZ3JvdXAoKSAlPiUgCiAgICAgICAgICAgICAgIHNlbGVjdChncm91cF9pZCkpICU+JQogIGRpc3RpbmN0KCkKYGBgCgojIyMjIFBCVEEgX05GMV8gcG9zaXRpdmUgZXhhbXBsZXMKCmBgYHtyfQojIHJhbmRvbWx5IHNlbGVjdGVkIFBCVEEgcG9zaXRpdmUgZXhhbXBsZXMKaGlzdG9sb2dpZXNfZGYgJT4lCiAgZmlsdGVyKGNvaG9ydCA9PSAiUEJUQSIsCiAgICAgICAgIHNhbXBsZV90eXBlID09ICJUdW1vciIsCiAgICAgICAgIGV4cGVyaW1lbnRhbF9zdHJhdGVneSAhPSAiTWV0aHlsYXRpb24iKSAlPiUgCiAgZ3JvdXBfYnkoZ3JvdXBfaWQgPSBwYXN0ZShzYW1wbGVfaWQsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgc2VwID0iLSIpKSAlPiUgCiAgdW5ncm91cCgpICU+JQogIGZpbHRlcihncm91cF9pZCAlaW4lIHNhbXBsZShuZjFfc2FtcGxlcyAlPiUgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpbHRlcihjb2hvcnQgPT0gIlBCVEEiKSAlPiUgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHB1bGwoZ3JvdXBfaWQpICU+JSB1bmlxdWUoKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDMpCiAgICAgICAgICkgJT4lIAogIGFycmFuZ2UoZ3JvdXBfaWQpCmBgYAoKIyMjIyBHTUtGIF9ORjFfIHBvc2l0aXZlIGV4YW1wbGVzCgpgYGB7cn0KIyByYW5kb21seSBzZWxlY3RlZCBHTUtGIHBvc2l0aXZlIGV4YW1wbGVzCmhpc3RvbG9naWVzX2RmICU+JQogIGZpbHRlcihjb2hvcnQgPT0gIkdNS0YiLAogICAgICAgICBzYW1wbGVfdHlwZSA9PSAiVHVtb3IiLAogICAgICAgICBleHBlcmltZW50YWxfc3RyYXRlZ3kgIT0gIk1ldGh5bGF0aW9uIikgJT4lIAogIGdyb3VwX2J5KGdyb3VwX2lkID0gcGFzdGUoc2FtcGxlX2lkLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIHNlcCA9Ii0iKSkgJT4lIAogIHVuZ3JvdXAoKSAlPiUKICBmaWx0ZXIoZ3JvdXBfaWQgJWluJSAobmYxX3NhbXBsZXMgJT4lIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmaWx0ZXIoY29ob3J0ID09ICJHTUtGIikgJT4lIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwdWxsKGdyb3VwX2lkKSAlPiUgdW5pcXVlKCkpCiAgICAgICAgICkgJT4lIAogIGFycmFuZ2UoZ3JvdXBfaWQpCmBgYAoKIyMjIyBUQVJHRVQgX05GMV8gcG9zaXRpdmUgZXhhbXBsZXMKCmBgYHtyfQojIHJhbmRvbWx5IHNlbGVjdGVkIFRBUkdFVCBwb3NpdGl2ZSBleGFtcGxlcwpoaXN0b2xvZ2llc19kZiAlPiUKICBmaWx0ZXIoY29ob3J0ID09ICJUQVJHRVQiLAogICAgICAgICBzYW1wbGVfdHlwZSA9PSAiVHVtb3IiLAogICAgICAgICBleHBlcmltZW50YWxfc3RyYXRlZ3kgIT0gIk1ldGh5bGF0aW9uIikgJT4lIAogIGdyb3VwX2J5KGdyb3VwX2lkID0gcGFzdGUoc2FtcGxlX2lkLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIHNlcCA9Ii0iKSkgJT4lIAogIHVuZ3JvdXAoKSAlPiUKICBmaWx0ZXIoZ3JvdXBfaWQgJWluJSBzYW1wbGUobmYxX3NhbXBsZXMgJT4lIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmaWx0ZXIoY29ob3J0ID09ICJUQVJHRVQiKSAlPiUgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHB1bGwoZ3JvdXBfaWQpICU+JSB1bmlxdWUoKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDMpCiAgICAgICAgICkgJT4lIAogIGFycmFuZ2UoZ3JvdXBfaWQpCmBgYAoKIyMjIFNlc3Npb24gSW5mbwoKYGBge3J9CnNlc3Npb25JbmZvKCkKYGBgCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiSWRlbnRpZnkgc2FtcGxlcyBzdWl0YWJsZSBmb3IgdGhlIFJOQS1TZXEgYmF0Y2ggY29ycmVjdGlvbiBtb2R1bGUiCm91dHB1dDogaHRtbF9ub3RlYm9vawphdXRob3I6IEVyaWMgV2FmdWxhIGZvciBQZWRhaXRyaWMgT3BlbiBUYXJnZXQKZGF0ZTogMjAyMgotLS0KClRvIHJ1biBhbmQgZnVsbHkgdGVzdCB0aGUgYHJuYXNlcS1iYXRjaC1jb3JyZWN0YCBtb2R1bGUgaW4gY29udGludW91cyBpbnRlZ3JhdGlvbiwgd2UgbXVzdCBlbnN1cmUgdGhhdCB0aGVyZSBhcmUgZXhhbXBsZXMgaW4gdGhlIFJOQS1TZXEgZ2VuZSBleHByZXNzaW9uIGNvdW50cyBzdWJzZXQgbWF0cml4IHJlcXVpcmVkIGZvciB0dW1vci1vbmx5IChgbW9sZWN1bGFyX3N1YnR5cGVgKSBhbmQgdHVtb3Itbm9ybWFsIChgY2FuY2VyX2dyb3VwYCBhbmQgYGd0ZXhfc3ViZ3JvdXBgKSBSTkEtU2VxIGJhdGNoIGNvcnJlY3Rpb24gYW5hbHlzZXMuCgpgYGB7cn0Kc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkodGlkeXZlcnNlKSkKb3B0aW9ucyhyZWFkci5zaG93X2NvbF90eXBlcyA9IEZBTFNFKQpgYGAKCmBgYHtyfQpzZXQuc2VlZCgyMDIyKQpgYGAKClRoZSBoaXN0b2xvZ2llcyBmaWxlIGNvbnRhaW5zIHRoZSBpbmZvcm1hdGlvbiB3ZSBuZWVkIGZvciBpZGVudGlmeWluZyBzYW1wbGVzIHRvIHBlcmZvcm0gYmF0Y2ggY29ycmVjdGlvbiBmb3IKcG9seS1BL3BvbHktQSBzdHJhbmRlZCBhbmQgc3RyYW5kZWQgc2FtcGxlcyB3aXRoIG9uZSBjYW5jZXJfZ3JvdXAtY29ob3J0IGNvaG9ydCBjcG1iaW5hdGlvbgoKYGBge3J9Cmhpc3RvbG9naWVzX2RmIDwtIHJlYWRfdHN2KGZpbGUucGF0aCgiLi4iLCAiLi4iLCAiZGF0YSIsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImhpc3RvbG9naWVzLnRzdiIpLAogICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xfdHlwZXMgPSBjb2xzKAogICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1vbGVjdWxhcl9zdWJ0eXBlID0gY29sX2NoYXJhY3RlcigpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICkpICU+JSAKICBmaWx0ZXIoUk5BX2xpYnJhcnkgPT0gInN0cmFuZGVkIiB8IAogICAgICAgICAgIFJOQV9saWJyYXJ5ID09ICJwb2x5LUEgc3RyYW5kZWQiIHwgCiAgICAgICAgICAgUk5BX2xpYnJhcnkgPT0gInBvbHktQSIpCmBgYAoKR2V0IGJpb3NwZWNpbWVuIGlkZW50aWZpZXJzIGZvciBzYW1wbGVzIHdpdGggaGlzdG9sb2dpZXMgb2YgaW50ZXJlc3QuCgpgYGB7cn0KIyBUQVJHRVQgRGlmZnVzZSBNWUNOIGFtcCBhbmQgSGlnaC1ncmFkZSBNWUNOIG5vbi1hbXAgaGlzdG9sb2dpZXMKbXljbl9leGFtcGxlcyA8LSBoaXN0b2xvZ2llc19kZiAlPiUKICBmaWx0ZXIoc2FtcGxlX3R5cGUgPT0gIlR1bW9yIiwKICAgICAgICAgbW9sZWN1bGFyX3N1YnR5cGUgPT0gIk1ZQ04gYW1wIiB8IAogICAgICAgICAgIG1vbGVjdWxhcl9zdWJ0eXBlID09ICJNWUNOIG5vbi1hbXAiLCAKICAgICAgICAgY29ob3J0ID09ICJUQVJHRVQiKQoKIyBQQlRBIERpZmZ1c2UgbWlkbGluZSBnbGlvbWEgYW5kIEhpZ2gtZ3JhZGUgZ2xpb21hL2FzdHJvY3l0b21hIGhpc3RvbG9naWVzCmdsaW9tYV9leGFtcGxlcyA8LSBoaXN0b2xvZ2llc19kZiAlPiUKICBmaWx0ZXIoc2FtcGxlX3R5cGUgPT0gIlR1bW9yIiwKICAgICAgICAgY2FuY2VyX2dyb3VwID09ICJEaWZmdXNlIG1pZGxpbmUgZ2xpb21hIiB8IAogICAgICAgICAgIGNhbmNlcl9ncm91cCA9PSAiSGlnaC1ncmFkZSBnbGlvbWEvYXN0cm9jeXRvbWEiLAogICAgICAgICBjb2hvcnQgPT0gIlBCVEEiKQogIAojIEdURXggQnJhaW4gQ29ydGV4IGFuZCBCcmFpbiBDZXJlYmVsbHVtIGhpc3RvbG9naWVzCmd0ZXhfZXhhbXBsZXMgPC0gaGlzdG9sb2dpZXNfZGYgJT4lCiAgZmlsdGVyKGd0ZXhfc3ViZ3JvdXAgPT0gIkJyYWluIC0gQ29ydGV4IiB8IAogICAgICAgICAgIGd0ZXhfc3ViZ3JvdXAgPT0gIkJyYWluIC0gQ2VyZWJlbGx1bSIpIApgYGAKCiMjIyBUQVJHRVQgX3BvbHktQSBNWUNOIGFtcF8gUk5BLVNlcSBleGFtcGxlcwoKYGBge3J9CiMgcmFuZG9tbHkgc2VsZWN0IFRBUkdFVCBwb2x5LUEgTVlDTiBhbXBsaWZpZWQgc2FtcGxlcyAKbXljbl9leGFtcGxlcyAlPiUKICBmaWx0ZXIoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCAlaW4lIAogICAgICAgICAgIHNhbXBsZShteWNuX2V4YW1wbGVzICU+JSAKICAgICAgICAgICAgICAgICAgICBmaWx0ZXIobW9sZWN1bGFyX3N1YnR5cGUgPT0gIk1ZQ04gYW1wIiwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgIFJOQV9saWJyYXJ5ID09ICJwb2x5LUEiKSAlPiUgCiAgICAgICAgICAgICAgICAgICAgcHVsbChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiUgCiAgICAgICAgICAgICAgICAgICAgdW5pcXVlKCksIAogICAgICAgICAgICAgICAgICBzaXplID0gNSkpICU+JSAKICBhcnJhbmdlKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpCmBgYAoKCiMjIyBUQVJHRVQgX3BvbHktQSBNWUNOIG5vbi1hbXBfIFJOQS1TZXEgZXhhbXBsZXMKCmBgYHtyfQojIHJhbmRvbWx5IHNlbGVjdCBUQVJHRVQgcG9seS1BIE1ZQ04gbm9uLWFtcGxpZmllZCBzYW1wbGVzCm15Y25fZXhhbXBsZXMgJT4lCiAgZmlsdGVyKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSAKICAgICAgICAgICBzYW1wbGUobXljbl9leGFtcGxlcyAlPiUgCiAgICAgICAgICAgICAgICAgICAgZmlsdGVyKG1vbGVjdWxhcl9zdWJ0eXBlID09ICJNWUNOIG5vbi1hbXAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICBSTkFfbGlicmFyeSA9PSAicG9seS1BIikgJT4lIAogICAgICAgICAgICAgICAgICAgIHB1bGwoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lIAogICAgICAgICAgICAgICAgICAgIHVuaXF1ZSgpLCAKICAgICAgICAgICAgICAgICAgc2l6ZSA9IDUpKSAlPiUgCiAgYXJyYW5nZShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKQpgYGAKCiMjIyBQQlRBIF9zdHJhbmRlZCBEaWZmdXNlIG1pZGxpbmUgZ2xpb21hXyBSTkEtU2VxIGV4YW1wbGVzCgpgYGB7cn0KIyByYW5kb21seSBzZWxlY3QgUEJUQSBzdHJhbmRlZCBEaWZmdXNlIG1pZGxpbmUgZ2xpb21hIHNhbXBsZXMKZ2xpb21hX2V4YW1wbGVzICU+JQogIGZpbHRlcihLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgCiAgICAgICAgICAgc2FtcGxlKGdsaW9tYV9leGFtcGxlcyAlPiUgCiAgICAgICAgICAgICAgICAgICAgZmlsdGVyKGNhbmNlcl9ncm91cCA9PSAiRGlmZnVzZSBtaWRsaW5lIGdsaW9tYSIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgIFJOQV9saWJyYXJ5ID09ICJzdHJhbmRlZCIpICU+JSAKICAgICAgICAgICAgICAgICAgICBwdWxsKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JSAKICAgICAgICAgICAgICAgICAgICB1bmlxdWUoKSwgCiAgICAgICAgICAgICAgICAgIHNpemUgPSA1KSkgJT4lIAogIGFycmFuZ2UoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkKYGBgCgojIyMgUEJUQSBfcG9seS1BIERpZmZ1c2UgbWlkbGluZSBnbGlvbWFfIFJOQS1TZXEgZXhhbXBsZXMKCmBgYHtyfQojIHJhbmRvbWx5IHNlbGVjdCBQQlRBIHBvbHktQSBEaWZmdXNlIG1pZGxpbmUgZ2xpb21hIHNhbXBsZXMKZ2xpb21hX2V4YW1wbGVzICU+JQogIGZpbHRlcihLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgCiAgICAgICAgICAgc2FtcGxlKGdsaW9tYV9leGFtcGxlcyAlPiUgCiAgICAgICAgICAgICAgICAgICAgZmlsdGVyKGNhbmNlcl9ncm91cCA9PSAiRGlmZnVzZSBtaWRsaW5lIGdsaW9tYSIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgIFJOQV9saWJyYXJ5ID09ICJwb2x5LUEiKSAlPiUgCiAgICAgICAgICAgICAgICAgICAgcHVsbChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiUgCiAgICAgICAgICAgICAgICAgICAgdW5pcXVlKCksIAogICAgICAgICAgICAgICAgICBzaXplID0gNSkpICU+JSAKICBhcnJhbmdlKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpCmBgYAoKIyMjIFBCVEEgX3N0cmFuZGVkIEhpZ2gtZ3JhZGUgZ2xpb21hL2FzdHJvY3l0b21hXyBSTkEtU2VxIGV4YW1wbGVzCgpgYGB7cn0KIyByYW5kb21seSBzZWxlY3QgUEJUQSBzdHJhbmRlZCBIaWdoLWdyYWRlIGdsaW9tYS9hc3Ryb2N5dG9tYSBzYW1wbGVzCmdsaW9tYV9leGFtcGxlcyAlPiUKICBmaWx0ZXIoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCAlaW4lIAogICAgICAgICAgIHNhbXBsZShnbGlvbWFfZXhhbXBsZXMgJT4lIAogICAgICAgICAgICAgICAgICAgIGZpbHRlcihjYW5jZXJfZ3JvdXAgPT0gIkhpZ2gtZ3JhZGUgZ2xpb21hL2FzdHJvY3l0b21hIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgUk5BX2xpYnJhcnkgPT0gInN0cmFuZGVkIikgJT4lIAogICAgICAgICAgICAgICAgICAgIHB1bGwoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lIAogICAgICAgICAgICAgICAgICAgIHVuaXF1ZSgpLCAKICAgICAgICAgICAgICAgICAgc2l6ZSA9IDUpKSAlPiUgCiAgYXJyYW5nZShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKQpgYGAKCiMjIyBQQlRBIF9wb2x5LUEgSGlnaC1ncmFkZSBnbGlvbWEvYXN0cm9jeXRvbWFfIFJOQS1TZXEgZXhhbXBsZXMKCmBgYHtyfQojIHJhbmRvbWx5IHNlbGVjdCBQQlRBIHBvbHktQSBIaWdoLWdyYWRlIGdsaW9tYS9hc3Ryb2N5dG9tYSBzYW1wbGVzCmdsaW9tYV9leGFtcGxlcyAlPiUKICBmaWx0ZXIoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCAlaW4lIAogICAgICAgICAgIHNhbXBsZShnbGlvbWFfZXhhbXBsZXMgJT4lIAogICAgICAgICAgICAgICAgICAgIGZpbHRlcihjYW5jZXJfZ3JvdXAgPT0gIkhpZ2gtZ3JhZGUgZ2xpb21hL2FzdHJvY3l0b21hIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgUk5BX2xpYnJhcnkgPT0gInBvbHktQSIpICU+JQogICAgICAgICAgICAgICAgICAgIHB1bGwoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lIAogICAgICAgICAgICAgICAgICAgIHVuaXF1ZSgpLCAKICAgICAgICAgICAgICAgICAgc2l6ZSA9IDUpKSAlPiUgCiAgYXJyYW5nZShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKQpgYGAKCiMjIyBHVEV4IF9CcmFpbiBDb3J0ZXhfIFJOQS1TZXEgZXhhbXBsZXMKCmBgYHtyfQojIHJhbmRvbWx5IHNlbGVjdCBHVEV4IEJyYWluIENvcnRleCBzYW1wbGVzCmd0ZXhfZXhhbXBsZXMgJT4lCiAgZmlsdGVyKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSAKICAgICAgICAgICBzYW1wbGUoZ3RleF9leGFtcGxlcyAlPiUgCiAgICAgICAgICAgICAgICAgICAgZmlsdGVyKGd0ZXhfc3ViZ3JvdXAgPT0gIkJyYWluIC0gQ29ydGV4IikgJT4lCiAgICAgICAgICAgICAgICAgICAgcHVsbChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiUgCiAgICAgICAgICAgICAgICAgICAgdW5pcXVlKCksIAogICAgICAgICAgICAgICAgICBzaXplID0gMTApKSAlPiUgCiAgYXJyYW5nZShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKQpgYGAKCiMjIyBHVEV4IF9CcmFpbiBDZXJlYmVsbHVtXyBSTkEtU2VxIGV4YW1wbGVzCgpgYGB7cn0KIyByYW5kb21seSBzZWxlY3QgR1RFeCBCcmFpbiBDZXJlYmVsbHVtIHNhbXBsZXMKZ3RleF9leGFtcGxlcyAlPiUKICBmaWx0ZXIoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCAlaW4lIAogICAgICAgICAgIHNhbXBsZShndGV4X2V4YW1wbGVzICU+JSAKICAgICAgICAgICAgICAgICAgICBmaWx0ZXIoZ3RleF9zdWJncm91cCA9PSAiQnJhaW4gLSBDZXJlYmVsbHVtIikgJT4lCiAgICAgICAgICAgICAgICAgICAgcHVsbChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiUgCiAgICAgICAgICAgICAgICAgICAgdW5pcXVlKCksIAogICAgICAgICAgICAgICAgICBzaXplID0gMTApKSAlPiUgCiAgYXJyYW5nZShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKQpgYGAKCiMjIyBTZXNzaW9uIEluZm8KCmBgYHtyfQpzZXNzaW9uSW5mbygpCmBgYAoK</div>
 
 
 
@@ -2092,7 +2032,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("00-enrich-positive-examples.Rmd");
+  window.initializeSourceEmbed("00-enrich-batch-correction-examples.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>
