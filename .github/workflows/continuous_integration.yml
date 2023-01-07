@@ -39,14 +39,13 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v3
-        env:
-          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         with:
           context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: github_pat=${{ secrets.GITHUB_TOKEN }}
 
   run_analysis:
     name: Run Analysis
