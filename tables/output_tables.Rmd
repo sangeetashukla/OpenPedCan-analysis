@@ -1,6 +1,6 @@
 ---
 title: "Tables output for manuscript"
-author: "Aditya Lahiri,Eric Wafula and Jo Lynne Rokita"
+author: "Aditya Lahiri"
 date: "2021-2022"
 output: 
   html_notebook:
@@ -65,10 +65,10 @@ readme <- tribble(
 "broad_histology","Broad WHO 2016 classification of cancer type",paste(unique(histology_df$broad_histology), collapse = "; "),
 "cancer_group","Harmonized cancer groupings for plots",paste(unique(histology_df$cancer_group), collapse = "; "),
 "cancer_predispositions","Reported cancer predisposition syndromes",paste(unique(histology_df$cancer_predispositions), collapse = "; "),
-"cns_methylation_class","methylation-based CNS tumour classes",paste(unique(histology_df$cns_methylation_class), collapse = "; "),
-"cns_methylation_class_score","class score","numeric",
-"cns_methylation_subclass","methylation-based CNS tumour sub-classes",paste(unique(histology_df$cns_methylation_subclass), collapse = "; "),
-"cns_methylation_subclass_score","subclass score","numeric",
+"cns_methylation_class","methylation-based CNS tumor class",paste(unique(histology_df$cns_methylation_class), collapse = "; "),
+"cns_methylation_class_score","methylation-based CNS tumor class score","numeric",
+"cns_methylation_subclass","methylation-based CNS tumor sub-class",paste(unique(histology_df$cns_methylation_subclass), collapse = "; "),
+"cns_methylation_subclass_score","methylation-based tumor subclass score","numeric",
 "CNS_region","Harmonized brain region based on `primary_site`",paste(unique(histology_df$CNS_region), collapse = "; "),
 "cohort","Scientific cohort",paste(unique(histology_df$cohort), collapse = "; "),
 "cohort_participant_id","Scientific cohort participant ID","C#####-C######",
@@ -95,9 +95,9 @@ readme <- tribble(
 "primary_site","Bodily site(s) from which specimen was derived","text",
 "race","Patient reported race",paste(unique(histology_df$race), collapse = "; "),
 "reported_gender","Patient reported gender",paste(unique(histology_df$reported_gender), collapse = "; "),
-"RF_purity_ABSOLUTE","purity score based on ABSOLUTE dataset","numeric",
-"RF_purity_ESTIMATE","purity score based on ESTIMATE dataset","numeric",
-"RF_purity_LUMP","purity score based on LUMP dataset","numeric",
+"RF_purity_ABSOLUTE","tumor purity fraction estimated using ABSOLUTE","numeric",
+"RF_purity_ESTIMATE","tumor purity fraction estimated using ESTIMATE dataset","numeric",
+"RF_purity_LUMP","tumor purity fraction estimated using LUMP","numeric",
 "RNA_library","Type of RNA-Sequencing library preparation",paste(unique(histology_df$RNA_library), collapse = "; "),
 "sample_id","External biospecimen identifier","alphanumeric",
 "sample_type","Broad sample type",paste(unique(histology_df$sample_type), collapse = "; "),
