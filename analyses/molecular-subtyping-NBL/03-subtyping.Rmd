@@ -48,6 +48,9 @@ data_dir <- file.path(root_dir, "data")
 # module directory
 module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
 
+#input directory
+input_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL","input")
+
 #results directory
 results_dir <- "results"
 # create if doesn't exist
@@ -78,7 +81,7 @@ source(file.path(module_dir,"util", "plot_chr2.R"))
 
 # Load files and set the cutoff based on the plot in TPM_Biospecimen_All_Samples_With_TMP.png
 ```{r}
-alteration_df<-readr::read_tsv(file.path(results_dir, "alteration_table_without_molecular_subtype.tsv"),
+alteration_df<-readr::read_tsv(file.path(input_dir, "alteration_table_without_molecular_subtype.tsv"),
                                guess_max = 100000)
 cnv_cnvkit_df<-readr::read_tsv(file.path(data_dir, "cnv-cnvkit.seg.gz"),guess_max = 100000)
 hist_df<-readr::read_tsv(file.path(data_dir, "histologies-base.tsv"),guess_max = 100000)
@@ -265,7 +268,7 @@ molecular_subtype_table<-molecular_subtype_table[order(molecular_subtype_table$m
 ```{r write alteration table}
 alteration_df%>%readr::write_tsv(file.path(results_dir, "alteration_table_with_molecular_subtype.tsv"))
 df_tpm%>%readr::write_tsv(file.path(results_dir, "molecular_subtypes_based_on_cutoff.tsv"))
-molecular_subtype_table%>%readr::write_tsv(file.path(results_dir, "neuroblastoma_molecular_molecular_subtypes.tsv"))
+molecular_subtype_table%>%readr::write_tsv(file.path(results_dir, "neuroblastoma_molecular_subtypes.tsv"))
 ```
 
 

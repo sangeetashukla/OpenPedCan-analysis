@@ -36,6 +36,9 @@ data_dir <- file.path(root_dir, "data")
 # module directory
 module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
 
+#input directory
+input_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL","input")
+
 #results directory
 results_dir <- "results"
 # create if doesn't exist
@@ -60,15 +63,15 @@ We will load the following files
 4. The DNA only biospecimens file
 5. The RNA only biospecimens file
 ```{r read the file containing mycn-nbl biospecimen}
-MYCN_DF<-readr::read_tsv(file.path(results_dir, "mycn_nbl_subset_data.tsv"),guess_max = 100000)
-MYCN_DNA_RNA_FILTERED_DF<-readr::read_tsv(file.path(results_dir,"mycn_nbl_matched_biospecimen.tsv"),guess_max = 100000)
+MYCN_DF<-readr::read_tsv(file.path(input_dir, "mycn_nbl_subset_data.tsv"),guess_max = 100000)
+MYCN_DNA_RNA_FILTERED_DF<-readr::read_tsv(file.path(input_dir,"mycn_nbl_matched_biospecimen.tsv"),guess_max = 100000)
 
 gmkf_patient_clinical_mycn_status_df <- readr::read_tsv(file.path(module_dir, "input/gmkf_patient_clinical_mycn_status.tsv"),guess_max = 100000)
 
 target_patient_clinical_mycn_status_df<- readr::read_tsv(file.path(module_dir, "input/target_patient_clinical_mycn_status.tsv"),guess_max = 100000)
 
-MYCN_dna_df<-readr::read_tsv(file.path(results_dir, "mycn_nbl_dna_biospecimen.tsv"),guess_max = 100000)
-MYCN_rna_df<-readr::read_tsv(file.path(results_dir, "mycn_nbl_rna_biospecimen.tsv"),guess_max = 100000)
+MYCN_dna_df<-readr::read_tsv(file.path(input_dir, "mycn_nbl_dna_biospecimen.tsv"),guess_max = 100000)
+MYCN_rna_df<-readr::read_tsv(file.path(input_dir, "mycn_nbl_rna_biospecimen.tsv"),guess_max = 100000)
 
 ```
 
@@ -259,5 +262,5 @@ ggsave(filename = plot_file,width = 49, height = 20)
 
 Write NBL-MYCN biospecimen to subtyped into the results folder
 ```{r}
-alteration_df%>%readr::write_tsv(file.path(results_dir, "alteration_table_without_molecular_subtype.tsv"))
+alteration_df%>%readr::write_tsv(file.path(input_dir, "alteration_table_without_molecular_subtype.tsv"))
 ```

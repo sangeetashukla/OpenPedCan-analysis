@@ -37,6 +37,9 @@ data_dir <- file.path(root_dir, "data")
 # module directory
 module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
 
+#input directory
+input_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL","input")
+
 #results directory
 results_dir <- "results"
 # create if doesn't exist
@@ -137,7 +140,7 @@ MYCN_DF <- MYCN_DF %>% rename(MYCN_CN= copy_number)
 
 # Write the mycn-nbl biospecimen file into results dir
 ```{r write alteration table}
-MYCN_DF%>%readr::write_tsv(file.path(results_dir, "mycn_nbl_subset_data.tsv"))
+MYCN_DF%>%readr::write_tsv(file.path(input_dir, "mycn_nbl_subset_data.tsv"))
 ```
 
 
