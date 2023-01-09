@@ -25,6 +25,7 @@ mkdir -p -m777 ./tmp
 ####################### Create methylation array probe annotations ########################
 TMP=./tmp TMPDIR=./tmp Rscript --vanilla 01-create-probe-annotations.R \
 --probes_manifest ${input_dir}/infinium-methylationepic-v-1-0-b5-manifest-file-csv.zip \
+--annotation_mapping ${input_dir}/infinium-annotation-mapping.tsv \
 --gencode_gtf ${data_dir}/gencode.v39.primary_assembly.annotation.gtf.gz
 
 ###################### Calculate probe-level beta quantiles #################################

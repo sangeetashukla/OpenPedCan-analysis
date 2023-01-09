@@ -24,6 +24,11 @@ option_list <- list(
               cpg annotation metadata.",  
               metavar = "character"),
   
+  make_option(opt_str = "--annotation_mapping", type = "character", default = NULL,
+              help = "The Ensembl gene ID mapping for annotations the Illumina 
+              Infinuim array probe manifest.",
+              metavar = "character"),
+    
   make_option(opt_str = "--gencode_gtf", type = "character", default = NULL,
               help = "The current GENCODE GTF utilized in OpenPedCan analyses
               modules.",
@@ -33,6 +38,7 @@ option_list <- list(
 # parse parameter options
 opt <- parse_args(OptionParser(option_list = option_list))
 probes_manifest <- opt$probes_manifest
+annotation_mapping <- opt$annotation_mapping
 gencode_gtf <- opt$gencode_gtf
 
 # establish base dir
@@ -58,25 +64,53 @@ message("===========================================================\n")
 # lots memory for table joins.
 db_connect <- DBI::dbConnect(RSQLite::SQLite(), path = "")
 
-# load array probe manifest 
-DBI::dbWriteTable(db_connect, "manifest",
+# load array probe manifest and get annotations for EPIC (850K) probes
+DBI::dbWriteTable(db_connect, "epic",
                   readr::read_csv(probes_manifest, 
                                   skip = 7, 
                                   guess_max = 10000) %>%
-                    dplyr::select(Name, CHR, MAPINFO, 
+                    dplyr::select(Name, CHR, MAPINFO, GencodeCompV12_NAME, 
                                   GencodeCompV12_Accession)  %>% 
                     dplyr::rename(Probe_ID = Name, 
                                   Chromosome = CHR, 
                                   Location = MAPINFO,
+                                  Gene_symbol = GencodeCompV12_NAME,
                                   transcript_id = GencodeCompV12_Accession) %>% 
+                    tidyr::separate_rows(Gene_symbol, sep = ";", convert = FALSE) %>%
                     tidyr::separate_rows(transcript_id, sep = ";", convert = FALSE) %>%
                     dplyr::mutate(transcript_id =
                                     stringr::str_extract(transcript_id, "ENST\\d+")) %>%
                     tidyr::drop_na() %>% 
                     dplyr::distinct()
 )
+
+# load array probe manifest and get annotations for legacy (450K) probes
+DBI::dbWriteTable(db_connect, "legacy",
+                  readr::read_csv(probes_manifest, 
+                                  skip = 7, 
+                                  guess_max = 10000) %>%
+                    dplyr::select(Name, CHR, MAPINFO, UCSC_RefGene_Name,
+                                  UCSC_RefGene_Accession)  %>% 
+                    dplyr::rename(Probe_ID = Name, 
+                                  Chromosome = CHR, 
+                                  Location = MAPINFO,
+                                  Gene_symbol = UCSC_RefGene_Name,
+                                  transcript_id = UCSC_RefGene_Accession) %>%
+                    tidyr::separate_rows(Gene_symbol, sep = ";", convert = FALSE) %>%
+                    tidyr::separate_rows(transcript_id, sep = ";", convert = FALSE) %>%
+                    tidyr::drop_na() %>% 
+                    dplyr::distinct()
+)
                   
-# load GENCODE GTF file
+# load  probe annotations to Ensembl gene ID mappings
+DBI::dbWriteTable(db_connect, "annotations",
+                  readr::read_tsv(annotation_mapping, guess_max = 10000) %>% 
+                    dplyr::rename(targetFromSourceId = gene_id, 
+                                  Gene_symbol = gene_name) 
+)  
+                  
+
+# load GENCODE GTF file and get annotations IDs
 DBI::dbWriteTable(db_connect, "gencode",
                   rtracklayer::import(con = gencode_gtf) %>% 
                     tibble::as_tibble() %>%
@@ -90,12 +124,29 @@ DBI::dbWriteTable(db_connect, "gencode",
                                   )
 )
 
+# add dropped legacy probes to EPIC probes 
+epic_probes <- dplyr::tbl(db_connect, "epic") %>% 
+  dplyr::pull(Probe_ID) %>% 
+  unique()
+probe_annotations <- dplyr::tbl(db_connect, "legacy") %>% 
+  dplyr::filter(!Probe_ID %in% epic_probes) %>% 
+  dplyr::full_join(dplyr::tbl(db_connect, "epic")) %>% 
+  dplyr::distinct()
+
+# merge probe annotations with Ensembl gene ID annotation mappings
+probe_annotations <-  probe_annotations %>% 
+  dplyr::inner_join(dplyr::tbl(db_connect, "annotations"),
+                    by = c("Gene_symbol", "transcript_id")) %>% 
+  dplyr::select(Probe_ID, Chromosome, Location, targetFromSourceId) %>% 
+  dplyr::distinct()
+
 # merge array probe annotations with GENCODE gene symbols and Ensembl IDs
-probe_annotations <- dplyr::inner_join(dplyr::tbl(db_connect, "manifest"), 
-                                       dplyr::tbl(db_connect, "gencode"), 
-                                       by = "transcript_id") %>% 
+probe_annotations <- probe_annotations %>% 
+  dplyr::inner_join(dplyr::tbl(db_connect, "gencode"), 
+                    by = "targetFromSourceId") %>% 
   dplyr::distinct() %>% 
-  tibble::as_tibble()
+  tibble::as_tibble() %>% 
+  tidyr::drop_na() 
 
 # remove database connection
 dbDisconnect(db_connect)

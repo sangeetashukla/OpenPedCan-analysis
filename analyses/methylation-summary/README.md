@@ -15,6 +15,10 @@ Options:
 		The latest Illumina Infinuim array probe manifest with 
               cpg annotation metadata.
 
+	--annotation_mapping=CHARACTER
+		The Ensembl gene ID mapping for annotations the Illumina
+              Infinuim array probe manifest.
+              
 	--gencode_gtf=CHARACTER
 		The current GENCODE GTF utilized in OpenPedCan analyses
               modules.
@@ -201,6 +205,7 @@ bash run-methylation-summary.sh
 ## Input datasets
 The methylation `beta-values` and `M-values`matrices are available on the CHOP HPC `Isilon` sever (location: `/mnt/isilon/opentargets/wafulae/methylation-preprocessing/results/`). Please contact `Avin Farrel (@afarrel)` for access if not already available for download using the [OpenPedCan data release download script](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/download-data.sh). 
 - `input/infinium-methylationepic-v-1-0-b5-manifest-file-csv.zip`
+- `input/infinium-annotation-mapping.tsv`
 - `../../data/results/gencode.v39.primary_assembly.annotation.gtf.gz`
 - `../../data/independent-specimens.rnaseqpanel.eachcohort.tsv`
 - `../../data/independent-specimens.methyl.eachcohort.tsv`
