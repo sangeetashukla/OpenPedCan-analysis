@@ -23,7 +23,8 @@ If `pathology_free_text_diagnosis` is **amplified** and status is **non-amp**
 For such samples if there exists a TPM value, evaluate if the TPM is above or below 140.83 (`Suggested_Cutoff`) established in the image `results/TPM_Biospecimen_All_Samples_With_TMP.png` assign subtype as `NBL, MYCN amplified` or `NBL, MYCN non-amplified` respectively.  In case there is no TPM values then assign the subtype as `NA`. 
 
 **case 5**:
-If there are samples that are not yet subtyped but have a TPM value, assign them a subtype of `NBL, to be classified`.
+If there are samples that are not yet subtyped but have a TPM value, assign them a subtype by assessing if they are above or below
+the TPM value of 140.83 (`Suggested_Cutoff`).  
 
 **case 6**:
 Other remaining samples are not subtyped and the subtype field is left as `NBL, to be classified`.
