@@ -201,11 +201,7 @@ RUN ./install_bioc.r \
 # qdapRegex is for the fusion analysis
 RUN ./install_bioc.r \
     deconstructSigs \
-<<<<<<< Updated upstream
-    qdapRegex
-=======
     qdapRegex 
->>>>>>> Stashed changes
 
 # packages required for collapsing RNA-seq data by removing duplicated gene symbols
 RUN ./install_bioc.r \
