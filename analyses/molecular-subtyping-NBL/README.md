@@ -1,8 +1,7 @@
 # Molecular Subtyping NBL
 **Module authors**: Aditya Lahiri ([@adilahiri](https://github.com/adilahiri)), Eric Wafula ([@ewafula](https://github.com/ewafula)), and Jo Lynne Rokita ([@jharenza](https://github.com/jharenza))
 
-**Module reviewers**: Sangeetha Shukla ([@sangeetashukla
-](https://github.com/sangeetashukla))
+
 To molecularly subtype neuroblastoma, ganglioneuroblastoma, and ganglioneuroma samples into MYCN 
 amplified or MYCN non-amplified.
 
