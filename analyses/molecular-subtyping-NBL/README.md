@@ -2,8 +2,10 @@
 **Module authors**: Aditya Lahiri ([@adilahiri](https://github.com/adilahiri)), Eric Wafula ([@ewafula](https://github.com/ewafula)), and Jo Lynne Rokita ([@jharenza](https://github.com/jharenza))
 
 
-To molecularly subtype neuroblastoma, ganglioneuroblastoma, and ganglioneuroma samples into MYCN 
-amplified or MYCN non-amplified.
+Objective: To molecularly subtype neuroblastoma, ganglioneuroblastoma, and ganglioneuroma samples into MYCN 
+amplified or MYCN non-amplified ([Ticket#417](https://github.com/PediatricOpenTargets/ticket-tracker/issues/417)).
+MYCN is located on chromosone 2p and the subtyping is done by checking the CNV calls and the
+clinically-reported MYCN status. We also perform QC by checking the consistency between TARGET and GMKF NBL samples.
 
 **Subtyping criteria**:
 
