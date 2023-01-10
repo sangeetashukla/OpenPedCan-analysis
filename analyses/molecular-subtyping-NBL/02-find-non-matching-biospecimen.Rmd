@@ -237,26 +237,26 @@ Code Logic: Plot the TPM values for biospecimens which have TPMs both for  Match
 biospecimens.
 
 ```{r Plot of all biospecimen with TPMs}
-plot_alteration_df <- alteration_df %>% filter(!is.na(MYCN_TPM))
-plot_alteration_df<- plot_alteration_df %>% mutate(Kids_First_Biospecimen_ID=
-                                                     coalesce(Kids_First_Biospecimen_ID_DNA,
-                                                              Kids_First_Biospecimen_ID_RNA))
-
-bar_plot2<-plot_alteration_df %>% 
-  arrange(MYCN_TPM) %>% 
-  mutate(Kids_First_Biospecimen_ID = factor(Kids_First_Biospecimen_ID, 
-                                            unique(Kids_First_Biospecimen_ID))) %>%
-  ggplot() +aes(x=Kids_First_Biospecimen_ID, y=MYCN_TPM, fill=MYCN_CN_status)+
-  geom_bar(position="dodge",stat="identity")+
-  theme(axis.text.x = element_text(size = 2, angle = 45, hjust = 1))
-bar_plot2
-
-Suggested_Cutoff<-140.83 # TARGET-30-PAMEZH-01A-01R	
-bar_plot2+ geom_hline(aes(yintercept=Suggested_Cutoff,linetype = "Suggested Amp Cutoff"),
-                      color = "black",size=2) #TARGET-30-PAPKXS-01A-01D	
-
-plot_file <- file.path(plot_dir, "tpm_biospecimen_all_samples_with_tpm.png")
-ggsave(filename = plot_file,width = 49, height = 20)
+# plot_alteration_df <- alteration_df %>% filter(!is.na(MYCN_TPM))
+# plot_alteration_df<- plot_alteration_df %>% mutate(Kids_First_Biospecimen_ID=
+#                                                      coalesce(Kids_First_Biospecimen_ID_DNA,
+#                                                               Kids_First_Biospecimen_ID_RNA))
+# 
+# bar_plot2<-plot_alteration_df %>% 
+#   arrange(MYCN_TPM) %>% 
+#   mutate(Kids_First_Biospecimen_ID = factor(Kids_First_Biospecimen_ID, 
+#                                             unique(Kids_First_Biospecimen_ID))) %>%
+#   ggplot() +aes(x=Kids_First_Biospecimen_ID, y=MYCN_TPM, fill=MYCN_CN_status)+
+#   geom_bar(position="dodge",stat="identity")+
+#   theme(axis.text.x = element_text(size = 2, angle = 45, hjust = 1))
+# bar_plot2
+# 
+# Suggested_Cutoff<-140.83 # TARGET-30-PAMEZH-01A-01R	
+# bar_plot2+ geom_hline(aes(yintercept=Suggested_Cutoff,linetype = "Suggested Amp Cutoff"),
+#                       color = "black",size=2) #TARGET-30-PAPKXS-01A-01D	
+# 
+# plot_file <- file.path(plot_dir, "tpm_biospecimen_all_samples_with_tpm.png")
+# ggsave(filename = plot_file,width = 49, height = 20)
 ```
 
 
