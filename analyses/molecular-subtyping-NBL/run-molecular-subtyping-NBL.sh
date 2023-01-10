@@ -17,3 +17,6 @@ Rscript -e "rmarkdown::render('02-find-non-matching-biospecimen.Rmd')"
 Rscript -e "rmarkdown::render('03-subtyping.Rmd')"
 
 Rscript -e "rmarkdown::render('04-qc-checks.Rmd')"
+
+echo 'NBL Subtyping Completed'
+
