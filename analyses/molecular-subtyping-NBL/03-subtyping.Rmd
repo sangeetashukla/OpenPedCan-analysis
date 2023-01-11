@@ -147,20 +147,52 @@ print(clincal_amplified_IDs)
 
 Code Logic: For the case 4 create the plots. 
 ```{r CHUNK A}
- plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[1],"_chr2p",".png",sep=""))
+#plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[1],"_chr2p",".png",sep=""))
 ```
 
 ```{r CHUNK B}
-plt1<-plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[1])
+#plt1<-plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[1])
 ```
 
 ```{r CHUNK C}
-p1<-plt1@ggplot
+#p1<-plt1@ggplot
 ```
 
 ```{r chunk D}
-ggsave(filename = plt_file,plot =p1)
+#ggsave(filename = plt_file,plot =p1)
 ```
+
+
+```{r Chunk E}
+# Iterate through the biospecimen list in clincal_amplified_IDs which belong to case 4
+plt1 <- list()
+plt_file<-list()
+for (iter in 1: length(clincal_amplified_IDs)){
+  plt_file[iter] <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"_chr2p",".png",sep=""))
+  # Check if clincal_amplified_IDs is NA,which will happen for biospecimen ID which are RNA IDs
+  if(!is.na(clincal_amplified_IDs[iter])){
+    plt1[iter]<-plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[iter])
+    #ggsave(filename = plt_file,plot =plt1@ggplot)
+  }
+  else{
+    #If clincal_amplified_IDs is NA we need to find corresponding RNA ID
+    plt1[iter]<-plot_chr2(cnv_cnvkit_df,alteration_df$Kids_First_Biospecimen_ID_RNA[index_clinical_amplified[iter]])
+    #ggsave(filename = plt_file,plot = plt1@ggplot)
+  }
+
+}
+
+
+```
+
+```{r chunk F}
+png(plt_file[[1]])
+print(plt1[[1]]@ggplot)
+dev.off()
+```
+
+
+
 
 ```{r create the segmean vs location plots for samples where call is non-amp but pathology free text is amp}
 # Iterate through the biospecimen list in clincal_amplified_IDs which belong to case 4
