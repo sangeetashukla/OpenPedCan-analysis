@@ -155,7 +155,11 @@ plt1<-plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[1])
 ```
 
 ```{r CHUNK C}
-ggsave(filename = plt_file,plot =plt1@ggplot)
+p1<-plt1@ggplot
+```
+
+```{r chunk D}
+ggsave(filename = plt_file,plot =p1)
 ```
 
 ```{r create the segmean vs location plots for samples where call is non-amp but pathology free text is amp}
