@@ -146,27 +146,43 @@ print(clincal_amplified_IDs)
 
 
 Code Logic: For the case 4 create the plots. 
-```{r CHUNK A}
-#plt_file <- file.path(plot_dir, paste(clincal_amplified_IDs[1],"_chr2p",".png",sep=""))
+```{r chunk A}
+plt1 <- list()
 ```
 
-```{r CHUNK B}
-#plt1<-plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[1])
+```{r chunk B}
+plt_file<-list()
 ```
 
-```{r CHUNK C}
-#p1<-plt1@ggplot
+```{r chunk c}
+plt_file[1] <- file.path(plot_dir, paste(clincal_amplified_IDs[1],"_chr2p",".png",sep=""))
 ```
 
-```{r chunk D}
-#ggsave(filename = plt_file,plot =p1)
+```{r chunk d}
+plt1[1]<-plot_chr2(cnv_cnvkit_df,clincal_amplified_IDs[1])
+```
+
+
+```{r chunk F1}
+png(plt_file[[1]])
+```
+
+```{r chunk F2}
+print(plt1[[1]]@ggplot)
+```
+
+
+
+```{r chunk h}
+png(plt_file[[1]])
+print(plt1[[1]]@ggplot)
+dev.off()
 ```
 
 
 ```{r Chunk E}
 # Iterate through the biospecimen list in clincal_amplified_IDs which belong to case 4
-plt1 <- list()
-plt_file<-list()
+
 for (iter in 1: length(clincal_amplified_IDs)){
   plt_file[iter] <- file.path(plot_dir, paste(clincal_amplified_IDs[iter],"_chr2p",".png",sep=""))
   # Check if clincal_amplified_IDs is NA,which will happen for biospecimen ID which are RNA IDs
@@ -183,12 +199,6 @@ for (iter in 1: length(clincal_amplified_IDs)){
 }
 
 
-```
-
-```{r chunk F}
-png(plt_file[[1]])
-print(plt1[[1]]@ggplot)
-dev.off()
 ```
 
 
