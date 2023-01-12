@@ -593,35 +593,37 @@ molecular_subtype_table <- all_data_df %>%
 > If there is no fusion found and RNA is not available and the cns_methylation_subclass_score >= 0.8 or pathology_free_text_diagnosis says this is an IHG, then classify as "IHG, To be classified."
 > If there is no fusion found and DNA and RNA are available and the cns_methylation_subclass_score < 0.8 and this sample was not previously subtyped as HGG, then remove from the HGG subtyping
 
+
 ```{r}
 
 lgg_hgg_fusion <- read_tsv(file.path(root_dir, "analyses", "fusion-summary", "results", "fusion_summary_lgat_foi.tsv"))
 
+NTRK_fusion <- colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "NTRK")]
 NTRK <- lgg_hgg_fusion %>% 
-  select(c("Kids_First_Biospecimen_ID", colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "NTRK")])) 
-NTRK <- NTRK %>% 
-  mutate(Sum = rowSums(NTRK[, 2:ncol(NTRK)])) %>% 
+  select(c("Kids_First_Biospecimen_ID", NTRK_fusion)) %>% 
+  mutate(Sum = rowSums(lgg_hgg_fusion[, NTRK_fusion])) %>% 
   filter(Sum > 0) %>% 
   pull(Kids_First_Biospecimen_ID)
 
-ROS1 <- lgg_hgg_fusion %>% 
-  select(c("Kids_First_Biospecimen_ID", colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "ROS1")])) 
-ROS1 <- ROS1 %>% 
-  mutate(Sum = rowSums(ROS1[, 2:ncol(ROS1)])) %>% 
-  filter(Sum > 0) %>% 
-  pull(Kids_First_Biospecimen_ID)
 
+ALK_fusion <- colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "ALK")]
 ALK <- lgg_hgg_fusion %>% 
-  select(c("Kids_First_Biospecimen_ID", colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "ALK")])) 
-ALK <- ALK %>% 
-  mutate(Sum = rowSums(ALK[, 2:ncol(ALK)])) %>% 
+  select(c("Kids_First_Biospecimen_ID", ALK_fusion)) %>% 
+  mutate(Sum = rowSums(lgg_hgg_fusion[, ALK_fusion])) %>% 
   filter(Sum > 0) %>% 
   pull(Kids_First_Biospecimen_ID)
 
+ROS1_fusion <- colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "ROS1")]
+ROS1 <- lgg_hgg_fusion %>% 
+  select(c("Kids_First_Biospecimen_ID", ROS1_fusion)) %>% 
+  mutate(Sum = rowSums(lgg_hgg_fusion[, ROS1_fusion])) %>% 
+  filter(Sum > 0) %>% 
+  pull(Kids_First_Biospecimen_ID)
+
+MET_fusion <- colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "MET")]
 MET <- lgg_hgg_fusion %>% 
-  select(c("Kids_First_Biospecimen_ID", colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "MET")])) 
-MET <- MET %>% 
-  mutate(Sum = rowSums(MET[, 2:ncol(MET)])) %>% 
+  select(c("Kids_First_Biospecimen_ID", MET_fusion)) %>% 
+  mutate(Sum = rowSums(lgg_hgg_fusion[, MET_fusion])) %>% 
   filter(Sum > 0) %>% 
   pull(Kids_First_Biospecimen_ID)
 
