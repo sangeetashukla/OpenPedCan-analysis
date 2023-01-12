@@ -13,7 +13,7 @@ following columns for specific values:
 `Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated`
 
 After filtering the histology file, for the resultant biospecimens we integrate the MYCN consensus 
-and TPM infortmation in the table `results/mycn_nbl_subset_data.tsv`.
+and TPM infortmation in the intermediate fie `input/mycn_nbl_subset_data.tsv`.
 
 #Load Libraries
 
@@ -138,7 +138,7 @@ MYCN_DF <- MYCN_DF %>% rename(MYCN_CN= copy_number)
 ```
 
 
-# Write the mycn-nbl biospecimen file into results dir
+# Write the mycn-nbl biospecimen file into input dir
 ```{r write alteration table}
 MYCN_DF%>%readr::write_tsv(file.path(input_dir, "mycn_nbl_subset_data.tsv"))
 ```

@@ -7,8 +7,8 @@ date: "10/13/2022"
 In this notebook we find the find the biospecimens which do not have matched DNA and RNA IDs. 
 We create a dataframe for these biospecimens called `MYCN_non_match_df` which has all the necessary
 infromation required for performing subtyping. We concatenate this `MYCN_non_match_df` with the table
-`results/mycn_nbl_matched_biospecimen.tsv` and joined table called 
-`results/alteration_table_without_subtype.tsv` which contains the list of all the NBL-MYCN 
+`input/mycn_nbl_matched_biospecimen.tsv` and joined table called 
+`input/alteration_table_without_subtype.tsv` which contains the list of all the NBL-MYCN 
 biospecimens that need to subtpyped. 
 
 The notebook also plots the TPM vs Kids_First_Biospecimen_IDs for all the biospecimens for which there
@@ -260,7 +260,7 @@ ggsave(filename = plot_file,width = 49, height = 20)
 ```
 
 
-Write NBL-MYCN biospecimen to subtyped into the results folder
+Write NBL-MYCN biospecimen to subtyped into the input folder
 ```{r}
 alteration_df%>%readr::write_tsv(file.path(input_dir, "alteration_table_without_molecular_subtype.tsv"))
 ```

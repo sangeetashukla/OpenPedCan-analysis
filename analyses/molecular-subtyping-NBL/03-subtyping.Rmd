@@ -7,11 +7,10 @@ output: html_notebook
 # Objective
 To molecularly subtype neuroblastoma, ganglioneuroblastoma, and ganglioneuroma samples into MYCN 
 amplified or MYCN non-amplified. This script loads the table 
-`results/alteration_table_without_molecular_subtype.tsv`and molecular_subtypes the biospecimens based
+`input/alteration_table_without_molecular_subtype.tsv`and molecular_subtypes the biospecimens based
 on the six subtyping criteria (refer to the module readme). This script generates a table 
-called `molecular_subtype_table`, which contains the molecular_subtypes for each of the biospecimens
-in the table `alteration_df`.`molecular_subtype_table` is saved as 
-`neuroblastoma_molecular_subtypes.tsv` in the results directory. 
+called `results/neuroblastoma_molecular_subtypes.tsv` , which contains the molecular_subtypes for 
+each of the biospecimens in the table `alteration_df`.
 
 Furthermore, this script also creates the following additional result files:
 1. `results/alteration_table_with_molecular_subtype.tsv`: this table is contains all the biospecimens  
@@ -270,13 +269,31 @@ molecular_subtype_table$molecular_subtype[index_unclassified]<-"NBL, to be class
 molecular_subtype_table<-molecular_subtype_table[order(molecular_subtype_table$molecular_subtype),]
 ```
 
- Write the table
+#Write the table
 ```{r write alteration table}
 alteration_df%>%readr::write_tsv(file.path(results_dir, "alteration_table_with_molecular_subtype.tsv"))
 df_tpm%>%readr::write_tsv(file.path(results_dir, "molecular_subtypes_based_on_cutoff.tsv"))
 molecular_subtype_table%>%readr::write_tsv(file.path(results_dir, "neuroblastoma_molecular_subtypes.tsv"))
 ```
 
+#Remove intermediate files that are not required
+```{r names intermediate files to be deleted}
 
+file_names_intermediate<- c(paste(input_dir, "/mycn_nbl_subset_data.tsv",sep=""),
+                            paste(input_dir,"/mycn_nbl_matched_biospecimen.tsv",sep=""),
+                            paste(input_dir,"/mycn_nbl_dna_biospecimen.tsv",sep=""),
+                            paste(input_dir,"/mycn_nbl_rna_biospecimen.tsv",sep=""),
+                            paste(input_dir,"/alteration_table_without_molecular_subtype.tsv",sep=""))
 
+```
 
+```{r}
+
+for(file_iter in 1: length(file_names_intermediate)){
+ if (file.exists(file_names_intermediate[file_iter])) {
+   print(file_names_intermediate[file_iter])
+    unlink(file_names_intermediate[file_iter])
+
+}
+}
+```

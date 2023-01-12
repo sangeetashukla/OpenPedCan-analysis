@@ -4,10 +4,10 @@ author: "Aditya Lahiri, Eric Wafula, Jo Lynne Rokita"
 date: "10/13/2022"
 output: html_notebook
 ---
-In this notebook we load the table `results/mycn_nbl_subset_data.tsv` and find the biospecimens which
+In this notebook we load the table `input/mycn_nbl_subset_data.tsv` and find the biospecimens which
 have matched DNA and RNA IDs. We store these biospecimens as a table in 
-`results/mycn_nbl_matched_biospecimen.tsv`.  The script also creates two tables 
-`results/mycn_nbl_dna_biospecimen.tsv` and `results/mycn_nbl_rna_biospecimen.tsv` which contain 
+`input/mycn_nbl_matched_biospecimen.tsv`.  The script also creates two tables 
+`input/mycn_nbl_dna_biospecimen.tsv` and `input/mycn_nbl_rna_biospecimen.tsv` which contain 
 biospecimens whose `Kids_First_Biospecimen_ID` are either DNA or RNA respectively. 
 
 The notebook also plots the TPMs vs Kids_First_Biospecimen_ID for biospecimens with matched DNA and
@@ -223,7 +223,7 @@ ggsave(filename = plot_file,width = 45, height = 20)
 
 
 Write the table containing mycn-nbl biospecimen with matched DNA and RNA Ids, dna only and rna only 
-biospecimens files  into results dir
+biospecimens files  into input dir
 ```{r write alteration table}
 MYCN_DNA_RNA_FILTERED_DF%>%readr::write_tsv(file.path(input_dir,"mycn_nbl_matched_biospecimen.tsv"))
 MYCN_dna_df %>%readr::write_tsv(file.path(input_dir,"mycn_nbl_dna_biospecimen.tsv"))

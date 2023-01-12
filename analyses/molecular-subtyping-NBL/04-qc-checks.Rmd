@@ -1,5 +1,5 @@
 ---
-title: "04-QC Checks"
+title: "04-qc-checks"
 author: "Aditya Lahiri, Eric Wafula, Jo Lynne Rokita"
 date: "11/14/2022"
 output: html_notebook
