@@ -124,14 +124,6 @@ QC_df <- QC_df %>% mutate(ID = row_number())
 values_from_subtype_table <-values_from_subtype_table %>% mutate(ID = row_number())
 QC_df <- inner_join(QC_df,values_from_subtype_table,by="ID")
 QC_df$ID<-NULL
-#QC_df <-bind_cols(QC_df,values_from_subtype_table)
-#QC_df <- cbind(QC_df,values_from_subtype_table)
-# QC_df <- QC_df %>% mutate(MYCN_TPM_GMKF=values_from_subtype_table[,1],
-#                           MYCN_TPM_Target=values_from_subtype_table[,3],
-#                           MYCN_status_GMKF=values_from_subtype_table[,2],
-#                           MYCN_status_Target=values_from_subtype_table[,5],
-#                           molecular_subtype_GMKF=values_from_subtype_table[,3],
-#                           molecular_subtype_Target=values_from_subtype_table[,6])
 ```
 
 

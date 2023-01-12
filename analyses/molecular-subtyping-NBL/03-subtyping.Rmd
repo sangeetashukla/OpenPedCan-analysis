@@ -277,23 +277,23 @@ molecular_subtype_table%>%readr::write_tsv(file.path(results_dir, "neuroblastoma
 ```
 
 #Remove intermediate files that are not required
-```{r names intermediate files to be deleted}
-
-file_names_intermediate<- c(paste(input_dir, "/mycn_nbl_subset_data.tsv",sep=""),
-                            paste(input_dir,"/mycn_nbl_matched_biospecimen.tsv",sep=""),
-                            paste(input_dir,"/mycn_nbl_dna_biospecimen.tsv",sep=""),
-                            paste(input_dir,"/mycn_nbl_rna_biospecimen.tsv",sep=""),
-                            paste(input_dir,"/alteration_table_without_molecular_subtype.tsv",sep=""))
+```{r names of intermediate files to be deleted}
+# 
+# file_names_intermediate<- c(paste(input_dir, "/mycn_nbl_subset_data.tsv",sep=""),
+#                             paste(input_dir,"/mycn_nbl_matched_biospecimen.tsv",sep=""),
+#                             paste(input_dir,"/mycn_nbl_dna_biospecimen.tsv",sep=""),
+#                             paste(input_dir,"/mycn_nbl_rna_biospecimen.tsv",sep=""),
+#                             paste(input_dir,"/alteration_table_without_molecular_subtype.tsv",sep=""))
 
 ```
 
-```{r}
+```{r remove the intermediate files}
 
-for(file_iter in 1: length(file_names_intermediate)){
- if (file.exists(file_names_intermediate[file_iter])) {
-   print(file_names_intermediate[file_iter])
-    unlink(file_names_intermediate[file_iter])
-
-}
-}
+# for(file_iter in 1: length(file_names_intermediate)){
+#  if (file.exists(file_names_intermediate[file_iter])) {
+#    print(file_names_intermediate[file_iter])
+#     unlink(file_names_intermediate[file_iter])
+# 
+# }
+# }
 ```
