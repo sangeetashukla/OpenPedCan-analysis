@@ -1,11 +1,13 @@
 ---
 title: "High-Grade Glioma Molecular Subtyping - Combine DNA Assays"
+author: "Chante Bethell and Jaclyn Taroni for ALSF CCDL"
+date: "2020"
 output:
+  pdf_document:
+    toc: yes
   html_notebook:
-    toc: TRUE
-    toc_float: TRUE
-author: Chante Bethell and Jaclyn Taroni for ALSF CCDL
-date: 2020
+    toc: yes
+    toc_float: yes
 ---
 
 This notebook joins copy number alteration, mutation, fusion and gene expression data for the
@@ -224,7 +226,7 @@ rna_df <- histologies_df %>%
 ```
 
 ```{r}
-rm(fusion_df, exp_df)
+rm(exp_df)
 ```
 
 Are there duplicated `sample_id` in the RNA data frame?
@@ -549,6 +551,7 @@ We don't see the _IDH1_ mutations we would expect and we do see an H3 K28M mutat
 
 > We expect very few, if any of these (maybe 1 when we looked by CNV), so I think maybe we can approach this cohort by starting to look for 1p/19q codeletions in all samples + IDH mutations, and if we see any, we may manually want to check the CNV plots just to confirm.
 
+
 ## Biospecimen Table
 
 Join all the tables that contain the biospecimen ids and `molecular_subtype` column together.
@@ -575,6 +578,102 @@ molecular_subtype_table <- all_data_df %>%
     # when molecular_subtype is not NA (we know the H3 variant subtype from DNA )
     TRUE ~ molecular_subtype))
 ```
+## IHG subtype
+
+> There is a new 2021 entity within HGGs called "Infant-type hemispheric glioma" (IHG). This HGG is cerebral (hemispheric), arises in early childhood, and is characterized by RTK (receptor tyrosine kinase) alterations, typically fusions, in the NTRK family or in ROS1, ALK, or MET.
+
+> The subtypes are:
+
+> IHG, NTRK-altered
+> IHG, ROS1-altered
+> IHG, ALK-altered
+> IHG, MET-altered
+
+> If there is no fusion found and both DNA and RNA are available for the samples and the cns_methylation_subclass_score >= 0.8, then classify as "IHG, To be classified." 
+> If there is no fusion found and RNA is not available and the cns_methylation_subclass_score >= 0.8 or pathology_free_text_diagnosis says this is an IHG, then classify as "IHG, To be classified."
+> If there is no fusion found and DNA and RNA are available and the cns_methylation_subclass_score < 0.8 and this sample was not previously subtyped as HGG, then remove from the HGG subtyping
+
+```{r}
+
+lgg_hgg_fusion <- read_tsv(file.path(root_dir, "analyses", "fusion-summary", "results", "fusion_summary_lgat_foi.tsv"))
+
+NTRK <- lgg_hgg_fusion %>% 
+  select(c("Kids_First_Biospecimen_ID", colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "NTRK")])) 
+NTRK <- NTRK %>% 
+  mutate(Sum = rowSums(NTRK[, 2:ncol(NTRK)])) %>% 
+  filter(Sum > 0) %>% 
+  pull(Kids_First_Biospecimen_ID)
+
+ROS1 <- lgg_hgg_fusion %>% 
+  select(c("Kids_First_Biospecimen_ID", colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "ROS1")])) 
+ROS1 <- ROS1 %>% 
+  mutate(Sum = rowSums(ROS1[, 2:ncol(ROS1)])) %>% 
+  filter(Sum > 0) %>% 
+  pull(Kids_First_Biospecimen_ID)
+
+ALK <- lgg_hgg_fusion %>% 
+  select(c("Kids_First_Biospecimen_ID", colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "ALK")])) 
+ALK <- ALK %>% 
+  mutate(Sum = rowSums(ALK[, 2:ncol(ALK)])) %>% 
+  filter(Sum > 0) %>% 
+  pull(Kids_First_Biospecimen_ID)
+
+MET <- lgg_hgg_fusion %>% 
+  select(c("Kids_First_Biospecimen_ID", colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "MET")])) 
+MET <- MET %>% 
+  mutate(Sum = rowSums(MET[, 2:ncol(MET)])) %>% 
+  filter(Sum > 0) %>% 
+  pull(Kids_First_Biospecimen_ID)
+
+RTK_list <- c(NTRK, ALK, MET, ROS1)
+
+IGH <- histologies_df %>% 
+  filter(cns_methylation_subclass == "IHG" | grepl("infant type hemispheric glioma", pathology_free_text_diagnosis)) %>%
+  select(Kids_First_Participant_ID, sample_id, pathology_diagnosis, pathology_free_text_diagnosis, cns_methylation_subclass, cns_methylation_subclass_score) %>%
+  left_join(all_data_df, by = "sample_id")
+
+IGH <- IGH %>% 
+  mutate(molecular_subtype = case_when(
+    Kids_First_Biospecimen_ID_DNA %in% NTRK | 
+      Kids_First_Biospecimen_ID_RNA %in% NTRK ~ "IHG, NTRK-altered", 
+    
+    Kids_First_Biospecimen_ID_DNA %in% ALK | 
+      Kids_First_Biospecimen_ID_RNA %in% ALK ~ "IHG, ALK-altered", 
+    
+    Kids_First_Biospecimen_ID_DNA %in% ROS1 | 
+      Kids_First_Biospecimen_ID_RNA %in% ROS1 ~ "IHG, ROS1-altered", 
+    
+    Kids_First_Biospecimen_ID_DNA %in% MET | 
+      Kids_First_Biospecimen_ID_RNA %in% MET ~ "IHG, MET-altered", 
+    
+    !(Kids_First_Biospecimen_ID_DNA %in% RTK_list) & 
+      !(Kids_First_Biospecimen_ID_RNA %in% RTK_list) &
+      !is.na(Kids_First_Biospecimen_ID_DNA) & 
+      !is.na(Kids_First_Biospecimen_ID_DNA) & 
+      cns_methylation_subclass_score >= 0.8 ~ "IHG, To be classified", 
+    
+    !(Kids_First_Biospecimen_ID_DNA %in% RTK_list) & 
+      !(Kids_First_Biospecimen_ID_RNA %in% RTK_list) &
+      is.na(Kids_First_Biospecimen_ID_DNA) & 
+      grepl("infant type hemispheric glioma", pathology_free_text_diagnosis) &
+      cns_methylation_subclass_score >= 0.8 ~ "IHG, To be classified", 
+    
+    !(Kids_First_Biospecimen_ID_DNA %in% RTK_list) & 
+      !(Kids_First_Biospecimen_ID_RNA %in% RTK_list) &
+      !is.na(Kids_First_Biospecimen_ID_DNA) & 
+      !is.na(Kids_First_Biospecimen_ID_DNA) & 
+      cns_methylation_subclass_score < 0.8 | 
+      sample_id %in% molecular_subtype_table[grep("HGG", molecular_subtype_table$molecular_subtype), "sample_id"] ~ "delete"
+  )) %>% 
+  select(c(Kids_First_Participant_ID.x, sample_id, Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, molecular_subtype)) %>% 
+  filter(molecular_subtype != "delete")
+
+colnames(IGH) <- colnames(molecular_subtype_table)
+
+molecular_subtype_table <- bind_rows(molecular_subtype_table, IGH)
+
+```
+
 
 Write to file.
 
