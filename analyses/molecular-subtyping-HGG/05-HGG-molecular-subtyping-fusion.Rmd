@@ -157,6 +157,7 @@ summary_df <- summary_df %>%
   left_join(MET_fusions, by = "Sample") %>% 
   replace(is.na(.), "None")
 
+
 ```
 
 No samples had evidence of _FGFR1_ fusions - we'll add a column to indicate that

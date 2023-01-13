@@ -12,8 +12,10 @@ sample_id	Kids_First_Biospecimen_ID	Kids_First_Participant_ID	MYCN_focal_status	
 7316-5922	BS_169P1QCA	PT_1YQH5NSH	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-325	BS_1YTHM07J	PT_279D9QZ8	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-409	BS_B9QP40ER	PT_2JDDX6TJ	loss	neutral	loss	neutral	neutral	neutral	neutral	gain	gain
+7316-1890	BS_NYVVN7SD	PT_2WVW55DA	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-2092	BS_M28HG0NT	PT_2WVW55DA	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-2100	BS_RG6JK7ZN	PT_2WVW55DA	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
+7316-502	BS_R94EDP5H	PT_2WVW55DA	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-2217	BS_EJV0N3BX	PT_37B5JRP1	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-2554	BS_8Q8N6AHW	PT_37B5JRP1	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-3625	BS_F064HMTP	PT_387VK1T9	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
@@ -27,6 +29,7 @@ sample_id	Kids_First_Biospecimen_ID	Kids_First_Participant_ID	MYCN_focal_status	
 7316-913	BS_742CDKAS	PT_4347ZBEX	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-913	BS_FJEZ3ASV	PT_4347ZBEX	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-913	BS_PKZ1HWNB	PT_4347ZBEX	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
+7316-3067	BS_BZWM455T	PT_44HPG5YT	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-388	BS_823V5X6Z	PT_4XB3YTJM	neutral	gain	neutral	gain	neutral	neutral	neutral	neutral	neutral
 7316-1936	BS_QG6V29H7	PT_59D00MBQ	neutral	gain	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-1937	BS_3E5C1PN1	PT_59D00MBQ	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
@@ -34,6 +37,7 @@ sample_id	Kids_First_Biospecimen_ID	Kids_First_Participant_ID	MYCN_focal_status	
 7316-1102	BS_BFDEZK1C	PT_5BWZA0NT	neutral	gain	neutral	gain	neutral	gain	gain	neutral	neutral
 7316-3521	BS_KAD49R68	PT_63F63QY0	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-2980	BS_S0T3CQ97	PT_63HDZHCN	amplification	neutral	loss	neutral	neutral	neutral	neutral	neutral	neutral
+7316-3317	BS_CWQ35N2K	PT_6DB7B9WV	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-2610	BS_XGVSX8BX	PT_6GDPNFA6	neutral	neutral	loss	loss	neutral	neutral	neutral	neutral	neutral
 7316-535	BS_MW63FCZC	PT_6SH7PV1N	neutral	neutral	neutral	gain	neutral	neutral	neutral	neutral	neutral
 7316-506	BS_G16NM5WJ	PT_7E3V3JFX	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
@@ -165,6 +169,7 @@ SF11385	BS_AH3RVK53	PT_EN2RN5Y1	neutral	neutral	neutral	neutral	neutral	neutral	
 7316-1763	BS_WPCBK1EG	PT_Z4PJA6KT	gain	gain	loss	gain	neutral	neutral	neutral	neutral	neutral
 7316-1763	BS_853PNV7P	PT_Z4PJA6KT	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-1763	BS_TF5TTEXH	PT_Z4PJA6KT	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
+7316-2864	BS_MGY2V5N4	PT_Z7YJ7MSM	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-8041	BS_Z61JVJ03	PT_0EBP2PBD	gain	neutral	neutral	NA	NA	NA	NA	NA	NA
 7316-8811	BS_HGKDT5AJ	PT_0FGS6YME	neutral	neutral, gain	neutral, gain	NA	NA	NA	NA	NA	NA
 A09410	BS_H3TYF6GD	PT_0MXPTTM3	loss	loss	loss	NA	NA	NA	NA	NA	NA

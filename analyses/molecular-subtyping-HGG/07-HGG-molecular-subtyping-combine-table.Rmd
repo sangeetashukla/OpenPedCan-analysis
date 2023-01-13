@@ -654,6 +654,7 @@ IGH <- IGH %>%
       cns_methylation_subclass_score < 0.8 | 
       sample_id %in% molecular_subtype_table[grep("HGG", molecular_subtype_table$molecular_subtype), "sample_id"] ~ "delete"
   )) %>% 
+  
   select(c(Kids_First_Participant_ID.x, sample_id, Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, molecular_subtype)) %>% 
   filter(molecular_subtype != "delete")
 
