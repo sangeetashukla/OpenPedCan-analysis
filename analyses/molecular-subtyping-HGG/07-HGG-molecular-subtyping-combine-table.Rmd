@@ -578,7 +578,8 @@ molecular_subtype_table <- all_data_df %>%
     # when molecular_subtype is not NA (we know the H3 variant subtype from DNA )
     TRUE ~ molecular_subtype))
 ```
-## IHG subtype
+
+### IHG subtype
 
 > There is a new 2021 entity within HGGs called "Infant-type hemispheric glioma" (IHG). This HGG is cerebral (hemispheric), arises in early childhood, and is characterized by RTK (receptor tyrosine kinase) alterations, typically fusions, in the NTRK family or in ROS1, ALK, or MET.
 
@@ -595,37 +596,23 @@ molecular_subtype_table <- all_data_df %>%
 
 
 ```{r}
+NTRK <- fusion_df %>% 
+  select(c("Sample", "NTRK_fusions")) %>%
+  filter(NTRK_fusions != "None") %>%
+  pull(Sample) 
 
-lgg_hgg_fusion <- read_tsv(file.path(root_dir, "analyses", "fusion-summary", "results", "fusion_summary_lgat_foi.tsv"))
+ALK <- fusion_df %>% 
+  select(c("Sample", "ALK_fusions")) %>% 
+  pull(Sample) 
 
-NTRK_fusion <- colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "NTRK")]
-NTRK <- lgg_hgg_fusion %>% 
-  select(c("Kids_First_Biospecimen_ID", NTRK_fusion)) %>% 
-  mutate(Sum = rowSums(lgg_hgg_fusion[, NTRK_fusion])) %>% 
-  filter(Sum > 0) %>% 
-  pull(Kids_First_Biospecimen_ID)
+ROS1 <- fusion_df %>% 
+  select(c("Sample", "ROS1_fusions")) %>% 
+  pull(Sample) 
 
+MET <- fusion_df %>% 
+  select(c("Sample", "MET_fusions")) %>% 
+  pull(Sample) 
 
-ALK_fusion <- colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "ALK")]
-ALK <- lgg_hgg_fusion %>% 
-  select(c("Kids_First_Biospecimen_ID", ALK_fusion)) %>% 
-  mutate(Sum = rowSums(lgg_hgg_fusion[, ALK_fusion])) %>% 
-  filter(Sum > 0) %>% 
-  pull(Kids_First_Biospecimen_ID)
-
-ROS1_fusion <- colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "ROS1")]
-ROS1 <- lgg_hgg_fusion %>% 
-  select(c("Kids_First_Biospecimen_ID", ROS1_fusion)) %>% 
-  mutate(Sum = rowSums(lgg_hgg_fusion[, ROS1_fusion])) %>% 
-  filter(Sum > 0) %>% 
-  pull(Kids_First_Biospecimen_ID)
-
-MET_fusion <- colnames(lgg_hgg_fusion)[str_detect(colnames(lgg_hgg_fusion), "MET")]
-MET <- lgg_hgg_fusion %>% 
-  select(c("Kids_First_Biospecimen_ID", MET_fusion)) %>% 
-  mutate(Sum = rowSums(lgg_hgg_fusion[, MET_fusion])) %>% 
-  filter(Sum > 0) %>% 
-  pull(Kids_First_Biospecimen_ID)
 
 RTK_list <- c(NTRK, ALK, MET, ROS1)
 

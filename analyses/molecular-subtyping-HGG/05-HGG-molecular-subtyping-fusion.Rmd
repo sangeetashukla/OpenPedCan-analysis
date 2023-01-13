@@ -72,10 +72,15 @@ Thus, we will look at _any_ instances of fusions that contain _FGFR1_ or _NTRK_.
 
 ```{r}
 FGFR1_fusions <- fusion_df %>%
-  filter(str_detect(FusionName, "FGFR1"))
+  filter(str_detect(FusionName, "FGFR1")) %>% 
+  select(Sample, FusionName) %>% 
+  group_by(Sample) %>% 
+  summarize(FGFR1_fusions = paste(sort(unique(FusionName)), collapse = ", ")) 
 
 dim(FGFR1_fusions)
 ```
+
+more than one _FGFR1_fusion presents, code is changed accordingly
 
 There is a single _FGFR1_ fusion present in the filtered and prioritized fusion table for samples that were included in the HGG subset file.
 Recall that samples in the HGG subset file either had a defining lesion (H3 K28 or H3 G35 mutation) _or_ were labeled `HGAT` in the `short_histology` column of `pbta-histologies-base.tsv`.
@@ -103,7 +108,7 @@ Add back in the samples without fusions.
 
 ```{r}
 subset_bsids <- unique(fusion_df$Sample)
-ntrk_summary_df <- ntrk_summary_df %>%
+summary_df <- ntrk_summary_df %>%
   # Add in the samples -- the NTRK_fusion column will get filled with NA
   bind_rows(data.frame(Sample = setdiff(subset_bsids, 
                                         ntrk_summary_df$Sample))) %>%
@@ -113,18 +118,52 @@ ntrk_summary_df <- ntrk_summary_df %>%
 
 head(ntrk_summary_df, n = 10)
 ```
+## New subtype of HGG
+
+There is a new 2021 entity within HGGs called "Infant-type hemispheric glioma" (IHG). This HGG is cerebral (hemispheric), arises in early childhood, and is characterized by RTK (receptor tyrosine kinase) alterations, typically fusions, in the NTRK family or in ROS1, ALK, or MET.
+
+The subtypes are:
+
+IHG, NTRK-altered
+IHG, ROS1-altered
+IHG, ALK-altered
+IHG, MET-altered
+
+The gene fusion with _ROS1_, _ALK_ and _MET_ are added into the output
+
+```{r}
+ROS1_fusions <- fusion_df %>%
+  filter(str_detect(FusionName, "ROS1")) %>% 
+  select(Sample, FusionName) %>% 
+  group_by(Sample) %>% 
+  summarize(ROS1_fusions = paste(sort(unique(FusionName)), collapse = ", "))
+
+ALK_fusions <- fusion_df %>%
+  filter(str_detect(FusionName, "\\bALK\\b")) %>% 
+  select(Sample, FusionName) %>% 
+  group_by(Sample) %>% 
+  summarize(ALK_fusions = paste(sort(unique(FusionName)), collapse = ", "))
+
+MET_fusions <- fusion_df %>%
+  filter(str_detect(FusionName, "MET")) %>% 
+  select(Sample, FusionName) %>% 
+  group_by(Sample) %>% 
+  summarize(MET_fusions = paste(sort(unique(FusionName)), collapse = ", "))
+
+summary_df <- summary_df %>% 
+  left_join(FGFR1_fusions, by = "Sample") %>%
+  left_join(ROS1_fusions, by = "Sample") %>%
+  left_join(ALK_fusions, by = "Sample") %>% 
+  left_join(MET_fusions, by = "Sample") %>% 
+  replace(is.na(.), "None")
+
+```
 
 No samples had evidence of _FGFR1_ fusions - we'll add a column to indicate that
 and write to file.
 
 ```{r}
-ntrk_summary_df %>%
-  mutate(FGFR1_fusions = if_else(
-    Sample %in% FGFR1_fusions$Sample,
-    "FGFR1--TACC1",
-     "None"
-  )) %>%
-  dplyr::arrange(Sample) %>%
+summary_df %>%
   write_tsv(output_file)
 ```
 
