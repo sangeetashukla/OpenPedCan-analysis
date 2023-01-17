@@ -36,18 +36,22 @@ gliomatosis_path_free_text_exact <- "anaplastic gliomatosis cerebri (who grade 4
 #Identify which samples are IHGs and bring them into the HGG module for subtyping. 
 #This can be done by either searching 
 #pathology_free_text_diagnosis for the term/terms: "infant type hemispheric glioma" or 
+
+IHG_path_free_path_dx <- histo %>%
+  filter(grepl("infant type hemispheric glioma", pathology_free_text_diagnosis)) %>%
+  pull(pathology_free_text_diagnosis) %>%
+  unique() 
+
 #cns_methylation_subclass == "IHG".
 
-IHG_Participant_ID <- histo %>%
-  filter(cns_methylation_subclass == "IHG" | grepl("infant type hemispheric glioma", pathology_free_text_diagnosis)) %>%
-  pull(Kids_First_Participant_ID) %>%
-  unique() 
+IHG_cns_methylation_subclass <- "IHG"
 
 
 # Create a list with the strings we'll use for inclusion.
 terms_list <- list(exact_path_dx = exact_path_dx,
                    gliomatosis_path_free_text_exact = gliomatosis_path_free_text_exact, 
-                   IHG_Participant_ID = IHG_Participant_ID)
+                   IHG_path_free_path_dx = IHG_path_free_path_dx, 
+                   IHG_cns_methylation_subclass = IHG_cns_methylation_subclass)
 
 
 #Save this list as JSON.

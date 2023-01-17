@@ -1,13 +1,11 @@
 ---
 title: "High-Grade Glioma Molecular Subtyping - Combine DNA Assays"
-author: "Chante Bethell and Jaclyn Taroni for ALSF CCDL"
+author: "Chante Bethell, Jaclyn Taroni and Zhuangzhuang Geng for ALSF CCDL"
 date: "2020"
 output:
-  pdf_document:
-    toc: yes
   html_notebook:
-    toc: yes
-    toc_float: yes
+    toc: TRUE
+    toc_float: TRUE
 ---
 
 This notebook joins copy number alteration, mutation, fusion and gene expression data for the
@@ -619,7 +617,7 @@ RTK_list <- c(NTRK, ALK, MET, ROS1)
 IGH <- histologies_df %>% 
   filter(cns_methylation_subclass == "IHG" | grepl("infant type hemispheric glioma", pathology_free_text_diagnosis)) %>%
   select(Kids_First_Participant_ID, sample_id, pathology_diagnosis, pathology_free_text_diagnosis, cns_methylation_subclass, cns_methylation_subclass_score) %>%
-  left_join(all_data_df, by = "sample_id")
+  left_join(all_data_df, by = c("sample_id", "Kids_First_Participant_ID"))
 
 IGH <- IGH %>% 
   mutate(molecular_subtype = case_when(
@@ -655,12 +653,14 @@ IGH <- IGH %>%
       sample_id %in% molecular_subtype_table[grep("HGG", molecular_subtype_table$molecular_subtype), "sample_id"] ~ "delete"
   )) %>% 
   
-  select(c(Kids_First_Participant_ID.x, sample_id, Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, molecular_subtype)) %>% 
-  filter(molecular_subtype != "delete")
+  select(c(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, molecular_subtype)) %>% 
+  
+  filter(molecular_subtype != "delete") %>% 
+  unique()
 
-colnames(IGH) <- colnames(molecular_subtype_table)
-
-molecular_subtype_table <- bind_rows(molecular_subtype_table, IGH)
+molecular_subtype_table <-molecular_subtype_table %>% 
+  filter(!sample_id %in% IGH$sample_id) %>%
+  bind_rows(IGH)
 
 ```
 
