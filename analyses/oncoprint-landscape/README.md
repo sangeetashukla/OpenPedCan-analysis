@@ -31,7 +31,9 @@ bash run-oncoprint.sh
 ├── 01-plot-oncoprint.R
 ├── README.md
 ├── driver-lists
+│   ├── brain-goi-list-long-gencode-v39.txt # genelist updated with v39 gencode
 │   ├── brain-goi-list-long.txt
+│   ├── brain-goi-list-short-gencode-v39.txt # genelist updated with v39 gencode
 │   └── brain-goi-list-short.txt
 ├── plots
 │   ├── all_participants_primary-plus_goi_oncoprint.png
