@@ -97,7 +97,8 @@ histologies_df %>%
 ```{r}
 dna_df <- mutation_df %>%
   rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
-  left_join(cn_gistic_df)
+  left_join(cn_gistic_df) %>%
+  left_join(histologies_df[, c("Kids_First_Participant_ID", "sample_id", "Kids_First_Biospecimen_ID", "composition")])
 ```
 
 
@@ -219,7 +220,8 @@ head(rna_df, n = 10)
 rna_df <- histologies_df %>%
   select(Kids_First_Participant_ID,
          sample_id,
-         Kids_First_Biospecimen_ID) %>%
+         Kids_First_Biospecimen_ID, 
+         composition) %>%
   inner_join(rna_df)
 ```
 
@@ -328,6 +330,10 @@ relevant_clinical_df <- histologies_df %>%
 ```{r}
 all_data_df <- inner_join(relevant_clinical_df,
                           all_data_df) %>%
+  mutate(composition = case_when(composition_DNA == composition_RNA ~ composition_DNA, 
+                                 is.na(composition_DNA)~composition_RNA, 
+                                 is.na(composition_RNA)~composition_DNA)) %>% 
+  select(-c("composition_DNA", "composition_RNA")) %>%
   dplyr::arrange(Kids_First_Participant_ID, sample_id)
 ```
 
@@ -431,7 +437,8 @@ h3_k28_df_biospecimen <- all_data_df %>%
   select(Kids_First_Participant_ID,
          sample_id,
          Kids_First_Biospecimen_ID_DNA,
-         Kids_First_Biospecimen_ID_RNA) %>%
+         Kids_First_Biospecimen_ID_RNA, 
+         composition) %>%
   mutate(molecular_subtype = "DMG, H3 K28") 
 
 ```
@@ -471,7 +478,8 @@ h3_g35_df_biospecimen <- all_data_df %>%
   select(Kids_First_Participant_ID,
          sample_id,
          Kids_First_Biospecimen_ID_DNA,
-         Kids_First_Biospecimen_ID_RNA) %>%
+         Kids_First_Biospecimen_ID_RNA, 
+         composition) %>%
   mutate(molecular_subtype = "HGG, H3 G35")
 ```
 
@@ -498,7 +506,8 @@ idh_df_biospecimen <- all_data_df %>%
   select(Kids_First_Participant_ID,
          sample_id,
          Kids_First_Biospecimen_ID_DNA,
-         Kids_First_Biospecimen_ID_RNA) %>%
+         Kids_First_Biospecimen_ID_RNA, 
+         composition) %>%
   mutate(molecular_subtype = "HGG, IDH")
 ```
 
@@ -561,8 +570,11 @@ molecular_subtype_table <- bind_rows(h3_g35_df_biospecimen,
 
 # We'll add HGG, H3 wildtype values in cases that do not yet have labels
 molecular_subtype_table <- all_data_df %>%
-  select(Kids_First_Participant_ID, sample_id,
-         Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA) %>%
+  select(Kids_First_Participant_ID, 
+         sample_id,
+         Kids_First_Biospecimen_ID_DNA, 
+         Kids_First_Biospecimen_ID_RNA, 
+         composition) %>%
   left_join(molecular_subtype_table) %>%
   distinct() %>%
   dplyr::mutate(molecular_subtype = case_when(
@@ -653,14 +665,19 @@ IGH <- IGH %>%
       sample_id %in% molecular_subtype_table[grep("HGG", molecular_subtype_table$molecular_subtype), "sample_id"] ~ "delete"
   )) %>% 
   
-  select(c(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, molecular_subtype)) %>% 
+  select(c(Kids_First_Participant_ID, 
+           sample_id, 
+           Kids_First_Biospecimen_ID_DNA, 
+           Kids_First_Biospecimen_ID_RNA, 
+           molecular_subtype, 
+           composition)) %>% 
   
   filter(molecular_subtype != "delete") %>% 
   unique()
 
 molecular_subtype_table <-molecular_subtype_table %>% 
   filter(!sample_id %in% IGH$sample_id) %>%
-  bind_rows(IGH)
+  bind_rows(IGH) 
 
 ```
 
