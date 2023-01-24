@@ -11,13 +11,13 @@ set -o pipefail
 # Set the working directory to the directory of this file
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-# Rscript code/01-ruvseq-deseq.R \
-# --dataset 'target_nbl' \
-# --cohort_values 'TARGET' \
-# --cancer_group_values 'Neuroblastoma' \
-# --pos_c 'MYCN_targets_M2919_M18532.rds' \
-# --neg_c 'hk_genes_normals.rds' \
-# --k_value 5
+Rscript code/01-ruvseq-deseq.R \
+--dataset 'target_nbl' \
+--cohort_values 'TARGET' \
+--cancer_group_values 'Neuroblastoma' \
+--pos_c 'MYCN_targets_M2919_M18532.rds' \
+--neg_c 'hk_genes_normals.rds' \
+--k_value 5
 
 Rscript code/01-ruvseq-deseq.R \
 --dataset 'hgg_dmg' \
