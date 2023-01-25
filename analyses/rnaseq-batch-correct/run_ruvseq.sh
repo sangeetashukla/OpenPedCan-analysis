@@ -8,6 +8,9 @@
 set -e
 set -o pipefail
 
+# Run testing files for circle CI - will not by default
+IS_CI=${OPENPBTA_TESTING:-0}
+
 # Set the working directory to the directory of this file
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
