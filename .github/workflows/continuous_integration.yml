@@ -154,7 +154,6 @@ jobs:
             
           - name: RNA-Seq batch correction
             entrypoint: rnaseq-batch-correct/run_ruvseq.sh
-	    openpbta_testing: 1
 
     steps:
       - uses: actions/checkout@v3
