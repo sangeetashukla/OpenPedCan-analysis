@@ -1,11 +1,11 @@
 ---
-title: "Identify samples suitable for the RNA-Seq batch correction module"
+title: "Identify samples for patients with both methylation and RNA-Seq data"
 output: html_notebook
 author: Eric Wafula for Pedaitric Open Target
-date: 2022
+date: 2023
 ---
 
-To run and fully test the `rnaseq-batch-correct` module in continuous integration, we must ensure that there are examples in the RNA-Seq gene expression counts subset matrix required for tumor-only (`molecular_subtype`) and tumor-normal (`cancer_group` and `gtex_subgroup`) RNA-Seq batch correction analyses.
+To run and fully test the upstream `post array preprocessing` modules in continuous integration, we must ensure that there are examples of samples for patients with both methylation and RNA-Seq data in both methylation beta/m-value and RNA-Seq gene/isoform expression subset matrices respectivey.
 
 ```{r}
 suppressPackageStartupMessages(library(tidyverse))
@@ -16,44 +16,61 @@ options(readr.show_col_types = FALSE)
 set.seed(2022)
 ```
 
-The histologies file contains the information we need for identifying samples to perform batch correction for
-poly-A/poly-A stranded and stranded samples with one cancer_group-cohort combination
+The histologies file contains the information we need for identifying samples for patients with both methylation and RNA-Seq data in a cancer_group-cohort combination.
 
 ```{r}
-histologies_df <- read_tsv(file.path("..", "..", "data", 
-                                     "histologies.tsv"),
-                           col_types = cols(
-                             molecular_subtype = col_character()
-                           )) %>% 
-  filter(RNA_library == "stranded" | 
-           RNA_library == "poly-A stranded" | 
-           RNA_library == "poly-A")
-```
-
-Get biospecimen identifiers for samples with histologies of interest.
-
-```{r}
-# TARGET Diffuse MYCN amp and High-grade MYCN non-amp histologies
-mycn_examples <- histologies_df %>%
-  filter(sample_type == "Tumor",
-         molecular_subtype == "MYCN amp" | 
-           molecular_subtype == "MYCN non-amp", 
-         cohort == "TARGET")
-
-# PBTA Diffuse midline glioma and High-grade glioma/astrocytoma histologies
-glioma_examples <- histologies_df %>%
-  filter(sample_type == "Tumor",
-         cancer_group == "Diffuse midline glioma" | 
-           cancer_group == "High-grade glioma/astrocytoma",
-         cohort == "PBTA")
+histologies_df <- read_tsv(file.path("..", "..", "data", "histologies.tsv")) %>% 
+ filter(sample_type == "Tumor" & 
+          tumor_descriptor == "Primary Tumor" & 
+          (experimental_strategy == "RNA-Seq" | 
+             experimental_strategy == "Methylation")) %>% 
+  select(Kids_First_Biospecimen_ID, Kids_Participant_ID, sample_id, cohort) %>% 
+  mutate(match_id = paste(Kids_Participant_ID, sample_id, sep = "_" )) %>% 
+  select(-Kids_Participant_ID, -sample_id, sample_id)
   
-# GTEx Brain Cortex and Brain Cerebellum histologies
-gtex_examples <- histologies_df %>%
-  filter(gtex_subgroup == "Brain - Cortex" | 
-           gtex_subgroup == "Brain - Cerebellum") 
+```
+### Methylation samples
+
+Get methyl biospecimen identifiers in methyl independent sample list
+
+```{r}
+independent_samples <- read_tsv(
+  file.path("..", "..", "data", 
+            "independent-specimens.methyl.primary.eachcohort.tsv"))
+
+methyl_samples <- histologies_df %>% 
+  filter(experimental_strategy == "Methylation", 
+         Kids_First_Biospecimen_ID  %in% 
+           independent_samples$Kids_First_Biospecimen_ID) %>% 
+  rename(Kids_First_Biospecimen_ID_Methly = Kids_First_Biospecimen_ID)
+
 ```
 
-### TARGET _poly-A MYCN amp_ RNA-Seq examples
+### RNA-Seq samples 
+
+Get rnaseq biospecimen identifiers in rnaseq independent sample list
+
+```{r}
+independent_samples <- read_tsv(
+  file.path("..", "..", "data", 
+            "independent-specimens.methyl.primary.eachcohort.tsv"))
+
+rnaseq_samples <- histologies_df %>% 
+  filter(experimental_strategy == "RNA-Seq", 
+         Kids_First_Biospecimen_ID  %in% 
+           independent_samples$Kids_First_Biospecimen_ID) %>% 
+   rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID)
+```
+
+### TARGET _Methylation_ examples
+
+TARGET biospecimen identifiers for patients with both methylation and RNA-Seq data
+
+```{r}
+methyl_rnaseq_samples <- inner_join(methyl_samples, by = c(match_id, cohort)) %>% 
+  filter(cohort == "TARGET") %>% 
+  
+```
 
 ```{r}
 # randomly select TARGET poly-A MYCN amplified samples 
@@ -177,3 +194,4 @@ gtex_examples %>%
 ```{r}
 sessionInfo()
 ```
+
