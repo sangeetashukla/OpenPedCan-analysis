@@ -24,8 +24,6 @@ https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/398
 https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/623
 https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/825
 https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/808
-https://github.com/PediatricOpenTargets/ticket-tracker/issues/474
-
 
 ### Input files
 ```
@@ -45,4 +43,5 @@ fusion_summary_ependymoma_foi.tsv
 fusion_summary_embryonal_foi.tsv
 fusion_summary_ewings_foi.tsv
 fusion_summary_lgg_hgg_foi.tsv
+
 ```
