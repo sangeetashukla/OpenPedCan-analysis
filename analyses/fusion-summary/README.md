@@ -42,6 +42,6 @@ fusion-dgd.tsv.gz
 fusion_summary_ependymoma_foi.tsv
 fusion_summary_embryonal_foi.tsv
 fusion_summary_ewings_foi.tsv
-fusion_summary_lgat_foi.tsv
+fusion_summary_lgg_hgg_foi.tsv
 
 ```
