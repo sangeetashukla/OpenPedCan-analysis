@@ -32,6 +32,8 @@ See the `00-enrich-positive-examples` notebook for more information.
 * `fusion-summary` requires us to include _FGFR1--TACC1_, _MYB--QKI_, fusions or fusions that involve _BRAF_, _MN1_, _RELA_, or _EWSR1_.
 * `rnaseq-batch-correct` requires us to include _MYCN amp_ and _MYCN non-amp_ Neuroblastoma subtypes and _Diffuse midline glioma_ and _High-grade glioma/astrocytoma_ `cancer groups` balanced for RNA-Seq library types (`stranded`, `poly-A`, and `ploy-A stranded`) for `tumor-only` batch correction. In addition, _Brain Cortex_ and _Brain Cerebellum_ normal samples are required for `tumor-normal` batch correction.
 See the `00-enrich-batch-correction-examples.Rmd` notebook for more information.
+* `methylation-summary` requires us to include samples for patients with both methylation and RNA-Seq data in order to compute the correlation between methylation and RNA-Seq.
+See the `00-enrich-methy-rnaseq-examples.Rmd` notebook for more information.
 
 ### Local development
 
