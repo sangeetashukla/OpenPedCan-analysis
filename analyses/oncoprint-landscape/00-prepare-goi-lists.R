@@ -1,4 +1,4 @@
-# Take in oncoprint-goi-lists-OpenPBTA-gencode-v39.csv and create a goi file for each
+# Take in oncoprint-goi-lists-OpenPedCan-gencode-v39.csv and create a goi file for each
 # column with associated genes of interest for each specified broad histology.
 # Also creates a table for mapping between cancer_group and the appropriate GOI
 # list.
@@ -29,7 +29,7 @@ data_dir <-
 
 # Each histology has it's own column, and there are source columns
 all_goi_df <- readr::read_csv(file.path(data_dir, 
-                                        "oncoprint-goi-lists-OpenPBTA-gencode-v39.csv"))
+                                        "oncoprint-goi-lists-OpenPedCan-gencode-v39.csv"))
 
 # Drop the source columns
 all_goi_df <- all_goi_df %>% 
