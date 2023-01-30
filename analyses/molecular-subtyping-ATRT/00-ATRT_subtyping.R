@@ -1,5 +1,5 @@
 #This script assigns ATRT into three known subtypes using methylation result.
-#Subtypiong esults is saved as ATRT_subtype_methylation.tsv
+#Subtypiong esults is saved as ATRT-molecular-subtypes.tsv
 
 # Set up library
 library(tidyverse)
@@ -16,7 +16,7 @@ results_dir <-
 
 # Read in histologies
 histo <- 
-  readr::read_tsv(file.path(root_dir, "data", "histologies.tsv"), guess_max = 10000)
+  readr::read_tsv(file.path(root_dir, "data", "histologies-base.tsv"), guess_max = 10000)
 
 # Filter histo, 
 # select all ATRT biospecimens from PBTA and/DGD
@@ -53,12 +53,10 @@ ATRT_subtype_list <- c("ATRT, MYC", "ATRT, SHH", "ATRT, TYR")
 # For the samples fit all the other situations, their molecular subtype are "ATRT, To be classified."
 atrt_subtype <- atrt_subtype %>% 
   mutate(molecular_subtype = case_when(cns_methylation_subclass_score >= 0.8 & cns_methylation_subclass %in% ATRT_subtype_list ~ cns_methylation_subclass, 
-                                       is.na(Kids_First_Biospecimen_ID_meth) ~ "ATRT, To be classified.",
-                                       TRUE ~ "ATRT, To be classified.")) %>%
+                                       is.na(Kids_First_Biospecimen_ID_meth) ~ "ATRT, To be classified",
+                                       TRUE ~ "ATRT, To be classified")) %>%
   select(sample_id, Kids_First_Biospecimen_ID_meth, Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, molecular_subtype) %>%
   
 # write result
-  readr::write_tsv(file.path(results_dir, "ATRT_subtype_methylation.tsv"))
-
-
+  readr::write_tsv(file.path(results_dir, "ATRT-molecular-subtypes.tsv"))
 
