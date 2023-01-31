@@ -319,7 +319,7 @@ set.seed(opt$seed)
 
 #### Samples we need to include to run tp53_nf1_score module -------------------
 
-# For more information, see the 00-enrich-positive-examples notebook
+# For more information, see the 00-enrich-tp53_nf1_score-examples notebook
 tp53_dnaseq <- c("BS_16FT8V4B", "BS_B9QP40ER", "BS_7KR13R3P", "BS_K2K5YSDS", 
                  "TARGET-30-PAPBGH-01A-01W", "TARGET-40-PARGTM-01A-01D",
                  "TARGET-40-PATPBS-01A-01D")

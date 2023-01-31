@@ -13,13 +13,24 @@ options(readr.show_col_types = FALSE)
 ```
 
 ```{r}
+# establish base dir 
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+```
+
+```{r}
+# Set path to data  directory
+data_dir <- file.path(root_dir, "data")
+```
+
+
+```{r}
 set.seed(2022)
 ```
 
 The histologies file contains the information we need for identifying samples for patients with both methylation and RNA-Seq data in a cancer_group-cohort combination.
 
 ```{r}
-histologies_df <- read_tsv(file.path("..", "..", "data", "histologies.tsv")) %>% 
+histologies_df <- read_tsv(file.path(data_dir, "histologies.tsv")) %>% 
  filter(sample_type == "Tumor",
           tumor_descriptor %in% c("Primary Tumor", "Initial CNS Tumor"),
           experimental_strategy %in% c("RNA-Seq", "Methylation"),
@@ -37,7 +48,7 @@ Get methyl biospecimen identifiers in methyl independent sample list
 
 ```{r}
 independent_samples <- read_tsv(
-  file.path("..", "..", "data", 
+  file.path(data_dir,
             "independent-specimens.methyl.primary.eachcohort.tsv"))
 
 methyl_samples <- histologies_df %>% 
@@ -54,7 +65,7 @@ Get rnaseq biospecimen identifiers in rnaseq independent sample list
 
 ```{r}
 independent_samples <- read_tsv(
-  file.path("..", "..", "data", 
+  file.path(data_dir, 
             "independent-specimens.rnaseqpanel.primary.eachcohort.tsv"))
 
 rnaseq_samples <- histologies_df %>% 
