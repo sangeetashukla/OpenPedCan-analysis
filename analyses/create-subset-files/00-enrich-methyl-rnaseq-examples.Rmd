@@ -20,12 +20,11 @@ The histologies file contains the information we need for identifying samples fo
 
 ```{r}
 histologies_df <- read_tsv(file.path("..", "..", "data", "histologies.tsv")) %>% 
- filter(sample_type == "Tumor" & 
-          (tumor_descriptor == "Primary Tumor" | 
-             tumor_descriptor == "Initial CNS Tumor") & 
-          (experimental_strategy == "RNA-Seq" | 
-             experimental_strategy == "Methylation") & 
-          (cohort == "TARGET" | cohort == "PBTA")) %>% 
+ filter(sample_type == "Tumor",
+          tumor_descriptor %in% c("Primary Tumor", "Initial CNS Tumor"),
+          experimental_strategy %in% c("RNA-Seq", "Methylation"),
+          cohort %in% c("TARGET", "PBTA")
+          ) %>% 
   select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, sample_id, 
          experimental_strategy, cohort) %>% 
   mutate(match_id = paste(Kids_First_Participant_ID, sample_id, sep = "_" )) %>% 
