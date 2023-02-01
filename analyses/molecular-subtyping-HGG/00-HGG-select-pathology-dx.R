@@ -42,16 +42,11 @@ IHG_path_free_path_dx <- histo %>%
   pull(pathology_free_text_diagnosis) %>%
   unique() 
 
-#cns_methylation_subclass == "IHG".
-
-IHG_cns_methylation_subclass <- "IHG"
-
-
 # Create a list with the strings we'll use for inclusion.
 terms_list <- list(exact_path_dx = exact_path_dx,
                    gliomatosis_path_free_text_exact = gliomatosis_path_free_text_exact, 
                    IHG_path_free_path_dx = IHG_path_free_path_dx, 
-                   IHG_cns_methylation_subclass = IHG_cns_methylation_subclass)
+                   IHG_cns_methylation_subclass = "IHG")
 
 
 #Save this list as JSON.

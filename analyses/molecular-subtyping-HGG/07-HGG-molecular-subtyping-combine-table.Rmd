@@ -1,6 +1,6 @@
 ---
 title: "High-Grade Glioma Molecular Subtyping - Combine DNA Assays"
-author: "Chante Bethell, Jaclyn Taroni and Zhuangzhuang Geng for ALSF CCDL"
+author: "Chante Bethell, Jaclyn Taroni for ALSF CCDL and Zhuangzhuang Geng for D3b"
 date: "2020"
 output:
   html_notebook:
