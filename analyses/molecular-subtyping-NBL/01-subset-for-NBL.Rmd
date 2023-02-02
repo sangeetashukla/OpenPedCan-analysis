@@ -62,9 +62,6 @@ module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
 
 # subset directory
 subset_dir <- file.path(module_dir, "nbl-subset")
-  
-#input directory
-input_dir <- file.path(module_dir, "input")
 
 #results directory
 results_dir <- file.path(module_dir, "results")
@@ -102,10 +99,12 @@ consensus_filtered_df <- readr::read_tsv(file.path(data_dir, "consensus_wgs_plus
 # filter tpm matrix for NBL samples and MYCN
 expression_mat <- readRDS(file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")) 
 
-TPM_MYCN_data <- as.data.frame(t(expression_mat["MYCN", intersect(hist_subset$Kids_First_Biospecimen_ID,
-                     colnames(expression_mat))]))
+TPM_MYCN_data <- t(expression_mat["MYCN", intersect(hist_subset$Kids_First_Biospecimen_ID,
+                     colnames(expression_mat))]) 
 TPM_MYCN_data <- TPM_MYCN_data %>%
-  mutate(Kids_First_Biospecimen_ID = rownames(TPM_MYCN_data))
+  as.data.frame() %>%
+  mutate(Kids_First_Biospecimen_ID = rownames(TPM_MYCN_data)) %>%
+  dplyr::rename(MYCN_TPM = MYCN)
 
 rm(expression_mat)
 ```
@@ -127,10 +126,10 @@ MYCN_DF <- hist_subset %>%
   left_join(TPM_MYCN_data)
 ```
 
-# Write the mycn-nbl biospecimen file into input dir
+# Write the mycn-nbl biospecimen file into subset dir
 ```{r write alteration table}
 MYCN_DF %>% 
-  readr::write_tsv(file.path(input_dir, "mycn_nbl_subset_data.tsv"))
+  readr::write_tsv(file.path(subset_dir, "mycn_nbl_subset_data.tsv"))
 ```
 
 

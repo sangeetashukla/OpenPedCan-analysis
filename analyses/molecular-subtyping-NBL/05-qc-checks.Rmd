@@ -26,6 +26,7 @@ data_dir <- file.path(root_dir, "data")
 
 # module directory
 module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
+subset_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL", "nbl-subset")
 
 #results directory
 results_dir <- "results"
@@ -38,28 +39,30 @@ if (!dir.exists(results_dir)) {
 
 Code Logic and background: load the TARGET and GMKF data , also slect relevant columns. 
 ```{r get TARGET GMKF Data}
-hist_df<-readr::read_tsv(file.path(data_dir, "histologies-base.tsv"),guess_max = 100000)
+# Read in the JSON file that contains the strings we'll use to include
+path_dx_list <- jsonlite::fromJSON(
+  file.path(subset_dir, "nbl_subtyping_path_dx_strings.json")
+  )
+
+
+hist_df <- readr::read_tsv(file.path(data_dir, "histologies-base.tsv"),guess_max = 100000)
 alteration_subtyped_df<-readr::read_tsv(file.path(results_dir, "alteration_table_with_molecular_subtype.tsv"),
                                guess_max = 100000)
 
-TARGET<- hist_df %>% filter(cohort=="TARGET",pathology_diagnosis %in% 
-                               c("Neuroblastoma", "Ganglioneuroblastoma",
-                                 "Ganglioneuroblastoma, nodular",
-                                 "Ganglioneuroblastoma, intermixed",
-                                 "Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated"),
-                            experimental_strategy=="WXS") 
+TARGET<- hist_df %>% 
+  filter(cohort=="TARGET", 
+         pathology_diagnosis %in% path_dx_list$exact_path_dx,
+         experimental_strategy=="WXS") 
 
-GMKF<- hist_df %>% filter(cohort=="GMKF",pathology_diagnosis %in%
-                             c("Neuroblastoma", "Ganglioneuroblastoma",
-                               "Ganglioneuroblastoma, nodular",
-                               "Ganglioneuroblastoma, intermixed",
-                               "Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated"),
-                           experimental_strategy=="WGS") 
+GMKF<- hist_df %>% 
+  filter(cohort=="GMKF",
+         pathology_diagnosis %in% path_dx_list$exact_path_dx,
+         experimental_strategy=="WGS") 
 
-TARGET <- TARGET %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,sample_id,
-                              cohort,experimental_strategy)
-GMKF <- GMKF %>% select(Kids_First_Biospecimen_ID,Kids_First_Participant_ID,sample_id,
-                          cohort,experimental_strategy)
+TARGET <- TARGET %>% 
+  select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, sample_id, cohort, experimental_strategy)
+GMKF <- GMKF %>% 
+  select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, sample_id, cohort, experimental_strategy)
 ```
 Create a QC data frame
 ```{r QC dataframe being created}
@@ -72,9 +75,6 @@ QC_df <-  QC_df %>% select(Kids_First_Biospecimen_ID.x,Kids_First_Biospecimen_ID
 colnames(QC_df)<- c("Kids_First_Biospecimen_ID_GMKF","Kids_First_Biospecimen_ID_TARGET",
                         "Kids_First_Participant_ID","sample_id","cohort_GMKF","cohort_TARGET",
                         "experimental_strategy_GMKF","experimental_strategy_Target")
-# 
-# QC_df <- QC_df %>% mutate(MYCN_TPM_GMKF=NA,MYCN_TPM_Target=NA,MYCN_status_GMKF=NA,
-#                           MYCN_status_Target=NA,molecular_subtype_GMKF=NA,molecular_subtype_Target=NA)
 ```
 
 Add status, tpm and subtype infromation from the table results/alteration_table_with_molecular_subtype.tsv
@@ -111,9 +111,9 @@ for (iter in 1:dim(QC_df)[1]){
  values_from_subtype_table<- rbind(values_from_subtype_table,values_gmkf_target)
 }
 values_from_subtype_table <- values_from_subtype_table[-1,]
-values_from_subtype_table <-as.data.frame(values_from_subtype_table)
-rownames(values_from_subtype_table)<-NULL
-colnames(values_from_subtype_table)<-c("MYCN_TPM_GMKF","MYCN_TPM_Target","MYCN_status_GMKF",
+values_from_subtype_table <- as.data.frame(values_from_subtype_table)
+rownames(values_from_subtype_table) <- NULL
+colnames(values_from_subtype_table) <- c("MYCN_TPM_GMKF","MYCN_TPM_Target","MYCN_status_GMKF",
                                        "MYCN_status_TARGET","molecular_subtype_GMKF",
                                        "molecular_subtype_TARGET")
 ```
@@ -121,7 +121,7 @@ colnames(values_from_subtype_table)<-c("MYCN_TPM_GMKF","MYCN_TPM_Target","MYCN_s
 
 ```{r assign QC values}
 QC_df <- QC_df %>% mutate(ID = row_number())
-values_from_subtype_table <-values_from_subtype_table %>% mutate(ID = row_number())
+values_from_subtype_table <- values_from_subtype_table %>% mutate(ID = row_number())
 QC_df <- inner_join(QC_df,values_from_subtype_table,by="ID")
 QC_df$ID<-NULL
 ```
@@ -129,7 +129,8 @@ QC_df$ID<-NULL
 
  Write the table
 ```{r write alteration table}
-QC_df%>%readr::write_tsv(file.path(results_dir, "qc_table.tsv"))
+QC_df %>% 
+  readr::write_tsv(file.path(results_dir, "qc_table.tsv"))
 ```
 
 

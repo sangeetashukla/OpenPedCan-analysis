@@ -4,10 +4,10 @@ author: "Aditya Lahiri, Eric Wafula, Jo Lynne Rokita"
 date: "10/13/2022"
 output: html_notebook
 ---
-In this notebook we load the table `input/mycn_nbl_subset_data.tsv` and find the biospecimens which
+In this notebook we load the table `nbl-subset/mycn_nbl_subset_data.tsv` and find the biospecimens which
 have matched DNA and RNA IDs. We store these biospecimens as a table in 
-`input/mycn_nbl_matched_biospecimen.tsv`.  The script also creates two tables 
-`input/mycn_nbl_dna_biospecimen.tsv` and `input/mycn_nbl_rna_biospecimen.tsv` which contain 
+`nbl-subset/mycn_nbl_matched_biospecimen.tsv`.  The script also creates two tables 
+`nbl-subset/mycn_nbl_dna_biospecimen.tsv` and `nbl-subset/mycn_nbl_rna_biospecimen.tsv` which contain 
 biospecimens whose `Kids_First_Biospecimen_ID` are either DNA or RNA respectively. 
 
 The notebook also plots the TPMs vs Kids_First_Biospecimen_ID for biospecimens with matched DNA and
@@ -40,8 +40,8 @@ data_dir <- file.path(root_dir, "data")
 # module directory
 module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
 
-#input directory
-input_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL","input")
+#nbl-subset directory
+subset_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL","nbl-subset")
 
 #results directory
 results_dir <- "results"
@@ -67,7 +67,7 @@ To this end, we create a new column in MYCN_Df called match_id.
 
 # Read the mycn-nbl file 
 ```{r read the file containing mycn-nbl biospecimen}
-MYCN_DF <-readr::read_tsv(file.path(input_dir, "mycn_nbl_subset_data.tsv"), guess_max = 100000)
+MYCN_DF <-readr::read_tsv(file.path(subset_dir, "mycn_nbl_subset_data.tsv"), guess_max = 100000)
 ```
 
 
@@ -76,7 +76,10 @@ MYCN_DF <-readr::read_tsv(file.path(input_dir, "mycn_nbl_subset_data.tsv"), gues
 # Create Match_ID Kids_First_Participant_ID + Sample_ID + Cohort
 MYCN_DF <- MYCN_DF %>% 
   mutate(match_id = paste(Kids_First_Participant_ID,
-                          sample_id,cohort,sep = "_"))
+                          sample_id,cohort,sep = "_")) %>%
+  # select columns of interest
+  select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, RNA_library, experimental_strategy, gene_symbol, pathology_diagnosis, pathology_free_text_diagnosis, MYCN_CN, MYCN_TPM, MYCN_CN_status, match_id)
+
 
 # DNA samples are those belonging to experimental_strategy: WGS, WXS, and Targeted Sequencing  
 # Some targeted sequencing also have RNA_Library as "exome capture" those biospecimens are RNAs.
@@ -88,13 +91,12 @@ MYCN_dna_df <- MYCN_DF %>%
   dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID)
 
 
-
 MYCN_rna_df <- MYCN_DF %>% 
   filter( (experimental_strategy=="RNA-Seq") | 
                                    (experimental_strategy=="Targeted Sequencing" & 
                                       !is.na(RNA_library))) %>%
     # rename column
-  dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID)
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) 
 # 405 samples 374 rna-seq + 31 targeted_seq+exome_capture
 
 ```
@@ -105,51 +107,28 @@ of matching DNA and RNA biospecimen IDs. We then select specific columns from th
 for downstream analysis. 
 
 ```{r Further filter the data to create alteration table}
-MYCN_DNA_RNA_DF <- inner_join(MYCN_dna_df,MYCN_rna_df, by="match_id")  # 342 samples 
+MYCN_DNA_RNA_DF <- inner_join(MYCN_dna_df, MYCN_rna_df, by= c("Kids_First_Participant_ID", "match_id",
+                                                            "pathology_diagnosis","pathology_free_text_diagnosis")) %>%
+  select(-c(experimental_strategy.x, experimental_strategy.y, RNA_library.x, RNA_library.y))
+# 342 samples 
 
  # Retain the information of RNA/DNA Biospecimen ID, gene symbol, cancer group, 
  # pathology free text diagnosis, copy number, TPM and status
-MYCN_DNA_RNA_FILTERED_DF <- MYCN_DNA_RNA_DF %>% select(Kids_First_Biospecimen_ID_DNA,
-                                                       Kids_First_Biospecimen_ID_RNA,
-                                                       Kids_First_Participant_ID.x,
-                                                       Kids_First_Participant_ID.y,
-                                                       gene_symbol.x,gene_symbol.y,
-                                                       pathology_diagnosis.x,pathology_diagnosis.y, 
-                                                       pathology_free_text_diagnosis.x,
-                                                       pathology_free_text_diagnosis.y, 
-                                                       MYCN_CN.x,MYCN_CN.y,MYCN_TPM.x,
-                                                       MYCN_TPM.y,MYCN_CN_status.x,MYCN_CN_status.y, match_id)
+ 
 # Remove columns with no info, the following code logic is adapted from [2] 
-empty_columns <- colSums(is.na(MYCN_DNA_RNA_FILTERED_DF) 
-                         | MYCN_DNA_RNA_FILTERED_DF == "") == nrow(MYCN_DNA_RNA_FILTERED_DF)
+empty_columns <- colSums(is.na(MYCN_DNA_RNA_DF) 
+                         | MYCN_DNA_RNA_DF == "") == nrow(MYCN_DNA_RNA_DF)
 
 #Remove empty coulmns
-MYCN_DNA_RNA_FILTERED_DF<- MYCN_DNA_RNA_FILTERED_DF[!empty_columns]
+MYCN_DNA_RNA_FILTERED_DF <- MYCN_DNA_RNA_DF[!empty_columns]
+names(MYCN_DNA_RNA_FILTERED_DF)
 
-#Check if the copies of pathology_diagnosis, pathology_free_text_diagnosism status are identitical. 
-#These copies are created due to inner join of MYCN_dna_df and MYCN_rna_df
-print(all.equal(MYCN_DNA_RNA_FILTERED_DF$pathology_diagnosis.x,
-                MYCN_DNA_RNA_FILTERED_DF$pathology_diagnosis.y))
-
-print(all.equal(MYCN_DNA_RNA_FILTERED_DF$pathology_free_text_diagnosis.x,
-                MYCN_DNA_RNA_FILTERED_DF$pathology_free_text_diagnosis.y))
-
-print(all.equal(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Participant_ID.x,
-                MYCN_DNA_RNA_FILTERED_DF$Kids_First_Participant_ID.y))
-# since they are identical we can remove the duplicated columns.
-
-# Remove duplicate columns after inspection
-duplicate_columns <- c("pathology_diagnosis.y","pathology_free_text_diagnosis.y",
-                       "Kids_First_Participant_ID.y")
-MYCN_DNA_RNA_FILTERED_DF<-MYCN_DNA_RNA_FILTERED_DF[ , -which(names(MYCN_DNA_RNA_FILTERED_DF)
-                                                             %in% duplicate_columns)] # 342 samples 
-
-
-# Rename the columns appropriately.
-colnames(MYCN_DNA_RNA_FILTERED_DF)<-c("Kids_First_Biospecimen_ID_DNA","Kids_First_Biospecimen_ID_RNA",
-                                      "Kids_First_Participant_ID","gene_symbol","cancer_group",
-                                      "pathology_free_text_diagnosis","MYCN_CN","MYCN_TPM",
-                                      "MYCN_CN_status","Match_ID")    
+# Rename the columns appropriately
+MYCN_DNA_RNA_FILTERED_DF <- MYCN_DNA_RNA_FILTERED_DF %>%
+  dplyr::rename(gene_symbol = gene_symbol.x,
+                MYCN_CN = MYCN_CN.x,
+                MYCN_TPM = MYCN_TPM.y,
+                MYCN_CN_status = MYCN_CN_status.x)    
 ```
 
 
@@ -164,7 +143,8 @@ corresponding RNA ID which will also be repeating.
 # when we query them with DNA IDs + RNA IDs. 
 MYCN_Table <- as.data.frame(table(MYCN_DNA_RNA_FILTERED_DF$Kids_First_Biospecimen_ID_DNA))
 colnames(MYCN_Table)<- c("Kids_First_Biospecimen_ID_DNA", "Freq")
-MYCN_Table$Kids_First_Biospecimen_ID_DNA<-as.character(MYCN_Table$Kids_First_Biospecimen_ID_DNA)
+
+MYCN_Table$Kids_First_Biospecimen_ID_DNA <- as.character(MYCN_Table$Kids_First_Biospecimen_ID_DNA)
 index_repeats <- which(MYCN_Table$Freq>1)
 repeated_ids <- MYCN_Table$Kids_First_Biospecimen_ID_DNA[index_repeats]
 for (iter in 1:length(repeated_ids))
@@ -207,16 +187,17 @@ Plot TPMs vs Biospecimen for samples that have both DNA and RNA IDs. Only plot t
 that have a TPM value. 
 ```{r make TPM vs Biospecimen plot for samples with matched DNA and RNA IDs}
 #Select relevant info
-MYCN_Plot_df <- MYCN_DNA_RNA_FILTERED_DF %>% filter(!is.na(MYCN_TPM)) %>%
-  select (Kids_First_Biospecimen_ID_DNA,MYCN_TPM,MYCN_CN_status) 
+MYCN_Plot_df <- MYCN_DNA_RNA_FILTERED_DF %>% 
+  filter(!is.na(MYCN_TPM)) %>%
+  select(Kids_First_Biospecimen_ID_DNA,MYCN_TPM,MYCN_CN_status) 
 
 # Refered code from [5]
 bar_plot1<-MYCN_Plot_df %>% 
   arrange(MYCN_TPM) %>% 
   mutate(Kids_First_Biospecimen_ID_DNA = factor(Kids_First_Biospecimen_ID_DNA, 
                                                 unique(Kids_First_Biospecimen_ID_DNA))) %>%
-  ggplot() +aes(x=Kids_First_Biospecimen_ID_DNA, y=MYCN_TPM, fill=MYCN_CN_status)+
-  geom_bar(position="dodge",stat="identity")+
+  ggplot() + aes(x=Kids_First_Biospecimen_ID_DNA, y=MYCN_TPM, fill=MYCN_CN_status) +
+  geom_bar(position="dodge",stat="identity") +
   theme(axis.text.x = element_text(size = 5, angle = 45, hjust = 1))
 
 
@@ -226,12 +207,12 @@ ggsave(filename = plot_file,width = 45, height = 20)
 
 
 Write the table containing mycn-nbl biospecimen with matched DNA and RNA Ids, dna only and rna only 
-biospecimens files  into input dir
+biospecimens files  into nbl-subset dir
 ```{r write alteration table}
 MYCN_DNA_RNA_FILTERED_DF %>% 
-  readr::write_tsv(file.path(input_dir,"mycn_nbl_matched_biospecimen.tsv"))
+  readr::write_tsv(file.path(subset_dir,"mycn_nbl_matched_biospecimen.tsv"))
 MYCN_dna_df %>% 
-  readr::write_tsv(file.path(input_dir,"mycn_nbl_dna_biospecimen.tsv"))
+  readr::write_tsv(file.path(subset_dir,"mycn_nbl_dna_biospecimen.tsv"))
 MYCN_rna_df %>% 
-  readr::write_tsv(file.path(input_dir,"mycn_nbl_rna_biospecimen.tsv"))
+  readr::write_tsv(file.path(subset_dir,"mycn_nbl_rna_biospecimen.tsv"))
 ```

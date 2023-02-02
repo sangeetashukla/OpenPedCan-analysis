@@ -48,7 +48,7 @@ data_dir <- file.path(root_dir, "data")
 module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
 
 #input directory
-input_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL","input")
+subset_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL","nbl-subset")
 
 #results directory
 results_dir <- "results"
@@ -80,7 +80,7 @@ source(file.path(module_dir,"util", "plot_chr2.R"))
 
 # Load files and set the cutoff based on the plot in TPM_Biospecimen_All_Samples_With_TMP.png
 ```{r}
-alteration_df<-readr::read_tsv(file.path(input_dir, "alteration_table_without_molecular_subtype.tsv"),
+alteration_df<-readr::read_tsv(file.path(subset_dir, "alteration_table_without_molecular_subtype.tsv"),
                                guess_max = 100000)
 cnv_cnvkit_df<-readr::read_tsv(file.path(data_dir, "cnv-cnvkit.seg.gz"),guess_max = 100000)
 hist_df<-readr::read_tsv(file.path(data_dir, "histologies-base.tsv"),guess_max = 100000)
@@ -245,7 +245,7 @@ alteration_df$molecular_subtype[index_case_6]<-"NBL, to be classified"
 
 Code Logic: create a dataframe containing all the samples whose molecular_subtype was determined based on TPM.
 ```{r Dataframe where all the sample molecular_subtype are determined based on TPM cutoff}
-index_case_4<- index_case_4[2:length(index_case_4)] # Remove NA at index 1
+index_case_4 <- index_case_4[2:length(index_case_4)] # Remove NA at index 1
 # TPM_index contains index of biospecimens that were assigned a molecular subtyped based on TPM. 
 # These are samples which belong to case 4 and case 5. 
 TPM_index <- c(index_case_4,index_tpm_molecular_subtype_above,index_tpm_molecular_subtype_below) 
@@ -263,27 +263,30 @@ df_tpm <- df_tpm %>% select(Kids_First_Biospecimen_ID_DNA,Kids_First_Biospecimen
 molecular_subtype_table <- alteration_df %>% select(Kids_First_Biospecimen_ID_DNA,
                                           Kids_First_Biospecimen_ID_RNA,molecular_subtype)
 # find the biospecimens that need to be assigned NBL, to be classified 
-index_unclassified<-which(molecular_subtype_table$molecular_subtype %in% 
+index_unclassified <- which(molecular_subtype_table$molecular_subtype %in% 
                   c("Pathology-amp,MYCN_CN_status-non-amp,TPM-NA"))
-molecular_subtype_table$molecular_subtype[index_unclassified]<-"NBL, to be classified"
-molecular_subtype_table<-molecular_subtype_table[order(molecular_subtype_table$molecular_subtype),]
+molecular_subtype_table$molecular_subtype[index_unclassified] <- "NBL, to be classified"
+molecular_subtype_table <- molecular_subtype_table[order(molecular_subtype_table$molecular_subtype),]
 ```
 
 #Write the table
 ```{r write alteration table}
-alteration_df%>%readr::write_tsv(file.path(results_dir, "alteration_table_with_molecular_subtype.tsv"))
-df_tpm%>%readr::write_tsv(file.path(results_dir, "molecular_subtypes_based_on_cutoff.tsv"))
-molecular_subtype_table%>%readr::write_tsv(file.path(results_dir, "neuroblastoma_molecular_subtypes.tsv"))
+alteration_df %>% 
+  readr::write_tsv(file.path(results_dir, "alteration_table_with_molecular_subtype.tsv"))
+df_tpm %>% 
+  readr::write_tsv(file.path(results_dir, "molecular_subtypes_based_on_cutoff.tsv"))
+molecular_subtype_table %>% 
+  readr::write_tsv(file.path(results_dir, "neuroblastoma_molecular_subtypes.tsv"))
 ```
 
 #Remove intermediate files that are not required
 ```{r names of intermediate files to be deleted}
 # 
-# file_names_intermediate<- c(paste(input_dir, "/mycn_nbl_subset_data.tsv",sep=""),
-#                             paste(input_dir,"/mycn_nbl_matched_biospecimen.tsv",sep=""),
-#                             paste(input_dir,"/mycn_nbl_dna_biospecimen.tsv",sep=""),
-#                             paste(input_dir,"/mycn_nbl_rna_biospecimen.tsv",sep=""),
-#                             paste(input_dir,"/alteration_table_without_molecular_subtype.tsv",sep=""))
+# file_names_intermediate<- c(paste(subset_dir, "/mycn_nbl_subset_data.tsv",sep=""),
+#                             paste(subset_dir,"/mycn_nbl_matched_biospecimen.tsv",sep=""),
+#                             paste(subset_dir,"/mycn_nbl_dna_biospecimen.tsv",sep=""),
+#                             paste(subset_dir,"/mycn_nbl_rna_biospecimen.tsv",sep=""),
+#                             paste(subset_dir,"/alteration_table_without_molecular_subtype.tsv",sep=""))
 
 ```
 

@@ -7,8 +7,8 @@ date: "10/13/2022"
 In this notebook we find the find the biospecimens which do not have matched DNA and RNA IDs. 
 We create a dataframe for these biospecimens called `MYCN_non_match_df` which has all the necessary
 infromation required for performing subtyping. We concatenate this `MYCN_non_match_df` with the table
-`input/mycn_nbl_matched_biospecimen.tsv` and joined table called 
-`input/alteration_table_without_subtype.tsv` which contains the list of all the NBL-MYCN 
+`nbl-subset/mycn_nbl_matched_biospecimen.tsv` and joined table called 
+`nbl-subset/alteration_table_without_subtype.tsv` which contains the list of all the NBL-MYCN 
 biospecimens that need to subtpyped. 
 
 The notebook also plots the TPM vs Kids_First_Biospecimen_IDs for all the biospecimens for which there
@@ -36,8 +36,8 @@ data_dir <- file.path(root_dir, "data")
 # module directory
 module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
 
-#input directory
-input_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL","input")
+#nbl-subset directory
+subset_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL","nbl-subset")
 
 #results directory
 results_dir <- "results"
@@ -63,15 +63,15 @@ We will load the following files
 4. The DNA only biospecimens file
 5. The RNA only biospecimens file
 ```{r read the file containing mycn-nbl biospecimen}
-MYCN_DF<-readr::read_tsv(file.path(input_dir, "mycn_nbl_subset_data.tsv"),guess_max = 100000)
-MYCN_DNA_RNA_FILTERED_DF<-readr::read_tsv(file.path(input_dir,"mycn_nbl_matched_biospecimen.tsv"),guess_max = 100000)
+MYCN_DF<-readr::read_tsv(file.path(subset_dir, "mycn_nbl_subset_data.tsv"),guess_max = 100000)
+MYCN_DNA_RNA_FILTERED_DF<-readr::read_tsv(file.path(subset_dir,"mycn_nbl_matched_biospecimen.tsv"),guess_max = 100000)
 
-gmkf_patient_clinical_mycn_status_df <- readr::read_tsv(file.path(module_dir, "input/gmkf_patient_clinical_mycn_status.tsv"),guess_max = 100000)
+gmkf_patient_clinical_mycn_status_df <- readr::read_tsv(file.path(subset_dir, "gmkf_patient_clinical_mycn_status.tsv"),guess_max = 100000)
 
-target_patient_clinical_mycn_status_df<- readr::read_tsv(file.path(module_dir, "input/target_patient_clinical_mycn_status.tsv"),guess_max = 100000)
+target_patient_clinical_mycn_status_df<- readr::read_tsv(file.path(subset_dir, "target_patient_clinical_mycn_status.tsv"),guess_max = 100000)
 
-MYCN_dna_df<-readr::read_tsv(file.path(input_dir, "mycn_nbl_dna_biospecimen.tsv"),guess_max = 100000)
-MYCN_rna_df<-readr::read_tsv(file.path(input_dir, "mycn_nbl_rna_biospecimen.tsv"),guess_max = 100000)
+MYCN_dna_df<-readr::read_tsv(file.path(subset_dir, "mycn_nbl_dna_biospecimen.tsv"),guess_max = 100000)
+MYCN_rna_df<-readr::read_tsv(file.path(subset_dir, "mycn_nbl_rna_biospecimen.tsv"),guess_max = 100000)
 
 ```
 
@@ -204,12 +204,12 @@ alteration_df <- rbind(alteration_df,MYCN_non_match_df)
 
 
 Code Logic: pathology_free_text_diagnosis column has multiple of NA values in the alteration_df. 
-To resolve this issue we use the files in the input folder which are NBL MCYN clinical 
+To resolve this issue we use the files in the nbl-subset folder which are NBL MCYN clinical 
 patient-status mapping files for GMKF and TARGET samples. These NA values will be integrated in the 
 V12 version. 
 
-```{r integrate new pathology free text diagnosis values from input folder}
-# Bring in the extra pathology free diagnonsis text from files in input folder:
+```{r integrate new pathology free text diagnosis values from nbl-subset folder}
+# Bring in the extra pathology free diagnonsis text from files in nbl-subset folder:
 colnames(gmkf_patient_clinical_mycn_status_df)<-c("Kids_First_Participant_ID",
                                                   "pathology_free_text_diagnosis_gmfk")
 colnames(target_patient_clinical_mycn_status_df)<-c("Kids_First_Participant_ID",
@@ -260,7 +260,7 @@ ggsave(filename = plot_file,width = 49, height = 20)
 ```
 
 
-Write NBL-MYCN biospecimen to subtyped into the input folder
+Write NBL-MYCN biospecimen to subtyped into the nbl-subset folder
 ```{r}
-alteration_df%>%readr::write_tsv(file.path(input_dir, "alteration_table_without_molecular_subtype.tsv"))
+alteration_df%>%readr::write_tsv(file.path(subset_dir, "alteration_table_without_molecular_subtype.tsv"))
 ```
