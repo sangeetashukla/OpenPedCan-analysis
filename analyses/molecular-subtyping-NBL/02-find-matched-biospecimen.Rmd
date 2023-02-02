@@ -67,33 +67,36 @@ To this end, we create a new column in MYCN_Df called match_id.
 
 # Read the mycn-nbl file 
 ```{r read the file containing mycn-nbl biospecimen}
-MYCN_DF<-readr::read_tsv(file.path(input_dir, "mycn_nbl_subset_data.tsv"),guess_max = 100000)
+MYCN_DF <-readr::read_tsv(file.path(input_dir, "mycn_nbl_subset_data.tsv"), guess_max = 100000)
 ```
 
 
 # Create dataframe of samples where DNA and RNA IDs match 
 ```{r create match ID and dataframes of RNA and DNA}
 # Create Match_ID Kids_First_Participant_ID + Sample_ID + Cohort
-MYCN_DF <- MYCN_DF %>%mutate(match_id = paste(Kids_First_Participant_ID, 
-                                              sample_id,cohort,sep = "_"))
+MYCN_DF <- MYCN_DF %>% 
+  mutate(match_id = paste(Kids_First_Participant_ID,
+                          sample_id,cohort,sep = "_"))
 
 # DNA samples are those belonging to experimental_strategy: WGS, WXS, and Targeted Sequencing  
 # Some targeted sequencing also have RNA_Library as "exome capture" those biospecimens are RNAs.
 
-MYCN_dna_df<-MYCN_DF %>% filter(is.na(RNA_library),experimental_strategy %in% 
-                                  c("WGS", "WXS", "Targeted Sequencing")) # 1103 samples samples
+MYCN_dna_df <- MYCN_DF %>% 
+  filter(is.na(RNA_library),
+         experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing")) %>% # 1103 samples samples
+  # rename column
+  dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID)
 
 
-MYCN_rna_df<-MYCN_DF %>% filter( (experimental_strategy=="RNA-Seq") | 
+
+MYCN_rna_df <- MYCN_DF %>% 
+  filter( (experimental_strategy=="RNA-Seq") | 
                                    (experimental_strategy=="Targeted Sequencing" & 
-                                      !is.na(RNA_library)))
+                                      !is.na(RNA_library))) %>%
+    # rename column
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID)
 # 405 samples 374 rna-seq + 31 targeted_seq+exome_capture
 
-# Rename the columns
-colnames(MYCN_dna_df)[which(names(MYCN_dna_df)
-                            == "Kids_First_Biospecimen_ID")] <- "Kids_First_Biospecimen_ID_DNA"
-colnames(MYCN_rna_df)[which(names(MYCN_rna_df)
-                            == "Kids_First_Biospecimen_ID")] <- "Kids_First_Biospecimen_ID_RNA"
 ```
 
 Code Logic:
@@ -225,7 +228,10 @@ ggsave(filename = plot_file,width = 45, height = 20)
 Write the table containing mycn-nbl biospecimen with matched DNA and RNA Ids, dna only and rna only 
 biospecimens files  into input dir
 ```{r write alteration table}
-MYCN_DNA_RNA_FILTERED_DF%>%readr::write_tsv(file.path(input_dir,"mycn_nbl_matched_biospecimen.tsv"))
-MYCN_dna_df %>%readr::write_tsv(file.path(input_dir,"mycn_nbl_dna_biospecimen.tsv"))
-MYCN_rna_df %>%readr::write_tsv(file.path(input_dir,"mycn_nbl_rna_biospecimen.tsv"))
+MYCN_DNA_RNA_FILTERED_DF %>% 
+  readr::write_tsv(file.path(input_dir,"mycn_nbl_matched_biospecimen.tsv"))
+MYCN_dna_df %>% 
+  readr::write_tsv(file.path(input_dir,"mycn_nbl_dna_biospecimen.tsv"))
+MYCN_rna_df %>% 
+  readr::write_tsv(file.path(input_dir,"mycn_nbl_rna_biospecimen.tsv"))
 ```

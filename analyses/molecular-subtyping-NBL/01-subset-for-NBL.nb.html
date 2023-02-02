@@ -1731,7 +1731,7 @@ $(document).ready(function () {
 </style>
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("00-subset-for-NBL.Rmd");
+  window.initializeSourceEmbed("01-subset-for-NBL.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>
@@ -1773,10 +1773,15 @@ $(document).ready(function () {
 <!-- rnb-text-begin -->
 <p>Objective: This notebook loads the histology file and selects the NBL biospecimen by filtering the following columns for specific values: <code>sample_type</code>: <code>Tumor</code> <code>experimental_strategy</code>:<code>WGS</code>, <code>WXS</code>,<code>Targeted Sequencing</code> and <code>RNA-Seq</code> <code>pathology_diagnosis</code>: <code>Neuroblastoma</code>, <code>Ganglioneuroblastoma</code>,<code>Ganglioneuroblastoma, nodular</code>, <code>Ganglioneuroblastoma, intermixed</code>, and <code>Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated</code></p>
 <p>After filtering the histology file, for the resultant biospecimens we integrate the MYCN consensus and TPM infortmation in the intermediate fie <code>input/mycn_nbl_subset_data.tsv</code>.</p>
+<p>Background: NBL is defined as neuroblastoma, ganglioneuroblastoma, and ganglioneuroma.These diseases are mentioned in the histology-base.tsv file.</p>
+<p>consensus_wgs_plus_cnvkit_wxs.tsv.gz has information regarding copy number, status, and gene symbol (MYCN).</p>
+<p>gene-expression-rsem-tpm-collapsed.rds file has MYCN TPM values.</p>
+<p>Code Logic: We first filter the histology-base.tsv file for NBL samples based on pathology_diagnosis, sample_type,and experimental strategy. The pathology_diagnosis can have certain values as listed in the code chunk below. The sample type we query for is “tumor”, i.e. we exclude “normal” samples. For experimental strategy, we consider WGS, WXS, Targeted Sequencing, and RNA-Seq. We ultimately want to create an output table with DNA and RNA biospecimen IDs, with their corresponding molecular subtype, so we will need get DNA and RNA samples from the histology file.</p>
+<p>We filter the consensus_wgs_plus_cnvkit_wxs.tsv.gz and gene-expression-rsem-tpm-collapsed.rds for MYCN to get the relevant information.</p>
 <p>#Load Libraries</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoic3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKHtcbmxpYnJhcnkoZHBseXIpXG5saWJyYXJ5KGRhdGEudGFibGUpXG5saWJyYXJ5KHRpZHl2ZXJzZSlcbn0pIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKHtcbmxpYnJhcnkoZHBseXIpXG5saWJyYXJ5KGRhdGEudGFibGUpXG5saWJyYXJ5KHRpZHl2ZXJzZSlcbn0pXG5gYGAifQ== -->
 <pre class="r"><code>suppressPackageStartupMessages({
 library(dplyr)
 library(data.table)
@@ -1788,7 +1793,7 @@ library(tidyverse)
 <p>#Set up directories</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgcm9vdCBkaXJlY3RvcnkiLCJyb290X2RpciA8LSBycHJvanJvb3Q6OmZpbmRfcm9vdChycHJvanJvb3Q6Omhhc19kaXIoXCIuZ2l0XCIpKSIsIiIsIiMgZGF0YSBkaXJlY3RvcnkiLCJkYXRhX2RpciA8LSBmaWxlLnBhdGgocm9vdF9kaXIsIFwiZGF0YVwiKSIsIiIsIiMgbW9kdWxlIGRpcmVjdG9yeSIsIm1vZHVsZV9kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5c2VzXCIsXCJtb2xlY3VsYXItc3VidHlwaW5nLU5CTFwiKSIsIiIsIiNpbnB1dCBkaXJlY3RvcnkiLCJpbnB1dF9kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5c2VzXCIsXCJtb2xlY3VsYXItc3VidHlwaW5nLU5CTFwiLFwiaW5wdXRcIikiLCIiLCIjcmVzdWx0cyBkaXJlY3RvcnkiLCJyZXN1bHRzX2RpciA8LSBcInJlc3VsdHNcIiIsIiMgY3JlYXRlIGlmIGRvZXNuJ3QgZXhpc3QiLCJpZiAoIWRpci5leGlzdHMocmVzdWx0c19kaXIpKSB7XG4gIGRpci5jcmVhdGUocmVzdWx0c19kaXIpXG59Il19 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByb290IGRpcmVjdG9yeVxucm9vdF9kaXIgPC0gcnByb2pyb290OjpmaW5kX3Jvb3QocnByb2pyb290OjpoYXNfZGlyKFwiLmdpdFwiKSlcblxuIyBkYXRhIGRpcmVjdG9yeVxuZGF0YV9kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImRhdGFcIilcblxuIyBtb2R1bGUgZGlyZWN0b3J5XG5tb2R1bGVfZGlyIDwtIGZpbGUucGF0aChyb290X2RpciwgXCJhbmFseXNlc1wiLFwibW9sZWN1bGFyLXN1YnR5cGluZy1OQkxcIilcblxuIyBzdWJzZXQgZGlyZWN0b3J5XG5zdWJzZXRfZGlyIDwtIGZpbGUucGF0aChtb2R1bGVfZGlyLCBcIm5ibC1zdWJzZXRcIilcbiAgXG4jaW5wdXQgZGlyZWN0b3J5XG5pbnB1dF9kaXIgPC0gZmlsZS5wYXRoKG1vZHVsZV9kaXIsIFwiaW5wdXRcIilcblxuI3Jlc3VsdHMgZGlyZWN0b3J5XG5yZXN1bHRzX2RpciA8LSBmaWxlLnBhdGgobW9kdWxlX2RpciwgXCJyZXN1bHRzXCIpXG4jIGNyZWF0ZSBpZiBkb2Vzbid0IGV4aXN0XG5pZiAoIWRpci5leGlzdHMoc3Vic2V0X2RpcikpIHtcbiAgZGlyLmNyZWF0ZShzdWJzZXRfZGlyKVxufVxuaWYgKCFkaXIuZXhpc3RzKHJlc3VsdHNfZGlyKSkge1xuICBkaXIuY3JlYXRlKHJlc3VsdHNfZGlyKVxufVxuYGBgIn0= -->
 <pre class="r"><code># root directory
 root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
 
@@ -1798,133 +1803,106 @@ data_dir &lt;- file.path(root_dir, &quot;data&quot;)
 # module directory
 module_dir &lt;- file.path(root_dir, &quot;analyses&quot;,&quot;molecular-subtyping-NBL&quot;)
 
+# subset directory
+subset_dir &lt;- file.path(module_dir, &quot;nbl-subset&quot;)
+  
 #input directory
-input_dir &lt;- file.path(root_dir, &quot;analyses&quot;,&quot;molecular-subtyping-NBL&quot;,&quot;input&quot;)
+input_dir &lt;- file.path(module_dir, &quot;input&quot;)
 
 #results directory
-results_dir &lt;- &quot;results&quot;
+results_dir &lt;- file.path(module_dir, &quot;results&quot;)
 # create if doesn't exist
+if (!dir.exists(subset_dir)) {
+  dir.create(subset_dir)
+}
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>#Load the files for histology, consensus, and tpm data</p>
+<p>#Load and subset the files for histology, consensus, and tpm data</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiaGlzdF9kZjwtcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgXCJoaXN0b2xvZ2llcy1iYXNlLnRzdlwiKSxndWVzc19tYXggPSAxMDAwMDApIn0= -->
-<pre class="r"><code>hist_df&lt;-readr::read_tsv(file.path(data_dir, &quot;histologies-base.tsv&quot;),guess_max = 100000)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSZWFkIGluIHRoZSBKU09OIGZpbGUgdGhhdCBjb250YWlucyB0aGUgc3RyaW5ncyB3ZSdsbCB1c2UgdG8gaW5jbHVkZVxucGF0aF9keF9saXN0IDwtIGpzb25saXRlOjpmcm9tSlNPTihcbiAgZmlsZS5wYXRoKHN1YnNldF9kaXIsIFwibmJsX3N1YnR5cGluZ19wYXRoX2R4X3N0cmluZ3MuanNvblwiKVxuICApXG5cbiMgaGlzdG9sb2d5XG5oaXN0X3N1YnNldCA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLCBcImhpc3RvbG9naWVzLWJhc2UudHN2XCIpLGd1ZXNzX21heCA9IDEwMDAwMCkgJT4lXG4gIGZpbHRlcihleHBlcmltZW50YWxfc3RyYXRlZ3kgIT0gXCJNZXRoeWxhdGlvblwiLFxuICAgICAgICAgcGF0aG9sb2d5X2RpYWdub3NpcyAlaW4lIHBhdGhfZHhfbGlzdCRleGFjdF9wYXRoX2R4KVxuYGBgIn0= -->
+<pre class="r"><code># Read in the JSON file that contains the strings we'll use to include
+path_dx_list &lt;- jsonlite::fromJSON(
+  file.path(subset_dir, &quot;nbl_subtyping_path_dx_strings.json&quot;)
+  )
+
+# histology
+hist_subset &lt;- readr::read_tsv(file.path(data_dir, &quot;histologies-base.tsv&quot;),guess_max = 100000) %&gt;%
+  filter(experimental_strategy != &quot;Methylation&quot;,
+         pathology_diagnosis %in% path_dx_list$exact_path_dx)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjb2xfbG9naWNhbCgpLFxuICBPU19kYXlzID0gY29sX2RvdWJsZSgpLFxuICBhZ2VfbGFzdF91cGRhdGVfZGF5cyA9IGNvbF9kb3VibGUoKSxcbiAgbW9sZWN1bGFyX3N1YnR5cGUgPSBjb2xfbG9naWNhbCgpLFxuICBjbnNfbWV0aHlsYXRpb25fY2xhc3Nfc2NvcmUgPSBjb2xfZG91YmxlKCksXG4gIGNuc19tZXRoeWxhdGlvbl9zdWJjbGFzc19zY29yZSA9IGNvbF9kb3VibGUoKSxcbiAgUkZfcHVyaXR5X0FCU09MVVRFID0gY29sX2RvdWJsZSgpLFxuICBSRl9wdXJpdHlfRVNUSU1BVEUgPSBjb2xfZG91YmxlKCksXG4gIFJGX3B1cml0eV9MVU1QID0gY29sX2RvdWJsZSgpLFxuICBub3JtYWxfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX2ZyYWN0aW9uID0gY29sX2RvdWJsZSgpLFxuICB0dW1vcl9wbG9pZHkgPSBjb2xfZG91YmxlKClcbilcbiJ9 -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBcdTAwMWJbMzNtY29sX2xvZ2ljYWwoKVx1MDAxYlszOW0sXG4gIE9TX2RheXMgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgYWdlX2xhc3RfdXBkYXRlX2RheXMgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgbW9sZWN1bGFyX3N1YnR5cGUgPSBcdTAwMWJbMzNtY29sX2xvZ2ljYWwoKVx1MDAxYlszOW0sXG4gIGNuc19tZXRoeWxhdGlvbl9jbGFzc19zY29yZSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBjbnNfbWV0aHlsYXRpb25fc3ViY2xhc3Nfc2NvcmUgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgUkZfcHVyaXR5X0FCU09MVVRFID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIFJGX3B1cml0eV9FU1RJTUFURSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBSRl9wdXJpdHlfTFVNUCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBub3JtYWxfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfcGxvaWR5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
-  integrated_diagnosis = col_logical(),
-  OS_days = col_double(),
-  age_last_update_days = col_double(),
-  molecular_subtype = col_logical(),
-  cns_methylation_class_score = col_double(),
-  cns_methylation_subclass_score = col_double(),
-  RF_purity_ABSOLUTE = col_double(),
-  RF_purity_ESTIMATE = col_double(),
-  RF_purity_LUMP = col_double(),
-  normal_fraction = col_double(),
-  tumor_fraction = col_double(),
-  tumor_ploidy = col_double()
-)</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
-<pre><code>See spec(...) for full column specifications.</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiY29uc2Vuc3VzX2RmPC1yZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLCBcImNvbnNlbnN1c193Z3NfcGx1c19jbnZraXRfd3hzLnRzdi5nelwiKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGd1ZXNzX21heCA9IDEwMDAwMCkifQ== -->
-<pre class="r"><code>consensus_df&lt;-readr::read_tsv(file.path(data_dir, &quot;consensus_wgs_plus_cnvkit_wxs.tsv.gz&quot;),
-                              guess_max = 100000)</code></pre>
+  integrated_diagnosis = [33mcol_logical()[39m,
+  OS_days = [32mcol_double()[39m,
+  age_last_update_days = [32mcol_double()[39m,
+  molecular_subtype = [33mcol_logical()[39m,
+  cns_methylation_class_score = [32mcol_double()[39m,
+  cns_methylation_subclass_score = [32mcol_double()[39m,
+  RF_purity_ABSOLUTE = [32mcol_double()[39m,
+  RF_purity_ESTIMATE = [32mcol_double()[39m,
+  RF_purity_LUMP = [32mcol_double()[39m,
+  normal_fraction = [32mcol_double()[39m,
+  tumor_fraction = [32mcol_double()[39m,
+  tumor_ploidy = [32mcol_double()[39m
+)
+See spec(...) for full column specifications.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUaGUgY29uc2Vuc3VzX3dnc19wbHVzX2NudmtpdF93eHMudHN2Lmd6IGZpbGUgaGFzIGFsbCB0eXBlcyBvZiBnZW5lcywgd2UganVzdCBuZWVkIE1ZQ04sIFxuIyAgc28gd2UgZmlsdGVyIHRoZSBkYXRhc2V0IGFzIGZvbGxvd3M6XG5jb25zZW5zdXNfZmlsdGVyZWRfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgXCJjb25zZW5zdXNfd2dzX3BsdXNfY252a2l0X3d4cy50c3YuZ3pcIikpICU+JVxuICBkcGx5cjo6cmVuYW1lKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgPSBiaW9zcGVjaW1lbl9pZCxcbiAgICAgICAgICAgICAgICBNWUNOX0NOX3N0YXR1cyA9IHN0YXR1cyxcbiAgICAgICAgICAgICAgICBNWUNOX0NOID0gY29weV9udW1iZXIpICU+JVxuICBmaWx0ZXIoZ2VuZV9zeW1ib2w9PVwiTVlDTlwiLFxuICAgICAgICAgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCAlaW4lIGhpc3Rfc3Vic2V0JEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpXG5gYGAifQ== -->
+<pre class="r"><code># The consensus_wgs_plus_cnvkit_wxs.tsv.gz file has all types of genes, we just need MYCN, 
+#  so we filter the dataset as follows:
+consensus_filtered_df &lt;- readr::read_tsv(file.path(data_dir, &quot;consensus_wgs_plus_cnvkit_wxs.tsv.gz&quot;)) %&gt;%
+  dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id,
+                MYCN_CN_status = status,
+                MYCN_CN = copy_number) %&gt;%
+  filter(gene_symbol==&quot;MYCN&quot;,
+         Kids_First_Biospecimen_ID %in% hist_subset$Kids_First_Biospecimen_ID)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBiaW9zcGVjaW1lbl9pZCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc3RhdHVzID0gY29sX2NoYXJhY3RlcigpLFxuICBjb3B5X251bWJlciA9IGNvbF9kb3VibGUoKSxcbiAgcGxvaWR5ID0gY29sX2RvdWJsZSgpLFxuICBlbnNlbWJsID0gY29sX2NoYXJhY3RlcigpLFxuICBnZW5lX3N5bWJvbCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgY3l0b2JhbmQgPSBjb2xfY2hhcmFjdGVyKClcbilcbiJ9 -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBiaW9zcGVjaW1lbl9pZCA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBzdGF0dXMgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgY29weV9udW1iZXIgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgcGxvaWR5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIGVuc2VtYmwgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgZ2VuZV9zeW1ib2wgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgY3l0b2JhbmQgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bVxuKVxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
-  biospecimen_id = col_character(),
-  status = col_character(),
-  copy_number = col_double(),
-  ploidy = col_double(),
-  ensembl = col_character(),
-  gene_symbol = col_character(),
-  cytoband = col_character()
+  biospecimen_id = [31mcol_character()[39m,
+  status = [31mcol_character()[39m,
+  copy_number = [32mcol_double()[39m,
+  ploidy = [32mcol_double()[39m,
+  ensembl = [31mcol_character()[39m,
+  gene_symbol = [31mcol_character()[39m,
+  cytoband = [31mcol_character()[39m
 )</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiZ2VuZV9leHByZXNzaW9uX2RmPC1hcy5kYXRhLmZyYW1lKHJlYWRSRFMocGFzdGUoZGF0YV9kaXIsXCIvXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcImdlbmUtZXhwcmVzc2lvbi1yc2VtLXRwbS1jb2xsYXBzZWQucmRzXCIsc2VwPVwiXCIpKSkifQ== -->
-<pre class="r"><code>gene_expression_df&lt;-as.data.frame(readRDS(paste(data_dir,&quot;/&quot;,
-                                                &quot;gene-expression-rsem-tpm-collapsed.rds&quot;,sep=&quot;&quot;)))</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBmaWx0ZXIgdHBtIG1hdHJpeCBmb3IgTkJMIHNhbXBsZXMgYW5kIE1ZQ05cbmV4cHJlc3Npb25fbWF0IDwtIHJlYWRSRFMoZmlsZS5wYXRoKGRhdGFfZGlyLFwiZ2VuZS1leHByZXNzaW9uLXJzZW0tdHBtLWNvbGxhcHNlZC5yZHNcIikpIFxuXG5UUE1fTVlDTl9kYXRhIDwtIGFzLmRhdGEuZnJhbWUodChleHByZXNzaW9uX21hdFtcIk1ZQ05cIiwgaW50ZXJzZWN0KGhpc3Rfc3Vic2V0JEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQsXG4gICAgICAgICAgICAgICAgICAgICBjb2xuYW1lcyhleHByZXNzaW9uX21hdCkpXSkpXG5UUE1fTVlDTl9kYXRhIDwtIFRQTV9NWUNOX2RhdGEgJT4lXG4gIG11dGF0ZShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gcm93bmFtZXMoVFBNX01ZQ05fZGF0YSkpXG5cbnJtKGV4cHJlc3Npb25fbWF0KVxuYGBgIn0= -->
+<pre class="r"><code># filter tpm matrix for NBL samples and MYCN
+expression_mat &lt;- readRDS(file.path(data_dir,&quot;gene-expression-rsem-tpm-collapsed.rds&quot;)) 
+
+TPM_MYCN_data &lt;- as.data.frame(t(expression_mat[&quot;MYCN&quot;, intersect(hist_subset$Kids_First_Biospecimen_ID,
+                     colnames(expression_mat))]))
+TPM_MYCN_data &lt;- TPM_MYCN_data %&gt;%
+  mutate(Kids_First_Biospecimen_ID = rownames(TPM_MYCN_data))
+
+rm(expression_mat)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Background: NBL is defined as neuroblastoma, ganglioneuroblastoma, and ganglioneuroma.These diseases are mentioned in the histology-base.tsv file.</p>
-<p>consensus_wgs_plus_cnvkit_wxs.tsv.gz has information regarding copy number, status, and gene symbol (MYCN).</p>
-<p>gene-expression-rsem-tpm-collapsed.rds file has MYCN TPM values.</p>
-<p>Code Logic: We first filter the histology-base.tsv file for NBL samples based on pathology_diagnosis, sample_type,and experimental strategy. The pathology_diagnosis can have certain values as listed in the code chunk below. The sample type we query for is “tumor”, i.e. we exclude “normal” samples. For experimental strategy, we consider WGS, WXS, Targeted Sequencing, and RNA-Seq. We ultimately want to create an output table with DNA and RNA biospecimen IDs, with their corresponding molecular subtype, so we will need get DNA and RNA samples from the histology file.</p>
-<p>We filter the consensus_wgs_plus_cnvkit_wxs.tsv.gz and gene-expression-rsem-tpm-collapsed.rds for MYCN to get the relevant information.</p>
-<div id="data-filtering" class="section level1">
-<h1>Data Filtering</h1>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgRmlyc3QgZmlsdGVyIHRoZSBoaXN0b2xvZ3kgZmlsZSBiYXNlZCBvbiBkaXNlYXNlcyB3ZSBhcmUgaW50ZXJlc2V0ZWQgaW4gbmV1cm9ibGFzdG9tYSwgIiwiIyBnYW5nbGlvbmV1cm9ibGFzdG9tYSwgYW5kIGdhbmdsaW9uZXVyb21hIiwiIiwiaGlzdF9maWx0ZXJlZF9kZiA8LSBoaXN0X2RmICU+JSBcbiAgZmlsdGVyKHNhbXBsZV90eXBlPT1cIlR1bW9yXCIsIFxuICAgICAgICAgZXhwZXJpbWVudGFsX3N0cmF0ZWd5ICVpbiUgYyhcIldHU1wiLCBcIldYU1wiLCBcIlRhcmdldGVkIFNlcXVlbmNpbmdcIiwgXCJSTkEtU2VxXCIpKSAlPiVcbiAgZmlsdGVyKHBhdGhvbG9neV9kaWFnbm9zaXM9PSBcIk5ldXJvYmxhc3RvbWFcIiB8XG4gICAgICAgICAgIHBhdGhvbG9neV9kaWFnbm9zaXM9PSBcIkdhbmdsaW9uZXVyb2JsYXN0b21hXCIgfFxuICAgICAgICAgICBwYXRob2xvZ3lfZGlhZ25vc2lzPT0gXCJHYW5nbGlvbmV1cm9ibGFzdG9tYSwgbm9kdWxhclwiIHxcbiAgICAgICAgICAgcGF0aG9sb2d5X2RpYWdub3NpcyA9PSBcIkdhbmdsaW9uZXVyb2JsYXN0b21hLCBpbnRlcm1peGVkXCIgfFxuICAgICAgICAgICBwYXRob2xvZ3lfZGlhZ25vc2lzID09IFxuICAgICAgICAgICBcIkdhbmdsaW9uZXVyb21hLCBtYXR1cmluZyBzdWJ0eXBlIE9SIEdhbmdsaW9uZXVyb2JsYXN0b21hLCB3ZWxsIGRpZmZlcmVudGlhdGVkXCIpIiwiIiwiIiwiIyBUaGUgY29uc2Vuc3VzX3dnc19wbHVzX2NudmtpdF93eHMudHN2Lmd6IGZpbGUgaGFzIGFsbCB0eXBlcyBvZiBnZW5lcywgd2UganVzdCBuZWVkIE1ZQ04sICIsIiMgIHNvIHdlIGZpbHRlciB0aGUgZGF0YXNldCBhcyBmb2xsb3dzOiIsImNvbnNlbnN1c19maWx0ZXJlZF9kZiA8LSBjb25zZW5zdXNfZGYgJT4lIGZpbHRlcihnZW5lX3N5bWJvbD09XCJNWUNOXCIpIiwiIiwiIyBHZXQgTVlDTiBUUE0gRGF0YSIsIk1ZQ05fSW5kZXggPC0gd2hpY2gocm93bmFtZXMoZ2VuZV9leHByZXNzaW9uX2RmKT09XCJNWUNOXCIpICMgZmluZCB3aGljaCByb3dzIChjb250YWlucyBnZW5lIG5hbWVzKSAiLCIiLCIjY29ycmVzcG9uZHMgdG8gTVlDTiIsIiIsIlRQTV9NWUNOX2RhdGEgPC0gZ2VuZV9leHByZXNzaW9uX2RmW01ZQ05fSW5kZXgsXSAjIEdldCB0aGUgVFBNIGRhdGEgZm9yIGZvciBNWUNOIl19 -->
-<pre class="r"><code># First filter the histology file based on diseases we are intereseted in neuroblastoma, 
-# ganglioneuroblastoma, and ganglioneuroma
-
-hist_filtered_df &lt;- hist_df %&gt;% 
-  filter(sample_type==&quot;Tumor&quot;, 
-         experimental_strategy %in% c(&quot;WGS&quot;, &quot;WXS&quot;, &quot;Targeted Sequencing&quot;, &quot;RNA-Seq&quot;)) %&gt;%
-  filter(pathology_diagnosis== &quot;Neuroblastoma&quot; |
-           pathology_diagnosis== &quot;Ganglioneuroblastoma&quot; |
-           pathology_diagnosis== &quot;Ganglioneuroblastoma, nodular&quot; |
-           pathology_diagnosis == &quot;Ganglioneuroblastoma, intermixed&quot; |
-           pathology_diagnosis == 
-           &quot;Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated&quot;)
-
-
-# The consensus_wgs_plus_cnvkit_wxs.tsv.gz file has all types of genes, we just need MYCN, 
-#  so we filter the dataset as follows:
-consensus_filtered_df &lt;- consensus_df %&gt;% filter(gene_symbol==&quot;MYCN&quot;)
-
-# Get MYCN TPM Data
-MYCN_Index &lt;- which(rownames(gene_expression_df)==&quot;MYCN&quot;) # find which rows (contains gene names) 
-
-#corresponds to MYCN
-
-TPM_MYCN_data &lt;- gene_expression_df[MYCN_Index,] # Get the TPM data for for MYCN</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Code Logic: We will integrate the TMP and consensus data with the hist_filtered using left join. Histology file has all the biospecimens but we are only concerned with NBL-biospecimens, so we use the filtered version of histology file (<code>hist_filtered_df</code>).</p>
-</div>
+<p>Code Logic: We will integrate the TPM and consensus data with the hist_filtered using left join. Histology file has all the biospecimens but we are only concerned with NBL-biospecimens, so we use the filtered version of histology file (<code>hist_filtered_df</code>).</p>
 <div id="get-tpm-copy-number-and-status" class="section level1">
 <h1>Get TPM , Copy Number and Status</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiNBZGQgdGhlIHNhdHVzIGFuZCBjb3B5IE51bWJlciB0byB0aGVzZSBzYW1wbGVzLiBBZGRpbmcgdGhlIGluZm9ybWF0aW9uIGlmIGF2YWlsYWJsZSwgc28gd2UgZG8gYSAiLCIjbGVmdCBqb2luIHdpdGggcmVzcGVjdCB0byBoaXN0X2ZpbHRlcmVkX2RmIGFzIHdlIGRvbid0IHdhbnQgdG8gZGlzY2FyZCBhbnkgYmlvc3BlY2ltZW4gb2YgTVlDTi1OQkwiLCIjZm9yIHdoaWNoIFN0YXR1cyBhbmQgY29weSBudW1iZXIgaXMgbm90IGF2YWlhbGFibGUiLCJNWUNOX0RGPC1sZWZ0X2pvaW4oaGlzdF9maWx0ZXJlZF9kZixjb25zZW5zdXNfZmlsdGVyZWRfZGYsYnk9IGMoXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPSBcImJpb3NwZWNpbWVuX2lkXCIpKSIsIiIsIiNBZGQgVFBNIGluICBhIHNpbWlsYXIgZmFzaGlvbiBhcyBjb3B5IG51bWJlciBhbmQgc3RhdHVzICIsInJvd25hbWVzKFRQTV9NWUNOX2RhdGEpPC1cIk1ZQ05fVFBNXCIgIyBEZWZpbmluZyB0aGUgY29sdW1uIG5hbWVzIG9mIHRwbSB2YWx1ZXMiLCJUUE1fTVlDTl9kYXRhPC10KFRQTV9NWUNOX2RhdGEpICMgY292ZXJ0aW5nIDEgWCBOIG1hdHJpeCB0byBOIFggMSBtYXRyaXggKGxlbmdodCB3aXNlKSIsIlRQTV9NWUNOX2RhdGEgPC1hcy5kYXRhLmZyYW1lKFRQTV9NWUNOX2RhdGEpICMgQ29udmVydCB0byBkYXRhIGZyYW10ZSAiLCIjIE1ha2UgSUQgcm93bmFtZXMgaW50byBhIGNvbHVtbiAiLCJUUE1fTVlDTl9kYXRhIDwtIHRpYmJsZTo6cm93bmFtZXNfdG9fY29sdW1uKFRQTV9NWUNOX2RhdGEsIFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiKSAiLCIjIEZpbmFsbHkgYWRkIHRoZSBUUE0gZGF0YSB1c2luZyBsZWZ0IGpvaW4iLCJNWUNOX0RGPC0gbGVmdF9qb2luKE1ZQ05fREYsVFBNX01ZQ05fZGF0YSwgYnk9XCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIpICJdfQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI0FkZCB0aGUgc2F0dXMgYW5kIGNvcHkgTnVtYmVyIHRvIHRoZXNlIHNhbXBsZXMuIEFkZGluZyB0aGUgaW5mb3JtYXRpb24gaWYgYXZhaWxhYmxlLCBzbyB3ZSBkbyBhIFxuI2xlZnQgam9pbiB3aXRoIHJlc3BlY3QgdG8gaGlzdF9maWx0ZXJlZF9kZiBhcyB3ZSBkb24ndCB3YW50IHRvIGRpc2NhcmQgYW55IGJpb3NwZWNpbWVuIG9mIE1ZQ04tTkJMXG4jZm9yIHdoaWNoIFN0YXR1cyBhbmQgY29weSBudW1iZXIgaXMgbm90IGF2YWlhbGFibGVcblxuIyBGaW5hbGx5IGFkZCB0aGUgVFBNIGRhdGEgdXNpbmcgbGVmdCBqb2luXG5NWUNOX0RGIDwtIGhpc3Rfc3Vic2V0ICU+JVxuICBsZWZ0X2pvaW4oY29uc2Vuc3VzX2ZpbHRlcmVkX2RmKSAlPiVcbiAgbGVmdF9qb2luKFRQTV9NWUNOX2RhdGEpXG5gYGAifQ== -->
 <pre class="r"><code>#Add the satus and copy Number to these samples. Adding the information if available, so we do a 
 #left join with respect to hist_filtered_df as we don't want to discard any biospecimen of MYCN-NBL
 #for which Status and copy number is not avaialable
-MYCN_DF&lt;-left_join(hist_filtered_df,consensus_filtered_df,by= c(&quot;Kids_First_Biospecimen_ID&quot; 
-                                                                = &quot;biospecimen_id&quot;))
 
-#Add TPM in  a similar fashion as copy number and status 
-rownames(TPM_MYCN_data)&lt;-&quot;MYCN_TPM&quot; # Defining the column names of tpm values
-TPM_MYCN_data&lt;-t(TPM_MYCN_data) # coverting 1 X N matrix to N X 1 matrix (lenght wise)
-TPM_MYCN_data &lt;-as.data.frame(TPM_MYCN_data) # Convert to data framte 
-# Make ID rownames into a column 
-TPM_MYCN_data &lt;- tibble::rownames_to_column(TPM_MYCN_data, &quot;Kids_First_Biospecimen_ID&quot;) 
 # Finally add the TPM data using left join
-MYCN_DF&lt;- left_join(MYCN_DF,TPM_MYCN_data, by=&quot;Kids_First_Biospecimen_ID&quot;) </code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIk1ZQ05fREYgPC0gTVlDTl9ERiAlPiUgcmVuYW1lKE1ZQ05fQ05fc3RhdHVzPSBzdGF0dXMpIiwiTVlDTl9ERiA8LSBNWUNOX0RGICU+JSByZW5hbWUoTVlDTl9DTj0gY29weV9udW1iZXIpIl19 -->
-<pre class="r"><code>MYCN_DF &lt;- MYCN_DF %&gt;% rename(MYCN_CN_status= status)
-MYCN_DF &lt;- MYCN_DF %&gt;% rename(MYCN_CN= copy_number)</code></pre>
+MYCN_DF &lt;- hist_subset %&gt;%
+  left_join(consensus_filtered_df) %&gt;%
+  left_join(TPM_MYCN_data)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1933,15 +1911,16 @@ MYCN_DF &lt;- MYCN_DF %&gt;% rename(MYCN_CN= copy_number)</code></pre>
 <h1>Write the mycn-nbl biospecimen file into input dir</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiTVlDTl9ERiU+JXJlYWRyOjp3cml0ZV90c3YoZmlsZS5wYXRoKGlucHV0X2RpciwgXCJteWNuX25ibF9zdWJzZXRfZGF0YS50c3ZcIikpIn0= -->
-<pre class="r"><code>MYCN_DF%&gt;%readr::write_tsv(file.path(input_dir, &quot;mycn_nbl_subset_data.tsv&quot;))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuTVlDTl9ERiAlPiUgXG4gIHJlYWRyOjp3cml0ZV90c3YoZmlsZS5wYXRoKGlucHV0X2RpciwgXCJteWNuX25ibF9zdWJzZXRfZGF0YS50c3ZcIikpXG5gYGAifQ== -->
+<pre class="r"><code>MYCN_DF %&gt;% 
+  readr::write_tsv(file.path(input_dir, &quot;mycn_nbl_subset_data.tsv&quot;))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiU3Vic2V0IHRoZSBkYXRhIGZvciBNWUNOLU5CTCIKYXV0aG9yOiAiQWRpdHlhIExhaGlyaSwgRXJpYyBXYWZ1bGEsIEpvIEx5bm5lIFJva2l0YSIKZGF0ZTogIjEwLzEzLzIwMjIiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KT2JqZWN0aXZlOiBUaGlzIG5vdGVib29rIGxvYWRzIHRoZSBoaXN0b2xvZ3kgZmlsZSBhbmQgc2VsZWN0cyB0aGUgTkJMIGJpb3NwZWNpbWVuIGJ5IGZpbHRlcmluZyB0aGUKZm9sbG93aW5nIGNvbHVtbnMgZm9yIHNwZWNpZmljIHZhbHVlczoKYHNhbXBsZV90eXBlYDogYFR1bW9yYApgZXhwZXJpbWVudGFsX3N0cmF0ZWd5YDpgV0dTYCwgYFdYU2AsYFRhcmdldGVkIFNlcXVlbmNpbmdgIGFuZCBgUk5BLVNlcWAKYHBhdGhvbG9neV9kaWFnbm9zaXNgOiBgTmV1cm9ibGFzdG9tYWAsIGBHYW5nbGlvbmV1cm9ibGFzdG9tYWAsYEdhbmdsaW9uZXVyb2JsYXN0b21hLCBub2R1bGFyYCwKYEdhbmdsaW9uZXVyb2JsYXN0b21hLCBpbnRlcm1peGVkYCwgYW5kIApgR2FuZ2xpb25ldXJvbWEsIG1hdHVyaW5nIHN1YnR5cGUgT1IgR2FuZ2xpb25ldXJvYmxhc3RvbWEsIHdlbGwgZGlmZmVyZW50aWF0ZWRgCgpBZnRlciBmaWx0ZXJpbmcgdGhlIGhpc3RvbG9neSBmaWxlLCBmb3IgdGhlIHJlc3VsdGFudCBiaW9zcGVjaW1lbnMgd2UgaW50ZWdyYXRlIHRoZSBNWUNOIGNvbnNlbnN1cyAKYW5kIFRQTSBpbmZvcnRtYXRpb24gaW4gdGhlIGludGVybWVkaWF0ZSBmaWUgYGlucHV0L215Y25fbmJsX3N1YnNldF9kYXRhLnRzdmAuCgojTG9hZCBMaWJyYXJpZXMKCmBgYHtyIGxvYWQgbGlicmFyaWVzfQpzdXBwcmVzc1BhY2thZ2VTdGFydHVwTWVzc2FnZXMoewpsaWJyYXJ5KGRwbHlyKQpsaWJyYXJ5KGRhdGEudGFibGUpCmxpYnJhcnkodGlkeXZlcnNlKQp9KQpgYGAKCgojU2V0IHVwIGRpcmVjdG9yaWVzCmBgYHtyIHNldHVwIGRpcmVjdG9yaWVzfQojIHJvb3QgZGlyZWN0b3J5CnJvb3RfZGlyIDwtIHJwcm9qcm9vdDo6ZmluZF9yb290KHJwcm9qcm9vdDo6aGFzX2RpcigiLmdpdCIpKQoKIyBkYXRhIGRpcmVjdG9yeQpkYXRhX2RpciA8LSBmaWxlLnBhdGgocm9vdF9kaXIsICJkYXRhIikKCiMgbW9kdWxlIGRpcmVjdG9yeQptb2R1bGVfZGlyIDwtIGZpbGUucGF0aChyb290X2RpciwgImFuYWx5c2VzIiwibW9sZWN1bGFyLXN1YnR5cGluZy1OQkwiKQoKI2lucHV0IGRpcmVjdG9yeQppbnB1dF9kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCAiYW5hbHlzZXMiLCJtb2xlY3VsYXItc3VidHlwaW5nLU5CTCIsImlucHV0IikKCiNyZXN1bHRzIGRpcmVjdG9yeQpyZXN1bHRzX2RpciA8LSAicmVzdWx0cyIKIyBjcmVhdGUgaWYgZG9lc24ndCBleGlzdAppZiAoIWRpci5leGlzdHMocmVzdWx0c19kaXIpKSB7CiAgZGlyLmNyZWF0ZShyZXN1bHRzX2RpcikKfQpgYGAKCgojTG9hZCB0aGUgZmlsZXMgZm9yIGhpc3RvbG9neSwgY29uc2Vuc3VzLCBhbmQgdHBtIGRhdGEKYGBge3IgbG9hZCB0aGUgZGF0YSBmaWxlczogdGhpcyB3aWxsIHRha2UgdGltZX0KaGlzdF9kZjwtcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgImhpc3RvbG9naWVzLWJhc2UudHN2IiksZ3Vlc3NfbWF4ID0gMTAwMDAwKQoKY29uc2Vuc3VzX2RmPC1yZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLCAiY29uc2Vuc3VzX3dnc19wbHVzX2NudmtpdF93eHMudHN2Lmd6IiksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGd1ZXNzX21heCA9IDEwMDAwMCkKCmdlbmVfZXhwcmVzc2lvbl9kZjwtYXMuZGF0YS5mcmFtZShyZWFkUkRTKHBhc3RlKGRhdGFfZGlyLCIvIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImdlbmUtZXhwcmVzc2lvbi1yc2VtLXRwbS1jb2xsYXBzZWQucmRzIixzZXA9IiIpKSkKYGBgCgpCYWNrZ3JvdW5kOiAKTkJMIGlzIGRlZmluZWQgYXMgbmV1cm9ibGFzdG9tYSwgZ2FuZ2xpb25ldXJvYmxhc3RvbWEsIGFuZCBnYW5nbGlvbmV1cm9tYS5UaGVzZSBkaXNlYXNlcyBhcmUgCm1lbnRpb25lZCBpbiB0aGUgaGlzdG9sb2d5LWJhc2UudHN2IGZpbGUuIAoKY29uc2Vuc3VzX3dnc19wbHVzX2NudmtpdF93eHMudHN2Lmd6IGhhcyBpbmZvcm1hdGlvbiByZWdhcmRpbmcgY29weSBudW1iZXIsIHN0YXR1cywgYW5kIApnZW5lIHN5bWJvbCAoTVlDTikuIAoKZ2VuZS1leHByZXNzaW9uLXJzZW0tdHBtLWNvbGxhcHNlZC5yZHMgZmlsZSBoYXMgTVlDTiBUUE0gdmFsdWVzLgoKCkNvZGUgTG9naWM6IApXZSBmaXJzdCBmaWx0ZXIgdGhlIGhpc3RvbG9neS1iYXNlLnRzdiBmaWxlIGZvciBOQkwgc2FtcGxlcyBiYXNlZCBvbiBwYXRob2xvZ3lfZGlhZ25vc2lzLCAKc2FtcGxlX3R5cGUsYW5kIGV4cGVyaW1lbnRhbCBzdHJhdGVneS4gVGhlIHBhdGhvbG9neV9kaWFnbm9zaXMgY2FuIGhhdmUgY2VydGFpbiB2YWx1ZXMgYXMgbGlzdGVkIGluCnRoZSBjb2RlIGNodW5rIGJlbG93LiBUaGUgc2FtcGxlIHR5cGUgd2UgcXVlcnkgZm9yIGlzICJ0dW1vciIsIGkuZS4gd2UgZXhjbHVkZSAibm9ybWFsIiBzYW1wbGVzLiAKRm9yIGV4cGVyaW1lbnRhbCBzdHJhdGVneSwgd2UgY29uc2lkZXIgV0dTLCBXWFMsIFRhcmdldGVkIFNlcXVlbmNpbmcsIGFuZCBSTkEtU2VxLiBXZSB1bHRpbWF0ZWx5IAp3YW50IHRvIGNyZWF0ZSBhbiBvdXRwdXQgdGFibGUgd2l0aCBETkEgYW5kIFJOQSBiaW9zcGVjaW1lbiBJRHMsIHdpdGggdGhlaXIgY29ycmVzcG9uZGluZyBtb2xlY3VsYXIgCnN1YnR5cGUsIHNvIHdlIHdpbGwgbmVlZCBnZXQgRE5BIGFuZCBSTkEgc2FtcGxlcyBmcm9tIHRoZSBoaXN0b2xvZ3kgZmlsZS4gCgpXZSBmaWx0ZXIgdGhlIGNvbnNlbnN1c193Z3NfcGx1c19jbnZraXRfd3hzLnRzdi5neiBhbmQgZ2VuZS1leHByZXNzaW9uLXJzZW0tdHBtLWNvbGxhcHNlZC5yZHMgZm9yCk1ZQ04gdG8gZ2V0IHRoZSByZWxldmFudCBpbmZvcm1hdGlvbi4gCgojIERhdGEgRmlsdGVyaW5nCmBgYHtyIERhdGEgZmlsdGVyaW5nfQojIEZpcnN0IGZpbHRlciB0aGUgaGlzdG9sb2d5IGZpbGUgYmFzZWQgb24gZGlzZWFzZXMgd2UgYXJlIGludGVyZXNldGVkIGluIG5ldXJvYmxhc3RvbWEsIAojIGdhbmdsaW9uZXVyb2JsYXN0b21hLCBhbmQgZ2FuZ2xpb25ldXJvbWEKCmhpc3RfZmlsdGVyZWRfZGYgPC0gaGlzdF9kZiAlPiUgCiAgZmlsdGVyKHNhbXBsZV90eXBlPT0iVHVtb3IiLCAKICAgICAgICAgZXhwZXJpbWVudGFsX3N0cmF0ZWd5ICVpbiUgYygiV0dTIiwgIldYUyIsICJUYXJnZXRlZCBTZXF1ZW5jaW5nIiwgIlJOQS1TZXEiKSkgJT4lCiAgZmlsdGVyKHBhdGhvbG9neV9kaWFnbm9zaXM9PSAiTmV1cm9ibGFzdG9tYSIgfAogICAgICAgICAgIHBhdGhvbG9neV9kaWFnbm9zaXM9PSAiR2FuZ2xpb25ldXJvYmxhc3RvbWEiIHwKICAgICAgICAgICBwYXRob2xvZ3lfZGlhZ25vc2lzPT0gIkdhbmdsaW9uZXVyb2JsYXN0b21hLCBub2R1bGFyIiB8CiAgICAgICAgICAgcGF0aG9sb2d5X2RpYWdub3NpcyA9PSAiR2FuZ2xpb25ldXJvYmxhc3RvbWEsIGludGVybWl4ZWQiIHwKICAgICAgICAgICBwYXRob2xvZ3lfZGlhZ25vc2lzID09IAogICAgICAgICAgICJHYW5nbGlvbmV1cm9tYSwgbWF0dXJpbmcgc3VidHlwZSBPUiBHYW5nbGlvbmV1cm9ibGFzdG9tYSwgd2VsbCBkaWZmZXJlbnRpYXRlZCIpCgoKIyBUaGUgY29uc2Vuc3VzX3dnc19wbHVzX2NudmtpdF93eHMudHN2Lmd6IGZpbGUgaGFzIGFsbCB0eXBlcyBvZiBnZW5lcywgd2UganVzdCBuZWVkIE1ZQ04sIAojICBzbyB3ZSBmaWx0ZXIgdGhlIGRhdGFzZXQgYXMgZm9sbG93czoKY29uc2Vuc3VzX2ZpbHRlcmVkX2RmIDwtIGNvbnNlbnN1c19kZiAlPiUgZmlsdGVyKGdlbmVfc3ltYm9sPT0iTVlDTiIpCgojIEdldCBNWUNOIFRQTSBEYXRhCk1ZQ05fSW5kZXggPC0gd2hpY2gocm93bmFtZXMoZ2VuZV9leHByZXNzaW9uX2RmKT09Ik1ZQ04iKSAjIGZpbmQgd2hpY2ggcm93cyAoY29udGFpbnMgZ2VuZSBuYW1lcykgCgojY29ycmVzcG9uZHMgdG8gTVlDTgoKVFBNX01ZQ05fZGF0YSA8LSBnZW5lX2V4cHJlc3Npb25fZGZbTVlDTl9JbmRleCxdICMgR2V0IHRoZSBUUE0gZGF0YSBmb3IgZm9yIE1ZQ04KYGBgCgpDb2RlIExvZ2ljOgpXZSB3aWxsIGludGVncmF0ZSB0aGUgVE1QIGFuZCBjb25zZW5zdXMgZGF0YSB3aXRoIHRoZSBoaXN0X2ZpbHRlcmVkIHVzaW5nIGxlZnQgam9pbi4gSGlzdG9sb2d5IGZpbGUgCmhhcyBhbGwgdGhlIGJpb3NwZWNpbWVucyBidXQgd2UgYXJlIG9ubHkgY29uY2VybmVkIHdpdGggTkJMLWJpb3NwZWNpbWVucywgc28gd2UgdXNlIHRoZSBmaWx0ZXJlZCAKdmVyc2lvbiBvZiBoaXN0b2xvZ3kgZmlsZSAoYGhpc3RfZmlsdGVyZWRfZGZgKS4gCgojIEdldCBUUE0gLCBDb3B5IE51bWJlciBhbmQgU3RhdHVzCmBgYHtyIEdldHRpbmcgVFBNLCBDb3B5IE51bWJlciBhbmQgU3RhdHVzIGluZm99CiNBZGQgdGhlIHNhdHVzIGFuZCBjb3B5IE51bWJlciB0byB0aGVzZSBzYW1wbGVzLiBBZGRpbmcgdGhlIGluZm9ybWF0aW9uIGlmIGF2YWlsYWJsZSwgc28gd2UgZG8gYSAKI2xlZnQgam9pbiB3aXRoIHJlc3BlY3QgdG8gaGlzdF9maWx0ZXJlZF9kZiBhcyB3ZSBkb24ndCB3YW50IHRvIGRpc2NhcmQgYW55IGJpb3NwZWNpbWVuIG9mIE1ZQ04tTkJMCiNmb3Igd2hpY2ggU3RhdHVzIGFuZCBjb3B5IG51bWJlciBpcyBub3QgYXZhaWFsYWJsZQpNWUNOX0RGPC1sZWZ0X2pvaW4oaGlzdF9maWx0ZXJlZF9kZixjb25zZW5zdXNfZmlsdGVyZWRfZGYsYnk9IGMoIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQiIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPSAiYmlvc3BlY2ltZW5faWQiKSkKCiNBZGQgVFBNIGluICBhIHNpbWlsYXIgZmFzaGlvbiBhcyBjb3B5IG51bWJlciBhbmQgc3RhdHVzIApyb3duYW1lcyhUUE1fTVlDTl9kYXRhKTwtIk1ZQ05fVFBNIiAjIERlZmluaW5nIHRoZSBjb2x1bW4gbmFtZXMgb2YgdHBtIHZhbHVlcwpUUE1fTVlDTl9kYXRhPC10KFRQTV9NWUNOX2RhdGEpICMgY292ZXJ0aW5nIDEgWCBOIG1hdHJpeCB0byBOIFggMSBtYXRyaXggKGxlbmdodCB3aXNlKQpUUE1fTVlDTl9kYXRhIDwtYXMuZGF0YS5mcmFtZShUUE1fTVlDTl9kYXRhKSAjIENvbnZlcnQgdG8gZGF0YSBmcmFtdGUgCiMgTWFrZSBJRCByb3duYW1lcyBpbnRvIGEgY29sdW1uIApUUE1fTVlDTl9kYXRhIDwtIHRpYmJsZTo6cm93bmFtZXNfdG9fY29sdW1uKFRQTV9NWUNOX2RhdGEsICJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEIikgCiMgRmluYWxseSBhZGQgdGhlIFRQTSBkYXRhIHVzaW5nIGxlZnQgam9pbgpNWUNOX0RGPC0gbGVmdF9qb2luKE1ZQ05fREYsVFBNX01ZQ05fZGF0YSwgYnk9IktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQiKSAKYGBgCgpgYGB7ciByZW5hbWUgY29sdW1ucyB0byBtYWtlIHRhYmxlcyBpbmZvcm1hdGl2ZX0KTVlDTl9ERiA8LSBNWUNOX0RGICU+JSByZW5hbWUoTVlDTl9DTl9zdGF0dXM9IHN0YXR1cykKTVlDTl9ERiA8LSBNWUNOX0RGICU+JSByZW5hbWUoTVlDTl9DTj0gY29weV9udW1iZXIpCmBgYAoKCiMgV3JpdGUgdGhlIG15Y24tbmJsIGJpb3NwZWNpbWVuIGZpbGUgaW50byBpbnB1dCBkaXIKYGBge3Igd3JpdGUgYWx0ZXJhdGlvbiB0YWJsZX0KTVlDTl9ERiU+JXJlYWRyOjp3cml0ZV90c3YoZmlsZS5wYXRoKGlucHV0X2RpciwgIm15Y25fbmJsX3N1YnNldF9kYXRhLnRzdiIpKQpgYGAKCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiU3Vic2V0IHRoZSBkYXRhIGZvciBNWUNOLU5CTCIKYXV0aG9yOiAiQWRpdHlhIExhaGlyaSwgRXJpYyBXYWZ1bGEsIEpvIEx5bm5lIFJva2l0YSIKZGF0ZTogIjEwLzEzLzIwMjIiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KT2JqZWN0aXZlOiBUaGlzIG5vdGVib29rIGxvYWRzIHRoZSBoaXN0b2xvZ3kgZmlsZSBhbmQgc2VsZWN0cyB0aGUgTkJMIGJpb3NwZWNpbWVuIGJ5IGZpbHRlcmluZyB0aGUKZm9sbG93aW5nIGNvbHVtbnMgZm9yIHNwZWNpZmljIHZhbHVlczoKYHNhbXBsZV90eXBlYDogYFR1bW9yYApgZXhwZXJpbWVudGFsX3N0cmF0ZWd5YDpgV0dTYCwgYFdYU2AsYFRhcmdldGVkIFNlcXVlbmNpbmdgIGFuZCBgUk5BLVNlcWAKYHBhdGhvbG9neV9kaWFnbm9zaXNgOiBgTmV1cm9ibGFzdG9tYWAsIGBHYW5nbGlvbmV1cm9ibGFzdG9tYWAsYEdhbmdsaW9uZXVyb2JsYXN0b21hLCBub2R1bGFyYCwKYEdhbmdsaW9uZXVyb2JsYXN0b21hLCBpbnRlcm1peGVkYCwgYW5kIApgR2FuZ2xpb25ldXJvbWEsIG1hdHVyaW5nIHN1YnR5cGUgT1IgR2FuZ2xpb25ldXJvYmxhc3RvbWEsIHdlbGwgZGlmZmVyZW50aWF0ZWRgCgpBZnRlciBmaWx0ZXJpbmcgdGhlIGhpc3RvbG9neSBmaWxlLCBmb3IgdGhlIHJlc3VsdGFudCBiaW9zcGVjaW1lbnMgd2UgaW50ZWdyYXRlIHRoZSBNWUNOIGNvbnNlbnN1cyAKYW5kIFRQTSBpbmZvcnRtYXRpb24gaW4gdGhlIGludGVybWVkaWF0ZSBmaWUgYGlucHV0L215Y25fbmJsX3N1YnNldF9kYXRhLnRzdmAuCgoKQmFja2dyb3VuZDogCk5CTCBpcyBkZWZpbmVkIGFzIG5ldXJvYmxhc3RvbWEsIGdhbmdsaW9uZXVyb2JsYXN0b21hLCBhbmQgZ2FuZ2xpb25ldXJvbWEuVGhlc2UgZGlzZWFzZXMgYXJlIAptZW50aW9uZWQgaW4gdGhlIGhpc3RvbG9neS1iYXNlLnRzdiBmaWxlLiAKCmNvbnNlbnN1c193Z3NfcGx1c19jbnZraXRfd3hzLnRzdi5neiBoYXMgaW5mb3JtYXRpb24gcmVnYXJkaW5nIGNvcHkgbnVtYmVyLCBzdGF0dXMsIGFuZCAKZ2VuZSBzeW1ib2wgKE1ZQ04pLiAKCmdlbmUtZXhwcmVzc2lvbi1yc2VtLXRwbS1jb2xsYXBzZWQucmRzIGZpbGUgaGFzIE1ZQ04gVFBNIHZhbHVlcy4KCgpDb2RlIExvZ2ljOiAKV2UgZmlyc3QgZmlsdGVyIHRoZSBoaXN0b2xvZ3ktYmFzZS50c3YgZmlsZSBmb3IgTkJMIHNhbXBsZXMgYmFzZWQgb24gcGF0aG9sb2d5X2RpYWdub3NpcywgCnNhbXBsZV90eXBlLGFuZCBleHBlcmltZW50YWwgc3RyYXRlZ3kuIFRoZSBwYXRob2xvZ3lfZGlhZ25vc2lzIGNhbiBoYXZlIGNlcnRhaW4gdmFsdWVzIGFzIGxpc3RlZCBpbgp0aGUgY29kZSBjaHVuayBiZWxvdy4gVGhlIHNhbXBsZSB0eXBlIHdlIHF1ZXJ5IGZvciBpcyAidHVtb3IiLCBpLmUuIHdlIGV4Y2x1ZGUgIm5vcm1hbCIgc2FtcGxlcy4gCkZvciBleHBlcmltZW50YWwgc3RyYXRlZ3ksIHdlIGNvbnNpZGVyIFdHUywgV1hTLCBUYXJnZXRlZCBTZXF1ZW5jaW5nLCBhbmQgUk5BLVNlcS4gV2UgdWx0aW1hdGVseSAKd2FudCB0byBjcmVhdGUgYW4gb3V0cHV0IHRhYmxlIHdpdGggRE5BIGFuZCBSTkEgYmlvc3BlY2ltZW4gSURzLCB3aXRoIHRoZWlyIGNvcnJlc3BvbmRpbmcgbW9sZWN1bGFyIApzdWJ0eXBlLCBzbyB3ZSB3aWxsIG5lZWQgZ2V0IEROQSBhbmQgUk5BIHNhbXBsZXMgZnJvbSB0aGUgaGlzdG9sb2d5IGZpbGUuIAoKV2UgZmlsdGVyIHRoZSBjb25zZW5zdXNfd2dzX3BsdXNfY252a2l0X3d4cy50c3YuZ3ogYW5kIGdlbmUtZXhwcmVzc2lvbi1yc2VtLXRwbS1jb2xsYXBzZWQucmRzIGZvcgpNWUNOIHRvIGdldCB0aGUgcmVsZXZhbnQgaW5mb3JtYXRpb24uIAoKCiNMb2FkIExpYnJhcmllcwoKYGBge3IgbG9hZCBsaWJyYXJpZXN9CnN1cHByZXNzUGFja2FnZVN0YXJ0dXBNZXNzYWdlcyh7CmxpYnJhcnkoZHBseXIpCmxpYnJhcnkoZGF0YS50YWJsZSkKbGlicmFyeSh0aWR5dmVyc2UpCn0pCmBgYAoKCiNTZXQgdXAgZGlyZWN0b3JpZXMKYGBge3Igc2V0dXAgZGlyZWN0b3JpZXN9CiMgcm9vdCBkaXJlY3RvcnkKcm9vdF9kaXIgPC0gcnByb2pyb290OjpmaW5kX3Jvb3QocnByb2pyb290OjpoYXNfZGlyKCIuZ2l0IikpCgojIGRhdGEgZGlyZWN0b3J5CmRhdGFfZGlyIDwtIGZpbGUucGF0aChyb290X2RpciwgImRhdGEiKQoKIyBtb2R1bGUgZGlyZWN0b3J5Cm1vZHVsZV9kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCAiYW5hbHlzZXMiLCJtb2xlY3VsYXItc3VidHlwaW5nLU5CTCIpCgojIHN1YnNldCBkaXJlY3RvcnkKc3Vic2V0X2RpciA8LSBmaWxlLnBhdGgobW9kdWxlX2RpciwgIm5ibC1zdWJzZXQiKQogIAojaW5wdXQgZGlyZWN0b3J5CmlucHV0X2RpciA8LSBmaWxlLnBhdGgobW9kdWxlX2RpciwgImlucHV0IikKCiNyZXN1bHRzIGRpcmVjdG9yeQpyZXN1bHRzX2RpciA8LSBmaWxlLnBhdGgobW9kdWxlX2RpciwgInJlc3VsdHMiKQojIGNyZWF0ZSBpZiBkb2Vzbid0IGV4aXN0CmlmICghZGlyLmV4aXN0cyhzdWJzZXRfZGlyKSkgewogIGRpci5jcmVhdGUoc3Vic2V0X2RpcikKfQppZiAoIWRpci5leGlzdHMocmVzdWx0c19kaXIpKSB7CiAgZGlyLmNyZWF0ZShyZXN1bHRzX2RpcikKfQpgYGAKCgojTG9hZCBhbmQgc3Vic2V0IHRoZSBmaWxlcyBmb3IgaGlzdG9sb2d5LCBjb25zZW5zdXMsIGFuZCB0cG0gZGF0YQpgYGB7ciBsb2FkIHRoZSBkYXRhIGZpbGVzOiB0aGlzIHdpbGwgdGFrZSB0aW1lfQojIFJlYWQgaW4gdGhlIEpTT04gZmlsZSB0aGF0IGNvbnRhaW5zIHRoZSBzdHJpbmdzIHdlJ2xsIHVzZSB0byBpbmNsdWRlCnBhdGhfZHhfbGlzdCA8LSBqc29ubGl0ZTo6ZnJvbUpTT04oCiAgZmlsZS5wYXRoKHN1YnNldF9kaXIsICJuYmxfc3VidHlwaW5nX3BhdGhfZHhfc3RyaW5ncy5qc29uIikKICApCgojIGhpc3RvbG9neQpoaXN0X3N1YnNldCA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLCAiaGlzdG9sb2dpZXMtYmFzZS50c3YiKSxndWVzc19tYXggPSAxMDAwMDApICU+JQogIGZpbHRlcihleHBlcmltZW50YWxfc3RyYXRlZ3kgIT0gIk1ldGh5bGF0aW9uIiwKICAgICAgICAgcGF0aG9sb2d5X2RpYWdub3NpcyAlaW4lIHBhdGhfZHhfbGlzdCRleGFjdF9wYXRoX2R4KQoKIyBUaGUgY29uc2Vuc3VzX3dnc19wbHVzX2NudmtpdF93eHMudHN2Lmd6IGZpbGUgaGFzIGFsbCB0eXBlcyBvZiBnZW5lcywgd2UganVzdCBuZWVkIE1ZQ04sIAojICBzbyB3ZSBmaWx0ZXIgdGhlIGRhdGFzZXQgYXMgZm9sbG93czoKY29uc2Vuc3VzX2ZpbHRlcmVkX2RmIDwtIHJlYWRyOjpyZWFkX3RzdihmaWxlLnBhdGgoZGF0YV9kaXIsICJjb25zZW5zdXNfd2dzX3BsdXNfY252a2l0X3d4cy50c3YuZ3oiKSkgJT4lCiAgZHBseXI6OnJlbmFtZShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gYmlvc3BlY2ltZW5faWQsCiAgICAgICAgICAgICAgICBNWUNOX0NOX3N0YXR1cyA9IHN0YXR1cywKICAgICAgICAgICAgICAgIE1ZQ05fQ04gPSBjb3B5X251bWJlcikgJT4lCiAgZmlsdGVyKGdlbmVfc3ltYm9sPT0iTVlDTiIsCiAgICAgICAgIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBoaXN0X3N1YnNldCRLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKQoKIyBmaWx0ZXIgdHBtIG1hdHJpeCBmb3IgTkJMIHNhbXBsZXMgYW5kIE1ZQ04KZXhwcmVzc2lvbl9tYXQgPC0gcmVhZFJEUyhmaWxlLnBhdGgoZGF0YV9kaXIsImdlbmUtZXhwcmVzc2lvbi1yc2VtLXRwbS1jb2xsYXBzZWQucmRzIikpIAoKVFBNX01ZQ05fZGF0YSA8LSBhcy5kYXRhLmZyYW1lKHQoZXhwcmVzc2lvbl9tYXRbIk1ZQ04iLCBpbnRlcnNlY3QoaGlzdF9zdWJzZXQkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCwKICAgICAgICAgICAgICAgICAgICAgY29sbmFtZXMoZXhwcmVzc2lvbl9tYXQpKV0pKQpUUE1fTVlDTl9kYXRhIDwtIFRQTV9NWUNOX2RhdGEgJT4lCiAgbXV0YXRlKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgPSByb3duYW1lcyhUUE1fTVlDTl9kYXRhKSkKCnJtKGV4cHJlc3Npb25fbWF0KQpgYGAKCkNvZGUgTG9naWM6CldlIHdpbGwgaW50ZWdyYXRlIHRoZSBUUE0gYW5kIGNvbnNlbnN1cyBkYXRhIHdpdGggdGhlIGhpc3RfZmlsdGVyZWQgdXNpbmcgbGVmdCBqb2luLiBIaXN0b2xvZ3kgZmlsZSAKaGFzIGFsbCB0aGUgYmlvc3BlY2ltZW5zIGJ1dCB3ZSBhcmUgb25seSBjb25jZXJuZWQgd2l0aCBOQkwtYmlvc3BlY2ltZW5zLCBzbyB3ZSB1c2UgdGhlIGZpbHRlcmVkIAp2ZXJzaW9uIG9mIGhpc3RvbG9neSBmaWxlIChgaGlzdF9maWx0ZXJlZF9kZmApLiAKCiMgR2V0IFRQTSAsIENvcHkgTnVtYmVyIGFuZCBTdGF0dXMKYGBge3IgR2V0dGluZyBUUE0sIENvcHkgTnVtYmVyIGFuZCBTdGF0dXMgaW5mb30KI0FkZCB0aGUgc2F0dXMgYW5kIGNvcHkgTnVtYmVyIHRvIHRoZXNlIHNhbXBsZXMuIEFkZGluZyB0aGUgaW5mb3JtYXRpb24gaWYgYXZhaWxhYmxlLCBzbyB3ZSBkbyBhIAojbGVmdCBqb2luIHdpdGggcmVzcGVjdCB0byBoaXN0X2ZpbHRlcmVkX2RmIGFzIHdlIGRvbid0IHdhbnQgdG8gZGlzY2FyZCBhbnkgYmlvc3BlY2ltZW4gb2YgTVlDTi1OQkwKI2ZvciB3aGljaCBTdGF0dXMgYW5kIGNvcHkgbnVtYmVyIGlzIG5vdCBhdmFpYWxhYmxlCgojIEZpbmFsbHkgYWRkIHRoZSBUUE0gZGF0YSB1c2luZyBsZWZ0IGpvaW4KTVlDTl9ERiA8LSBoaXN0X3N1YnNldCAlPiUKICBsZWZ0X2pvaW4oY29uc2Vuc3VzX2ZpbHRlcmVkX2RmKSAlPiUKICBsZWZ0X2pvaW4oVFBNX01ZQ05fZGF0YSkKYGBgCgojIFdyaXRlIHRoZSBteWNuLW5ibCBiaW9zcGVjaW1lbiBmaWxlIGludG8gaW5wdXQgZGlyCmBgYHtyIHdyaXRlIGFsdGVyYXRpb24gdGFibGV9Ck1ZQ05fREYgJT4lIAogIHJlYWRyOjp3cml0ZV90c3YoZmlsZS5wYXRoKGlucHV0X2RpciwgIm15Y25fbmJsX3N1YnNldF9kYXRhLnRzdiIpKQpgYGAKCgo=</div>
 
 
 
