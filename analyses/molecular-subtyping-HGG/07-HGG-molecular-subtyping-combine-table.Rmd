@@ -147,7 +147,7 @@ What are they?
 
 ```{r}
 missing_bsids <- setdiff(exp_df$Kids_First_Biospecimen_ID,
-                         fusion_df$Sample)
+                         fusion_df$Kids_First_Biospecimen_ID)
 
 histologies_df %>%
   filter(Kids_First_Biospecimen_ID %in% missing_bsids)
@@ -211,8 +211,7 @@ rm(arriba_df, putative_oncogenic_df, starfusion_df, missing_bsids)
 ### Join the Expression and Fusion Data
 
 ```{r}
-rna_df <- left_join(exp_df, fusion_df,
-                    by = c("Kids_First_Biospecimen_ID" = "Sample"))
+rna_df <- left_join(exp_df, fusion_df)
 head(rna_df, n = 10)
 ```
 
@@ -301,12 +300,19 @@ rna_df <- rna_df %>%
 
 
 ### All Data
+Add methylation Kids_First_Biospecimen_ID into all_data_df
 
 ```{r}
+methy_df <- histologies_df %>% 
+  filter(experimental_strategy == "Methylation") %>% 
+  select(Kids_First_Biospecimen_ID, sample_id) %>% 
+  rename("Kids_First_Biospecimen_ID_methy" = "Kids_First_Biospecimen_ID")
+
 all_data_df <- full_join(dna_df, rna_df,
                          by = c("Kids_First_Participant_ID",
                                 "sample_id","cell_line_composition"),
                          suffix = c("_DNA", "_RNA")) %>%
+  left_join(methy_df, by = "sample_id") %>% 
   select(starts_with("Kids_First"), sample_id, everything())
 
 head(all_data_df, n = 10)
@@ -572,8 +578,7 @@ molecular_subtype_table <- bind_rows(h3_g35_df_biospecimen,
 molecular_subtype_table <- all_data_df %>%
   select(Kids_First_Participant_ID, 
          sample_id,
-         Kids_First_Biospecimen_ID_DNA, 
-         Kids_First_Biospecimen_ID_RNA, 
+         starts_with("Kids_First_Biospecimen"),
          composition) %>%
   left_join(molecular_subtype_table) %>%
   distinct() %>%
@@ -607,21 +612,24 @@ molecular_subtype_table <- all_data_df %>%
 
 ```{r}
 NTRK <- fusion_df %>% 
-  select(c("Sample", "NTRK_fusions")) %>%
+  select(Kids_First_Biospecimen_ID, NTRK_fusions) %>%
   filter(NTRK_fusions != "None") %>%
-  pull(Sample) 
+  pull(Kids_First_Biospecimen_ID) 
 
 ALK <- fusion_df %>% 
-  select(c("Sample", "ALK_fusions")) %>% 
-  pull(Sample) 
+  select(Kids_First_Biospecimen_ID, ALK_fusions) %>%
+  filter(ALK_fusions != "None") %>%
+  pull(Kids_First_Biospecimen_ID) 
 
 ROS1 <- fusion_df %>% 
-  select(c("Sample", "ROS1_fusions")) %>% 
-  pull(Sample) 
+  select(Kids_First_Biospecimen_ID, ROS1_fusions) %>%
+  filter(ROS1_fusions != "None") %>%
+  pull(Kids_First_Biospecimen_ID) 
 
 MET <- fusion_df %>% 
-  select(c("Sample", "MET_fusions")) %>% 
-  pull(Sample) 
+  select(Kids_First_Biospecimen_ID, MET_fusions) %>%
+  filter(MET_fusions != "None") %>%
+  pull(Kids_First_Biospecimen_ID) 
 
 
 RTK_list <- c(NTRK, ALK, MET, ROS1)
@@ -634,16 +642,20 @@ IGH <- histologies_df %>%
 IGH <- IGH %>% 
   mutate(molecular_subtype = case_when(
     Kids_First_Biospecimen_ID_DNA %in% NTRK | 
-      Kids_First_Biospecimen_ID_RNA %in% NTRK ~ "IHG, NTRK-altered", 
+      Kids_First_Biospecimen_ID_RNA %in% NTRK |
+      Kids_First_Biospecimen_ID_methy %in% NTRK ~ "IHG, NTRK-altered", 
     
     Kids_First_Biospecimen_ID_DNA %in% ALK | 
-      Kids_First_Biospecimen_ID_RNA %in% ALK ~ "IHG, ALK-altered", 
+      Kids_First_Biospecimen_ID_RNA %in% ALK |
+      Kids_First_Biospecimen_ID_methy %in% ALK ~ "IHG, ALK-altered", 
     
     Kids_First_Biospecimen_ID_DNA %in% ROS1 | 
-      Kids_First_Biospecimen_ID_RNA %in% ROS1 ~ "IHG, ROS1-altered", 
+      Kids_First_Biospecimen_ID_RNA %in% ROS1 |
+      Kids_First_Biospecimen_ID_methy %in% ROS1 ~ "IHG, ROS1-altered", 
     
     Kids_First_Biospecimen_ID_DNA %in% MET | 
-      Kids_First_Biospecimen_ID_RNA %in% MET ~ "IHG, MET-altered", 
+      Kids_First_Biospecimen_ID_RNA %in% MET |
+      Kids_First_Biospecimen_ID_methy %in% MET ~ "IHG, MET-altered", 
     
     !(Kids_First_Biospecimen_ID_DNA %in% RTK_list) & 
       !(Kids_First_Biospecimen_ID_RNA %in% RTK_list) &
@@ -667,15 +679,17 @@ IGH <- IGH %>%
   
   select(c(Kids_First_Participant_ID, 
            sample_id, 
-           Kids_First_Biospecimen_ID_DNA, 
+           starts_with("Kids_First_Biospecimen"), 
            Kids_First_Biospecimen_ID_RNA, 
            molecular_subtype, 
-           composition)) %>% 
+           composition, 
+           HGG_Fusion_evidence, 
+           HGG_Fusion_counts)) %>% 
   
   filter(molecular_subtype != "delete") %>% 
   unique()
 
-molecular_subtype_table <-molecular_subtype_table %>% 
+molecular_subtype_table <- molecular_subtype_table %>% 
   filter(!sample_id %in% IGH$sample_id) %>%
   bind_rows(IGH) 
 

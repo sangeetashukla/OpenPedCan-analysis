@@ -92,13 +92,20 @@ The gene fusion with _ROS1_, _ALK_ and _MET_ are added into the output
 
 ```{r}
 
+RTK_list <- c("FGFR1", "NTRK", "MET", "ROS1", "ALK")
+
 summary_df <- fusion_hgg %>%
+  mutate(HGG_Fusion_evidence = apply(.[,colnames(.)[grepl(paste(RTK_list, collapse = "|"), colnames(.))]], 1, FUN =  function(x) {paste(names(x)[x == 1],collapse="/")})) %>%
+  mutate(HGG_Fusion_counts = apply(.[,colnames(.)[grepl(paste(RTK_list, collapse = "|"), colnames(.))]], 1, FUN =  function(x) {length(names(x)[x == 1])})) %>%
   mutate(NTRK_fusions = apply(.[,colnames(.)[grepl("NTRK", colnames(.))]], 1, FUN =  function(x) {paste(names(x)[x == 1],collapse="/")})) %>% 
   mutate(MET_fusions = apply(.[,colnames(.)[grepl("MET", colnames(.))]], 1, FUN =  function(x) {paste(names(x)[x == 1],collapse="/")})) %>% 
   mutate(ROS1_fusions = apply(.[,colnames(.)[grepl("ROS1", colnames(.))]], 1, FUN =  function(x) {paste(names(x)[x == 1],collapse="/")})) %>% 
   mutate(ALK_fusions = apply(.[,colnames(.)[grepl("ALK", colnames(.))]], 1, FUN =  function(x) {paste(names(x)[x == 1],collapse="/")})) %>% 
   mutate(FGFR1_fusions = apply(.[,colnames(.)[grepl("FGFR1", colnames(.))]], 1, FUN =  function(x) {paste(names(x)[x == 1],collapse="/")})) %>% 
-  select(c("Kids_First_Biospecimen_ID", "NTRK_fusions", "MET_fusions", "ROS1_fusions", "ALK_fusions", "FGFR1_fusions"))
+  select(c("Kids_First_Biospecimen_ID", "NTRK_fusions", "MET_fusions", "ROS1_fusions", "ALK_fusions", "FGFR1_fusions", "HGG_Fusion_evidence", "HGG_Fusion_counts")) %>% 
+  dplyr::arrange(Kids_First_Biospecimen_ID)
+
+summary_df[summary_df == ""] = "None"
 
 head(summary_df[order(summary_df$FGFR1_fusions),])
 ```
@@ -115,8 +122,6 @@ To retain information about which gene we're talking about we will include the f
 Write file.
 
 ```{r}
-summary_df[summary_df == ""] = "None"
-
 summary_df %>% 
   write_tsv(output_file)
 ```
