@@ -8,5 +8,5 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 # Run R script to subtype ATRT using methylation data 
 
-Rscript 00-ATRT_subtyping.R
+Rscript --vanilla 00-ATRT_subtyping.R
 
