@@ -1,5 +1,5 @@
 # Molecular Subtyping ATRT
-Module author: Zhuangzhuang Geng
+Module authors: Zhuangzhuang Geng and Jo Lynne Rokita
 
 *Note: the previous files/scripts can be find in Archive folder*
 
