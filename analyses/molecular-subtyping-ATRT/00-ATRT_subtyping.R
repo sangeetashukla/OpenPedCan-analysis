@@ -23,7 +23,6 @@ histo <-
 atrt_df <- histo %>%
   dplyr::filter(short_histology == "ATRT",
                 sample_type == "Tumor",
-                composition == "Solid Tissue",
                 cohort == "PBTA" | cohort == "DGD")
 
 # Create a dataframe with sample_id and matched biospecimens id for RNA-Seq, WGS and methylation
