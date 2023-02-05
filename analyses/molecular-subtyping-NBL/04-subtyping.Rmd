@@ -114,7 +114,7 @@ If MYCN is called not amplified (i,e., NA, gain, loss, neutral), but the
 clinical data suggests MYCN amplification, plot the CNV data to visualize 
 whether we see focal amplification despite CNV not being called
 
-If `pathology_free_text_diagnosis` is `MYCN amp` MYCN_CN_status` is 
+If `pathology_free_text_diagnosis` is `MYCN amp` MYCN_CN_status is 
 NOT `amplification`, and the DNA biospecimen has corresponding RNA biospecimen,
 check if the RNA biospecimen has a TPM value and assign amplification status 
 based on the `Suggested_Cutoff` inferred from the MYCN expression distribution 
