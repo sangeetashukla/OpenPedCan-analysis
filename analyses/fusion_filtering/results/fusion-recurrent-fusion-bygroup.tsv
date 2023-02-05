@@ -8,6 +8,7 @@ AFF1--KMT2A	Hematologic malignancy	7
 ANKRD11--CBFA2T3	Hematologic malignancy	8
 ANP32E--PLEKHO1	Hematologic malignancy	6
 B2M--ATP6V0C	Hematologic malignancy	5
+B2M--GNAS	Hematologic malignancy	6
 BANP--CBFA2T3	Hematologic malignancy	4
 BANP--SLC7A5	Hematologic malignancy	46
 BCR--ABL1	Hematologic malignancy	7
@@ -41,6 +42,7 @@ ETV6--RUNX1	Hematologic malignancy	14
 EWSR1--FLI1	Mesenchymal non-meningothelial tumor	6
 FAM19A5--BRD1	Hematologic malignancy	5
 FAM20C--COX19	Hematologic malignancy	5
+FAM20C--PDGFA	Hematologic malignancy	4
 FBRSL1--NCOR2	Hematologic malignancy	4
 FOSB--UBC	Hematologic malignancy	6
 GAK--MAEA	Hematologic malignancy	9
@@ -66,6 +68,7 @@ LFNG--MAD1L1	Hematologic malignancy	21
 LMNB2--DOT1L	Hematologic malignancy	5
 LPCAT1--IRX2	Hematologic malignancy	4
 MAD1L1--TTYH3	Hematologic malignancy	16
+MAEA--GAK	Hematologic malignancy	4
 MAFK--MAD1L1	Hematologic malignancy	8
 MEF2D--BCL9	Hematologic malignancy	4
 METRNL--CBFA2T3	Hematologic malignancy	4
@@ -79,6 +82,7 @@ NCOR2--CDK2AP1	Hematologic malignancy	24
 NCOR2--FBRSL1	Hematologic malignancy	8
 NFAT5--COG8	Hematologic malignancy	4
 NFAT5--PDF	Hematologic malignancy	4
+NFATC1--PQLC1	Hematologic malignancy	15
 NOL4L--ASXL1	Hematologic malignancy	12
 NSD1--NUP98	Hematologic malignancy	5
 NUP214--ABL1	Hematologic malignancy	7
@@ -93,6 +97,8 @@ PICALM--MLLT10	Hematologic malignancy	11
 PIM3--BRD1	Hematologic malignancy	48
 PIM3--PLXNB2	Hematologic malignancy	7
 PIM3--SBF1	Hematologic malignancy	14
+PQLC1--NFATC1	Hematologic malignancy	44
+PRDM16--SKI	Hematologic malignancy	4
 PTBP1--C19orf24	Hematologic malignancy	6
 PTBP1--DAZAP1	Hematologic malignancy	4
 PTBP1--EIF4A1	Hematologic malignancy	4
@@ -105,6 +111,7 @@ RBM38--PHACTR3	Hematologic malignancy	4
 RBM38--PMEPA1	Hematologic malignancy	12
 RBM38--SEPT9	Hematologic malignancy	4
 RBM38--TAF4	Hematologic malignancy	14
+REV3L--FYN	Diffuse astrocytic and oligodendroglial tumor	5
 REXO1--KLF16	Hematologic malignancy	4
 RNF168--TFRC	Hematologic malignancy	6
 RUNX1--ETV6	Hematologic malignancy	7
@@ -121,6 +128,7 @@ SLC7A5--BANP	Hematologic malignancy	5
 SLC7A5--CBFA2T3	Hematologic malignancy	59
 SLC7A5--GSE1	Hematologic malignancy	22
 SLC7A5--ZFPM1	Hematologic malignancy	15
+SS18L1--TAF4	Hematologic malignancy	4
 STK24--UBAC2	Hematologic malignancy	4
 STK32C--INPP5A	Hematologic malignancy	5
 TBCD--FOXK2	Hematologic malignancy	7
