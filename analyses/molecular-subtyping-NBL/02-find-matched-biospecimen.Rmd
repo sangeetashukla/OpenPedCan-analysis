@@ -4,18 +4,12 @@ author: "Aditya Lahiri, Eric Wafula, Jo Lynne Rokita"
 date: "10/13/2022"
 output: html_notebook
 ---
-In this notebook we load the table `nbl-subset/mycn_nbl_subset_data.tsv` and find the biospecimens which
-have matched DNA and RNA IDs. We store these biospecimens as a table in 
-`nbl-subset/mycn_nbl_matched_biospecimen.tsv`.  The script also creates two tables 
-`nbl-subset/mycn_nbl_dna_biospecimen.tsv` and `nbl-subset/mycn_nbl_rna_biospecimen.tsv` which contain 
-biospecimens whose `Kids_First_Biospecimen_ID` are either DNA or RNA respectively. 
+In this notebook we load the table `nbl-subset/mycn_nbl_subset_data.tsv` and find the biospecimens which have matched DNA and RNA IDs. We store these biospecimens as a table in `nbl-subset/mycn_nbl_matched_biospecimen.tsv`.  The script also creates two tables, `nbl-subset/mycn_nbl_dna_biospecimen.tsv` and `nbl-subset/mycn_nbl_rna_biospecimen.tsv` which contain biospecimens whose `Kids_First_Biospecimen_ID` are either DNA or RNA respectively. 
 
 The notebook also plots the TPMs vs Kids_First_Biospecimen_ID for biospecimens with matched DNA and
 RNA IDs. We overlay the consensus status call for each of the biospecimens in this plot.
 
-Line 148-198 of the script locate the biospecimens which exactly the same DNA nad RNA IDs 
-but differing copy number, status or aliquot_id. We retain only the relevant datapoints, as in 
-the final subtyping table we would like to have only unique biospecimens. 
+Line 148-198 of the script locates biospecimens which with same DNA and RNA `match_id` but differ in copy number, status, or aliquot_id. We retain only the relevant data points, as in the final subtyping table we would like to have only unique biospecimens. 
 
 
 #Load Libraries
@@ -40,17 +34,18 @@ data_dir <- file.path(root_dir, "data")
 # module directory
 module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
 
-#nbl-subset directory
+# nbl-subset directory
 subset_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL","nbl-subset")
 
-#results directory
+# results directory
 results_dir <- "results"
+
 # create if doesn't exist
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
-#plot directory
+# plot directory
 plot_dir <- "plots"
 # create if doesn't exist
 if (!dir.exists(plot_dir)) {
@@ -61,9 +56,9 @@ if (!dir.exists(plot_dir)) {
 Code logic: 
 MYCN_DF has 1508 records, some of the IDs in Kids_First_Biospecimen_ID
 are DNA IDs while others are RNA IDs. Among the DNA IDs, some have corresponding 
-RNA IDs, so we need to first find the matching DNA/RNA IDs.  To find matching RNA 
+RNA IDs, so we need to first find the matching DNA/RNA IDs. To find matching RNA 
 IDs for DNA IDs, we create a match ID by combining Kids_First_Participant_ID + Sample_ID + Cohort. 
-To this end, we create a new column in MYCN_Df called match_id. 
+To this end, we create a new column in MYCN_Df called `match_id`. 
 
 # Read the mycn-nbl file 
 ```{r read the file containing mycn-nbl biospecimen}
@@ -76,7 +71,7 @@ MYCN_DF <-readr::read_tsv(file.path(subset_dir, "mycn_nbl_subset_data.tsv"), gue
 # Create Match_ID Kids_First_Participant_ID + Sample_ID + Cohort
 MYCN_DF <- MYCN_DF %>% 
   mutate(match_id = paste(Kids_First_Participant_ID,
-                          sample_id,cohort,sep = "_")) %>%
+                          sample_id, cohort, sep = "_")) %>%
   # select columns of interest
   select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, RNA_library, experimental_strategy, gene_symbol, pathology_diagnosis, pathology_free_text_diagnosis, MYCN_CN, MYCN_TPM, MYCN_CN_status, match_id)
 
@@ -107,19 +102,18 @@ of matching DNA and RNA biospecimen IDs. We then select specific columns from th
 for downstream analysis. 
 
 ```{r Further filter the data to create alteration table}
-MYCN_DNA_RNA_DF <- inner_join(MYCN_dna_df, MYCN_rna_df, by= c("Kids_First_Participant_ID", "match_id",
-                                                            "pathology_diagnosis","pathology_free_text_diagnosis")) %>%
+MYCN_DNA_RNA_DF <- inner_join(MYCN_dna_df, MYCN_rna_df, by= c("Kids_First_Participant_ID", "match_id", "pathology_diagnosis", "pathology_free_text_diagnosis")) %>%
   select(-c(experimental_strategy.x, experimental_strategy.y, RNA_library.x, RNA_library.y))
 # 342 samples 
 
  # Retain the information of RNA/DNA Biospecimen ID, gene symbol, cancer group, 
  # pathology free text diagnosis, copy number, TPM and status
  
-# Remove columns with no info, the following code logic is adapted from [2] 
+# Remove columns with no info
 empty_columns <- colSums(is.na(MYCN_DNA_RNA_DF) 
                          | MYCN_DNA_RNA_DF == "") == nrow(MYCN_DNA_RNA_DF)
 
-#Remove empty coulmns
+# Remove empty columns
 MYCN_DNA_RNA_FILTERED_DF <- MYCN_DNA_RNA_DF[!empty_columns]
 names(MYCN_DNA_RNA_FILTERED_DF)
 
@@ -156,7 +150,7 @@ for (iter in 1:length(repeated_ids))
 
 Code Logic:
 We find that there are four DNA IDs which are repeating. 
-For the record TARGET-30-PAPVFD-01A-01D retaining the record with status Neutral and copynumber 3
+For the record TARGET-30-PAPVFD-01A-01D retaining the record with status Neutral and copy number 3
 For the record TARGET-30-PASXRG-01A-01D retaining the record with copy number 14
 For the records BS_0XC02E11 and BS_1F8J25Q1 we see that in their repeating copies all column values 
 except for their aliquot_id are different. We remove the rows with aliquot_ids of 

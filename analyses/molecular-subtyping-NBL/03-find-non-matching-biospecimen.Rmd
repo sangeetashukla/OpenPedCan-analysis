@@ -4,16 +4,11 @@ output: html_notebook
 author: "Aditya Lahiri, Eric Wafula, Jo Lynne Rokita"
 date: "10/13/2022"
 ---
-In this notebook we find the find the biospecimens which do not have matched DNA and RNA IDs. 
+In this notebook we find the biospecimens which do not have matched DNA and RNA IDs. 
 We create a dataframe for these biospecimens called `MYCN_non_match_df` which has all the necessary
-infromation required for performing subtyping. We concatenate this `MYCN_non_match_df` with the table
-`nbl-subset/mycn_nbl_matched_biospecimen.tsv` and joined table called 
-`nbl-subset/alteration_table_without_subtype.tsv` which contains the list of all the NBL-MYCN 
-biospecimens that need to subtpyped. 
+information required for performing subtyping. We concatenate this `MYCN_non_match_df` with the table `nbl-subset/mycn_nbl_matched_biospecimen.tsv` and joined table called `nbl-subset/alteration_table_without_subtype.tsv` which contains the list of all NBL-MYCN biospecimens that need to subtpyped. 
 
-The notebook also plots the TPM vs Kids_First_Biospecimen_IDs for all the biospecimens for which there
-is a TPM value. We overlay the consensus status call for each of the biospecimens in this plot and
-detemine a cut off for amplification. 
+The notebook also plots the TPM vs Kids_First_Biospecimen_IDs for all the biospecimens for which there is a TPM value. We overlay the consensus status call for each of the biospecimens in this plot and determine a cut off for amplification. 
 
 
 ```{r load libraries}
@@ -36,17 +31,17 @@ data_dir <- file.path(root_dir, "data")
 # module directory
 module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
 
-#nbl-subset directory
+# nbl-subset directory
 subset_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL","nbl-subset")
 
-#results directory
+# results directory
 results_dir <- "results"
 # create if doesn't exist
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
-#plot directory
+# plot directory
 plot_dir <- "plots"
 # create if doesn't exist
 if (!dir.exists(plot_dir)) {
@@ -262,5 +257,5 @@ ggsave(filename = plot_file,width = 49, height = 20)
 
 Write NBL-MYCN biospecimen to subtyped into the nbl-subset folder
 ```{r}
-alteration_df%>%readr::write_tsv(file.path(subset_dir, "alteration_table_without_molecular_subtype.tsv"))
+alteration_df %>% readr::write_tsv(file.path(subset_dir, "alteration_table_without_molecular_subtype.tsv"))
 ```
