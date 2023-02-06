@@ -1934,6 +1934,14 @@ is_reciprocal&lt;-data.frame(Reduce(rbind, is_reciprocal))
 fusion_calls &lt;- fusion_calls %&gt;%
   dplyr::left_join(is_reciprocal,by=c(&quot;Sample&quot;,&quot;FusionName&quot;))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZzogQ29sdW1uIGBTYW1wbGVgIGpvaW5pbmcgY2hhcmFjdGVyIHZlY3RvciBhbmQgZmFjdG9yLCBjb2VyY2luZyBpbnRvXG5jaGFyYWN0ZXIgdmVjdG9yXG4ifQ== -->
+<pre><code>Warning: Column `Sample` joining character vector and factor, coercing into
+character vector</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZzogQ29sdW1uIGBGdXNpb25OYW1lYCBqb2luaW5nIGNoYXJhY3RlciB2ZWN0b3IgYW5kIGZhY3RvciwgY29lcmNpbmdcbmludG8gY2hhcmFjdGVyIHZlY3RvclxuIn0= -->
+<pre><code>Warning: Column `FusionName` joining character vector and factor, coercing
+into character vector</code></pre>
+<!-- rnb-warning-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1993,12 +2001,6 @@ sample.count &lt;- fusion_calls %&gt;%
   mutate(note=paste0(&quot;Found in atleast &quot;,numSample, &quot; samples in a group&quot;)) %&gt;%
   as.data.frame()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiTm90ZTogVXNpbmcgYW4gZXh0ZXJuYWwgdmVjdG9yIGluIHNlbGVjdGlvbnMgaXMgYW1iaWd1b3VzLlxu4oS5IFVzZSBgYWxsX29mKGdyb3VwKWAgaW5zdGVhZCBvZiBgZ3JvdXBgIHRvIHNpbGVuY2UgdGhpcyBtZXNzYWdlLlxu4oS5IFNlZSA8aHR0cHM6Ly90aWR5c2VsZWN0LnItbGliLm9yZy9yZWZlcmVuY2UvZmFxLWV4dGVybmFsLXZlY3Rvci5odG1sPi5cblRoaXMgbWVzc2FnZSBpcyBkaXNwbGF5ZWQgb25jZSBwZXIgc2Vzc2lvbi5cbiJ9 -->
-<pre><code>Note: Using an external vector in selections is ambiguous.
-ℹ Use `all_of(group)` instead of `group` to silence this message.
-ℹ See &lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&gt;.
-This message is displayed once per session.</code></pre>
-<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="keep-recurrent-non-oncogenic-fusions-specific-to-a-grouping-variable-of-interest" class="section level4">
@@ -2046,9 +2048,6 @@ fusion_recurrent5_per_sample &lt;- fusion_calls  %&gt;%
   dplyr::filter(Gene.ct&gt;limitMultiFused) %&gt;%
   mutate(note=paste0(&quot;multfused &quot; ,limitMultiFused, &quot; times per sample&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiYHN1bW1hcmlzZSgpYCBoYXMgZ3JvdXBlZCBvdXRwdXQgYnkgJ1NhbXBsZScuIFlvdSBjYW4gb3ZlcnJpZGUgdXNpbmcgdGhlIGAuZ3JvdXBzYCBhcmd1bWVudC5cbiJ9 -->
-<pre><code>`summarise()` has grouped output by 'Sample'. You can override using the `.groups` argument.</code></pre>
-<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
