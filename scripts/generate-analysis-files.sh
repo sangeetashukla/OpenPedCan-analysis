@@ -95,6 +95,25 @@ bash run_tmb_calculation.sh
 cp ${analyses_dir}/tmb-calculation/results/snv-mutation-tmb-coding.tsv ${release_dir}
 cp ${analyses_dir}/tmb-calculation/results/snv-mutation-tmb-all.tsv ${release_dir}
 
+## Generate summary files needed for subtyping
+
+# Run GSEA
+echo "Run GSEA"
+cd ${analyses_dir}/gene-set-enrichment-analysis
+OPENPBTA_BASE_SUBTYPING=1 bash run-gsea.sh
+
+# Copy over GSEA results for subtyping
+cp ${analyses_dir}/gene-set-enrichment-analysis/results/gsva_scores.tsv ${release_dir}
+
+# Run TP53
+echo "TP53 altered score"
+cd ${analyses_dir}/tp53_nf1_score
+OPENPBTA_BASE_SUBTYPING=1 bash run_classifier.sh
+
+# Copy over TP53 results
+cp ${analyses_dir}/tp53_nf1_score/results/* ${release_dir}
+cp ${analyses_dir}/tp53_nf1_score/plots/* ${release_dir}
+
 # Create an md5sum file for all the files in the directories where the analysis
 # files are compiled
 cd ${release_dir}

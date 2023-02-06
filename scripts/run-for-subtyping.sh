@@ -36,27 +36,7 @@ echo "Create independent sample list for fusion filtering module"
 cd ${analyses_dir}/independent-samples
 OPENPBTA_BASE_SUBTYPING=1 bash run-independent-samples.sh
 
-
-## Step 1. Generate summary files needed for subtyping
-
-# Run GSEA
-echo "Run GSEA"
-cd ${analyses_dir}/gene-set-enrichment-analysis
-OPENPBTA_BASE_SUBTYPING=1 bash run-gsea.sh
-
-# Copy over GSEA results for subtyping
-cp ${analyses_dir}/gene-set-enrichment-analysis/results/gsva_scores.tsv ${commit_dir}
-
-# Run TP53
-echo "TP53 altered score"
-cd ${analyses_dir}/tp53_nf1_score
-OPENPBTA_BASE_SUBTYPING=1 bash run_classifier.sh
-
-# Copy over TP53 results
-cp ${analyses_dir}/tp53_nf1_score/results/* ${commit_dir}
-cp ${analyses_dir}/tp53_nf1_score/plots/* ${commit_dir}
-
-## Step 2. Run subtyping modules
+## Run subtyping modules
 
 # Run MB subtyping
 echo "Run MB subtyping"
