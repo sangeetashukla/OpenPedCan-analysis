@@ -87,9 +87,9 @@ tpm_df <-
   tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>% 
   dplyr::filter(Kids_First_Biospecimen_ID == "MYCN") %>%
   tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>% 
-  tidyr::pivot_longer(colnames(.), 
-                      names_to = "Kids_First_Biospecimen_ID",
-                      values_to = "MYCN_TPM")
+  tidyr::gather(colnames(.), 
+                      key = "Kids_First_Biospecimen_ID",
+                      value = "MYCN_TPM")
 
 ```
 
