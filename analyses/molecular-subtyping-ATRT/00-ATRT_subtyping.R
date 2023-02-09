@@ -30,7 +30,7 @@ atrt_df <- histo %>%
 atrt_df_meth <- atrt_df %>% 
   filter(experimental_strategy == "Methylation") %>%
   select(sample_id, Kids_First_Biospecimen_ID, 
-         cns_methylation_subclass, cns_methylation_subclass_score)
+         cns_methylation_subclass, cns_methylation_subclass_score, Kids_First_Participant_ID)
 
 atrt_df_WGS <- atrt_df %>% 
   filter(experimental_strategy == "WGS") %>%
@@ -55,7 +55,7 @@ atrt_subtype <- atrt_subtype %>%
   mutate(molecular_subtype = case_when(cns_methylation_subclass_score >= 0.8 & cns_methylation_subclass %in% ATRT_subtype_list ~ cns_methylation_subclass, 
                                        is.na(Kids_First_Biospecimen_ID_meth) ~ "ATRT, To be classified",
                                        TRUE ~ "ATRT, To be classified")) %>%
-  select(sample_id, Kids_First_Biospecimen_ID_meth, Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, molecular_subtype) %>%
+  select(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_ID_meth, Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, molecular_subtype) %>%
   
 # write result
   readr::write_tsv(file.path(results_dir, "ATRT-molecular-subtypes.tsv"))
