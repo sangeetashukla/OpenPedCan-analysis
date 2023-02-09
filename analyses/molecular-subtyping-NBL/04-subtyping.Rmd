@@ -21,7 +21,6 @@ This script also creates the following additional result files:
 
 ```{r load libraries}
 suppressPackageStartupMessages(library(dplyr))
-suppressPackageStartupMessages(library(data.table))
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(ggbio))
 suppressPackageStartupMessages(library(ggplot2))
@@ -48,7 +47,7 @@ source(file.path(module_dir, "util", "plot_chr2.R"))
 
 ```
 
-Load input files and intialize expression threshold base on the threshold 
+Load input files and initialize expression threshold base on the threshold 
 inferred from MYCN gene expression distribution on plot 
 (`plots/TPM_Biospecimen_All_Samples_With_TMP.png`)
 
@@ -68,8 +67,15 @@ cnv_cnvkit_df <-
 hist_df <- 
   readr::read_tsv(file.path(data_dir, "histologies-base.tsv"), 
                   guess_max = 100000)
+
 # tmp expression cutoff 
 Suggested_Cutoff <- 140.83 # TARGET-30-PAMEZH-01A-01R	
+
+# MYCN clinical status
+mycn_clincial_status <- alteration_df %>% 
+  dplyr::select(Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA,
+                pathology_free_text_diagnosis) %>% 
+  dplyr::rename(molecular_subtype = pathology_free_text_diagnosis)
 
 ```
 
@@ -253,6 +259,25 @@ molecular_subtype_table <- alteration_df %>%
                   )
                ) %>% 
   dplyr::arrange(molecular_subtype)
+
+mycn_subtyped <- molecular_subtype_table %>% 
+  dplyr::filter(molecular_subtype != "NBL, to be classified")
+
+mycn_not_subtyped <- molecular_subtype_table %>% 
+  dplyr::filter(molecular_subtype == "NBL, to be classified") %>% 
+  dplyr::select(-molecular_subtype) %>% 
+  dplyr::left_join(mycn_clincial_status, 
+                   by = c("Kids_First_Biospecimen_ID_DNA",
+                          "Kids_First_Biospecimen_ID_RNA")) %>% 
+  dplyr::mutate(molecular_subtype =
+                  case_when(
+                    molecular_subtype == "MYCN amp" ~ "NBL, MYCN amplified",
+                    molecular_subtype == "MYCN non-amp" ~ "NBL, MYCN non-amplified",
+                    TRUE ~ "NBL, to be classified"
+                  )
+               )
+
+molecular_subtype_table <- bind_rows(mycn_subtyped, mycn_not_subtyped)
 
 ```
 

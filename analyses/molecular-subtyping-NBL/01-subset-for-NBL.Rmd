@@ -4,125 +4,106 @@ author: "Aditya Lahiri, Eric Wafula, Jo Lynne Rokita"
 date: "10/13/2022"
 output: html_notebook
 ---
-Objective: This notebook loads the histology file and selects the NBL biospecimen by filtering the
-following columns for specific values:
+Objective: This notebook loads the `histologies.tsv` file and selects NBL biospecimen
+by filtering the following columns for specific values:
 `sample_type`: `Tumor`
 `experimental_strategy`:`WGS`, `WXS`,`Targeted Sequencing` and `RNA-Seq`
 `pathology_diagnosis`: `Neuroblastoma`, `Ganglioneuroblastoma`,`Ganglioneuroblastoma, nodular`,
 `Ganglioneuroblastoma, intermixed`, and 
 `Ganglioneuroma, maturing subtype OR Ganglioneuroblastoma, well differentiated`
 
-After filtering the histology file, for the resultant biospecimens we integrate the MYCN consensus 
-and TPM information in the intermediate file, `input/mycn_nbl_subset_data.tsv`.
+After filtering the histology file, for resultant biospecimen are integrate the MYCN
+consensus and TPM information and written `input/mycn_nbl_subset_data.tsv` file.
 
-Background: 
-NBL is defined as neuroblastoma, ganglioneuroblastoma, and ganglioneuroma.These diseases are 
-mentioned in the histology-base.tsv file. 
+The `consensus_wgs_plus_cnvkit_wxs.tsv.gz` contains gene CNV copy number annotations 
+for biospecimen. We are only interested in the MYCN gene amplification status
 
-`consensus_wgs_plus_cnvkit_wxs.tsv.gz` has information regarding copy number, status, and 
-gene symbol (MYCN). 
-
-`gene-expression-rsem-tpm-collapsed.rds` file has MYCN TPM values.
+The `gene-expression-rsem-tpm-collapsed.rds` is TPM gene expression matrix for 
+biospecimen. We are only interested in the MYCN gene expression TPM values  
 
 Code Logic: 
-We first filter the `histology-base.tsv` file for NBL samples based on `pathology_diagnosis`, 
+We first filter the `histology-base.tsv` file for NBL samples based on `pathology_diagnosis`,
 `sample_type`, and `experimental strategy`. The pathology_diagnosis can have certain values as listed in the code chunk below. The sample type we query for is `Tumor`, i.e. we exclude `Normal` samples. 
-For experimental strategy, we consider `WGS`, `WXS`, `Targeted Sequencing`, and `RNA-Seq`. We ultimately want to create an output table with DNA and RNA biospecimen IDs, with their corresponding molecular subtypes, so we will need get DNA and RNA samples from the histology file. 
 
-We filter the `consensus_wgs_plus_cnvkit_wxs.tsv.gz` and `gene-expression-rsem-tpm-collapsed.rds` for
-`MYCN` to get the relevant information. 
+For experimental strategy, we consider `WGS`, `WXS`, `Targeted Sequencing`, and `RNA-Seq`. 
+We ultimately want to create an output table with DNA and RNA biospecimen IDs, with their corresponding molecular subtypes, so we will need get DNA and RNA samples from the histology file. 
 
-#Load Libraries
+We filter the `consensus_wgs_plus_cnvkit_wxs.tsv.gz` and `gene-expression-rsem-tpm-collapsed.rds` for `MYCN` to get the relevant information. 
+
+## Load Libraries
 
 ```{r load libraries}
-suppressPackageStartupMessages({
-library(dplyr)
-library(data.table)
-library(tidyverse)
-})
+suppressPackageStartupMessages(library(jsonlite))
+suppressPackageStartupMessages(library(tidyverse))
 ```
 
-#Set up directories
+## Set up directories
+
 ```{r setup directories}
-# root directory
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-
-# data directory
 data_dir <- file.path(root_dir, "data")
-
-# module directory
 module_dir <- file.path(root_dir, "analyses","molecular-subtyping-NBL")
-
-# subset directory
 subset_dir <- file.path(module_dir, "nbl-subset")
-
-#results directory
 results_dir <- file.path(module_dir, "results")
-# create if doesn't exist
+
+# create subset_dir if doesn't exist
 if (!dir.exists(subset_dir)) {
   dir.create(subset_dir)
 }
+
+# create results_dir if doesn't exist
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 ```
 
-#Load and subset the files for histology, consensus, and tpm data
-```{r load the data files: this will take time}
-# Read in the JSON file that contains the strings we'll use to include
-path_dx_list <- jsonlite::fromJSON(
-  file.path(subset_dir, "nbl_subtyping_path_dx_strings.json")
-  )
+## Load data files
 
-# histology
-hist_subset <- readr::read_tsv(file.path(data_dir, "histologies-base.tsv"),
+```{r load the data file}
+# required pathology diagnosis terms
+path_dx_list <- jsonlite::fromJSON(
+  file.path(subset_dir, "nbl_subtyping_path_dx_strings.json"))
+
+# histologies
+hist_df <- readr::read_tsv(file.path(data_dir, "histologies-base.tsv"),
                                guess_max = 100000) %>%
-  filter(experimental_strategy != "Methylation",
+  filter(experimental_strategy %in% c("WGS", "WXS", "RNA-Seq", 
+                                     "Targeted Sequencing"),
+         sample_type == "Tumor",
          pathology_diagnosis %in% path_dx_list$exact_path_dx)
 
-# The consensus_wgs_plus_cnvkit_wxs.tsv.gz file has all types of genes, we just need MYCN, 
-#  so we filter the dataset as follows:
-consensus_filtered_df <- 
+# consensus cnv with status file
+consensus_df <- 
   readr::read_tsv(file.path(data_dir, "consensus_wgs_plus_cnvkit_wxs.tsv.gz")) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id,
                 MYCN_CN_status = status,
                 MYCN_CN = copy_number) %>%
-  filter(gene_symbol=="MYCN",
-         Kids_First_Biospecimen_ID %in% hist_subset$Kids_First_Biospecimen_ID)
+  dplyr::filter(gene_symbol == "MYCN",
+         Kids_First_Biospecimen_ID %in% hist_df$Kids_First_Biospecimen_ID)
 
-# filter tpm matrix for NBL samples and MYCN
-expression_mat <- readRDS(file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")) 
+# tpm expression matrix
+tpm_df <- 
+  readr::read_rds(file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")) %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>% 
+  dplyr::filter(Kids_First_Biospecimen_ID == "MYCN") %>%
+  tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>% 
+  tidyr::pivot_longer(colnames(.), 
+                      names_to = "Kids_First_Biospecimen_ID",
+                      values_to = "MYCN_TPM")
 
-TPM_MYCN_data <- t(expression_mat["MYCN", 
-                                  intersect(hist_subset$Kids_First_Biospecimen_ID, 
-                                            colnames(expression_mat))]) 
-TPM_MYCN_data <- TPM_MYCN_data %>%
-  as.data.frame() %>%
-  mutate(Kids_First_Biospecimen_ID = rownames(TPM_MYCN_data)) %>%
-  dplyr::rename(MYCN_TPM = MYCN)
-
-rm(expression_mat)
 ```
 
-Code Logic:
-We will integrate the TPM and consensus data with the hist_filtered using left join. Histology file 
-has all the biospecimens but we are only concerned with NBL-biospecimens, so we use the filtered 
-version of histology file (`hist_filtered_df`). 
+## Write merged subset datasets to file
 
-# Get TPM , Copy Number and Status
-```{r Getting TPM, Copy Number and Status info}
-# Add the status and copy number to these samples. Adding the information if available, so we do a 
-# left join with respect to hist_filtered_df as we don't want to discard any biospecimen of MYCN-NBL
-# for which status and copy number is not available
-
-# Finally add the TPM data using left join
-MYCN_DF <- hist_subset %>%
-  left_join(consensus_filtered_df) %>%
-  left_join(TPM_MYCN_data)
-```
-
-# Write the mycn-nbl biospecimen file into subset dir
-```{r write alteration table}
-MYCN_DF %>% 
+```{r write output file}
+hist_df %>% left_join(consensus_df, by = "Kids_First_Biospecimen_ID") %>%
+  dplyr::left_join(tpm_df, by = "Kids_First_Biospecimen_ID") %>% 
   readr::write_tsv(file.path(subset_dir, "mycn_nbl_subset_data.tsv"))
 ```
+
+## Session Info
+
+```{r sessioninfo}
+sessionInfo() 
+```
+

@@ -38,14 +38,15 @@ path_dx_list <- jsonlite::fromJSON(
 # read histolgies base 
 hist_df <- readr::read_tsv(file.path(data_dir, "histologies-base.tsv"), 
                            guess_max = 100000) %>% 
-  dplyr::select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, sample_id,
-         cohort, experimental_strategy, pathology_diagnosis)
+  dplyr::select(Kids_First_Biospecimen_ID, sample_id, cohort, 
+                experimental_strategy, pathology_diagnosis)
 
 # read molecular subtypes
 subtypes_df <- readr::read_tsv(file.path(results_dir, 
                             "alteration_table_with_molecular_subtype.tsv"), 
                             guess_max = 100000) %>% 
-  dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_DNA)
+  dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_DNA) %>% 
+  dplyr::select(-cohort)
 
 ```
 

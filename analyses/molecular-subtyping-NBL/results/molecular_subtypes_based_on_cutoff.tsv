@@ -1,10 +1,4 @@
 Kids_First_Biospecimen_ID_DNA	Kids_First_Biospecimen_ID_RNA	MYCN_CN	pathology_free_text_diagnosis	MYCN_CN_status	MYCN_TPM	molecular_subtype
-BS_4NPEMNAD	BS_DY88N5ZT	100	Metastatic secondary tumors;Neuroblastoma	amplification	83.29	NBL, MYCN non-amplified
-BS_5J5VH3X0	BS_2SHWPB5P	NA	ganglioneuroblastoma, stage ii favorable histology non n-myc amplified	NA	0.13	NBL, MYCN non-amplified
-BS_CK7CPM73	BS_NFRXNAFE	NA	ganglioneuroblastoma	NA	4.08	NBL, MYCN non-amplified
-BS_F0GNWEJJ	BS_VNWKNRY4	NA	Metastatic secondary tumors;Neuroblastoma	NA	6.73	NBL, MYCN non-amplified
-BS_KP0YNTAK	BS_1RT76ANT	4	Metastatic secondary tumors;Neuroblastoma	gain	9.38	NBL, MYCN non-amplified
-BS_NHMPQ8Q1	BS_JBGZ7HHZ	NA	ganglioneuroblastoma, stage ii favorable histology non n-myc amplified	NA	0.02	NBL, MYCN non-amplified
 BS_00PH2T1P	BS_P10Y42BX	NA	MYCN non-amp	NA	11.77	NBL, MYCN non-amplified
 BS_0T5A16N2	BS_KHW6ASK4	NA	MYCN non-amp	NA	15.92	NBL, MYCN non-amplified
 BS_0TER803R	BS_ZGKT8MMX	NA	MYCN non-amp	NA	21.84	NBL, MYCN non-amplified
@@ -87,7 +81,6 @@ BS_J6FPW4H0	BS_FJAQ3KAX	NA	MYCN non-amp	NA	26	NBL, MYCN non-amplified
 BS_JGVTE14P	BS_15ED4VDX	NA	MYCN non-amp	NA	26.45	NBL, MYCN non-amplified
 BS_JQ0XD1K9	BS_EE5Z0Z4J	NA	MYCN non-amp	NA	48.27	NBL, MYCN non-amplified
 BS_JTP91S1A	BS_2RFA5NWH	NA	MYCN non-amp	NA	25.84	NBL, MYCN non-amplified
-BS_JZFMHGNX	BS_ETC8R0TD	NA	MYCN non-amp	NA	1.49	NBL, MYCN non-amplified
 BS_K2K5YSDS	BS_S5KDWVEA	NA	MYCN non-amp	NA	0.39	NBL, MYCN non-amplified
 BS_K5DHTP34	BS_3GRJH3PS	NA	MYCN non-amp	NA	15.41	NBL, MYCN non-amplified
 BS_K62HBS01	BS_WFCVBVDS	NA	MYCN non-amp	NA	22.43	NBL, MYCN non-amplified
@@ -113,7 +106,7 @@ BS_PKHXM1NB	BS_XJDB3R9K	NA	MYCN non-amp	NA	7.94	NBL, MYCN non-amplified
 BS_PNF2SHN9	BS_8EG9GQZS	NA	MYCN non-amp	NA	24.19	NBL, MYCN non-amplified
 BS_PQFKEKEW	BS_WR5VE59B	NA	MYCN non-amp	NA	23.19	NBL, MYCN non-amplified
 BS_PS8TB6Z0	BS_HA1N9VCX	NA	MYCN non-amp	NA	17.75	NBL, MYCN non-amplified
-BS_QCP0VAZ7	BS_6Y5F3QGV	NA	MYCN amp	NA	10	NBL, MYCN non-amplified
+BS_QCP0VAZ7	BS_6Y5F3QGV	NA	MYCN non-amp	NA	10	NBL, MYCN non-amplified
 BS_QDMDQ3E3	BS_T4KS08ND	NA	MYCN non-amp	NA	30.79	NBL, MYCN non-amplified
 BS_QKTJ4QY9	BS_A2HY1DZA	NA	MYCN non-amp	NA	12.93	NBL, MYCN non-amplified
 BS_QWX24M4X	BS_5Y7PNW71	NA	MYCN non-amp	NA	1.32	NBL, MYCN non-amplified
@@ -163,9 +156,6 @@ BS_Z862V8M7	BS_NPVE58AT	NA	MYCN non-amp	NA	11.83	NBL, MYCN non-amplified
 BS_ZK0GRMB1	BS_FXDGYFBR	NA	MYCN non-amp	NA	1.32	NBL, MYCN non-amplified
 BS_ZPXVVM8K	BS_NC4PWRVP	NA	MYCN non-amp	NA	10.59	NBL, MYCN non-amplified
 BS_ZRG2V7T2	BS_CXGWN1W5	NA	MYCN non-amp	NA	18.74	NBL, MYCN non-amplified
-TARGET-30-PAPTCR-01A-01D	TARGET-30-PAPTCR-01A-01R	2	NA	neutral	6.25	NBL, MYCN non-amplified
-NA	BS_G1Y281HX	NA	peripheral neuroblastoma	NA	0.15	NBL, MYCN non-amplified
-NA	BS_TD1ZEQ7R	NA	neuroblastoma	NA	2.72	NBL, MYCN non-amplified
 NA	BS_3V34S6KM	NA	MYCN non-amp	NA	0.79	NBL, MYCN non-amplified
 NA	BS_43R2B7DR	NA	MYCN non-amp	NA	2.24	NBL, MYCN non-amplified
 NA	BS_A3198WFE	NA	MYCN non-amp	NA	16.98	NBL, MYCN non-amplified
@@ -174,6 +164,7 @@ NA	BS_MYNJDVWV	NA	MYCN non-amp	NA	39.93	NBL, MYCN non-amplified
 NA	BS_NQP7B1SY	NA	MYCN non-amp	NA	15.19	NBL, MYCN non-amplified
 NA	BS_XPTREBJD	NA	MYCN non-amp	NA	10.23	NBL, MYCN non-amplified
 NA	BS_YG0W2BBN	NA	MYCN non-amp	NA	0.9	NBL, MYCN non-amplified
+TARGET-30-PAPTCR-01A-01D	TARGET-30-PAPTCR-01A-01R	2	NA	neutral	6.25	NBL, MYCN non-amplified
 NA	TARGET-30-PAISNS-01A-01R	NA	MYCN non-amp	NA	40.33	NBL, MYCN non-amplified
 NA	TARGET-30-PAKZRH-01A-01R	NA	MYCN non-amp	NA	22.24	NBL, MYCN non-amplified
 NA	TARGET-30-PALKUC-01A-01R	NA	MYCN amp	NA	169.45	NBL, MYCN amplified
@@ -228,23 +219,32 @@ NA	TARGET-30-PATYIL-01A-01R	NA	MYCN non-amp	NA	627.74	NBL, MYCN amplified
 NA	TARGET-30-PATYIL-02A-01R	NA	MYCN non-amp	NA	710.02	NBL, MYCN amplified
 NA	TARGET-30-PAUDDK-01A-01R	NA	MYCN non-amp	NA	15.23	NBL, MYCN non-amplified
 NA	TARGET-30-PAUDDK-02A-01R	NA	MYCN non-amp	NA	45.03	NBL, MYCN non-amplified
+BS_4NPEMNAD	BS_DY88N5ZT	100	Metastatic secondary tumors;Neuroblastoma	amplification	83.29	NBL, MYCN non-amplified
+BS_5J5VH3X0	BS_2SHWPB5P	NA	ganglioneuroblastoma, stage ii favorable histology non n-myc amplified	NA	0.13	NBL, MYCN non-amplified
+BS_CK7CPM73	BS_NFRXNAFE	NA	ganglioneuroblastoma	NA	4.08	NBL, MYCN non-amplified
+BS_F0GNWEJJ	BS_VNWKNRY4	NA	Metastatic secondary tumors;Neuroblastoma	NA	6.73	NBL, MYCN non-amplified
+BS_KP0YNTAK	BS_1RT76ANT	4	Metastatic secondary tumors;Neuroblastoma	gain	9.38	NBL, MYCN non-amplified
+BS_NHMPQ8Q1	BS_JBGZ7HHZ	NA	ganglioneuroblastoma, stage ii favorable histology non n-myc amplified	NA	0.02	NBL, MYCN non-amplified
+NA	BS_G1Y281HX	NA	peripheral neuroblastoma	NA	0.15	NBL, MYCN non-amplified
+NA	BS_TD1ZEQ7R	NA	neuroblastoma	NA	2.72	NBL, MYCN non-amplified
 NA	BS_G0C2BKGC	NA	Neuroblastoma of the Adrenal Gland and Sympathetic Nervous System	NA	NA	NBL, to be classified
 NA	BS_HEDCVFKC	NA	NA	NA	NA	NBL, to be classified
-NA	BS_XV40PE3Q	NA	NA	NA	NA	NBL, to be classified
 NA	BS_YTYSPH4Q	NA	Neuroblastoma of the Adrenal Gland and Sympathetic Nervous System	NA	NA	NBL, to be classified
 BS_8XDZQKSD	BS_MPE34NYZ	3	MYCN amp	gain	334.91	NBL, MYCN amplified
 BS_A5AQFAFA	BS_QJ3XB7XZ	3	MYCN amp	gain	27.01	NBL, MYCN non-amplified
 BS_ACCE0MEA	BS_94ZKC2SR	3	MYCN amp	gain	269.8	NBL, MYCN amplified
 BS_FJP95JXF	BS_ZFJS669M	3	MYCN amp	gain	311.07	NBL, MYCN amplified
 BS_QDRHQSPZ	BS_6WBAV14H	3	MYCN amp	gain	313.7	NBL, MYCN amplified
-TARGET-30-PAMMXF-01A-01W	TARGET-30-PAMMXF-01A-01R	2	MYCN amp	neutral	536	NBL, MYCN amplified
-TARGET-30-PASXIE-01A-01D	TARGET-30-PASXIE-01A-01R	3	MYCN amp	gain	1399.01	NBL, MYCN amplified
 BS_4WSW3X49	NA	3	MYCN amp	gain	NA	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 BS_6K2SSJ77	NA	3	MYCN amp	gain	NA	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 BS_E4V8XN3G	NA	3	MYCN amp	gain	NA	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 BS_WMM0MP1J	NA	4	MYCN amp	gain	NA	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
+TARGET-30-PAMMXF-01A-01W	TARGET-30-PAMMXF-01A-01R	2	MYCN amp	neutral	536	NBL, MYCN amplified
+TARGET-30-PASXIE-01A-01D	TARGET-30-PASXIE-01A-01R	3	MYCN amp	gain	1399.01	NBL, MYCN amplified
 TARGET-30-PAKVUY-01A-01D	NA	2	MYCN amp	neutral	NA	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 TARGET-30-PAMCXF-01A-01W	NA	2	MYCN amp	loss	NA	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
+TARGET-30-PAMDAL-01A-01W	NA	50	MYCN amp	amplification	NA	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
+TARGET-30-PAMDAL-01A-01W	NA	3	MYCN amp	neutral	NA	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 TARGET-30-PANUKV-01A-01W	NA	2	MYCN amp	neutral	NA	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 TARGET-30-PARETE-01A-01D	NA	2	MYCN amp	loss	NA	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
 TARGET-30-PARGZK-01A-01D	NA	2	MYCN amp	neutral	NA	Pathology-amp,MYCN_CN_status-non-amp,TPM-NA
