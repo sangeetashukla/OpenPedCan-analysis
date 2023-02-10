@@ -23,8 +23,8 @@ The purpose of this notebook is to aggregate molecular subtyping results from th
 * [`molecular-subtyping-chordoma`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-chordoma)
 
 ### not merge into master
-* [`molecular-subtyping-ATRT`]()
-* [`molecular-subtyping-NBL`]()
+* [`molecular-subtyping-ATRT`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-ATRT)
+* [`molecular-subtyping-NBL`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-NBL)
 
 
 ## Set up
@@ -96,7 +96,7 @@ embryonal_dir <- file.path(analyses_dir, "molecular-subtyping-embryonal")
 neurocytoma_dir <- file.path(analyses_dir, "molecular-subtyping-neurocytoma")
 chordoma_dir <- file.path(analyses_dir, "molecular-subtyping-chordoma")
 atrt_dir <- file.path(analyses_dir, "molecular-subtyping-ATRT")
-#nbl_dir <- file.path(analyses_dir, "molecular-subtyping-NBL")
+nbl_dir <- file.path(analyses_dir, "molecular-subtyping-NBL")
 
 # the folder that contains the tabular results is standardized across modules
 results_dir <- "results"
@@ -140,9 +140,7 @@ neurocytoma_results_file <- file.path(neurocytoma_dir, results_dir, "neurocytoma
 # reading in smarcb1 status only, subtyping will come through pathology review in step 3
 chordoma_results_file <- file.path(chordoma_dir, results_dir, "chordoma_smarcb1_status.tsv")
 atrt_results_file <- file.path(atrt_dir, results_dir, "ATRT-molecular-subtypes.tsv")
-
-# NBL does not merged into dev yet
-#nbl_results_file <- file.path(nbl_dir, results_dir, "neuroblastoma-molecular-subtypes.tsv")
+nbl_results_file <- file.path(nbl_dir, results_dir, "neuroblastoma_molecular_subtypes.tsv")
 ```
 
 #### Output file
@@ -166,9 +164,7 @@ neurocytoma_results_df <- read_tsv(neurocytoma_results_file)
 embryonal_results_df <- read_tsv(embryonal_results_file)
 chordoma_results_df <- read_tsv(chordoma_results_file)
 atrt_results_df <- read_tsv(atrt_results_file)
-
-# NBL does not merged into dev yet
-#nbl_results_df <- read_tsv(nbl_results_file)
+nbl_results_df <- read_tsv(nbl_results_file)
 ```
 
 ## Compile the subtyping resutls
@@ -368,7 +364,14 @@ atrt_results_df <-  atrt_df %>%
 
 
 ```{r}
-
+nbl_results_df <- bind_exp_strategies(nbl_results_df) %>%
+  inner_join(select(histologies_df,join_cols),
+             by = "Kids_First_Biospecimen_ID") %>%
+  # will update subtype and integrated diagnosis in step 3
+  mutate(integrated_diagnosis = NA_character_,
+         broad_histology = "neuroblastoma",
+         short_histology = "NBL",
+         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
 ```
 ### All results
 
@@ -385,7 +388,7 @@ all_results_df <- bind_rows(embryonal_results_df,
                             neurocytoma_results_df,
                             chordoma_results_df,
                             atrt_results_df, 
-                            #nbl_results_df, 
+                            nbl_results_df, 
                             ) %>%
   select(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_ID, molecular_subtype,
          integrated_diagnosis, short_histology, broad_histology, Notes) %>%
