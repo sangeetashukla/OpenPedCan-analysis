@@ -690,8 +690,8 @@ IHG <- IHG %>%
   unique()
 
 molecular_subtype_table <- molecular_subtype_table %>% 
-  filter(!sample_id %in% IGH$sample_id) %>%
-  bind_rows(IGH) 
+  filter(!sample_id %in% IHG$sample_id) %>%
+  bind_rows(IHG) 
 
 ```
 
