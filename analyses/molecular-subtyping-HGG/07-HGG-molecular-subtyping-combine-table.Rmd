@@ -634,12 +634,12 @@ MET <- fusion_df %>%
 
 RTK_list <- c(NTRK, ALK, MET, ROS1)
 
-IGH <- histologies_df %>% 
+IHG <- histologies_df %>% 
   filter(cns_methylation_subclass == "IHG" | grepl("infant type hemispheric glioma", pathology_free_text_diagnosis)) %>%
   select(Kids_First_Participant_ID, sample_id, pathology_diagnosis, pathology_free_text_diagnosis, cns_methylation_subclass, cns_methylation_subclass_score) %>%
   left_join(all_data_df, by = c("sample_id", "Kids_First_Participant_ID"))
 
-IGH <- IGH %>% 
+IHG <- IHG %>% 
   mutate(molecular_subtype = case_when(
     Kids_First_Biospecimen_ID_DNA %in% NTRK | 
       Kids_First_Biospecimen_ID_RNA %in% NTRK |
