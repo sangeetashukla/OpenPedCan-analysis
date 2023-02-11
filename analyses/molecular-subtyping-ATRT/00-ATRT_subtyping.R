@@ -46,7 +46,7 @@ atrt_df_panel_rna <- atrt_df %>%
 atrt_df_WGS <- atrt_df %>% 
   filter(experimental_strategy == "WGS") %>%
   select(sample_id,  Kids_First_Biospecimen_ID, Kids_First_Participant_ID) %>%
-  dplyr::rename(Kids_First_Biospecimen_DNA_wgs = Kids_First_Biospecimen_ID)
+  dplyr::rename(Kids_First_Biospecimen_ID_DNA_wgs = Kids_First_Biospecimen_ID)
 
 atrt_df_RNA <- atrt_df %>% 
   filter(experimental_strategy == "RNA-Seq") %>%
@@ -70,7 +70,7 @@ atrt_subtype_final <- atrt_subtype %>%
   mutate(molecular_subtype = case_when(cns_methylation_subclass_score >= 0.8 & cns_methylation_subclass %in% ATRT_subtype_list ~ cns_methylation_subclass, 
                                        is.na(Kids_First_Biospecimen_ID_methyl) ~ "ATRT, To be classified",
                                        TRUE ~ "ATRT, To be classified")) %>%
-  select(sample_id, Kids_First_Participant_ID, Kids_First_Biospecimen_ID_methyl, Kids_First_Biospecimen_DNA_wgs, Kids_First_Biospecimen_ID_RNA, Kids_First_Biospecimen_ID_DNA_panel, Kids_First_Biospecimen_ID_RNA_panel, molecular_subtype) %>%
+  select(sample_id, Kids_First_Participant_ID, Kids_First_Biospecimen_ID_methyl, Kids_First_Biospecimen_ID_DNA_wgs, Kids_First_Biospecimen_ID_RNA, Kids_First_Biospecimen_ID_DNA_panel, Kids_First_Biospecimen_ID_RNA_panel, molecular_subtype) %>%
   
   # write result
   readr::write_tsv(file.path(results_dir, "ATRT-molecular-subtypes.tsv"))

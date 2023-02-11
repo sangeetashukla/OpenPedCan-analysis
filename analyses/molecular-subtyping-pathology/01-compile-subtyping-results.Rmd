@@ -4,7 +4,7 @@ output:
   html_notebook:
     toc: true
     toc_float: true
-author: Jaclyn Taroni for CCDL, Jo Lynne Rokita for D3b
+author: Jaclyn Taroni for CCDL, Jo Lynne Rokita for D3b, Zhuangzhuang Geng for D3b
 date: 2020
 params:
    is_ci: FALSE
@@ -12,17 +12,15 @@ params:
 
 The purpose of this notebook is to aggregate molecular subtyping results from the following mature analysis modules:
 
-* [`molecular-subtyping-EWS`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-EWS)
-* [`molecular-subtyping-HGG`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-HGG)
-* [`molecular-subtyping-LGAT`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-LGAT)
-* [`molecular-subtyping-embryonal`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-embryonal)
-* [`molecular-subtyping-CRANIO`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-CRANIO)
-* [`molecular-subtyping-EPN`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-EPN)
-* [`molecular-subtyping-MB`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-MB)
-* [`molecular-subtyping-neurocytoma`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-neurocytoma)
-* [`molecular-subtyping-chordoma`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-chordoma)
-
-### not merge into master
+* [`molecular-subtyping-EWS`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/master/analyses/molecular-subtyping-EWS)
+* [`molecular-subtyping-HGG`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/master/analyses/molecular-subtyping-HGG)
+* [`molecular-subtyping-LGAT`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/master/analyses/molecular-subtyping-LGAT)
+* [`molecular-subtyping-embryonal`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/master/analyses/molecular-subtyping-embryonal)
+* [`molecular-subtyping-CRANIO`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/master/analyses/molecular-subtyping-CRANIO)
+* [`molecular-subtyping-EPN`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/master/analyses/molecular-subtyping-EPN)
+* [`molecular-subtyping-MB`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/master/analyses/molecular-subtyping-MB)
+* [`molecular-subtyping-neurocytoma`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/master/analyses/molecular-subtyping-neurocytoma)
+* [`molecular-subtyping-chordoma`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/master/analyses/molecular-subtyping-chordoma)
 * [`molecular-subtyping-ATRT`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-ATRT)
 * [`molecular-subtyping-NBL`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-NBL)
 
@@ -49,12 +47,13 @@ if (!(is.logical(running_in_ci)))
 library(tidyverse)
 ```
 
+Create function to separate and rebind bs_ids from results files to mimic histologies file
 ```{r}
 bind_exp_strategies <- function(results_df) {
   # Many of the molecular subtyping tables contain a 
   # Kids_First_Biospecimen_ID_RNA and Kids_First_Biospecimen_ID_DNA column,
   # this function separates those out and binds the rows to mirror how 
-  # pbta-histologies.tsv is organized
+  # histologies.tsv is organized
   #
   # Args:
   #   results_df: a molecular subtyping table with Kids_First_Biospecimen_ID_RNA,
@@ -62,6 +61,12 @@ bind_exp_strategies <- function(results_df) {
   # Returns:
   #   A data.frame where each biospecimen is a row
   
+  # So far, files have one of two sets of columns - this might change in the future or we might need to think of how to better handle
+  dna_rna_cols <- c("Kids_First_Biospecimen_ID_DNA", "Kids_First_Biospecimen_ID_RNA")
+  long_cols <- c("Kids_First_Biospecimen_ID_methyl", "Kids_First_Biospecimen_ID_DNA_wgs, Kids_First_Biospecimen_ID_DNA_panel, Kids_First_Biospecimen_ID_RNA_panel", "Kids_First_Biospecimen_ID_RNA")
+  
+    # if only DNA and RNA present:
+  if (dna_rna_cols %in% names(results_df)) {
     rna_df <- results_df %>%
     dplyr::select(-Kids_First_Biospecimen_ID_DNA) %>%
     dplyr::filter(!is.na(Kids_First_Biospecimen_ID_RNA)) %>%
@@ -71,8 +76,40 @@ bind_exp_strategies <- function(results_df) {
     dplyr::select(-Kids_First_Biospecimen_ID_RNA) %>%
     dplyr::filter(!is.na(Kids_First_Biospecimen_ID_DNA)) %>%
     dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_DNA)
+    
     return(bind_rows(rna_df, dna_df) %>% distinct())
+  }
   
+    # if all the things - DNA, RNA, methyl, DNA and RNA panel - are present:
+  if (long_cols %in% names(results_df)) {
+    rna_df <- results_df %>%
+    dplyr::select(-c(Kids_First_Biospecimen_ID_methyl, Kids_First_Biospecimen_ID_DNA_panel, Kids_First_Biospecimen_ID_RNA_panel, Kids_First_Biospecimen_ID_DNA_wgs)) %>%
+    dplyr::filter(!is.na(Kids_First_Biospecimen_ID_RNA)) %>%
+    dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA)
+    
+    dna_df <- results_df %>%
+    dplyr::select(-c(Kids_First_Biospecimen_ID_methyl, Kids_First_Biospecimen_ID_DNA_panel, Kids_First_Biospecimen_ID_RNA_panel, Kids_First_Biospecimen_ID_RNA)) %>%
+    dplyr::filter(!is.na(Kids_First_Biospecimen_ID_DNA_wgs)) %>%
+    dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_DNA_wgs)
+    
+    rna_panel_df <- results_df %>%
+    dplyr::select(-c(Kids_First_Biospecimen_ID_methyl, Kids_First_Biospecimen_ID_DNA_wgs, Kids_First_Biospecimen_ID_DNA_panel, Kids_First_Biospecimen_ID_RNA)) %>%
+    dplyr::filter(!is.na(Kids_First_Biospecimen_ID_RNA_panel)) %>%
+    dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA_panel)
+    
+    dna_panel_df <- results_df %>%
+    dplyr::select(-c(Kids_First_Biospecimen_ID_methyl, Kids_First_Biospecimen_ID_DNA_wgs, Kids_First_Biospecimen_ID_RNA_panel, Kids_First_Biospecimen_ID_RNA)) %>%
+    dplyr::filter(!is.na(Kids_First_Biospecimen_ID_DNA_panel)) %>%
+    dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_DNA_panel)
+    
+    methyl_df <- results_df %>%
+    dplyr::select(-c(Kids_First_Biospecimen_ID_DNA_panel, Kids_First_Biospecimen_ID_DNA_wgs, Kids_First_Biospecimen_ID_RNA_panel, Kids_First_Biospecimen_ID_RNA)) %>%
+    dplyr::filter(!is.na(Kids_First_Biospecimen_ID_methyl)) %>%
+    dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_methyl)
+    
+    return(bind_rows(rna_df, dna_df, rna_panel_df, dna_panel_df, methyl_df) %>% distinct())
+  }
+    
   # sometimes there will be multiple RNA-seq assays per single DNA-seq assay
   # or vice versa, which is why this distinct is necessary
   
@@ -153,7 +190,7 @@ output_file <- file.path(results_dir, "compiled_molecular_subtypes.tsv")
 
 ```{r message=FALSE}
 # split 
-histologies_df <- read_tsv(histologies_file, guess_max = 100000,col_types = cols(.default = "c"))
+histologies_df <- read_tsv(histologies_file, guess_max = 100000, col_types = cols(.default = "c"))
 cranio_results_df <- read_tsv(cranio_results_file)
 ews_results_df <- read_tsv(ews_results_file)
 epn_results_df <- read_tsv(epn_results_file)
@@ -171,13 +208,11 @@ nbl_results_df <- read_tsv(nbl_results_file)
 
 ### Handling non-ATRT/non-MB embryonal tumors
 
-The molecular subtyping information from these tumors will go into the v18 release, and we will update `integrated_diagnosis`, `short_histology`, `broad_histology`, and `Notes` columns now, until SQL rules PR [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748) goes in later.
-
 ```{r}
 embryonal_results_df <- bind_exp_strategies(embryonal_results_df) %>%
   inner_join(select(histologies_df,join_cols),
              by = "Kids_First_Biospecimen_ID") %>%
-  mutate(integrated_diagnosis = case_when(molecular_subtype == "CNS Embryonal, NOS"~ "CNS Embryonal tumor, NOS",
+  mutate(integrated_diagnosis = case_when(molecular_subtype == "CNS Embryonal, NOS"~ "CNS Embryonal tumor, NEC/NOS",
                                           molecular_subtype == "CNS HGNET-MN1"~ "CNS Embryonal tumor, HGNET-MN1",
                                           molecular_subtype == "CNS NB-FOXR2" ~ "CNS neuroblastoma",
                                           molecular_subtype == "ETMR, C19MC-altered"~ "Embryonal tumor with multilayer rosettes, C19MC-altered",
@@ -187,13 +222,11 @@ embryonal_results_df <- bind_exp_strategies(embryonal_results_df) %>%
           if_else(molecular_subtype %in% c("ETMR, C19MC-altered", "ETMR, NOS"),
                 "ETMR", "Embryonal tumor"),
         broad_histology = "Embryonal tumor",
-        Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
+        Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPedCan subtyping", Notes))
 
 ```
 
 ### Handling EWS
-
-The EWS results were updated in V18. Adding integrated dx, broad hist, short hist here for now.
 
 ```{r}
 # Add EWS integrated diagnosis, broad histology, short histology
@@ -203,12 +236,10 @@ ews_results_df <- bind_exp_strategies(ews_results_df) %>%
   mutate(integrated_diagnosis = "Ewing sarcoma",
          broad_histology = "Mesenchymal non-meningothelial tumor",
          short_histology = "EWS",
-         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
+         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPedCan subtyping", Notes))
 ```
 
 ### Handling HGG
-
-HGG subtyping was updated with V18.
 
 ```{r}
 hgg_results_df <- bind_exp_strategies(hgg_results_df) %>%
@@ -217,19 +248,24 @@ hgg_results_df <- bind_exp_strategies(hgg_results_df) %>%
   mutate(integrated_diagnosis = case_when(molecular_subtype == "DMG, H3 K28"~ "Diffuse midline glioma, H3 K28-mutant",
                                           molecular_subtype == "DMG, H3 K28, TP53 activated"~ "Diffuse midline glioma, H3 K28-mutant",
                                           molecular_subtype == "DMG, H3 K28, TP53 loss"~ "Diffuse midline glioma, H3 K28-mutant",
-                                          molecular_subtype == "HGG, H3 G35" ~ "High-grade glioma/astrocytoma, H3 G35-mutant",
-                                          molecular_subtype == "HGG, H3 G35, TP53 activated" ~ "High-grade glioma/astrocytoma, H3 G35-mutant",
-                                          molecular_subtype == "HGG, H3 G35, TP53 loss" ~ "High-grade glioma/astrocytoma, H3 G35-mutant",
-                                          molecular_subtype == "HGG, H3 wildtype" ~ "High-grade glioma/astrocytoma, H3 wildtype",
-                                          molecular_subtype == "HGG, H3 wildtype, TP53 activated" ~ "High-grade glioma/astrocytoma, H3 wildtype",
-                                          molecular_subtype == "HGG, H3 wildtype, TP53 loss" ~ "High-grade glioma/astrocytoma, H3 wildtype",
-                                          molecular_subtype == "HGG, IDH"~ "High-grade glioma/astrocytoma, IDH-mutant",
-                                          molecular_subtype == "HGG, IDH, TP53 loss"~ "High-grade glioma/astrocytoma, IDH-mutant",
-                                          molecular_subtype == "HGG, IDH, TP53 activated"~ "High-grade glioma/astrocytoma, IDH-mutant",
+                                          molecular_subtype == "HGG, H3 G35" ~ "Diffuse hemispheric glioma, H3 G35-mutant",
+                                          molecular_subtype == "HGG, H3 G35, TP53 activated" ~ "Diffuse hemispheric glioma, H3 G35-mutant",
+                                          molecular_subtype == "HGG, H3 G35, TP53 loss" ~ "Diffuse hemispheric glioma, H3 G35-mutant",
+                                          molecular_subtype == "HGG, H3 wildtype" ~ "High-grade glioma, IDH-wildtype and H3-wildtype",
+                                          molecular_subtype == "HGG, H3 wildtype, TP53 activated" ~ "High-grade glioma, IDH-wildtype and H3-wildtype",
+                                          molecular_subtype == "HGG, H3 wildtype, TP53 loss" ~ "High-grade glioma, IDH-wildtype and H3-wildtype",
+                                          molecular_subtype == "HGG, IDH"~ "High-grade glioma, IDH-mutant",
+                                          molecular_subtype == "HGG, IDH, TP53 loss"~ "High-grade glioma, IDH-mutant",
+                                          molecular_subtype == "HGG, IDH, TP53 activated"~ "High-grade glioma, IDH-mutant",
+                                          # account for IGH subtypes
+                                          molecular_subtype == "IHG, NTRK-altered"~ "Infant-type hemispheric glioma, NTRK-altered",
+                                          molecular_subtype == "IHG, ALK-altered"~ "Infant-type hemispheric glioma, ALK-altered",
+                                          molecular_subtype == "IHG, ROS1-altered"~ "Infant-type hemispheric glioma, ROS1-altered",
+                                          molecular_subtype == "IHG, MET-altered"~ "Infant-type hemispheric glioma, MET-altered",
                                           TRUE~ NA_character_),
                   broad_histology = "Diffuse astrocytic and oligodendroglial tumor",
                   short_histology = "HGAT",
-         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
+         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPedCan subtyping", Notes))
 ```
 
 ### Handling LGAT
@@ -246,7 +282,7 @@ lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
     str_detect(molecular_subtype, "To be classified") ~ NA_character_,
     grepl("^GNG, ",molecular_subtype) ~ str_replace(molecular_subtype, "GNG, ", "Ganglioglioma, "),
     grepl("^SEGA, ",molecular_subtype) ~ str_replace(molecular_subtype, "SEGA, ", "Subependymal Giant Cell Astrocytoma, "),
-    TRUE ~ str_replace(molecular_subtype, "LGG, ", "Low-grade glioma/astrocytoma, ")
+    TRUE ~ str_replace(molecular_subtype, "LGG, ", "Low-grade glioma, ")
   ),
   ## Broad histology update
   broad_histology = "Low-grade astrocytic tumor",
@@ -254,7 +290,7 @@ lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
   short_histology = case_when(
     grepl("^GNG, ",molecular_subtype) ~ "Ganglioglioma",
     TRUE ~ "LGAT"),
-  Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes)
+  Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPedCan subtyping", Notes)
   )
 
 ```
@@ -267,13 +303,16 @@ epn_results_df <- bind_exp_strategies(epn_results_df) %>%
            by = "Kids_First_Biospecimen_ID") %>%
   mutate(molecular_subtype = subgroup) %>%
   mutate(molecular_subtype = if_else(is.na(molecular_subtype), "EPN, To be classified", molecular_subtype), 
-         integrated_diagnosis = case_when(molecular_subtype == "EPN, PF A" ~ "Ependymoma, Posterior Fossa, Type A",
-                                          molecular_subtype == "EPN, ST RELA" ~ "Ependymoma, Supratentorial, RELA fusion positive",
-                                          molecular_subtype == "EPN, ST YAP1" ~ "Ependymoma, Supratentorial, YAP1 fusion positive", 
+         integrated_diagnosis = case_when(molecular_subtype == "EPN, PF A" ~ "Posterior fossa group A (PFA) ependymoma",
+                                          molecular_subtype == "EPN, ST ZFTA" ~ "Supratentorial ependymoma, ZFTA fusion-positive",
+                                          molecular_subtype == "EPN, ST YAP1" ~ "Supratentorial ependymoma, YAP1 fusion-positive", 
+                                          # add new EPN subtypes
+                                          molecular_subtype == "EPN, SP" ~ "Spinal ependymoma, NOS",
+                                          molecular_subtype == "EPN, SP-MYCN" ~ "Spinal ependymoma, MYCN-amplified",
                                           TRUE~ NA_character_),
          broad_histology = "Ependymal tumor",
          short_histology = "Ependymoma",
-         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
+         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPedCan subtyping", Notes))
 ```
 
 ### Handling MB
@@ -282,14 +321,14 @@ epn_results_df <- bind_exp_strategies(epn_results_df) %>%
 mb_results_df <- bind_exp_strategies(mb_results_df) %>%
   inner_join(select(histologies_df,join_cols),
             by = "Kids_First_Biospecimen_ID") %>%
-  mutate(integrated_diagnosis = case_when(molecular_subtype == "MB, SHH"~"Medulloblastoma, SHH-activated",
-                                          molecular_subtype == "MB, WNT"~"Medulloblastoma, WNT-activated",
-                                          molecular_subtype == "MB, Group3"~"Medulloblastoma, group 3",
-                                          molecular_subtype == "MB, Group4"~ "Medulloblastoma, group 4", 
+  mutate(integrated_diagnosis = case_when(molecular_subtype == "MB, SHH" ~ "Medulloblastoma, SHH-activated",
+                                          molecular_subtype == "MB, WNT" ~ "Medulloblastoma, WNT-activated",
+                                          molecular_subtype == "MB, Group3" ~ "Medulloblastoma, group 3",
+                                          molecular_subtype == "MB, Group4" ~ "Medulloblastoma, group 4", 
                                           TRUE ~NA_character_),
          broad_histology = "Embryonal tumor",
          short_histology = "Medulloblastoma",
-         Notes = if_else(!is.na(integrated_diagnosis), "Subtype based on prediction;Updated via OpenPBTA subtyping", Notes))
+         Notes = if_else(!is.na(integrated_diagnosis), "Subtype based on prediction;Updated via OpenPedCan subtyping", Notes))
 ```
 
 
@@ -304,7 +343,7 @@ cranio_results_df <- bind_exp_strategies(cranio_results_df) %>%
                                           TRUE ~ NA_character_),
          broad_histology = "Tumors of sellar region",
          short_histology = "Craniopharyngioma",
-         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
+         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPedCan subtyping", Notes))
 ```
 
 ### Handling Neurocytoma
@@ -317,7 +356,7 @@ neurocytoma_results_df <- neurocytoma_results_df %>%
                                         TRUE ~ NA_character_),
          broad_histology = "Neuronal and mixed neuronal-glial tumor",
          short_histology = "Neurocytoma",
-         Notes = if_else(!is.na(harmonized_diagnosis), "Updated via OpenPBTA subtyping", Notes))
+         Notes = if_else(!is.na(harmonized_diagnosis), "Updated via OpenPedCan subtyping", Notes))
 ```
 
 ### Handling Chordoma
@@ -331,33 +370,22 @@ chordoma_results_df <- bind_exp_strategies(chordoma_results_df) %>%
          integrated_diagnosis = NA_character_,
          broad_histology = "Chordoma",
          short_histology = "Chordoma",
-         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
+         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPedCan subtyping", Notes))
 
 ```
 
 ### Handling ATRT
 ```{r}
-atrt_df <- data.frame(sample_id = NA, 
-                      Kids_First_Participant_ID = NA, 
-                      molecular_subtype = NA, 
-                      Kids_First_Biospecimen_ID = NA)
-for(x in colnames(atrt_results_df)[3:7]){
-  temp <- atrt_results_df %>% 
-    dplyr::select(sample_id, Kids_First_Participant_ID, molecular_subtype, x) %>% 
-    dplyr::filter(!is.na(.[,x])) %>% 
-    dplyr::rename(Kids_First_Biospecimen_ID = x)
-  
-  atrt_df <- bind_rows(atrt_df, temp)
-}
-
-atrt_results_df <-  atrt_df %>%
+atrt_results_df <-  bind_exp_strategies(atrt_results_df) %>%
   inner_join(select(histologies_df,join_cols),
              by = "Kids_First_Biospecimen_ID") %>%
-  # will update subtype and integrated diagnosis in step 3
-  mutate(integrated_diagnosis = NA_character_,
-         broad_histology = "Atypical Teratoid Rhabdoid Tumor",
+  mutate(integrated_diagnosis = case_when(molecular_subtype == "ATRT, MYC" ~ "Atypical Teratoid Rhabdoid Tumor, MYC",
+                                          molecular_subtype == "ATRT, TYR" ~ "Atypical Teratoid Rhabdoid Tumor, TYR", 
+                                          molecular_subtype == "ATRT, SHH" ~ "Atypical Teratoid Rhabdoid Tumor, SHH", 
+                                          TRUE ~ NA_character_),
+         broad_histology = "Embryonal tumor",
          short_histology = "ATRT",
-         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
+         Notes = if_else(!is.na(integrated_diagnosis), "Subtype based on methylation;Updated via OpenPedCan subtyping", Notes))
 
 ```
 ### leave this section  for NBL module
@@ -367,11 +395,11 @@ atrt_results_df <-  atrt_df %>%
 nbl_results_df <- bind_exp_strategies(nbl_results_df) %>%
   inner_join(select(histologies_df,join_cols),
              by = "Kids_First_Biospecimen_ID") %>%
-  # will update subtype and integrated diagnosis in step 3
-  mutate(integrated_diagnosis = NA_character_,
-         broad_histology = "neuroblastoma",
-         short_histology = "NBL",
-         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
+  mutate(integrated_diagnosis = case_when(molecular_subtype == "NBL, MYCN amplified" ~ paste0(short_histology, ", MYCN-amplified"),
+                                          molecular_subtype == "NBL, MYCN non-amplified" ~ paste0(short_histology, ", MYCN-non-amplified"), 
+                                          TRUE ~ NA_character_),
+         broad_histology = "Embryonal tumor",
+         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPedCan subtyping", Notes))
 ```
 ### All results
 
