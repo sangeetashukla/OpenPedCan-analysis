@@ -1,6 +1,6 @@
 ## Updating molecular subtyping output with pathology feedback
 
-**Author of code and documentation:** [@jaclyn-taroni](https://github.com/jaclyn-taroni)
+**Author of code and documentation:** [@jaclyn-taroni](https://github.com/jaclyn-taroni) and [@jharenza](https://github.com/jharenza)
 
 As part of this project, we have undertaken several analyses that use molecular data to subtype biospecimens. 
 In some cases, our analyses have resulted in an update of the `integrated_diagnosis` field included in the clinical file (`pbta-histologies.tsv` [[doc](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/data-formats.md#data-caveats)]).
@@ -8,25 +8,27 @@ In some cases, our analyses have resulted in an update of the `integrated_diagno
 The objective of this module is three-fold:
 
 1. Aggregate the molecular subtyping calls from the following modules that produced results:
-   * [`molecular-subtyping-EPN`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-EPN)
-   * [`molecular-subtyping-EWS`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-EWS)
-   * [`molecular-subtyping-HGG`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-HGG)
-   * [`molecular-subtyping-LGAT`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-LGAT)
-   * [`molecular-subtyping-embryonal`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-embryonal)
-   * [`molecular-subtyping-CRANIO`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-CRANIO)
-   * [`molecular-subtyping-MB`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-MB)
-   * [`molecular-subtyping-neurocytoma`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-neurocytoma)
-   * [`molecular-subtyping-embryonal`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-embryonal)
-   * [`molecular-subtyping-chordoma`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-chordoma)
+   * [`molecular-subtyping-EPN`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-EPN)
+   * [`molecular-subtyping-EWS`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-EWS)
+   * [`molecular-subtyping-HGG`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-HGG)
+   * [`molecular-subtyping-LGAT`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-LGAT)
+   * [`molecular-subtyping-embryonal`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-embryonal)
+   * [`molecular-subtyping-CRANIO`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-CRANIO)
+   * [`molecular-subtyping-MB`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-MB)
+   * [`molecular-subtyping-neurocytoma`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-neurocytoma)
+   * [`molecular-subtyping-chordoma`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-chordoma)
+   * [`molecular-subtyping-NBL`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-NBL)
+   * [`molecular-subtyping-ATRT`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/molecular-subtyping-ATRT)
+
 
 2. Aggregate pathology_free_text_diagnosis from results 
-   * [Choroid plexus papilloma subtypes](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/choroid_plexus_papilloma_subtypes.tsv)
-   * [CNS Lymphoma subtypes](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/cns-lymphoma-subtypes.tsv)
-   * [Meningioma subtypes](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/meningioma_subtypes.tsv) 
-   * [Juvenile Xanthograniloma subtypes](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/juvenile-xanthogranuloma-subtypes.tsv)
-   * [Adamantinomatous craniopharyngioma subtype](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/cranio_adam_subtypes.tsv)
-   * [Neuronal and mixed neuronal-glial tumors subtypes](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/glialneuronal_tumor_subtypes.tsv)
-   * [LGAT subtypes update](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/lgat-pathology-free-text-subtypes.tsv)
+   * [Choroid plexus papilloma subtypes](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/analyses/molecular-subtyping-pathology/results/choroid_plexus_papilloma_subtypes.tsv)
+   * [CNS Lymphoma subtypes](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/analyses/molecular-subtyping-pathology/results/cns-lymphoma-subtypes.tsv)
+   * [Meningioma subtypes](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/analyses/molecular-subtyping-pathology/results/meningioma_subtypes.tsv) 
+   * [Juvenile Xanthogranuloma subtypes](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/analyses/molecular-subtyping-pathology/results/juvenile-xanthogranuloma-subtypes.tsv)
+   * [Adamantinomatous craniopharyngioma subtype](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/analyses/molecular-subtyping-pathology/results/cranio_adam_subtypes.tsv)
+   * [Neuronal and mixed neuronal-glial tumors subtypes](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/analyses/molecular-subtyping-pathology/results/glialneuronal_tumor_subtypes.tsv)
+   * [LGAT subtypes update](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/analyses/molecular-subtyping-pathology/results/lgat-pathology-free-text-subtypes.tsv)
    
 
 
