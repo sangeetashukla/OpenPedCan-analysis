@@ -208,7 +208,7 @@ nbl_results_df <- read_tsv(nbl_results_file)
 
 ### Handling non-ATRT/non-MB embryonal tumors
 
-```{r}
+```{r non atrt/non mb}
 embryonal_results_df <- bind_exp_strategies(embryonal_results_df) %>%
   inner_join(select(histologies_df,join_cols),
              by = "Kids_First_Biospecimen_ID") %>%
@@ -245,23 +245,15 @@ ews_results_df <- bind_exp_strategies(ews_results_df) %>%
 hgg_results_df <- bind_exp_strategies(hgg_results_df) %>%
   inner_join(select(histologies_df,join_cols),
              by = "Kids_First_Biospecimen_ID") %>%
-  mutate(integrated_diagnosis = case_when(molecular_subtype == "DMG, H3 K28"~ "Diffuse midline glioma, H3 K28-mutant",
-                                          molecular_subtype == "DMG, H3 K28, TP53 activated"~ "Diffuse midline glioma, H3 K28-mutant",
-                                          molecular_subtype == "DMG, H3 K28, TP53 loss"~ "Diffuse midline glioma, H3 K28-mutant",
-                                          molecular_subtype == "HGG, H3 G35" ~ "Diffuse hemispheric glioma, H3 G35-mutant",
-                                          molecular_subtype == "HGG, H3 G35, TP53 activated" ~ "Diffuse hemispheric glioma, H3 G35-mutant",
-                                          molecular_subtype == "HGG, H3 G35, TP53 loss" ~ "Diffuse hemispheric glioma, H3 G35-mutant",
-                                          molecular_subtype == "HGG, H3 wildtype" ~ "High-grade glioma, IDH-wildtype and H3-wildtype",
-                                          molecular_subtype == "HGG, H3 wildtype, TP53 activated" ~ "High-grade glioma, IDH-wildtype and H3-wildtype",
-                                          molecular_subtype == "HGG, H3 wildtype, TP53 loss" ~ "High-grade glioma, IDH-wildtype and H3-wildtype",
-                                          molecular_subtype == "HGG, IDH"~ "High-grade glioma, IDH-mutant",
-                                          molecular_subtype == "HGG, IDH, TP53 loss"~ "High-grade glioma, IDH-mutant",
-                                          molecular_subtype == "HGG, IDH, TP53 activated"~ "High-grade glioma, IDH-mutant",
+  mutate(integrated_diagnosis = case_when(grepl("DMG, H3 K28", molecular_subtype) ~ "Diffuse midline glioma, H3 K28-mutant",
+                                          grepl("HGG, H3 G35", molecular_subtype) ~ "Diffuse hemispheric glioma, H3 G35-mutant",
+                                          grepl("HGG, H3 wildtype", molecular_subtype) ~ "High-grade glioma, IDH-wildtype and H3-wildtype",
+                                          grepl("HGG, IDH", molecular_subtype) ~ "High-grade glioma, IDH-mutant",
                                           # account for IGH subtypes
-                                          molecular_subtype == "IHG, NTRK-altered"~ "Infant-type hemispheric glioma, NTRK-altered",
-                                          molecular_subtype == "IHG, ALK-altered"~ "Infant-type hemispheric glioma, ALK-altered",
-                                          molecular_subtype == "IHG, ROS1-altered"~ "Infant-type hemispheric glioma, ROS1-altered",
-                                          molecular_subtype == "IHG, MET-altered"~ "Infant-type hemispheric glioma, MET-altered",
+                                          grepl("IHG, NTRK-altered", molecular_subtype) ~ "Infant-type hemispheric glioma, NTRK-altered",
+                                          grepl("IHG, ALK-altered", molecular_subtype) ~ "Infant-type hemispheric glioma, ALK-altered",
+                                          grepl("IHG, ROS1-altered", molecular_subtype) ~ "Infant-type hemispheric glioma, ROS1-altered",
+                                          grepl("IHG, MET-altered", molecular_subtype) ~ "Infant-type hemispheric glioma, MET-altered",
                                           TRUE~ NA_character_),
                   broad_histology = "Diffuse astrocytic and oligodendroglial tumor",
                   short_histology = "HGAT",

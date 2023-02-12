@@ -1594,10 +1594,10 @@ PT_2WSNYKAC	7316-5320	BS_JGBJTPDA	MB, To be classified	NA	Medulloblastoma	Embryo
 PT_2WSNYKAC	7316-5320	BS_G7N5401T	MB, To be classified	NA	Medulloblastoma	Embryonal tumor	NA
 PT_2WVW55DA	7316-1890	BS_QAG1RDXN	GNT, RTK	GNT, RTK	LGAT	Low-grade astrocytic tumor	Updated via OpenPedCan subtyping
 PT_2WVW55DA	7316-1890	BS_NYVVN7SD	GNT, RTK	GNT, RTK	LGAT	Low-grade astrocytic tumor	Updated via OpenPedCan subtyping
-PT_2WVW55DA	7316-2092	BS_M7HCF7DW	IHG, ROS1-altered, TP53 loss	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA
-PT_2WVW55DA	7316-2092	BS_M28HG0NT	IHG, ROS1-altered, TP53 loss	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA
-PT_2WVW55DA	7316-2100	BS_CXVGG342	IHG, ROS1-altered, TP53 loss	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA
-PT_2WVW55DA	7316-2100	BS_RG6JK7ZN	IHG, ROS1-altered, TP53 loss	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA
+PT_2WVW55DA	7316-2092	BS_M7HCF7DW	IHG, ROS1-altered, TP53 loss	Infant-type hemispheric glioma, ROS1-altered	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPedCan subtyping
+PT_2WVW55DA	7316-2092	BS_M28HG0NT	IHG, ROS1-altered, TP53 loss	Infant-type hemispheric glioma, ROS1-altered	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPedCan subtyping
+PT_2WVW55DA	7316-2100	BS_CXVGG342	IHG, ROS1-altered, TP53 loss	Infant-type hemispheric glioma, ROS1-altered	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPedCan subtyping
+PT_2WVW55DA	7316-2100	BS_RG6JK7ZN	IHG, ROS1-altered, TP53 loss	Infant-type hemispheric glioma, ROS1-altered	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPedCan subtyping
 PT_2WVW55DA	7316-502	BS_D8N31T39	GNT, RTK	GNT, RTK	LGAT	Low-grade astrocytic tumor	Updated via OpenPedCan subtyping
 PT_2WVW55DA	7316-502	BS_R94EDP5H	GNT, RTK	GNT, RTK	LGAT	Low-grade astrocytic tumor	Updated via OpenPedCan subtyping
 PT_2YCHME6S	7316-2622	BS_EXYHZ6D4	LGG, wildtype	Low-grade glioma, wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPedCan subtyping
