@@ -58,6 +58,6 @@ bash run-subtyping-aggregation.sh
 
 `02-compile-subtyping-pathology-free-text.Rmd` aggregates results from subtypes identified from pathology_free_text_diagnosis terms into the compiled molecular and reported subtypes (`results/compiled_molecular_subtypes_and_report_info.tsv`)
 
-`03-incorporate-clinical-feedback.Rmd` incorporate clincally reviewed subtypes for PNOC003 samples and update to the clinically reviewed subtype if they are different from the subtype from `molecular-subtyping-HGG`
+`03-incorporate-clinical-feedback.Rmd` incorporate clincally reviewed subtypes for PNOC samples and update to the clinically reviewed subtype if they are different from the subtype from `molecular-subtyping-HGG`
 
 `04-incorporate-pathology-feedback.Rmd` incorporates pathology feedback for specific samples when the labels for those samples either need to be updated as a result of molecular subtyping OR molecular abberations data could not idenitify subtypes OR pathology review deviates from the logic in upstream molecular subtyping modules. The output is an updated version of the table from `01-compile-subtyping-results.Rmd` (`results/compiled_molecular_subtypes_with_clinical_pathology_feedback_and_report_info.tsv.tsv`).
