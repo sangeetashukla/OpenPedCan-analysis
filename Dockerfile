@@ -465,7 +465,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     rm -rf aws*
 
 # Install Desal latest release (v2.1.1)- converter for JSON, TOML, YAML, XML and CSV data formats
-RUN sudo wget -qO /usr/local/bin/dasel "https://github.com/TomWright/dasel/releases/download/v2.1.1/dasel_darwin_amd64" && \
+RUN sudo wget -qO /usr/local/bin/dasel "https://github.com/TomWright/dasel/releases/download/v2.1.1/dasel_linux_amd64" && \
     sudo chmod a+x /usr/local/bin/dasel
 
 WORKDIR /rocker-build/
