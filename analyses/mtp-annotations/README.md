@@ -24,7 +24,7 @@ This module transforms Open Targets Platform `Target` (core annotations for targ
     │     └── diseases/*.cvs
     └── analyses/
         └── mtp-annotations/
-            ├── REAME.md
+            ├── README.md
             ├── 01-mtp-annotations.R
             ├── run-mtp-annotations.sh
             └── results/
