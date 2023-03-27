@@ -302,9 +302,9 @@ Final_Data_Table <- data.frame(
                   paste(unique(hist$cohort[which(hist$Kids_First_Biospecimen_ID %in% HIST_sample_type_df_filtered$Case_ID)])
                         ,collapse=";",sep=";")),
   Gene_symbol = rownames(Result),
-  Gene_Ensembl_ID = ENSG_Hugo$ensg_id[match(rownames(Result),ENSG_Hugo$gene_symbol)],
+  targetFromSourceId = ENSG_Hugo$ensg_id[match(rownames(Result),ENSG_Hugo$gene_symbol)],
   PMTL = ENSG_Hugo$pmtl[match(rownames(Result),ENSG_Hugo$gene_symbol)],
-  EFO = ifelse(length(which(EFO_MONDO$cancer_group == unique(hist$cancer_group[which(hist$Kids_First_Biospecimen_ID %in% HIST_sample_type_df_filtered$Case_ID)]))) >= 1
+  diseaseFromSourceMappedId = ifelse(length(which(EFO_MONDO$cancer_group == unique(hist$cancer_group[which(hist$Kids_First_Biospecimen_ID %in% HIST_sample_type_df_filtered$Case_ID)]))) >= 1
                , EFO_MONDO$efo_code[which(EFO_MONDO$cancer_group == unique(hist$cancer_group[which(hist$Kids_First_Biospecimen_ID %in% HIST_sample_type_df_filtered$Case_ID)]))], "" ),
   MONDO = ifelse(length(which(EFO_MONDO$cancer_group == unique(hist$cancer_group[which(hist$Kids_First_Biospecimen_ID %in% HIST_sample_type_df_filtered$Case_ID)]))) >= 1
                  ,EFO_MONDO$mondo_code[which(EFO_MONDO$cancer_group == unique(hist$cancer_group[which(hist$Kids_First_Biospecimen_ID %in% HIST_sample_type_df_filtered$Case_ID)]))],""),
