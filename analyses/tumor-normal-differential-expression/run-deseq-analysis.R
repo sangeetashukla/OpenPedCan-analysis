@@ -245,6 +245,8 @@ countData_filtered_DEG.hist <- data.matrix(countData_filtered_DEG[,which(colname
     sample_type_df_filtered.hist <- sample_type_df_filtered[which(sample_type_df_filtered$Type 
                                                                   %in% c(histology_filtered[I],GTEX_filtered[J])),]
 
+    rownames(sample_type_df_filtered.hist) <- NULL
+    
 #Run DESeq2  
     sub.deseqdataset <- DESeqDataSetFromMatrix(countData <- round(countData_filtered_DEG.hist),
                                                colData <- sample_type_df_filtered.hist,
